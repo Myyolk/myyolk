@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MyYolk — Retirement Planning</title>
+<title>MyYolk - Retirement Planning</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -642,19 +642,7 @@
     <div class="tab-panel active" id="tab-profile">
       <h1 class="page-title" id="profileGreeting">Let's get to know you</h1>
       <p class="page-subtitle" id="profileSub">A few basics to build your MyYolk retirement plan.</p>
-<div class="card" style="background:linear-gradient(135deg,var(--sage-pale),#fff8e8);border:2px solid var(--gold)">
-        <div class="card-title"><span class="dot"></span> Who are you planning for?</div>
-        <div style="display:flex;gap:1rem;flex-wrap:wrap">
-          <label style="display:flex;align-items:center;gap:0.5rem;padding:0.75rem 1.5rem;border-radius:12px;cursor:pointer;border:2px solid var(--sage);background:#fff;font-weight:600;font-size:0.9rem">
-            <input type="radio" name="planningFor" id="planIndividual" value="individual" checked onchange="toggleCouple()" style="accent-color:var(--sage)"> 
-            👤 Just Me
-          </label>
-          <label style="display:flex;align-items:center;gap:0.5rem;padding:0.75rem 1.5rem;border-radius:12px;cursor:pointer;border:2px solid #ddd;background:#fff;font-weight:600;font-size:0.9rem">
-            <input type="radio" name="planningFor" id="planCouple" value="couple" onchange="toggleCouple()" style="accent-color:var(--sage)">
-            👫 Me + Spouse/Partner
-          </label>
-        </div>
-      </div>
+
       <div class="card">
         <div class="card-title"><span class="dot"></span> Personal Information</div>
         <div class="form-grid" style="margin-bottom:1rem">
@@ -762,7 +750,7 @@
         <div id="uploadLoading" style="display:none;margin-top:1rem;">
           <div class="callout info">
             <div class="spinner" style="border-color:rgba(74,124,89,0.3);border-top-color:var(--sage)"></div>
-            <span>Reading your pay stub with AI — this takes a few seconds…</span>
+            <span>Reading your pay stub with AI - this takes a few seconds…</span>
           </div>
         </div>
       </div>
@@ -1119,7 +1107,7 @@
           <div id="ssUploadLoading" style="display:none;margin-top:1rem">
             <div class="callout info">
               <div class="spinner" style="border-color:rgba(74,124,89,0.3);border-top-color:var(--sage)"></div>
-              <span>Reading your SSA statement — just a moment…</span>
+              <span>Reading your SSA statement - just a moment…</span>
             </div>
           </div>
           <div class="upload-result" id="ssUploadResult" style="margin-top:1rem">
@@ -1160,7 +1148,7 @@
         <div id="ss-method-estimate" style="display:none">
           <div class="callout info" style="margin-bottom:1rem">
             <span>🧮</span>
-            <div>We'll estimate your benefit using your income and years of US SS earnings. SSA averages your top 35 years — fewer than 35 years means zeros fill the gap and reduce your benefit. <strong>This is an approximation</strong> — upload your SSA statement or enter manually for exact figures. SS benefits are also subject to future policy changes.</div>
+            <div>We'll estimate your benefit using your income and years of US SS earnings. SSA averages your top 35 years - fewer than 35 years means zeros fill the gap and reduce your benefit. <strong>This is an approximation</strong> - upload your SSA statement or enter manually for exact figures. SS benefits are also subject to future policy changes.</div>
           </div>
           <div class="form-grid">
             <div class="field">
@@ -1876,7 +1864,7 @@
     <!-- ══ SUMMARY TAB ══ -->
     <div class="tab-panel" id="tab-summary">
       <h1 class="page-title">Your MyYolk Summary</h1>
-      <p class="page-subtitle">Your complete financial snapshot — net worth, retirement readiness, and key milestones.</p>
+      <p class="page-subtitle">Your complete financial snapshot - net worth, retirement readiness, and key milestones.</p>
 
       <!-- NET WORTH -->
       <div class="card">
@@ -1957,7 +1945,7 @@
         <div style="font-size:2rem;margin-bottom:0.5rem">🥚</div>
         <div style="font-weight:700;font-size:1.1rem;color:var(--forest);margin-bottom:0.5rem">Your MyYolk Plan is Ready</div>
         <div style="font-size:0.85rem;color:#666;margin-bottom:1.5rem">Download your complete retirement plan as a PDF to save, print, or share with a financial advisor.</div>
-        <button onclick="alert('Export coming soon! This will be a premium feature.')" style="padding:12px 32px;background:var(--gold);color:#fff;border:none;border-radius:12px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">📄 Download My Plan — $9</button>
+        <button onclick="alert('Export coming soon! This will be a premium feature.')" style="padding:12px 32px;background:var(--gold);color:#fff;border:none;border-radius:12px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">📄 Download My Plan - $9</button>
         <div style="font-size:0.75rem;color:#999;margin-top:0.75rem">One-time purchase · Instant download · Your data stays private</div>
       </div>
 
@@ -2208,7 +2196,7 @@ function estimateSS() {
   var hintEl = document.getElementById('ssYearsHint');
   if (hintEl) {
     if (yrs < 35) {
-      hintEl.textContent = '⚠️ Less than 35 years — ' + (35-yrs) + ' zero-earning years will reduce your SS benefit';
+      hintEl.textContent = '⚠️ Less than 35 years - ' + (35-yrs) + ' zero-earning years will reduce your SS benefit';
       hintEl.style.display = 'block';
     } else {
       hintEl.textContent = '';
@@ -2314,7 +2302,7 @@ function updateSummary() {
     milestones.push({ year: currentYear + (67-currentAge), label: '💰 Full Social Security retirement age 67' });
   }
   var mortPayoff = getVal('homeMortgagePayoffYear');
-  if (mortPayoff > 0) milestones.push({ year: mortPayoff, label: '🏠 Mortgage paid off — frees up $' + Math.round(getVal('homeMortgagePayment')).toLocaleString() + '/mo' });
+  if (mortPayoff > 0) milestones.push({ year: mortPayoff, label: '🏠 Mortgage paid off - frees up $' + Math.round(getVal('homeMortgagePayment')).toLocaleString() + '/mo' });
   
   milestones = milestones.filter(function(m) { return m.year >= currentYear; });
   milestones.sort(function(a,b) { return a.year - b.year; });
@@ -2332,7 +2320,7 @@ function updateSummary() {
   if (homeEquity > 0 && totalAssets > 0 && homeEquity/totalAssets > 0.5) insights.push('🏠 Over 50% of your net worth is in home equity. Consider diversifying as you approach retirement.');
   var stateEl = el('stateRes');
   if (stateEl && ['PA','FL','TX','NV','WA','AK','SD','TN','WY'].includes(stateEl.value)) {
-    insights.push('🎉 <strong>' + (stateEl.options[stateEl.selectedIndex]?.text || stateEl.value) + '</strong> has favorable retirement income tax treatment — this could save you thousands per year.');
+    insights.push('🎉 <strong>' + (stateEl.options[stateEl.selectedIndex]?.text || stateEl.value) + '</strong> has favorable retirement income tax treatment - this could save you thousands per year.');
   }
   if (getVal('creditCardBalance') > 10000) insights.push('⚠️ You have <strong>' + fmt(getVal('creditCardBalance')) + '</strong> in credit card debt. Paying this off before retirement is a priority.');
   
