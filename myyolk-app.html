@@ -561,6 +561,12 @@
   .tag-green { background: var(--sage-pale); color: var(--sage); }
   .tag-orange { background: #fef3e8; color: var(--clay); }
   .tag-gray { background: #f0ede8; color: var(--mid); }
+
+  /* Remove number input spinners */
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type=number] { -moz-appearance: textfield; }
+
 </style>
 </head>
 <body>
@@ -749,6 +755,41 @@
         </div>
       </div>
 
+      <!-- SPOUSE PROFILE - hidden by default -->
+      <div id="spouseProfileCard" class="card" style="display:none;border:2px solid var(--gold)">
+        <div class="card-title"><span class="dot"></span> Spouse / Partner Profile</div>
+        <div class="form-grid three">
+          <div class="field">
+            <label>Spouse First Name</label>
+            <input type="text" id="spouseFirstName" placeholder="First name" oninput="updateGreeting()">
+          </div>
+          <div class="field">
+            <label>Spouse Last Name</label>
+            <input type="text" id="spouseLastName" placeholder="Last name">
+          </div>
+          <div class="field">
+            <label>Spouse Date of Birth</label>
+            <input type="date" id="spouseDob">
+            <button id="calcSpouseAgeBtn" style="margin-top:8px;padding:6px 12px;background:var(--sage);color:#fff;border:none;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;">Calculate Age</button>
+          </div>
+          <div class="field">
+            <label>Spouse Current Age</label>
+            <input type="text" id="spouseAge" placeholder="Auto-filled from birthday" style="background:var(--sage-pale);color:var(--sage);font-weight:600">
+          </div>
+          <div class="field">
+            <label>Spouse Target Retirement Age</label>
+            <input type="number" id="spouseRetireAge" value="65" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Spouse State of Residence</label>
+            <select id="spouseStateRes" onchange="recalc()">
+              <option value="">Same as mine</option>
+            </select>
+            <div class="hint">Leave blank if same state</div>
+          </div>
+        </div>
+      </div>
+
       <div class="btn-row">
         <button class="btn btn-primary" onclick="showTab('income')">Next: Income & Pay →</button>
       </div>
@@ -756,7 +797,7 @@
 
     <!-- ══ INCOME TAB ══ -->
     <div class="tab-panel" id="tab-income">
-      <h1 class="page-title">Income & Pay</h1>
+      <h1 class="page-title" id="incomePageTitle">Income & Pay</h1>
       <p class="page-subtitle">Tell us about your earnings. You can also upload a pay stub on the Profile page to fill this in automatically.</p>
 
       <div class="card">
@@ -782,7 +823,7 @@
       </div>
 
       <div class="card" id="salaryCard">
-        <div class="card-title"><span class="dot"></span> Salary Details</div>
+        <div class="card-title"><span class="dot"></span> <span id="yourIncomeLabel">Income Details</span></div>
         <div class="form-grid">
           <div class="field">
             <label>Annual Base Salary ($)</label>
@@ -889,6 +930,42 @@
         </div>
       </div>
 
+      <!-- SPOUSE INCOME - hidden by default -->
+      <div id="spouseIncomeCard" style="display:none">
+        <div class="card" style="border:2px solid var(--gold)">
+          <div class="card-title"><span class="dot"></span> 👫 Spouse / Partner Income</div>
+          <div class="form-grid">
+            <div class="field">
+              <label>Spouse Employment Type</label>
+              <select id="spouseIncomeType" onchange="recalc()">
+                <option value="salary">Salary</option>
+                <option value="hourly">Hourly</option>
+                <option value="selfemployed">Self-employed / 1099</option>
+                <option value="retired">Already Retired</option>
+                <option value="notworking">Not Currently Working</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Spouse Annual Base Salary ($)</label>
+              <input type="number" id="spouseSalary" value="" placeholder="e.g. 80000" oninput="recalc()">
+            </div>
+            <div class="field">
+              <label>Spouse Pay Frequency</label>
+              <select id="spousePayFreq" onchange="recalc()">
+                <option value="biweekly">Biweekly (26x/yr)</option>
+                <option value="semimonthly">Semi-monthly (24x/yr)</option>
+                <option value="monthly">Monthly (12x/yr)</option>
+                <option value="weekly">Weekly (52x/yr)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Spouse Performance Bonus ($)</label>
+              <input type="number" id="spouseBonus" value="" placeholder="e.g. 10000" oninput="recalc()">
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="showTab('profile')">← Back</button>
         <button class="btn btn-primary" onclick="showTab('accounts')">Next: Accounts →</button>
@@ -957,7 +1034,7 @@
           </div>
         </div>
         <div class="field" style="margin-top:1rem;max-width:240px">
-          <label>Apply contributions to bonus?</label>
+          <label>Apply 401k to performance bonus?</label>
           <select id="applyBonus">
             <option value="yes">Yes</option>
             <option value="no">No</option>
@@ -1071,12 +1148,13 @@
         <div id="ss-method-estimate" style="display:none">
           <div class="callout info" style="margin-bottom:1rem">
             <span>🧮</span>
-            <div>We'll estimate your benefit using your income and years worked. <strong>This is an approximation</strong> — upload your SSA statement or enter manually for exact figures. SS benefits are also subject to future policy changes.</div>
+            <div>We'll estimate your benefit using your income and years of US SS earnings. SSA averages your top 35 years — fewer than 35 years means zeros fill the gap and reduce your benefit. <strong>This is an approximation</strong> — upload your SSA statement or enter manually for exact figures. SS benefits are also subject to future policy changes.</div>
           </div>
           <div class="form-grid">
             <div class="field">
               <label>Years Worked (est.)</label>
               <input type="number" id="ssYearsWorked" value="30" min="1" max="50" oninput="estimateSS()">
+            <div class="hint" id="ssYearsHint" style="color:var(--clay)"></div>
               <div class="hint">Years contributing to Social Security</div>
             </div>
             <div class="field">
@@ -1119,6 +1197,153 @@
       </div>
 
       <div class="btn-row">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Personal Property & Other Assets</div>
+        <p style="font-size:0.85rem;color:#666;margin-bottom:1rem">These assets contribute to your net worth even if they don't generate income.</p>
+        <div class="form-grid">
+          <div class="field">
+            <label>Vehicles - Total Estimated Value ($)</label>
+            <input type="number" id="assetVehicles" value="" placeholder="e.g. 45000" oninput="recalc()">
+            <div class="hint">Combined value of all vehicles you own</div>
+          </div>
+          <div class="field">
+            <label>Jewelry & Valuables ($)</label>
+            <input type="number" id="assetJewelry" value="" placeholder="e.g. 5000" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Collectibles / Art ($)</label>
+            <input type="number" id="assetCollectibles" value="" placeholder="e.g. 0" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Business Ownership Value ($)</label>
+            <input type="number" id="assetBusiness" value="" placeholder="e.g. 0" oninput="recalc()">
+            <div class="hint">Estimated value if sold</div>
+          </div>
+          <div class="field">
+            <label>Other Assets ($)</label>
+            <input type="number" id="assetOther" value="" placeholder="e.g. 0" oninput="recalc()">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Real Estate & Property</div>
+        <p style="font-size:0.85rem;color:#666;margin-bottom:1rem">Your home and any investment properties are major retirement assets.</p>
+
+        <div style="margin-bottom:1.5rem">
+          <div style="font-weight:600;font-size:0.9rem;color:var(--forest);margin-bottom:0.75rem">🏠 Primary Home</div>
+          <div class="form-grid">
+            <div class="field">
+              <label>Current Home Value ($)</label>
+              <input type="number" id="homeValue" value="" placeholder="e.g. 350000" oninput="recalc()">
+            </div>
+            <div class="field">
+              <label>Mortgage Balance ($)</label>
+              <input type="number" id="homeMortgage" value="" placeholder="e.g. 19000" oninput="recalc()">
+              <div class="hint">Enter 0 if paid off</div>
+            </div>
+            <div class="field">
+              <label>Monthly Mortgage Payment ($)</label>
+              <input type="number" id="homeMortgagePayment" value="" placeholder="e.g. 1800" oninput="recalc()">
+            </div>
+            <div class="field">
+              <label>Mortgage Payoff Year</label>
+              <input type="number" id="homeMortgagePayoffYear" value="" placeholder="e.g. 2026" oninput="recalc()">
+              <div class="hint">Year your mortgage ends</div>
+            </div>
+            <div class="field">
+              <label>Plan at Retirement</label>
+              <select id="homePlan" onchange="recalc()">
+                <option value="stay">Stay in home</option>
+                <option value="downsize">Sell and downsize</option>
+                <option value="sell">Sell and rent</option>
+                <option value="rentout">Keep and rent out</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Expected Annual Appreciation (%)</label>
+              <input type="number" id="homeAppreciation" value="3" step="0.1" oninput="recalc()">
+              <div class="hint">Historical average ~3%/year</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="investmentProperties">
+          <div style="font-weight:600;font-size:0.9rem;color:var(--forest);margin-bottom:0.75rem">🏘️ Investment Properties</div>
+          <div id="propList"></div>
+          <button onclick="addProperty()" style="margin-top:0.5rem;padding:8px 16px;background:transparent;color:var(--sage);border:2px solid var(--sage);border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;">+ Add Investment Property</button>
+        </div>
+      </div>
+
+      <!-- SPOUSE ACCOUNTS - hidden by default -->
+      <div id="spouseAccountsCard" style="display:none">
+        <div class="card" style="border:2px solid var(--gold)">
+          <div class="card-title"><span class="dot"></span> 👫 Spouse / Partner Accounts</div>
+          <div class="form-grid">
+            <div class="field">
+              <label>Spouse Traditional 401(k) ($)</label>
+              <input type="number" id="spouseBal401k" value="" placeholder="0" oninput="recalc()">
+            </div>
+            <div class="field">
+              <label>Spouse Roth 401(k) ($)</label>
+              <input type="number" id="spouseBalRoth401" value="" placeholder="0" oninput="recalc()">
+            </div>
+            <div class="field">
+              <label>Spouse Roth IRA ($)</label>
+              <input type="number" id="spouseBalRothIRA" value="" placeholder="0" oninput="recalc()">
+            </div>
+            <div class="field">
+              <label>Spouse Taxable Investments ($)</label>
+              <input type="number" id="spouseBalTaxable" value="" placeholder="0" oninput="recalc()">
+            </div>
+            <div class="field">
+              <label>Spouse HSA ($)</label>
+              <input type="number" id="spouseBalHSA" value="" placeholder="0" oninput="recalc()">
+            </div>
+            <div class="field">
+              <label>Spouse Cash Savings ($)</label>
+              <input type="number" id="spouseBalCash" value="" placeholder="0" oninput="recalc()">
+            </div>
+          </div>
+          <div style="font-weight:600;font-size:0.85rem;color:var(--forest);margin:1rem 0 0.5rem">Spouse 401(k) Contributions</div>
+          <div class="form-grid">
+            <div class="field">
+              <label>Spouse 401(k) Contribution %</label>
+              <input type="number" id="spouseContrib401k" value="" placeholder="e.g. 10" step="0.1" oninput="recalc()">
+            </div>
+            <div class="field">
+              <label>Spouse Employer Match %</label>
+              <input type="number" id="spouseEmpMatch" value="" placeholder="e.g. 6" step="0.1" oninput="recalc()">
+            </div>
+            <div class="field">
+              <label>Spouse Roth 401(k) %</label>
+              <input type="number" id="spouseContribRoth401" value="" placeholder="e.g. 5" step="0.1" oninput="recalc()">
+            </div>
+          </div>
+          <div style="font-weight:600;font-size:0.85rem;color:var(--forest);margin:1rem 0 0.5rem">Spouse Social Security</div>
+          <div class="form-grid">
+            <div class="field">
+              <label>Spouse SS Estimate ($/mo)</label>
+              <input type="number" id="spouseSsManual" value="" placeholder="e.g. 1800" oninput="recalc()">
+              <div class="hint">From SSA statement or estimate</div>
+            </div>
+            <div class="field">
+              <label>Spouse SS Claiming Age</label>
+              <input type="number" id="spouseSsAge" value="67" min="62" max="70" oninput="recalc()">
+              <div class="hint">62 = reduced · 67 = full · 70 = maximum</div>
+            </div>
+            <div class="field">
+              <label>Years of Spouse SS Earnings</label>
+              <input type="number" id="spouseSsYears" value="30" min="1" max="50" oninput="recalc()">
+              <div class="hint" id="spouseSsYearsHint" style="color:var(--clay)"></div>
+            </div>
+          </div>
+          <div style="padding:0.75rem;background:var(--sage-pale);border-radius:8px;font-size:0.82rem;color:var(--sage);margin-top:0.75rem">
+            💡 <strong>Spousal SS Benefit:</strong> Your spouse may be eligible for up to 50% of your SS benefit if it exceeds their own earned benefit. The app will calculate whichever is higher.
+          </div>
+        </div>
+      </div>
+
         <button class="btn btn-secondary" onclick="showTab('income')">← Back</button>
         <button class="btn btn-primary" onclick="showTab('budget')">Next: Budget →</button>
       </div>
@@ -1174,6 +1399,77 @@
           <div class="budget-row"><label>Pets</label><input type="number" class="bud-m" data-key="pets" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
           <div class="budget-row"><label>Gifts / Family</label><input type="number" class="bud-m" data-key="gifts" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
           <div class="budget-row"><label>Other</label><input type="number" class="bud-m" data-key="other" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+        </div>
+
+        <div class="budget-category">
+          <div class="budget-cat-header">💳 Debt Payments</div>
+          <div class="budget-row">
+            <label>Mortgage</label>
+            <input type="number" class="bud-m" data-key="debtMortgage" placeholder="0" oninput="calcBudget(this)">
+            <input type="number" class="bud-a" readonly placeholder="0">
+          </div>
+          <div class="budget-row" id="mortgagePayoffRow">
+            <label style="font-size:0.78rem;color:var(--sage)">↳ Payoff Date</label>
+            <input type="month" id="mortgagePayoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
+            <div style="font-size:0.75rem;color:#888;padding-top:4px" id="mortgagePayoffNote"></div>
+          </div>
+          <div class="budget-row">
+            <label>Car Loan 1</label>
+            <input type="number" class="bud-m" data-key="debtCar1" placeholder="0" oninput="calcBudget(this)">
+            <input type="number" class="bud-a" readonly placeholder="0">
+          </div>
+          <div class="budget-row">
+            <label style="font-size:0.78rem;color:var(--sage)">↳ Car Loan 1 Payoff</label>
+            <input type="month" id="carLoan1Payoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
+          </div>
+          <div class="budget-row">
+            <label>Car Loan 2</label>
+            <input type="number" class="bud-m" data-key="debtCar2" placeholder="0" oninput="calcBudget(this)">
+            <input type="number" class="bud-a" readonly placeholder="0">
+          </div>
+          <div class="budget-row">
+            <label style="font-size:0.78rem;color:var(--sage)">↳ Car Loan 2 Payoff</label>
+            <input type="month" id="carLoan2Payoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
+          </div>
+          <div class="budget-row">
+            <label>Student Loans</label>
+            <input type="number" class="bud-m" data-key="debtStudent" placeholder="0" oninput="calcBudget(this)">
+            <input type="number" class="bud-a" readonly placeholder="0">
+          </div>
+          <div class="budget-row">
+            <label style="font-size:0.78rem;color:var(--sage)">↳ Student Loan Payoff</label>
+            <input type="month" id="studentLoanPayoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
+          </div>
+          <div id="creditCardRows">
+            <div class="budget-row">
+              <label>Credit Card 1</label>
+              <input type="number" class="bud-m" data-key="debtCC1" placeholder="0" oninput="calcBudget(this)">
+              <input type="number" class="bud-a" readonly placeholder="0">
+            </div>
+            <div class="budget-row">
+              <label>Credit Card 2</label>
+              <input type="number" class="bud-m" data-key="debtCC2" placeholder="0" oninput="calcBudget(this)">
+              <input type="number" class="bud-a" readonly placeholder="0">
+            </div>
+            <div class="budget-row">
+              <label>Credit Card 3</label>
+              <input type="number" class="bud-m" data-key="debtCC3" placeholder="0" oninput="calcBudget(this)">
+              <input type="number" class="bud-a" readonly placeholder="0">
+            </div>
+          </div>
+          <div class="budget-row">
+            <label>Personal Loan</label>
+            <input type="number" class="bud-m" data-key="debtPersonal" placeholder="0" oninput="calcBudget(this)">
+            <input type="number" class="bud-a" readonly placeholder="0">
+          </div>
+          <div class="budget-row">
+            <label>Other Debt</label>
+            <input type="number" class="bud-m" data-key="debtOther" placeholder="0" oninput="calcBudget(this)">
+            <input type="number" class="bud-a" readonly placeholder="0">
+          </div>
+          <div style="padding:8px 0 4px;font-size:0.78rem;color:var(--sage);font-style:italic">
+            💡 Debts with payoff dates will be removed from your retirement expense projections automatically
+          </div>
         </div>
 
         <div class="budget-total">
@@ -1283,6 +1579,55 @@
       </div>
 
       <div class="btn-row">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Debt & Liabilities</div>
+        <p style="font-size:0.85rem;color:#666;margin-bottom:1rem">Knowing when your debts end helps project your true retirement cash flow.</p>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>Car Loan 1 - Monthly Payment ($)</label>
+            <input type="number" id="carLoan1Payment" value="" placeholder="e.g. 450" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Car Loan 1 - Payoff Year</label>
+            <input type="number" id="carLoan1PayoffYear" value="" placeholder="e.g. 2027" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Car Loan 2 - Monthly Payment ($)</label>
+            <input type="number" id="carLoan2Payment" value="" placeholder="e.g. 350" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Car Loan 2 - Payoff Year</label>
+            <input type="number" id="carLoan2PayoffYear" value="" placeholder="e.g. 2028" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Student Loans - Monthly Payment ($)</label>
+            <input type="number" id="studentLoanPayment" value="" placeholder="e.g. 300" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Student Loans - Payoff Year</label>
+            <input type="number" id="studentLoanPayoffYear" value="" placeholder="e.g. 2030" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Credit Cards - Total Balance ($)</label>
+            <input type="number" id="creditCardBalance" value="" placeholder="e.g. 5000" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Credit Cards - Monthly Payment ($)</label>
+            <input type="number" id="creditCardPayment" value="" placeholder="e.g. 200" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Other Debt - Monthly Payment ($)</label>
+            <input type="number" id="otherDebtPayment" value="" placeholder="e.g. 150" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Other Debt - Payoff Year</label>
+            <input type="number" id="otherDebtPayoffYear" value="" placeholder="e.g. 2029" oninput="recalc()">
+          </div>
+        </div>
+        <div id="debtFreeMsg" style="margin-top:1rem;padding:0.75rem 1rem;background:var(--sage-pale);border-radius:8px;font-size:0.85rem;color:var(--sage);font-weight:600;display:none"></div>
+      </div>
+
         <button class="btn btn-secondary" onclick="showTab('accounts')">← Back</button>
         <button class="btn btn-primary" onclick="showTab('projections')">Next: Projections →</button>
       </div>
@@ -1518,785 +1863,224 @@
 
     <!-- ══ SUMMARY TAB ══ -->
     <div class="tab-panel" id="tab-summary">
-      <h1 class="page-title">Your Retirement Summary</h1>
-      <p class="page-subtitle">Everything in one place.</p>
+      <h1 class="page-title">Your MyYolk Summary</h1>
+      <p class="page-subtitle">Your complete financial snapshot — net worth, retirement readiness, and key milestones.</p>
 
-      <div class="card" style="padding:2rem 2.5rem">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start">
-          <div>
-            <div style="font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--mid);margin-bottom:8px">Projected Retirement Portfolio</div>
-            <div class="big-number" id="sum-portfolio">$—</div>
-            <div style="color:var(--mid);margin-top:6px;font-size:0.88rem">At age <span id="sum-retAge">—</span> · <span id="sum-yearsLeft">—</span> years from now</div>
-          </div>
-          <div style="padding-top:0.5rem">
-            <div id="sum-tag" class="tag tag-gray" style="margin-bottom:1rem;font-size:0.8rem">—</div>
-            <div style="font-size:0.88rem;color:var(--mid);line-height:1.7" id="sum-narrative">Fill in your information across the tabs to generate your personalized summary.</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="results-grid">
-        <div class="result-card">
-          <div class="result-label">Total Annual Income</div>
-          <div class="result-value" id="sum-income">$—</div>
-        </div>
-        <div class="result-card">
-          <div class="result-label">Annual Contributions</div>
-          <div class="result-value" id="sum-contribs">$—</div>
-        </div>
-        <div class="result-card">
-          <div class="result-label">Growth Rate</div>
-          <div class="result-value" id="sum-ror">—</div>
-        </div>
-        <div class="result-card">
-          <div class="result-label">Safe Withdrawal</div>
-          <div class="result-value" id="sum-withdrawal">$—</div>
-          <div class="result-sub">per year (4% rule)</div>
-        </div>
-        <div class="result-card">
-          <div class="result-label">Social Security</div>
-          <div class="result-value" id="sum-ss">$—</div>
-          <div class="result-sub">annual</div>
-        </div>
-        <div class="result-card highlight">
-          <div class="result-label">Readiness Ratio</div>
-          <div class="result-value" id="sum-ratio">—</div>
-          <div class="result-sub" id="sum-ratioSub">vs. spending goal</div>
-        </div>
-      </div>
-
+      <!-- NET WORTH -->
       <div class="card">
-        <div class="card-title"><span class="dot"></span> Current Portfolio Breakdown</div>
-        <div id="sum-breakdown" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0.75rem;margin-top:0.5rem"></div>
+        <div class="card-title"><span class="dot"></span> Net Worth Statement</div>
+        <div class="results-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="result-card highlight">
+            <div class="result-label">Total Assets</div>
+            <div class="result-value" id="sumTotalAssets">$0</div>
+            <div class="result-sub">Everything you own</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Total Liabilities</div>
+            <div class="result-value" id="sumTotalLiabilities" style="color:#c96a3a">$0</div>
+            <div class="result-sub">Everything you owe</div>
+          </div>
+          <div class="result-card highlight" style="background:var(--sage);color:#fff">
+            <div class="result-label" style="color:rgba(255,255,255,0.8)">Net Worth</div>
+            <div class="result-value" id="sumNetWorth" style="color:#fff">$0</div>
+            <div class="result-sub" style="color:rgba(255,255,255,0.7)">Assets minus liabilities</div>
+          </div>
+        </div>
+
+        <div style="margin-top:1.5rem">
+          <div style="font-weight:600;font-size:0.85rem;color:var(--forest);margin-bottom:0.75rem">Asset Breakdown</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;font-size:0.85rem">
+            <div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid #f0e8d8"><span>Retirement Accounts</span><span id="sumRetAccounts" style="font-weight:600">$0</span></div>
+            <div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid #f0e8d8"><span>Cash & Savings</span><span id="sumCash" style="font-weight:600">$0</span></div>
+            <div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid #f0e8d8"><span>Home Equity</span><span id="sumHomeEquity" style="font-weight:600">$0</span></div>
+            <div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid #f0e8d8"><span>Investment Properties</span><span id="sumInvProps" style="font-weight:600">$0</span></div>
+            <div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid #f0e8d8"><span>Vehicles</span><span id="sumVehicles" style="font-weight:600">$0</span></div>
+            <div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid #f0e8d8"><span>Personal Property</span><span id="sumPersonalProp" style="font-weight:600">$0</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RETIREMENT READINESS -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Retirement Readiness</div>
+        <div class="results-grid">
+          <div class="result-card highlight">
+            <div class="result-label">Portfolio at Retirement</div>
+            <div class="result-value" id="sumPortfolio">$0</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Monthly Income (4% Rule)</div>
+            <div class="result-value" id="sumMonthlyIncome">$0</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Social Security (est.)</div>
+            <div class="result-value" id="sumSS">$0</div>
+            <div class="result-sub">Per month</div>
+          </div>
+          <div class="result-card highlight">
+            <div class="result-label">Readiness Score</div>
+            <div class="result-value" id="sumReadiness">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KEY MILESTONES -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Key Milestones</div>
+        <div id="milestoneList" style="font-size:0.9rem">
+          <div style="color:#888;font-style:italic">Fill in your details to see your personalized milestones</div>
+        </div>
+      </div>
+
+      <!-- INSIGHTS -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Smart Insights</div>
+        <div id="summaryInsights" style="font-size:0.9rem">
+          <div style="color:#888;font-style:italic">Your personalized insights will appear here as you fill in your plan</div>
+        </div>
+      </div>
+
+      <!-- EXPORT -->
+      <div class="card" style="text-align:center;background:linear-gradient(135deg,var(--sage-pale),#fff8e8)">
+        <div style="font-size:2rem;margin-bottom:0.5rem">🥚</div>
+        <div style="font-weight:700;font-size:1.1rem;color:var(--forest);margin-bottom:0.5rem">Your MyYolk Plan is Ready</div>
+        <div style="font-size:0.85rem;color:#666;margin-bottom:1.5rem">Download your complete retirement plan as a PDF to save, print, or share with a financial advisor.</div>
+        <button onclick="alert('Export coming soon! This will be a premium feature.')" style="padding:12px 32px;background:var(--gold);color:#fff;border:none;border-radius:12px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">📄 Download My Plan — $9</button>
+        <div style="font-size:0.75rem;color:#999;margin-top:0.75rem">One-time purchase · Instant download · Your data stays private</div>
       </div>
 
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="showTab('early')">← Back</button>
-        <button class="btn btn-primary" onclick="window.print()">🖨️ Print / Save Your MyYolk Plan</button>
       </div>
     </div>
-
-  </main>
-</div>
+  </div><!-- end main content -->
+</div><!-- end app -->
 
 <script>
-// ══════════════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════════════
-let state = {
-  age: 0, retAge: 0, lifeExp: 90,
-  incomeType: 'salary',
+// ── STATE ──
+var state = {
+  income: 0, householdIncome: 0, spouseIncome: 0,
   salary: 0, bonus: 0, payFreq: 'biweekly',
-  hourlyRate: 0, hoursWeek: 40, otHours: 0, otMult: 1.5, weeksYear: 52, bonusHourly: 0,
-  bal401k: 0, balRoth401: 0, balRothIRA: 0, balTaxable: 0, balHSA: 0, balCash: 0, balESPP: 0,
-  contrib401k: 0, contribRoth401: 0, empMatch: 0, matchCap: 0, applyBonus: 'yes',
-  contribRothIRA: 0, contribTaxable: 0, contribESPP: 0,
-  rorChoice: 'expected', customROR: 8,
-  ss62: 0, ss67: 0, ss70: 0,
-  retSpending: 0,
-  budgetMonthly: 0,
+  contrib401k: 0, contribRoth401: 0, empMatch: 0, matchCap: 0,
+  retireAge: 65, lifeExp: 85, rorPct: 7,
+  portfolioAtRetirement: 0, ssMonthly: 0,
+  bonusRetention: 0
 };
 
-// ── NAV ──
-function showTab(name) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
-  document.querySelector(`[onclick="showTab('${name}')"]`).classList.add('active');
-  window.scrollTo(0,0);
+var fmt = function(n) { return '$' + Math.round(n).toLocaleString(); };
+var fmtEl = function(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; };
+var getVal = function(id, def) { return parseFloat(document.getElementById(id)?.value) || (def || 0); };
+
+// ── COUPLE TOGGLE ──
+function toggleCouple() {
+  var isCouple = document.getElementById('planCouple')?.checked;
+  ['spouseProfileCard','spouseIncomeCard','spouseAccountsCard'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = isCouple ? 'block' : 'none';
+  });
   recalc();
 }
 
+function calcSpouseAge() {
+  var dobEl = document.getElementById('spouseDob');
+  var ageEl = document.getElementById('spouseAge');
+  if (!dobEl || !dobEl.value) return;
+  var parts = dobEl.value.split('-');
+  var age = new Date().getFullYear() - parseInt(parts[0]);
+  var m = new Date().getMonth() - (parseInt(parts[1])-1);
+  if (m < 0 || (m === 0 && new Date().getDate() < parseInt(parts[2]))) age--;
+  if (ageEl) ageEl.value = age;
+  recalc();
+}
+
+// ── VEHICLES ──
+var vehicleCount = 0;
+function addVehicle() {
+  vehicleCount++;
+  var id = vehicleCount;
+  var div = document.createElement('div');
+  div.id = 'vehicle_' + id;
+  div.style.cssText = 'border:1px solid #e5d9c3;border-radius:12px;padding:1rem;margin-bottom:1rem;background:#fffdf7';
+  div.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem"><span style="font-weight:600;font-size:0.85rem">Vehicle ' + id + '</span><button onclick="removeVehicle('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer">Remove</button></div>' +
+    '<div class="form-grid">' +
+    '<div class="field"><label>Year/Make/Model</label><input type="text" id="vehicleName_'+id+'" placeholder="e.g. 2022 Ford F-150"></div>' +
+    '<div class="field"><label>Auto Insurance ($/mo)</label><input type="number" id="vehicleIns_'+id+'" placeholder="e.g. 120" oninput="recalc()"></div>' +
+    '<div class="field"><label>Maintenance ($/mo)</label><input type="number" id="vehicleMaint_'+id+'" placeholder="e.g. 100" oninput="recalc()"></div>' +
+    '<div class="field"><label>Car Washes ($/mo)</label><input type="number" id="vehicleWash_'+id+'" placeholder="e.g. 20" oninput="recalc()"></div>' +
+    '<div class="field"><label>Loan Payment ($/mo)</label><input type="number" id="vehicleLoan_'+id+'" placeholder="e.g. 450" oninput="recalc()"></div>' +
+    '<div class="field"><label>Loan Payoff Year</label><input type="number" id="vehiclePayoff_'+id+'" placeholder="e.g. 2027" oninput="recalc()"></div>' +
+    '<div class="field"><label>Expected Replacement Year</label><input type="number" id="vehicleReplace_'+id+'" placeholder="e.g. 2030" oninput="recalc()"><div class="hint">We will flag this as a future expense</div></div>' +
+    '</div>';
+  document.getElementById('vehicleList').appendChild(div);
+}
+function removeVehicle(id) { var el = document.getElementById('vehicle_'+id); if(el) el.remove(); recalc(); }
+
+// ── SUBSCRIPTIONS ──
+var subCount = 0;
+function addSubscription() {
+  subCount++;
+  var id = subCount;
+  var div = document.createElement('div');
+  div.id = 'sub_' + id;
+  div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr auto;gap:0.75rem;align-items:end;margin-bottom:0.75rem';
+  div.innerHTML =
+    '<div class="field" style="margin:0"><label>Subscription Name</label><input type="text" id="subName_'+id+'" placeholder="e.g. Netflix"></div>' +
+    '<div class="field" style="margin:0"><label>Monthly Cost ($)</label><input type="number" id="subCost_'+id+'" placeholder="e.g. 15" oninput="recalc()"></div>' +
+    '<button onclick="removeSub('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.2rem;padding-bottom:0.5rem">×</button>';
+  document.getElementById('subscriptionList').appendChild(div);
+}
+function removeSub(id) { var el = document.getElementById('sub_'+id); if(el) el.remove(); recalc(); }
+
+// ── INVESTMENT PROPERTIES ──
+var propCount = 0;
+function addProperty() {
+  propCount++;
+  var id = propCount;
+  var div = document.createElement('div');
+  div.id = 'prop_' + id;
+  div.style.cssText = 'border:1px solid #e5d9c3;border-radius:12px;padding:1rem;margin-bottom:1rem;background:#fffdf7';
+  div.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem"><span style="font-weight:600;font-size:0.85rem">Property ' + id + '</span><button onclick="removeProperty('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer">Remove</button></div>' +
+    '<div class="form-grid">' +
+    '<div class="field"><label>Property Value ($)</label><input type="number" id="propValue_'+id+'" placeholder="e.g. 250000" oninput="recalc()"></div>' +
+    '<div class="field"><label>Mortgage Balance ($)</label><input type="number" id="propMortgage_'+id+'" placeholder="e.g. 150000" oninput="recalc()"></div>' +
+    '<div class="field"><label>Monthly Rent Income ($)</label><input type="number" id="propRent_'+id+'" placeholder="e.g. 1800" oninput="recalc()"></div>' +
+    '<div class="field"><label>Monthly Expenses ($)</label><input type="number" id="propExpenses_'+id+'" placeholder="e.g. 600" oninput="recalc()"><div class="hint">Taxes, insurance, maintenance</div></div>' +
+    '<div class="field"><label>Monthly Mortgage Payment ($)</label><input type="number" id="propMortgagePayment_'+id+'" placeholder="e.g. 800" oninput="recalc()"></div>' +
+    '<div class="field"><label>Plan at Retirement</label><select id="propPlan_'+id+'" onchange="recalc()"><option value="keep">Keep and rent</option><option value="sell">Sell</option></select></div>' +
+    '</div>';
+  document.getElementById('propList').appendChild(div);
+}
+function removeProperty(id) { var el = document.getElementById('prop_'+id); if(el) el.remove(); recalc(); }
+
 // ── INCOME TYPE TOGGLE ──
 function toggleIncomeType() {
-  const t = document.getElementById('incomeType').value;
-  document.getElementById('salaryCard').style.display = t === 'salary' ? '' : 'none';
-  document.getElementById('hourlyCard').style.display = t === 'hourly' ? '' : 'none';
+  var t = document.getElementById('incomeType')?.value;
+  var sCard = document.getElementById('salaryCard');
+  var hCard = document.getElementById('hourlyCard');
+  if (sCard) sCard.style.display = t === 'salary' ? '' : 'none';
+  if (hCard) hCard.style.display = t === 'hourly' ? '' : 'none';
   recalc();
 }
 
 function toggleCustomROR() {
-  const v = document.getElementById('rorChoice').value;
-  document.getElementById('customRORField').style.display = v === 'custom' ? '' : 'none';
+  var v = document.getElementById('rorChoice')?.value;
+  var el = document.getElementById('customRORField');
+  if (el) el.style.display = v === 'custom' ? '' : 'none';
+}
+
+// ── SHOW TAB ──
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.nav-item').forEach(function(b) { b.classList.remove('active'); });
+  var panel = document.getElementById('tab-' + name);
+  if (panel) panel.classList.add('active');
+  var btn = document.querySelector('[onclick="showTab(''+name+'')"]');
+  if (btn) btn.classList.add('active');
+  window.scrollTo(0,0);
   recalc();
 }
 
-// ── BUDGET ──
-function calcBudget(input) {
-  const val = parseFloat(input.value) || 0;
-  const row = input.closest('.budget-row');
-  row.querySelectorAll('.bud-a')[0].value = Math.round(val * 12);
-  updateBudgetTotals();
-  calcBudgetAnalysis();
-  recalc();
-}
-
-function updateBudgetTotals() {
-  let total = 0;
-  document.querySelectorAll('.bud-m').forEach(i => total += parseFloat(i.value) || 0);
-  state.budgetMonthly = total;
-  document.getElementById('budgetMonthlyTotal').textContent = fmt(total);
-  document.getElementById('budgetAnnualTotal').textContent = fmt(total * 12);
-  const hint = document.getElementById('budgetHint');
-  if (hint) hint.textContent = fmt(total * 12) + '/yr';
-}
-
-// ── CORE MATH ──
-function getActiveROR() {
-  const choice = document.getElementById('rorChoice')?.value || 'expected';
-  if (choice === 'conservative') return 0.05;
-  if (choice === 'expected') return 0.07;
-  if (choice === 'aggressive') return 0.09;
-  return (parseFloat(document.getElementById('customROR')?.value) || 8) / 100;
-}
-
-function getTotalIncome() {
-  const t = document.getElementById('incomeType')?.value || 'salary';
-  if (t === 'salary') {
-    const sal = parseFloat(document.getElementById('salary')?.value) || 0;
-    const bon = parseFloat(document.getElementById('bonus')?.value) || 0;
-    return sal + bon;
-  } else {
-    const hr = parseFloat(document.getElementById('hourlyRate')?.value) || 0;
-    const hw = parseFloat(document.getElementById('hoursWeek')?.value) || 40;
-    const ot = parseFloat(document.getElementById('otHours')?.value) || 0;
-    const om = parseFloat(document.getElementById('otMult')?.value) || 1.5;
-    const wy = parseFloat(document.getElementById('weeksYear')?.value) || 52;
-    const bon = parseFloat(document.getElementById('bonusHourly')?.value) || 0;
-    return (hr * hw * wy) + (hr * om * ot * wy) + bon;
-  }
-}
-
-function getContributions() {
-  const income = getTotalIncome();
-  const sal = parseFloat(document.getElementById('salary')?.value) || 0;
-  const bon = parseFloat(document.getElementById('bonus')?.value) || 0;
-  const applyB = document.getElementById('applyBonus')?.value === 'yes';
-  const base = applyB ? income : sal;
-
-  const c401k = (parseFloat(document.getElementById('contrib401k')?.value) || 0) / 100;
-  const cRoth401 = (parseFloat(document.getElementById('contribRoth401')?.value) || 0) / 100;
-  const empM = (parseFloat(document.getElementById('empMatch')?.value) || 0) / 100;
-  const mCap = (parseFloat(document.getElementById('matchCap')?.value) || 0) / 100;
-  const cRothIRA = parseFloat(document.getElementById('contribRothIRA')?.value) || 0;
-  const cTaxable = parseFloat(document.getElementById('contribTaxable')?.value) || 0;
-  const cESPP = (parseFloat(document.getElementById('contribESPP')?.value) || 0) / 100;
-
-  const trad401 = base * c401k;
-  const roth401 = base * cRoth401;
-  const match = base * Math.min(empM, mCap);
-  const rothIRA = cRothIRA;
-  const taxable = cTaxable;
-  const espp = sal * cESPP;
-  const total = trad401 + roth401 + match + rothIRA + taxable + espp;
-
-  return { trad401, roth401, match, rothIRA, taxable, espp, total };
-}
-
-function getCurrentPortfolio() {
-  return (parseFloat(document.getElementById('bal401k')?.value) || 0)
-       + (parseFloat(document.getElementById('balRoth401')?.value) || 0)
-       + (parseFloat(document.getElementById('balRothIRA')?.value) || 0)
-       + (parseFloat(document.getElementById('balTaxable')?.value) || 0)
-       + (parseFloat(document.getElementById('balHSA')?.value) || 0)
-       + (parseFloat(document.getElementById('balCash')?.value) || 0)
-       + (parseFloat(document.getElementById('balESPP')?.value) || 0);
-}
-
-function buildProjections() {
-  const age = parseInt(document.getElementById('age')?.value) || 0;
-  if (!age) return [];
-
-  const ror = getActiveROR();
-  const contribs = getContributions();
-  const sal = parseFloat(document.getElementById('salary')?.value) || getTotalIncome();
-
-  let b401 = parseFloat(document.getElementById('bal401k')?.value) || 0;
-  let bR401 = parseFloat(document.getElementById('balRoth401')?.value) || 0;
-  let bRIRA = parseFloat(document.getElementById('balRothIRA')?.value) || 0;
-  let bTax = parseFloat(document.getElementById('balTaxable')?.value) || 0;
-  let bESPP = parseFloat(document.getElementById('balESPP')?.value) || 0;
-
-  const rows = [];
-  const currentYear = new Date().getFullYear();
-
-  for (let i = 0; i < 40; i++) {
-    const yr = currentYear + i;
-    const a = age + i;
-    const startTotal = b401 + bR401 + bRIRA + bTax + bESPP;
-
-    b401 = (b401 + contribs.trad401 + contribs.match) * (1 + ror);
-    bR401 = (bR401 + contribs.roth401) * (1 + ror);
-    bRIRA = (bRIRA + contribs.rothIRA) * (1 + ror);
-    bTax = (bTax + contribs.taxable) * (1 + ror);
-    bESPP = (bESPP + contribs.espp) * (1 + ror);
-
-    const endTotal = b401 + bR401 + bRIRA + bTax + bESPP;
-    rows.push({ yr, a, b401, bR401, bRIRA, bTax, bESPP, endTotal });
-  }
-  return rows;
-}
-
-function getSS(retireAge) {
-  const ss62 = parseFloat(document.getElementById('ss62')?.value) || 0;
-  const ss67 = parseFloat(document.getElementById('ss67')?.value) || 0;
-  const ss70 = parseFloat(document.getElementById('ss70')?.value) || 0;
-  if (retireAge <= 62) return ss62 * 12;
-  if (retireAge <= 67) return ss67 * 12;
-  return ss70 * 12;
-}
-
-// ── MAIN RECALC ──
-function recalc() {
-  const age = parseInt(document.getElementById('age')?.value) || 0;
-  const retAge = parseInt(document.getElementById('retAge')?.value) || 65;
-  const income = getTotalIncome();
-  const contribs = getContributions();
-  const ror = getActiveROR();
-  const currentPort = getCurrentPortfolio();
-
-  // Income tab
-  const freqMap = { biweekly: 26, semimonthly: 24, monthly: 12, weekly: 52 };
-  const freq = freqMap[document.getElementById('payFreq')?.value] || 26;
-  document.getElementById('totalIncome').textContent = fmt(income);
-  document.getElementById('monthlyIncome').textContent = fmt(income / 12);
-  document.getElementById('paycheckIncome').textContent = fmt(income / freq);
-
-  // Projections
-  const projRows = buildProjections();
-
-  // Find portfolio at retirement
-  const yearsToRet = retAge - age;
-  let portAtRet = 0;
-  if (projRows.length > 0 && yearsToRet > 0 && yearsToRet <= 40) {
-    portAtRet = projRows[yearsToRet - 1]?.endTotal || 0;
-  } else if (yearsToRet <= 0 && projRows.length > 0) {
-    portAtRet = projRows[0].endTotal;
-  }
-
-  const withdrawal4 = portAtRet * 0.04;
-  const ssAnnual = getSS(retAge);
-  const totalRetIncome = withdrawal4 + ssAnnual;
-  const spending = parseFloat(document.getElementById('retSpending')?.value) || (state.budgetMonthly * 12) || 0;
-  const ratio = spending > 0 ? totalRetIncome / spending : 0;
-
-  // Update readiness tab
-  setEl('readPortfolio', fmt(portAtRet));
-  setEl('readRetAge', retAge || '—');
-  setEl('readWithdrawal', fmt(withdrawal4));
-  setEl('readSS', fmt(ssAnnual));
-  setEl('readTotal', fmt(totalRetIncome));
-  setEl('budgetHint', fmt(state.budgetMonthly * 12) + '/yr');
-
-  const scoreText = ratio > 0 ? Math.round(ratio * 100) + '%' : '—';
-  setEl('readScore', scoreText);
-  const meterPct = Math.min(ratio * 100, 150);
-  const meterEl = document.getElementById('meterFill');
-  if (meterEl) meterEl.style.width = meterPct + '%';
-
-  let assessText = '—', assessSub = 'Enter your data to see your score';
-  if (ratio > 0) {
-    if (ratio >= 1.2) { assessText = '✅ Fully on track'; assessSub = "You're in great shape — even with some cushion."; }
-    else if (ratio >= 1.0) { assessText = '✅ On track'; assessSub = "You're meeting your spending goal."; }
-    else if (ratio >= 0.8) { assessText = '⚠️ Getting close'; assessSub = 'A little more savings or a later retirement date could help.'; }
-    else { assessText = '🔴 Needs attention'; assessSub = 'Consider saving more, retiring later, or spending less.'; }
-  }
-  setEl('readAssess', assessText);
-  setEl('readAssessSub', assessSub);
-
-  // Projection table
-  const tbody = document.getElementById('projTableBody');
-  if (tbody) {
-    tbody.innerHTML = '';
-    projRows.forEach(r => {
-      const isRet = r.a === retAge;
-      const tr = document.createElement('tr');
-      if (isRet) tr.classList.add('highlight-row');
-      tr.innerHTML = `<td>${r.yr}</td><td>${r.a}${isRet ? ' 🎯' : ''}</td>
-        <td>${fmt(r.b401)}</td><td>${fmt(r.bR401)}</td>
-        <td>${fmt(r.bRIRA)}</td><td>${fmt(r.bTax)}</td>
-        <td>${fmt(r.bESPP)}</td>
-        <td><strong>${fmt(r.endTotal)}</strong></td>`;
-      tbody.appendChild(tr);
-    });
-  }
-
-  // Chart
-  renderChart(projRows, retAge, age);
-
-  // Sidebar
-  setEl('sb-portfolio', fmt(currentPort));
-  setEl('sb-age-label', retAge);
-  setEl('sb-at-ret', fmt(portAtRet));
-  setEl('sb-withdrawal', fmt(withdrawal4));
-  setEl('sb-readiness', ratio > 0 ? Math.round(ratio * 100) + '%' : '—');
-
-  // Summary
-  setEl('sum-portfolio', fmt(portAtRet));
-  setEl('sum-retAge', retAge || '—');
-  setEl('sum-yearsLeft', age && retAge ? Math.max(0, retAge - age) : '—');
-  setEl('sum-income', fmt(income));
-  setEl('sum-contribs', fmt(contribs.total));
-  setEl('sum-ror', Math.round(ror * 100) + '%');
-  setEl('sum-withdrawal', fmt(withdrawal4));
-  setEl('sum-ss', fmt(ssAnnual));
-  setEl('sum-ratio', ratio > 0 ? Math.round(ratio * 100) + '%' : '—');
-
-  const sumTag = document.getElementById('sum-tag');
-  if (sumTag && ratio > 0) {
-    sumTag.className = 'tag ' + (ratio >= 1 ? 'tag-green' : ratio >= 0.8 ? 'tag-orange' : 'tag-gray');
-    sumTag.textContent = ratio >= 1.2 ? 'Fully Funded' : ratio >= 1 ? 'On Track' : ratio >= 0.8 ? 'Close' : 'Needs Review';
-  }
-
-  const narrative = document.getElementById('sum-narrative');
-  if (narrative && age && retAge && income > 0) {
-    narrative.textContent = `Based on your current portfolio of ${fmt(currentPort)}, annual income of ${fmt(income)}, and a ${Math.round(ror*100)}% growth rate, your portfolio is projected to reach ${fmt(portAtRet)} by age ${retAge}. Your safe withdrawal rate would generate ${fmt(withdrawal4)} per year. ${ratio >= 1 ? "You appear to be on track for your retirement goals." : "Consider increasing contributions or adjusting your retirement timeline."}`;
-  }
-
-  // Breakdown
-  const bkd = document.getElementById('sum-breakdown');
-  if (bkd) {
-    const accounts = [
-      ['Traditional 401k', parseFloat(document.getElementById('bal401k')?.value)||0, '#4a7c59'],
-      ['Roth 401k', parseFloat(document.getElementById('balRoth401')?.value)||0, '#6a9e78'],
-      ['Roth IRA', parseFloat(document.getElementById('balRothIRA')?.value)||0, '#c96a3a'],
-      ['Taxable', parseFloat(document.getElementById('balTaxable')?.value)||0, '#8b6e4e'],
-      ['Cash', parseFloat(document.getElementById('balCash')?.value)||0, '#b5a499'],
-      ['ESPP', parseFloat(document.getElementById('balESPP')?.value)||0, '#2c2c2c'],
-    ];
-    bkd.innerHTML = accounts.map(([label, val, color]) => val > 0 ? `
-      <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:10px;padding:1rem;border-left:4px solid ${color}">
-        <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:4px">${label}</div>
-        <div style="font-size:1.1rem;font-weight:700">${fmt(val)}</div>
-      </div>` : '').join('');
-  }
-
-  // What-if auto-populate defaults
-  const wiRetAge = document.getElementById('wi-retAge');
-  if (wiRetAge && !wiRetAge.value && retAge) wiRetAge.value = retAge;
-  const wiRor = document.getElementById('wi-ror');
-  if (wiRor && !wiRor.value) wiRor.value = Math.round(ror * 100);
-  const wiSpend = document.getElementById('wi-spending');
-  if (wiSpend && !wiSpend.value && spending) wiSpend.value = spending;
-  calcWhatIf();
-
-  // Early retirement defaults
-  const erRet = document.getElementById('er-retAge');
-  if (erRet && !erRet.value && retAge) erRet.value = retAge;
-  calcEarly();
-
-  // Budget analysis
-  calcBudgetAnalysis();
-}
-
-function renderChart(projRows, retAge, age) {
-  const chart = document.getElementById('projChart');
-  if (!chart || projRows.length === 0) return;
-  const maxVal = Math.max(...projRows.map(r => r.endTotal), 1);
-  // Sample every 5 years for readability
-  const sampled = projRows.filter((_, i) => i % 5 === 0 || projRows[i]?.a === retAge);
-  chart.innerHTML = sampled.map(r => {
-    const h = Math.max(4, (r.endTotal / maxVal) * 140);
-    const isRet = r.a === retAge;
-    return `<div class="bar-group">
-      <div class="bar" style="height:${h}px;background:${isRet ? 'var(--clay)' : 'var(--sage)'};opacity:${isRet?1:0.75};" title="${r.yr} (Age ${r.a}): ${fmt(r.endTotal)}"></div>
-      <div class="bar-label">${r.a}</div>
-    </div>`;
-  }).join('');
-}
-
-function calcWhatIf() {
-  const age = parseInt(document.getElementById('age')?.value) || 0;
-  const wiRetAge = parseInt(document.getElementById('wi-retAge')?.value) || 65;
-  const wiRor = (parseFloat(document.getElementById('wi-ror')?.value) || 7) / 100;
-  const wiExtra = parseFloat(document.getElementById('wi-extraSavings')?.value) || 0;
-  const wiSpend = parseFloat(document.getElementById('wi-spending')?.value) || 0;
-
-  const currentPort = getCurrentPortfolio();
-  const contribs = getContributions();
-  const totalAnnual = contribs.total + wiExtra;
-  const yrs = Math.max(0, wiRetAge - age);
-  const portAtRet = currentPort * Math.pow(1 + wiRor, yrs) + totalAnnual * ((Math.pow(1 + wiRor, yrs) - 1) / wiRor || yrs);
-  const withdrawal = portAtRet * 0.04;
-  const ratio = wiSpend > 0 ? withdrawal / wiSpend : 0;
-
-  setEl('wi-portfolio', fmt(portAtRet));
-  setEl('wi-withdrawal', fmt(withdrawal));
-  setEl('wi-ratio', ratio > 0 ? Math.round(ratio * 100) + '%' : '—');
-  setEl('wi-assess', ratio >= 1 ? '✅ On Track' : ratio > 0 ? '⚠️ Review Needed' : '—');
-
-  // Quick comparison scenarios
-  const scenarioEl = document.getElementById('scenarioCards');
-  if (scenarioEl && age && currentPort > 0) {
-    const rorBase = getActiveROR();
-    const scenarios = [
-      { name: 'Retire at 62', retA: 62, ror: rorBase, extra: 0 },
-      { name: 'Retire at 65', retA: 65, ror: rorBase, extra: 0 },
-      { name: 'Retire at 67', retA: 67, ror: rorBase, extra: 0 },
-      { name: '1% Higher Return', retA: parseInt(document.getElementById('retAge')?.value)||65, ror: rorBase+0.01, extra: 0 },
-      { name: '+$500/mo Savings', retA: parseInt(document.getElementById('retAge')?.value)||65, ror: rorBase, extra: 6000 },
-      { name: 'Conservative (5%)', retA: parseInt(document.getElementById('retAge')?.value)||65, ror: 0.05, extra: 0 },
-    ];
-    scenarioEl.innerHTML = scenarios.map(s => {
-      const y = Math.max(0, s.retA - age);
-      const tot = contribs.total + s.extra;
-      const p = currentPort * Math.pow(1+s.ror, y) + tot * ((Math.pow(1+s.ror,y)-1)/s.ror||y);
-      const w = p * 0.04;
-      return `<div class="scenario-card">
-        <div class="scenario-name">${s.name}</div>
-        <div class="scenario-result">
-          <div class="val">${fmt(p)}</div>
-          <div style="font-size:0.78rem;color:var(--mid)">4% withdrawal: ${fmt(w)}/yr</div>
-        </div>
-      </div>`;
-    }).join('');
-  }
-}
-
-function calcEarly() {
-  const age = parseInt(document.getElementById('age')?.value) || 0;
-  const stopAge = parseInt(document.getElementById('er-stopAge')?.value) || 0;
-  const erRetAge = parseInt(document.getElementById('er-retAge')?.value) || 65;
-  const severance = parseFloat(document.getElementById('er-severance')?.value) || 0;
-  const unemp = parseFloat(document.getElementById('er-unemp')?.value) || 0;
-  const unempMos = parseFloat(document.getElementById('er-unempMonths')?.value) || 0;
-  const erBudget = parseFloat(document.getElementById('er-budget')?.value) || 0;
-  const ror = getActiveROR();
-
-  const projRows = buildProjections();
-  const yearsToStop = stopAge - age;
-  const portAtStop = (yearsToStop > 0 && yearsToStop <= 40)
-    ? (projRows[yearsToStop - 1]?.endTotal || 0)
-    : (yearsToStop <= 0 ? getCurrentPortfolio() : 0);
-
-  const totalCushion = portAtStop + severance + (unemp * unempMos);
-  const annualBurn = erBudget * 12;
-  const runway = annualBurn > 0 ? totalCushion / annualBurn : 0;
-
-  const yearsGrow = Math.max(0, erRetAge - stopAge);
-  const portAtRet = totalCushion * Math.pow(1 + ror, yearsGrow);
-  const withdrawal = portAtRet * 0.04;
-
-  setEl('er-portAtStop', fmt(portAtStop));
-  setEl('er-runway', runway > 0 ? runway.toFixed(1) + ' yrs' : '—');
-  setEl('er-portAtRet', fmt(portAtRet));
-  setEl('er-withdrawal', fmt(withdrawal));
-  const spending = parseFloat(document.getElementById('retSpending')?.value) || (state.budgetMonthly * 12) || 0;
-  const ratio = spending > 0 ? withdrawal / spending : 0;
-  setEl('er-assess', ratio >= 1 ? '✅ Still on track' : portAtRet > 0 ? '⚠️ May need adjustments' : '—');
-}
-
-// ── PAY STUB UPLOAD ──
-async function handleUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  document.getElementById('uploadLoading').style.display = 'block';
-  document.getElementById('uploadResult').classList.remove('show');
-
-  // Convert to base64
-  const base64 = await new Promise(res => {
-    const r = new FileReader();
-    r.onload = () => res(r.result.split(',')[1]);
-    r.readAsDataURL(file);
-  });
-
-  const isPDF = file.type === 'application/pdf';
-  const mediaType = isPDF ? 'application/pdf' : file.type;
-
-  try {
-    const prompt = `You are reading a pay stub. Extract the following information and respond ONLY with a JSON object (no preamble, no markdown):
-{
-  "salary": <annual base salary as number, 0 if not found>,
-  "bonus": <annual bonus as number, 0 if not found>,
-  "payFreq": <"biweekly"|"semimonthly"|"monthly"|"weekly">,
-  "contrib401k": <employee 401k contribution percent as number e.g. 6 for 6%, 0 if not found>,
-  "contribRoth401": <Roth 401k contribution percent as number, 0 if not found>,
-  "empMatch": <employer match percent as number, 0 if not found>,
-  "matchCap": <match cap percent as number, 0 if not found>,
-  "contribRothIRA": <Roth IRA annual contribution as dollar amount, 0 if not found>,
-  "notes": "<brief note about what you found>"
-}
-If a value cannot be determined, use 0. Do not include any text outside the JSON.`;
-
-    const contentItem = isPDF
-      ? { type: 'document', source: { type: 'base64', media_type: mediaType, data: base64 } }
-      : { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } };
-
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: [contentItem, { type: 'text', text: prompt }] }]
-      })
-    });
-
-    const data = await resp.json();
-    const text = data.content?.map(c => c.text || '').join('') || '';
-
-    let parsed;
-    try {
-      parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
-    } catch { parsed = null; }
-
-    document.getElementById('uploadLoading').style.display = 'none';
-
-    if (parsed) {
-      // Populate fields
-      if (parsed.salary) { document.getElementById('salary').value = parsed.salary; }
-      if (parsed.bonus) { document.getElementById('bonus').value = parsed.bonus; }
-      if (parsed.payFreq) { document.getElementById('payFreq').value = parsed.payFreq; }
-      if (parsed.contrib401k) { document.getElementById('contrib401k').value = parsed.contrib401k; }
-      if (parsed.contribRoth401) { document.getElementById('contribRoth401').value = parsed.contribRoth401; }
-      if (parsed.empMatch) { document.getElementById('empMatch').value = parsed.empMatch; }
-      if (parsed.matchCap) { document.getElementById('matchCap').value = parsed.matchCap; }
-      if (parsed.contribRothIRA) { document.getElementById('contribRothIRA').value = parsed.contribRothIRA; }
-
-      document.getElementById('uploadStatus').textContent = '✅ Pay stub read successfully!';
-      document.getElementById('uploadDetails').textContent = parsed.notes || 'Fields have been filled in. Please review and adjust anything that looks off.';
-      document.getElementById('uploadResult').classList.add('show');
-      recalc();
-    } else {
-      document.getElementById('uploadStatus').textContent = '⚠️ Couldn\'t read all fields';
-      document.getElementById('uploadDetails').textContent = 'Please fill in your details manually below.';
-      document.getElementById('uploadResult').classList.add('show');
-    }
-
-  } catch(e) {
-    document.getElementById('uploadLoading').style.display = 'none';
-    document.getElementById('uploadStatus').textContent = '⚠️ Upload error — please fill in manually';
-    document.getElementById('uploadDetails').textContent = e.message || 'Something went wrong.';
-    document.getElementById('uploadResult').classList.add('show');
-  }
-}
-
-// ══════════════════════════════════════════════════════
-// BUDGET ANALYSIS
-// ══════════════════════════════════════════════════════
-
-function updateAdj(slider, spanId) {
-  const v = parseFloat(slider.value);
-  const el = document.getElementById(spanId);
-  if (el) el.textContent = v + '%';
-  calcBudgetAnalysis();
-}
-
-function getAdj(id) {
-  return (parseFloat(document.getElementById(id)?.value) || 100) / 100;
-}
-
-function getBudgetCategories() {
-  // Map category keys to groups and slider adjustments
-  return [
-    { label: 'Housing',       keys: ['mortgage','propTax','homeIns','utilities','internet','homeMaint'], slider: 'sl-housing',   emoji: '🏠' },
-    { label: 'Transport',     keys: ['gas','carIns','carMaint'],                                          slider: 'sl-transport', emoji: '🚗' },
-    { label: 'Food',          keys: ['groceries','dining'],                                               slider: 'sl-food',      emoji: '🍽️' },
-    { label: 'Healthcare',    keys: ['medPrem','rx','oop'],                                               slider: 'sl-health',    emoji: '🏥' },
-    { label: 'Lifestyle',     keys: ['subs','entertain','shopping','pets','gifts','other'],               slider: 'sl-lifestyle', emoji: '🎭' },
-  ];
-}
-
-function getCatTotal(keys) {
-  return keys.reduce((sum, k) => {
-    const el = document.querySelector(`.bud-m[data-key="${k}"]`);
-    return sum + (parseFloat(el?.value) || 0);
-  }, 0);
-}
-
-function calcBudgetAnalysis() {
-  const cats = getBudgetCategories();
-
-  // --- Current spending totals ---
-  const catTotals = cats.map(c => ({ ...c, monthly: getCatTotal(c.keys) }));
-  const totalCurrentMonthly = catTotals.reduce((s, c) => s + c.monthly, 0);
-  const totalCurrentAnnual  = totalCurrentMonthly * 12;
-
-  // --- Inflation-adjusted retirement spending ---
-  const age    = parseInt(document.getElementById('age')?.value) || 0;
-  const retAge = parseInt(document.getElementById('retAge')?.value) || 65;
-  const inflRate = (parseFloat(document.getElementById('sl-infl')?.value) || 3) / 100;
-  const yrs = Math.max(0, retAge - age);
-
-  // Apply lifestyle adjustments per category then inflate
-  const retMonthly = catTotals.reduce((sum, c) => {
-    const adj = getAdj(c.slider);
-    return sum + c.monthly * adj;
-  }, 0);
-  const retMonthlyInflated = retMonthly * Math.pow(1 + inflRate, yrs);
-  const retAnnualInflated  = retMonthlyInflated * 12;
-
-  // --- Projected withdrawal income at retirement ---
-  const projRows = buildProjections();
-  let portAtRet = 0;
-  const yearsToRet = retAge - age;
-  if (projRows.length > 0 && yearsToRet > 0 && yearsToRet <= 40) {
-    portAtRet = projRows[yearsToRet - 1]?.endTotal || 0;
-  } else if (yearsToRet <= 0 && projRows.length > 0) {
-    portAtRet = projRows[0].endTotal;
-  }
-  const withdrawal = portAtRet * 0.04;
-  const ssAnnual   = getSS(retAge);
-  const totalRetIncome = withdrawal + ssAnnual;
-
-  // --- Gap ---
-  const gapAnnual = totalRetIncome - retAnnualInflated;
-  const coverage  = retAnnualInflated > 0 ? (totalRetIncome / retAnnualInflated) : 0;
-
-  // --- Savings rate sustainability check ---
-  const income = getTotalIncome();
-  const contribs = getContributions();
-  const savingsRate = income > 0 ? contribs.total / income : 0;
-
-  // ---- Update DOM ----
-  setEl('ba-currentMonthly', fmt(totalCurrentMonthly));
-  setEl('ba-currentAnnual',  fmt(totalCurrentAnnual) + ' / year');
-  setEl('ba-retireMonthly',  fmt(retMonthlyInflated));
-  setEl('ba-retireAnnual',   fmt(retAnnualInflated) + ' / year · inflation-adjusted');
-  setEl('ba-inflRate', (inflRate * 100).toFixed(1) + '%');
-  setEl('ba-inflYears', yrs + ' years');
-
-  // Gap card
-  const gapCard = document.getElementById('ba-gapCard');
-  if (gapCard) {
-    gapCard.className = 'spend-card ' + (gapAnnual >= 0 ? 'gap-ok' : coverage > 0.8 ? 'gap-warn' : 'gap-bad');
-  }
-  setEl('ba-gapLabel', gapAnnual >= 0 ? '✅ Surplus' : '⚠️ Shortfall');
-  setEl('ba-gapValue', totalRetIncome > 0 ? (gapAnnual >= 0 ? '+' : '') + fmt(Math.abs(gapAnnual)) + '/yr' : '—');
-  setEl('ba-gapSub', gapAnnual >= 0
-    ? 'Your income covers retirement spending'
-    : 'Annual income falls short of spending goal');
-
-  // Sustainability bar
-  const pct = Math.min(coverage * 100, 150);
-  const fill = document.getElementById('ba-sustFill');
-  if (fill) {
-    fill.style.width = pct + '%';
-    fill.className = 'sustainability-fill ' + (coverage >= 1 ? 'sust-ok' : coverage >= 0.8 ? 'sust-warn' : 'sust-bad');
-  }
-  setEl('ba-coveragePct', coverage > 0 ? Math.round(coverage * 100) + '%' : '—');
-
-  let coverDesc = 'Enter budget and account info to see coverage';
-  if (coverage >= 1.2) coverDesc = 'Excellent — your income well exceeds your projected retirement spending.';
-  else if (coverage >= 1.0) coverDesc = 'On track — projected income covers your retirement lifestyle.';
-  else if (coverage >= 0.8) coverDesc = 'Close — small adjustments to savings or spending will get you there.';
-  else if (coverage > 0) coverDesc = 'Gap detected — consider increasing contributions, retiring later, or reducing spending.';
-  setEl('ba-coverageDesc', coverDesc);
-
-  // Also push retirement spending back to readiness tab
-  const retSpendingEl = document.getElementById('retSpending');
-  if (retSpendingEl && !retSpendingEl.value) {
-    retSpendingEl.placeholder = fmt(retAnnualInflated).replace('$','') + ' (from budget)';
-  }
-
-  // ---- Category breakdown bars ----
-  const bkdEl = document.getElementById('ba-catBreakdown');
-  if (bkdEl && totalCurrentMonthly > 0) {
-    bkdEl.innerHTML = catTotals.map(c => {
-      const pctOfTotal = totalCurrentMonthly > 0 ? (c.monthly / totalCurrentMonthly) * 100 : 0;
-      const retAmt = c.monthly * getAdj(c.slider) * Math.pow(1 + inflRate, yrs);
-      return `<div class="cat-bar-item">
-        <div class="cat-bar-label">
-          <span>${c.emoji} ${c.label}</span>
-          <span>${fmt(c.monthly)}/mo</span>
-        </div>
-        <div class="cat-bar-track">
-          <div class="cat-bar-fill" style="width:${Math.min(pctOfTotal * 3, 100)}%"></div>
-        </div>
-        <div class="cat-bar-pct">${pctOfTotal.toFixed(0)}% of budget · Retirement est: ${fmt(retAmt)}/mo</div>
-      </div>`;
-    }).filter((_, i) => catTotals[i].monthly > 0).join('') || '<div style="color:var(--mid);font-size:0.85rem">No expenses entered yet.</div>';
-  }
-
-  // ---- Smart insights ----
-  const insightsEl = document.getElementById('ba-insights');
-  if (insightsEl && (totalCurrentMonthly > 0 || portAtRet > 0)) {
-    const insights = [];
-
-    // Savings rate insight
-    if (income > 0) {
-      if (savingsRate >= 0.20) {
-        insights.push({ cls: 'green', icon: '💪', title: `Strong savings rate: ${Math.round(savingsRate*100)}%`, body: 'Saving 20%+ of income puts you ahead of most Americans and accelerates your path to retirement.' });
-      } else if (savingsRate >= 0.10) {
-        insights.push({ cls: 'amber', icon: '📈', title: `Savings rate: ${Math.round(savingsRate*100)}%`, body: `Consider pushing toward 20%. Every extra 1% of your ${fmt(income)} income adds ${fmt(income * 0.01)} per year to your nest egg.` });
-      } else if (savingsRate > 0) {
-        insights.push({ cls: 'red', icon: '⚠️', title: `Low savings rate: ${Math.round(savingsRate*100)}%`, body: `Financial planners typically recommend saving 15–20% of income. Increasing by just 5% would add ${fmt(income * 0.05)}/year.` });
-      }
-    }
-
-    // Housing as % of budget
-    const housingCat = catTotals.find(c => c.label === 'Housing');
-    if (housingCat && totalCurrentMonthly > 0) {
-      const housingPct = (housingCat.monthly / totalCurrentMonthly) * 100;
-      if (housingPct > 40) {
-        insights.push({ cls: 'amber', icon: '🏠', title: `Housing is ${housingPct.toFixed(0)}% of your budget`, body: 'Financial guidelines suggest keeping housing under 30% of take-home pay. A high ratio here may be limiting your savings potential.' });
-      } else if (housingPct < 30 && housingCat.monthly > 0) {
-        insights.push({ cls: 'green', icon: '🏠', title: `Housing at a healthy ${housingPct.toFixed(0)}% of budget`, body: 'Good — keeping housing costs controlled is one of the biggest levers in building long-term wealth.' });
-      }
-    }
-
-    // Healthcare in retirement
-    const healthCat = catTotals.find(c => c.label === 'Healthcare');
-    if (age > 0 && retAge < 65) {
-      insights.push({ cls: 'amber', icon: '🏥', title: 'Healthcare bridge gap before Medicare', body: `You're planning to retire at ${retAge}, before Medicare eligibility at 65. Budget for private health insurance — often $500–$1,500+/month for a single person. This is one of the most underestimated costs in early retirement.` });
-    } else if (healthCat && healthCat.monthly < 200) {
-      insights.push({ cls: 'amber', icon: '🏥', title: 'Healthcare costs typically rise in retirement', body: `Your current healthcare budget is ${fmt(healthCat.monthly)}/mo. Plan for this to increase significantly — especially pre-Medicare. The slider above is set to 150% of current.` });
-    }
-
-    // Inflation impact
-    if (yrs > 10 && totalCurrentMonthly > 0) {
-      const inflImpact = retMonthlyInflated - retMonthly;
-      insights.push({ cls: 'amber', icon: '📊', title: `Inflation adds ${fmt(inflImpact)}/mo to your retirement needs`, body: `Over ${yrs} years at ${(inflRate*100).toFixed(1)}% inflation, your current ${fmt(retMonthly)}/mo lifestyle costs ${fmt(retMonthlyInflated)}/mo in future dollars. This is built into your retirement estimate above.` });
-    }
-
-    // Coverage result
-    if (coverage >= 1.2) {
-      insights.push({ cls: 'green', icon: '🎉', title: 'Your plan covers retirement spending with room to spare', body: `At your current trajectory, your income at retirement exceeds projected spending by ${fmt(gapAnnual)}/year. You could retire earlier, spend more, or leave a legacy.` });
-    } else if (coverage >= 1.0) {
-      insights.push({ cls: 'green', icon: '✅', title: 'You\'re on track to cover your retirement lifestyle', body: `Projected income of ${fmt(totalRetIncome)}/yr closely matches your estimated retirement spending of ${fmt(retAnnualInflated)}/yr.` });
-    } else if (coverage > 0) {
-      const shortfallMonthly = Math.abs(gapAnnual) / 12;
-      const extraNeeded = Math.abs(gapAnnual) / 0.04;
-      insights.push({ cls: 'red', icon: '📉', title: `Estimated ${fmt(shortfallMonthly)}/month shortfall in retirement`, body: `To eliminate this gap, you'd need approximately ${fmt(extraNeeded)} more in your portfolio at retirement, or reduce planned spending by ${fmt(shortfallMonthly)}/month.` });
-    }
-
-    insightsEl.innerHTML = insights.length
-      ? insights.map(i => `<div class="insight-row ${i.cls}">
-          <div class="insight-icon">${i.icon}</div>
-          <div class="insight-text"><strong>${i.title}</strong>${i.body}</div>
-        </div>`).join('')
-      : '<div style="color:var(--mid);font-size:0.85rem">Keep filling in your details for personalized insights.</div>';
-  }
-}
-
-// ── HELPERS ──
-function fmt(n) {
-  if (!n && n !== 0) return '$—';
-  return '$' + Math.round(n).toLocaleString();
-}
-function setEl(id, val) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = val;
-}
-
-// ── DRAG & DROP ──
-const uz = document.getElementById('uploadZone');
-if (uz) {
-  uz.addEventListener('dragover', e => { e.preventDefault(); uz.classList.add('drag-over'); });
-  uz.addEventListener('dragleave', () => uz.classList.remove('drag-over'));
-  uz.addEventListener('drop', e => {
-    e.preventDefault(); uz.classList.remove('drag-over');
-    const f = e.dataTransfer.files[0];
-    if (f) handleUpload({ target: { files: [f] } });
-  });
-}
-
-
-// ══════════════════════════════════════════════════════
-// NAME & BIRTHDAY
-// ══════════════════════════════════════════════════════
-
+// ── AGE CALCULATOR ──
 function calcAgeFromDOB() {
   var dobEl = document.getElementById('dob');
   var ageEl = document.getElementById('age');
@@ -2309,241 +2093,254 @@ function calcAgeFromDOB() {
   var birthDay = parseInt(parts[2]);
   var today = new Date();
   var age = today.getFullYear() - birthYear;
-  if (today.getMonth() < birthMonth || (today.getMonth() === birthMonth && today.getDate() < birthDay)) {
-    age--;
-  }
+  if (today.getMonth() < birthMonth || (today.getMonth() === birthMonth && today.getDate() < birthDay)) age--;
   if (age >= 0 && age < 120) {
     if (ageEl) ageEl.value = age;
     var nextBirth = new Date(today.getFullYear(), birthMonth, birthDay);
     if (nextBirth <= today) nextBirth.setFullYear(today.getFullYear() + 1);
-    var daysLeft = Math.ceil((nextBirth - today) / (1000 * 60 * 60 * 24));
-    if (ageDisplay) ageDisplay.textContent = 'You are ' + age + ' years old. Next birthday in ' + daysLeft + ' days';
+    var daysLeft = Math.ceil((nextBirth - today) / (1000*60*60*24));
+    if (ageDisplay) ageDisplay.textContent = 'You are ' + age + ' years old. Next birthday in ' + daysLeft + ' days.';
   }
   updateGreeting();
   recalc();
 }
 
 function updateGreeting() {
-  const name = (document.getElementById('firstName')?.value || '').trim();
-  const dob  = document.getElementById('dob')?.value;
-  const greetEl = document.getElementById('profileGreeting');
-  const subEl   = document.getElementById('profileSub');
-  // Update sidebar name
-  const sbName = document.getElementById('sb-name');
+  var name = (document.getElementById('firstName')?.value || '').trim();
+  var greetEl = document.getElementById('greeting');
+  var subEl = document.getElementById('greetingSub');
+  if (greetEl) greetEl.textContent = name ? 'Welcome, ' + name + ' 👋' : "Let's get to know you";
+  if (subEl) subEl.textContent = name ? "Here's your personalized MyYolk retirement plan, " + name + "." : 'A few basics to build your MyYolk retirement plan.';
+}
 
-  let hour = new Date().getHours();
-  let timeGreet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+// ── MAIN RECALC ──
+function recalc() {
+  // Income
+  var incomeType = document.getElementById('incomeType')?.value || 'salary';
+  var sal = getVal('salary');
+  var bon = getVal('bonus');
+  state.salary = sal;
+  state.income = sal + bon;
+  state.bonusRetention = getVal('bonusRetention');
 
-  if (name) {
-    if (greetEl) greetEl.textContent = `${timeGreet}, ${name} 👋`;
-    if (subEl)   subEl.textContent = `Here's your personalized retirement plan, ${name}.`;
-    if (sbName)  sbName.textContent = name;
-    // Personalize page titles elsewhere
-    document.querySelectorAll('.personalized-name').forEach(el => el.textContent = name + "'s");
-  } else {
-    if (greetEl) greetEl.textContent = "Let's get to know you";
-    if (subEl)   subEl.textContent = 'A few basics to build your MyYolk retirement plan.';
-    if (sbName)  sbName.textContent = '—';
-    document.querySelectorAll('.personalized-name').forEach(el => el.textContent = 'Your');
+  // Spouse income
+  var isCouple = document.getElementById('planCouple')?.checked;
+  state.spouseIncome = isCouple ? (getVal('spouseSalary') + getVal('spouseBonus')) : 0;
+  state.householdIncome = state.income + state.spouseIncome;
+
+  // Pay frequency
+  var freq = document.getElementById('payFreq')?.value || 'biweekly';
+  var periods = {biweekly:26, semimonthly:24, monthly:12, weekly:52}[freq] || 26;
+  fmtEl('totalIncome', fmt(state.householdIncome || state.income));
+  fmtEl('monthlyIncome', fmt((state.householdIncome || state.income)/12));
+  fmtEl('paycheckIncome', fmt(state.income/periods));
+
+  // Accounts
+  var bal401k = getVal('bal401k');
+  var balRoth = getVal('balRoth401');
+  var balRothIRA = getVal('balRothIRA');
+  var balTaxable = getVal('balTaxable');
+  var balHSA = getVal('balHSA');
+  var balESPP = getVal('balESPP');
+  var balCash = getVal('balCash');
+  var totalBal = bal401k + balRoth + balRothIRA + balTaxable + balHSA + balESPP;
+
+  // Add spouse accounts
+  if (isCouple) {
+    totalBal += getVal('spouseBal401k') + getVal('spouseBalRoth401') + getVal('spouseBalRothIRA') + getVal('spouseBalTaxable') + getVal('spouseBalHSA');
   }
 
-  // Set DOB max to today
-  const dobEl = document.getElementById('dob');
-  if (dobEl && !dobEl.max) {
-    const today = new Date().toISOString().split('T')[0];
-    dobEl.max = today;
+  // Contributions
+  var contrib = getVal('contrib401k')/100;
+  var contribRoth = getVal('contribRoth401')/100;
+  var empMatch = getVal('empMatch')/100;
+  var matchCap = getVal('matchCap')/100;
+  var annualContrib = state.salary * (contrib + contribRoth);
+  var matchAmt = state.salary * Math.min(contrib, matchCap || empMatch) * empMatch;
+  var totalAnnualContrib = annualContrib + matchAmt;
+  if (isCouple) {
+    var spouseContrib = getVal('spouseContrib401k')/100 + getVal('spouseContribRoth401')/100;
+    totalAnnualContrib += getVal('spouseSalary') * spouseContrib;
   }
-}
 
-// ══════════════════════════════════════════════════════
-// SOCIAL SECURITY
-// ══════════════════════════════════════════════════════
+  // Projections
+  var currentAge = getVal('age', 30);
+  var retireAge = getVal('retireAge', 65);
+  var lifeExp = getVal('lifeExp', 85);
+  var rorChoice = document.getElementById('rorChoice')?.value || 'expected';
+  var rorMap = {conservative:0.05, expected:0.07, aggressive:0.09};
+  var ror = rorChoice === 'custom' ? getVal('customROR')/100 : (rorMap[rorChoice] || 0.07);
+  state.retireAge = retireAge;
+  state.lifeExp = lifeExp;
+  state.rorPct = ror * 100;
 
-let ssMethod = 'upload';
-let ssValues = { ss62: 0, ss67: 0, ss70: 0 };
-
-function switchSSMethod(method) {
-  ssMethod = method;
-  ['upload','manual','estimate'].forEach(m => {
-    document.getElementById('ss-method-' + m).style.display = m === method ? 'block' : 'none';
-    const btn = document.getElementById('ssBtn-' + m);
-    if (btn) {
-      btn.style.background = m === method ? 'var(--sage)' : 'var(--warm-white)';
-      btn.style.color = m === method ? '#fff' : 'var(--mid)';
-    }
-  });
-  if (method === 'estimate') estimateSS();
-}
-
-function ssManualUpdate() {
-  const v62 = parseFloat(document.getElementById('ss62')?.value) || 0;
-  const v67 = parseFloat(document.getElementById('ss67')?.value) || 0;
-  const v70 = parseFloat(document.getElementById('ss70')?.value) || 0;
-  ssValues.ss62 = v62; ssValues.ss67 = v67; ssValues.ss70 = v70;
-  updateSSDisplay();
-}
-
-function updateSSDisplay() {
-  const s = ssValues;
-  const hasData = s.ss62 > 0 || s.ss67 > 0 || s.ss70 > 0;
-  const row = document.getElementById('ssSummaryRow');
-  if (row) row.style.display = hasData ? 'flex' : 'none';
-  setEl('ss-disp62', s.ss62 > 0 ? fmt(s.ss62).replace('$','$') : '—');
-  setEl('ss-disp67', s.ss67 > 0 ? fmt(s.ss67).replace('$','$') : '—');
-  setEl('ss-disp70', s.ss70 > 0 ? fmt(s.ss70).replace('$','$') : '—');
-  recalc();
-}
-
-function clearSS() {
-  ssValues = { ss62: 0, ss67: 0, ss70: 0 };
-  ['ss62','ss67','ss70'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  updateSSDisplay();
-}
-
-// Override getSS to use ssValues centrally
-function getSS(retireAge) {
-  // First try manual input fields (if visible)
-  const manual62 = parseFloat(document.getElementById('ss62')?.value) || 0;
-  const manual67 = parseFloat(document.getElementById('ss67')?.value) || 0;
-  const manual70 = parseFloat(document.getElementById('ss70')?.value) || 0;
-  // Merge: explicit manual overrides ssValues
-  const v62 = manual62 || ssValues.ss62;
-  const v67 = manual67 || ssValues.ss67;
-  const v70 = manual70 || ssValues.ss70;
-  if (retireAge <= 62) return v62 * 12;
-  if (retireAge <= 67) return v67 * 12;
-  return v70 * 12;
-}
-
-// ── SSA Statement Upload ──
-async function handleSSUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  document.getElementById('ssUploadLoading').style.display = 'block';
-  document.getElementById('ssUploadResult').classList.remove('show');
-
-  const base64 = await new Promise(res => {
-    const r = new FileReader();
-    r.onload = () => res(r.result.split(',')[1]);
-    r.readAsDataURL(file);
-  });
-
-  const isPDF = file.type === 'application/pdf';
-  const mediaType = isPDF ? 'application/pdf' : file.type;
-
-  const prompt = `This is a Social Security Administration (SSA) Social Security Statement. Extract the estimated monthly retirement benefit amounts and respond ONLY with a JSON object:
-{
-  "ss62": <estimated monthly benefit if claiming at age 62, as a number, 0 if not found>,
-  "ss67": <estimated monthly benefit if claiming at full retirement age (around 66-67), as a number, 0 if not found>,
-  "ss70": <estimated monthly benefit if claiming at age 70, as a number, 0 if not found>,
-  "fullRetirementAge": <the person's full retirement age shown on the statement, e.g. 67, 0 if not found>,
-  "currentEarnings": <most recent year earnings shown, 0 if not found>,
-  "notes": "<brief note about what you found>"
-}
-Look for a table or section labeled "Retirement Benefits" or "Your Estimated Benefits". Do not include any text outside the JSON.`;
-
-  try {
-    const contentItem = isPDF
-      ? { type: 'document', source: { type: 'base64', media_type: mediaType, data: base64 } }
-      : { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } };
-
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: [contentItem, { type: 'text', text: prompt }] }]
-      })
-    });
-
-    const data = await resp.json();
-    const text = data.content?.map(c => c.text || '').join('') || '';
-    let parsed;
-    try { parsed = JSON.parse(text.replace(/```json|```/g, '').trim()); } catch { parsed = null; }
-
-    document.getElementById('ssUploadLoading').style.display = 'none';
-
-    if (parsed && (parsed.ss62 > 0 || parsed.ss67 > 0 || parsed.ss70 > 0)) {
-      ssValues.ss62 = parsed.ss62 || 0;
-      ssValues.ss67 = parsed.ss67 || 0;
-      ssValues.ss70 = parsed.ss70 || 0;
-      document.getElementById('ssUploadStatus').textContent = '✅ SSA Statement read successfully!';
-      document.getElementById('ssUploadDetails').textContent =
-        `Found benefits: $${parsed.ss62}/mo at 62 · $${parsed.ss67}/mo at 67 · $${parsed.ss70}/mo at 70. ${parsed.notes || ''}`;
-      document.getElementById('ssUploadResult').classList.add('show');
-      updateSSDisplay();
-    } else {
-      document.getElementById('ssUploadStatus').textContent = "⚠️ Couldn't read benefit amounts";
-      document.getElementById('ssUploadDetails').textContent = 'Try the Manual Entry tab, or make sure you uploaded the correct SSA Statement PDF.';
-      document.getElementById('ssUploadResult').classList.add('show');
-    }
-  } catch(e) {
-    document.getElementById('ssUploadLoading').style.display = 'none';
-    document.getElementById('ssUploadStatus').textContent = '⚠️ Upload error';
-    document.getElementById('ssUploadDetails').textContent = 'Please use Manual Entry instead.';
-    document.getElementById('ssUploadResult').classList.add('show');
+  var yearsToRetire = Math.max(0, retireAge - currentAge);
+  var portfolio = totalBal;
+  for (var y = 0; y < yearsToRetire; y++) {
+    portfolio = portfolio * (1 + ror) + totalAnnualContrib;
   }
+  state.portfolioAtRetirement = portfolio;
+
+  fmtEl('portfolioAtRetire', fmt(portfolio));
+  fmtEl('safeWithdrawal', fmt(portfolio * 0.04 / 12));
+
+  // SS estimate
+  estimateSS();
+  updateReadiness();
+  updateSummary();
 }
 
-// ── SS Estimator ──
+// ── SS ESTIMATE ──
 function estimateSS() {
-  const salary = parseFloat(document.getElementById('salary')?.value)
-              || parseFloat(document.getElementById('ssAvgIncome')?.value) || 0;
-  const avgIncome = parseFloat(document.getElementById('ssAvgIncome')?.value) || salary;
-  const yearsWorked = parseFloat(document.getElementById('ssYearsWorked')?.value) || 30;
-
-  if (!avgIncome || !yearsWorked) {
-    setEl('est-ss62', '—'); setEl('est-ss67', '—'); setEl('est-ss70', '—');
-    return;
+  var yrs = getVal('ssYearsWorked', 30);
+  var hintEl = document.getElementById('ssYearsHint');
+  if (hintEl) {
+    if (yrs < 35) {
+      hintEl.textContent = '⚠️ Less than 35 years — ' + (35-yrs) + ' zero-earning years will reduce your SS benefit';
+      hintEl.style.display = 'block';
+    } else {
+      hintEl.textContent = '';
+    }
   }
-
-  // Simplified AIME-based estimation (rough but directionally correct)
-  // SSA uses top 35 years. We pad with zeros if fewer years.
-  const aime = (avgIncome * Math.min(yearsWorked, 35)) / (35 * 12);
-
-  // 2024 bend points: 90% of first $1,174, 32% of $1,174–$7,078, 15% above
-  let pia = 0;
-  if (aime <= 1174)       pia = aime * 0.90;
-  else if (aime <= 7078)  pia = 1174 * 0.90 + (aime - 1174) * 0.32;
-  else                    pia = 1174 * 0.90 + (7078 - 1174) * 0.32 + (aime - 7078) * 0.15;
-
-  // FRA = 67 for born 1960+. Age 62 = 70% of PIA. Age 70 = 124% of PIA
-  const at67 = Math.round(pia);
-  const at62 = Math.round(pia * 0.70);
-  const at70 = Math.round(pia * 1.24);
-
-  setEl('est-ss62', '$' + at62.toLocaleString());
-  setEl('est-ss67', '$' + at67.toLocaleString());
-  setEl('est-ss70', '$' + at70.toLocaleString());
-
-  // Push into ssValues so recalc can use them
-  ssValues.ss62 = at62;
-  ssValues.ss67 = at67;
-  ssValues.ss70 = at70;
-  updateSSDisplay();
+  var manual = getVal('ssManual');
+  if (manual > 0) { state.ssMonthly = manual; fmtEl('ssEstimate', fmt(manual) + '/mo'); return; }
+  var avgIncome = state.salary;
+  if (!avgIncome) { fmtEl('ssEstimate', '—'); return; }
+  var aime = (avgIncome * Math.min(yrs,35)) / (35*12);
+  var pia = 0;
+  if (aime <= 1115) pia = aime * 0.9;
+  else if (aime <= 6721) pia = 1003.5 + (aime-1115)*0.32;
+  else pia = 2978.42 + (aime-6721)*0.15;
+  var ssAge = getVal('ssAge', 67);
+  var adjFactor = ssAge < 67 ? (1 - (67-ssAge)*0.067) : (ssAge > 67 ? (1 + (ssAge-67)*0.08) : 1);
+  state.ssMonthly = pia * adjFactor;
+  fmtEl('ssEstimate', fmt(state.ssMonthly) + '/mo');
 }
 
-// Init DOB max
-(function() {
-  const dobEl = document.getElementById('dob');
-  if (dobEl) dobEl.max = new Date().toISOString().split('T')[0];
-  updateGreeting();
-})();
+// ── READINESS ──
+function updateReadiness() {
+  var portfolio = state.portfolioAtRetirement;
+  var currentAge = getVal('age',30);
+  var retireAge = getVal('retireAge',65);
+  var lifeExp = getVal('lifeExp',85);
+  var retireYears = Math.max(1, lifeExp - retireAge);
 
+  var monthlyExpenses = getVal('totalExpenses', 3000);
+  var monthlyNeeded = monthlyExpenses * 12 * retireYears;
+  var ssTotal = state.ssMonthly * 12 * retireYears;
+  var needed = Math.max(0, monthlyNeeded - ssTotal);
+  var score = needed > 0 ? Math.min(100, Math.round((portfolio/needed)*100)) : 100;
 
-// Init
-recalc();
+  fmtEl('portfolioAtRetire', fmt(portfolio));
+  fmtEl('safeWithdrawal', fmt(portfolio*0.04/12));
+  var scoreEl = document.getElementById('readinessScore');
+  if (scoreEl) {
+    scoreEl.textContent = score;
+    scoreEl.style.color = score >= 80 ? 'var(--sage)' : score >= 50 ? '#c96a3a' : '#c0392b';
+  }
+}
 
-// Age button
-document.addEventListener("DOMContentLoaded", function() {
-  var btn = document.getElementById("calcAgeBtn");
-  if (btn) btn.addEventListener("click", calcAgeFromDOB);
+// ── WHAT IF ──
+function updateWhatIf() {}
+
+// ── EARLY RETIREMENT ──
+function updateEarly() {}
+
+// ── SUMMARY ──
+function updateSummary() {
+  var el = function(id) { return document.getElementById(id); };
+  
+  var bal401k = getVal('bal401k');
+  var balRoth = getVal('balRoth401') + getVal('balRothIRA') + getVal('balTaxable') + getVal('balHSA') + getVal('balESPP');
+  var balCash = getVal('balCash');
+  var retAccounts = bal401k + balRoth;
+  
+  var isCouple = document.getElementById('planCouple')?.checked;
+  if (isCouple) {
+    retAccounts += getVal('spouseBal401k') + getVal('spouseBalRoth401') + getVal('spouseBalRothIRA') + getVal('spouseBalTaxable') + getVal('spouseBalHSA');
+    balCash += getVal('spouseBalCash');
+  }
+
+  var homeValue = getVal('homeValue');
+  var homeMortgage = getVal('homeMortgage');
+  var homeEquity = Math.max(0, homeValue - homeMortgage);
+
+  var invPropEquity = 0;
+  for (var i = 1; i <= propCount; i++) {
+    invPropEquity += Math.max(0, getVal('propValue_'+i) - getVal('propMortgage_'+i));
+  }
+
+  var assetVehicles = getVal('assetVehicles');
+  var personalProp = assetVehicles + getVal('assetJewelry') + getVal('assetCollectibles') + getVal('assetBusiness') + getVal('assetOther');
+
+  var totalAssets = retAccounts + balCash + homeEquity + invPropEquity + personalProp;
+  var totalLiabilities = homeMortgage + getVal('creditCardBalance');
+  var netWorth = totalAssets - totalLiabilities;
+
+  if (el('sumTotalAssets')) el('sumTotalAssets').textContent = fmt(totalAssets);
+  if (el('sumTotalLiabilities')) el('sumTotalLiabilities').textContent = fmt(totalLiabilities);
+  if (el('sumNetWorth')) el('sumNetWorth').textContent = fmt(netWorth);
+  if (el('sumRetAccounts')) el('sumRetAccounts').textContent = fmt(retAccounts);
+  if (el('sumCash')) el('sumCash').textContent = fmt(balCash);
+  if (el('sumHomeEquity')) el('sumHomeEquity').textContent = fmt(homeEquity);
+  if (el('sumInvProps')) el('sumInvProps').textContent = fmt(invPropEquity);
+  if (el('sumVehicles')) el('sumVehicles').textContent = fmt(assetVehicles);
+  if (el('sumPersonalProp')) el('sumPersonalProp').textContent = fmt(personalProp - assetVehicles);
+  if (el('sumPortfolio')) el('sumPortfolio').textContent = fmt(state.portfolioAtRetirement || 0);
+  if (el('sumMonthlyIncome')) el('sumMonthlyIncome').textContent = fmt((state.portfolioAtRetirement || 0)*0.04/12);
+  if (el('sumSS')) el('sumSS').textContent = fmt(state.ssMonthly || 0);
+
+  // Milestones
+  var milestones = [];
+  var currentAge = getVal('age');
+  var retireAge = getVal('retireAge', 65);
+  var currentYear = new Date().getFullYear();
+  if (currentAge > 0) {
+    milestones.push({ year: currentYear + (retireAge-currentAge), label: '🎯 Target retirement at age ' + retireAge });
+    milestones.push({ year: currentYear + (62-currentAge), label: '💰 Social Security eligible at age 62 (reduced benefit)' });
+    milestones.push({ year: currentYear + (65-currentAge), label: '🏥 Medicare eligible at age 65' });
+    milestones.push({ year: currentYear + (67-currentAge), label: '💰 Full Social Security retirement age 67' });
+  }
+  var mortPayoff = getVal('homeMortgagePayoffYear');
+  if (mortPayoff > 0) milestones.push({ year: mortPayoff, label: '🏠 Mortgage paid off — frees up $' + Math.round(getVal('homeMortgagePayment')).toLocaleString() + '/mo' });
+  
+  milestones = milestones.filter(function(m) { return m.year >= currentYear; });
+  milestones.sort(function(a,b) { return a.year - b.year; });
+
+  var mlEl = el('milestoneList');
+  if (mlEl && milestones.length > 0) {
+    mlEl.innerHTML = milestones.map(function(m) {
+      return '<div style="display:flex;gap:1rem;padding:0.6rem 0;border-bottom:1px solid #f0e8d8;align-items:center"><span style="font-weight:700;color:var(--sage);min-width:45px">' + m.year + '</span><span>' + m.label + '</span></div>';
+    }).join('');
+  }
+
+  // Insights
+  var insights = [];
+  if (netWorth > 0) insights.push('💛 Your current net worth is <strong>' + fmt(netWorth) + '</strong>.');
+  if (homeEquity > 0 && totalAssets > 0 && homeEquity/totalAssets > 0.5) insights.push('🏠 Over 50% of your net worth is in home equity. Consider diversifying as you approach retirement.');
+  var stateEl = el('stateRes');
+  if (stateEl && ['PA','FL','TX','NV','WA','AK','SD','TN','WY'].includes(stateEl.value)) {
+    insights.push('🎉 <strong>' + (stateEl.options[stateEl.selectedIndex]?.text || stateEl.value) + '</strong> has favorable retirement income tax treatment — this could save you thousands per year.');
+  }
+  if (getVal('creditCardBalance') > 10000) insights.push('⚠️ You have <strong>' + fmt(getVal('creditCardBalance')) + '</strong> in credit card debt. Paying this off before retirement is a priority.');
+  
+  var insEl = el('summaryInsights');
+  if (insEl) {
+    insEl.innerHTML = insights.length > 0 
+      ? insights.map(function(i) { return '<div style="padding:0.6rem 0.75rem;margin-bottom:0.5rem;background:var(--sage-pale);border-radius:8px;font-size:0.85rem">' + i + '</div>'; }).join('')
+      : '<div style="color:#888;font-style:italic">Fill in more details to see personalized insights</div>';
+  }
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', function() {
+  var calcBtn = document.getElementById('calcAgeBtn');
+  if (calcBtn) calcBtn.addEventListener('click', calcAgeFromDOB);
+  var spouseBtn = document.getElementById('calcSpouseAgeBtn');
+  if (spouseBtn) spouseBtn.addEventListener('click', calcSpouseAge);
+  toggleIncomeType();
+  recalc();
 });
 </script>
-
 </body>
 </html>
