@@ -643,6 +643,18 @@
       <h1 class="page-title" id="profileGreeting">Let's get to know you</h1>
       <p class="page-subtitle" id="profileSub">A few basics to build your MyYolk retirement plan.</p>
 
+      
+      <div class="card" style="background:linear-gradient(135deg,var(--sage-pale),#fff8e8);border:2px solid var(--gold)">
+        <div class="card-title"><span class="dot"></span> Who are you planning for?</div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap">
+          <label style="display:flex;align-items:center;gap:0.5rem;padding:0.75rem 1.5rem;border-radius:12px;cursor:pointer;border:2px solid var(--sage);background:#fff;font-weight:600;font-size:0.9rem">
+            <input type="radio" name="planningFor" id="planIndividual" value="individual" checked onchange="toggleCouple()"> Just Me
+          </label>
+          <label style="display:flex;align-items:center;gap:0.5rem;padding:0.75rem 1.5rem;border-radius:12px;cursor:pointer;border:2px solid #ddd;background:#fff;font-weight:600;font-size:0.9rem">
+            <input type="radio" name="planningFor" id="planCouple" value="couple" onchange="toggleCouple()"> Me + Spouse/Partner
+          </label>
+        </div>
+      </div>
       <div class="card">
         <div class="card-title"><span class="dot"></span> Personal Information</div>
         <div class="form-grid" style="margin-bottom:1rem">
