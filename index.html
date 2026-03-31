@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyYolk — Protect the Good Stuff</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --forest: #7a3e00;
+  --sage: #c8860a;
+  --sage-light: #e6a020;
+  --cream: #f7f3ec;
+  --warm: #faf7f2;
+  --clay: #d45f00;
+  --gold: #f0b429;
+  --charcoal: #1a1a1a;
+  --mid: #5a5a5a;
+  --border: #e2ddd8;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--cream);
+  color: var(--charcoal);
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 4rem;
+  background: rgba(247,243,236,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(226,221,216,0.6);
+}
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--forest);
+  letter-spacing: -0.5px;
+}
+.nav-logo span { color: var(--sage); }
+.nav-links { display: flex; gap: 2.5rem; align-items: center; }
+.nav-links a {
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--mid);
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--forest); }
+.nav-cta {
+  background: var(--forest);
+  color: #fff !important;
+  padding: 0.6rem 1.4rem;
+  border-radius: 50px;
+  font-weight: 600 !important;
+  transition: all 0.2s !important;
+}
+.nav-cta:hover { background: var(--sage) !important; transform: translateY(-1px); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 8rem 4rem 4rem;
+  gap: 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74,124,89,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--sage-light);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 6px 16px;
+  border-radius: 50px;
+  margin-bottom: 1.5rem;
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  line-height: 1.08;
+  font-weight: 900;
+  color: var(--forest);
+  margin-bottom: 1.5rem;
+  letter-spacing: -1px;
+}
+.hero-title em {
+  font-style: italic;
+  color: var(--sage);
+}
+
+.hero-sub {
+  font-size: 1.1rem;
+  color: var(--mid);
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+  max-width: 480px;
+  font-weight: 400;
+}
+
+.hero-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+
+.btn-primary {
+  background: var(--forest);
+  color: #fff;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(30,61,47,0.25);
+}
+.btn-primary:hover { background: var(--sage); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(30,61,47,0.3); }
+
+.btn-secondary {
+  color: var(--forest);
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 2px solid var(--sage-light);
+  padding-bottom: 2px;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { color: var(--sage); border-color: var(--sage); }
+
+.hero-trust {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.hero-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--mid);
+  font-weight: 500;
+}
+.hero-trust-item span { font-size: 1rem; }
+
+/* ── HERO VISUAL ── */
+.hero-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-mockup {
+  background: #fff;
+  border-radius: 24px;
+  padding: 1.75rem;
+  box-shadow: 0 32px 80px rgba(30,61,47,0.15), 0 0 0 1px rgba(30,61,47,0.06);
+  width: 100%;
+  max-width: 380px;
+  position: relative;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+.mockup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.mockup-greeting {
+  font-size: 0.78rem;
+  color: var(--mid);
+  font-weight: 500;
+}
+.mockup-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--forest);
+}
+.mockup-badge {
+  background: var(--sage-light);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mockup-portfolio {
+  background: var(--forest);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+  color: #fff;
+}
+.mockup-port-label { font-size: 0.72rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+.mockup-port-value { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; }
+.mockup-port-sub { font-size: 0.75rem; opacity: 0.6; margin-top: 2px; }
+.mockup-port-change { 
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(122,179,138,0.3); color: var(--sage-light);
+  font-size: 0.72rem; font-weight: 700; padding: 3px 8px; border-radius: 20px; margin-top: 8px;
+}
+
+.mockup-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.mockup-stat {
+  background: var(--warm);
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border);
+}
+.mockup-stat-label { font-size: 0.68rem; color: var(--mid); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.mockup-stat-value { font-size: 1rem; font-weight: 700; color: var(--forest); }
+
+.mockup-bar-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--mid);
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+.mockup-bar-track { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.mockup-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--sage), var(--sage-light)); width: 73%; }
+
+.mockup-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #e8f5ec;
+  color: var(--sage);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-top: 0.75rem;
+}
+
+/* ── FLOATING CARDS ── */
+.float-card {
+  position: absolute;
+  background: #fff;
+  border-radius: 14px;
+  padding: 0.85rem 1.1rem;
+  box-shadow: 0 8px 32px rgba(30,61,47,0.12);
+  border: 1px solid rgba(226,221,216,0.5);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+.float-card-1 { top: 10%; right: -8%; animation: float2 5s ease-in-out infinite; }
+.float-card-2 { bottom: 15%; left: -12%; animation: float3 7s ease-in-out infinite; }
+@keyframes float2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes float3 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+.float-card-label { color: var(--mid); font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.float-card-value { font-size: 1rem; font-weight: 700; color: var(--forest); margin-top: 2px; }
+.float-card-emoji { font-size: 1.2rem; margin-bottom: 4px; display: block; }
+
+/* ── SECTIONS ── */
+section { padding: 6rem 4rem; }
+
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--sage);
+  margin-bottom: 1rem;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 900;
+  color: var(--forest);
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  margin-bottom: 1rem;
+}
+.section-sub {
+  color: var(--mid);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  max-width: 560px;
+}
+
+/* ── HOW IT WORKS ── */
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 4rem;
+}
+.how-card {
+  position: relative;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 16px rgba(30,61,47,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.how-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(30,61,47,0.1); }
+.how-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--border);
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+.how-icon { font-size: 1.75rem; margin-bottom: 1rem; display: block; }
+.how-title { font-weight: 700; font-size: 1.05rem; color: var(--forest); margin-bottom: 0.5rem; }
+.how-desc { font-size: 0.88rem; color: var(--mid); line-height: 1.65; }
+
+/* ── FEATURES ── */
+.features-section { background: var(--forest); color: #fff; }
+.features-section .section-label { color: var(--sage-light); }
+.features-section .section-title { color: #fff; }
+.features-section .section-sub { color: rgba(255,255,255,0.65); }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 4rem;
+}
+.feature-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 1.75rem;
+  transition: background 0.2s;
+}
+.feature-card:hover { background: rgba(255,255,255,0.1); }
+.feature-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+.feature-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; color: #fff; }
+.feature-desc { font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.65; }
+
+/* ── PRICING ── */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 4rem;
+  align-items: start;
+}
+.pricing-card {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 24px;
+  padding: 2.25rem 2rem;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.pricing-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(30,61,47,0.1); }
+.pricing-card.featured {
+  background: var(--forest);
+  border-color: var(--forest);
+  color: #fff;
+  transform: scale(1.03);
+  box-shadow: 0 20px 60px rgba(30,61,47,0.25);
+}
+.pricing-card.featured:hover { transform: scale(1.03) translateY(-4px); }
+
+.pricing-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--gold);
+  color: var(--charcoal);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 5px 16px;
+  border-radius: 50px;
+  white-space: nowrap;
+}
+.pricing-plan { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--sage); margin-bottom: 0.5rem; }
+.pricing-card.featured .pricing-plan { color: var(--sage-light); }
+.pricing-name { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--forest); margin-bottom: 1rem; }
+.pricing-card.featured .pricing-name { color: #fff; }
+.pricing-price { display: flex; align-items: baseline; gap: 4px; margin-bottom: 0.35rem; }
+.pricing-amount { font-family: 'Playfair Display', serif; font-size: 2.75rem; font-weight: 900; color: var(--forest); }
+.pricing-card.featured .pricing-amount { color: #fff; }
+.pricing-per { font-size: 0.85rem; color: var(--mid); }
+.pricing-card.featured .pricing-per { color: rgba(255,255,255,0.6); }
+.pricing-annual { font-size: 0.78rem; color: var(--sage); font-weight: 600; margin-bottom: 1.5rem; }
+.pricing-card.featured .pricing-annual { color: var(--sage-light); }
+.pricing-divider { height: 1px; background: var(--border); margin: 1.25rem 0; }
+.pricing-card.featured .pricing-divider { background: rgba(255,255,255,0.15); }
+.pricing-features { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 2rem; }
+.pricing-features li { font-size: 0.85rem; color: var(--mid); display: flex; align-items: flex-start; gap: 8px; line-height: 1.4; }
+.pricing-card.featured .pricing-features li { color: rgba(255,255,255,0.75); }
+.pricing-features li::before { content: '✓'; color: var(--sage); font-weight: 700; flex-shrink: 0; }
+.pricing-card.featured .pricing-features li::before { color: var(--sage-light); }
+.pricing-features li.muted { opacity: 0.4; }
+.pricing-features li.muted::before { content: '—'; color: var(--mid); }
+.pricing-btn {
+  display: block;
+  width: 100%;
+  padding: 0.85rem;
+  border-radius: 50px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: none;
+}
+.pricing-btn-outline {
+  background: transparent;
+  border: 2px solid var(--border);
+  color: var(--forest);
+}
+.pricing-btn-outline:hover { border-color: var(--sage); color: var(--sage); }
+.pricing-btn-primary {
+  background: #fff;
+  color: var(--forest);
+}
+.pricing-btn-primary:hover { background: var(--sage-light); color: #fff; }
+
+/* ── TESTIMONIALS ── */
+.testimonials-section { background: var(--warm); }
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 4rem;
+}
+.testimonial-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 16px rgba(30,61,47,0.04);
+}
+.testimonial-stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 1rem; letter-spacing: 2px; }
+.testimonial-quote { font-size: 0.92rem; line-height: 1.7; color: var(--charcoal); margin-bottom: 1.5rem; font-style: italic; }
+.testimonial-author { display: flex; align-items: center; gap: 10px; }
+.testimonial-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700; color: #fff;
+  flex-shrink: 0;
+}
+.testimonial-name { font-weight: 700; font-size: 0.85rem; color: var(--forest); }
+.testimonial-meta { font-size: 0.75rem; color: var(--mid); }
+
+/* ── CTA ── */
+.cta-section {
+  background: var(--forest);
+  text-align: center;
+  padding: 7rem 4rem;
+}
+.cta-section .section-title { color: #fff; margin: 0 auto 1rem; max-width: 700px; }
+.cta-section .section-sub { color: rgba(255,255,255,0.65); margin: 0 auto 2.5rem; text-align: center; }
+.cta-input-row {
+  display: flex;
+  gap: 0.75rem;
+  max-width: 460px;
+  margin: 0 auto;
+}
+.cta-input {
+  flex: 1;
+  padding: 0.9rem 1.25rem;
+  border-radius: 50px;
+  border: none;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.92rem;
+  outline: none;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.cta-input::placeholder { color: rgba(255,255,255,0.45); }
+.cta-input:focus { background: rgba(255,255,255,0.18); border-color: var(--sage-light); }
+.cta-note { font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-top: 1rem; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--charcoal);
+  color: rgba(255,255,255,0.5);
+  padding: 3rem 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+}
+.footer-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #fff;
+}
+.footer-logo span { color: var(--sage-light); }
+.footer-links { display: flex; gap: 2rem; }
+.footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: #fff; }
+.footer-disclaimer { font-size: 0.72rem; color: rgba(255,255,255,0.3); max-width: 400px; text-align: right; line-height: 1.5; }
+
+/* ── ANIMATIONS ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+@media (max-width: 900px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  .hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 3rem; gap: 3rem; }
+  .hero-visual { order: -1; }
+  section { padding: 4rem 1.5rem; }
+  .how-grid, .features-grid, .pricing-grid, .testimonials-grid { grid-template-columns: 1fr; }
+  .pricing-card.featured { transform: none; }
+  .cta-input-row { flex-direction: column; }
+  footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+  .footer-disclaimer { text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">My<span>Yolk</span></div>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#app" class="nav-cta">Try free →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">🪺 Retirement planning for real life</div>
+    <h1 class="hero-title">Protect<br><em>the good stuff.</em></h1>
+    <p class="hero-sub">MyYolk takes the stress out of retirement planning. Upload your pay stub, enter your accounts, and get a personalized plan in minutes — not hours.</p>
+    <div class="hero-actions">
+      <a href="#app" class="btn-primary">Start for free →</a>
+      <a href="#how" class="btn-secondary">See how it works ↓</a>
+    </div>
+    <div class="hero-trust">
+      <div class="hero-trust-item"><span>🔒</span> Bank-level security</div>
+      <div class="hero-trust-item"><span>📄</span> AI reads your pay stubs</div>
+      <div class="hero-trust-item"><span>⚡</span> Ready in 5 minutes</div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="app-mockup">
+      <div class="mockup-header">
+        <div>
+          <div class="mockup-greeting">Good morning,</div>
+          <div class="mockup-name">Alex 👋</div>
+        </div>
+        <div class="mockup-badge">On Track</div>
+      </div>
+
+      <div class="mockup-portfolio">
+        <div class="mockup-port-label">Projected at retirement</div>
+        <div class="mockup-port-value">$2.4M</div>
+        <div class="mockup-port-sub">At age 65 · 10% growth rate</div>
+        <div class="mockup-port-change">↑ +$48K this year</div>
+      </div>
+
+      <div class="mockup-stats">
+        <div class="mockup-stat">
+          <div class="mockup-stat-label">Current Portfolio</div>
+          <div class="mockup-stat-value">$487K</div>
+        </div>
+        <div class="mockup-stat">
+          <div class="mockup-stat-label">Monthly Savings</div>
+          <div class="mockup-stat-value">$3,200</div>
+        </div>
+        <div class="mockup-stat">
+          <div class="mockup-stat-label">Safe Withdrawal</div>
+          <div class="mockup-stat-value">$96K/yr</div>
+        </div>
+        <div class="mockup-stat">
+          <div class="mockup-stat-label">Readiness</div>
+          <div class="mockup-stat-value">118%</div>
+        </div>
+      </div>
+
+      <div class="mockup-bar-label">
+        <span>Retirement Readiness</span>
+        <span style="color:var(--sage);font-weight:700">73%</span>
+      </div>
+      <div class="mockup-bar-track">
+        <div class="mockup-bar-fill"></div>
+      </div>
+      <div class="mockup-tag">✅ Fully funded at current pace</div>
+    </div>
+
+    <div class="float-card float-card-1">
+      <span class="float-card-emoji">📄</span>
+      <div class="float-card-label">Pay stub read</div>
+      <div class="float-card-value">$124,000 / yr</div>
+    </div>
+
+    <div class="float-card float-card-2">
+      <span class="float-card-emoji">🏛️</span>
+      <div class="float-card-label">SS at 67</div>
+      <div class="float-card-value">$2,340 / mo</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-label reveal">How it works</div>
+  <h2 class="section-title reveal reveal-delay-1">From pay stub to plan<br>in under 5 minutes</h2>
+  <p class="section-sub reveal reveal-delay-2">No spreadsheets. No jargon. Just your numbers, your plan.</p>
+
+  <div class="how-grid">
+    <div class="how-card reveal reveal-delay-1">
+      <div class="how-number">01</div>
+      <span class="how-icon">👤</span>
+      <div class="how-title">Tell us about yourself</div>
+      <div class="how-desc">Enter your name, birthday, and retirement goals. Takes 60 seconds — no account required to start.</div>
+    </div>
+    <div class="how-card reveal reveal-delay-2">
+      <div class="how-number">02</div>
+      <span class="how-icon">📄</span>
+      <div class="how-title">Upload your pay stub</div>
+      <div class="how-desc">Drop in a PDF or image of your pay stub and our AI reads your income, contributions, and employer match automatically.</div>
+    </div>
+    <div class="how-card reveal reveal-delay-3">
+      <div class="how-number">03</div>
+      <span class="how-icon">🏛️</span>
+      <div class="how-title">Add your SSA statement</div>
+      <div class="how-desc">Upload your Social Security statement from ssa.gov and we'll read your benefit estimates at 62, 67, and 70.</div>
+    </div>
+    <div class="how-card reveal reveal-delay-4">
+      <div class="how-number">04</div>
+      <span class="how-icon">🏦</span>
+      <div class="how-title">Enter your balances</div>
+      <div class="how-desc">Add your 401k, Roth IRA, taxable accounts, and savings. We calculate your total portfolio and growth trajectory.</div>
+    </div>
+    <div class="how-card reveal reveal-delay-5">
+      <div class="how-number">05</div>
+      <span class="how-icon">📊</span>
+      <div class="how-title">Get your plan</div>
+      <div class="how-desc">See your 40-year projection, readiness score, spending analysis, and what-if scenarios — all updated live as you type.</div>
+    </div>
+    <div class="how-card reveal reveal-delay-5">
+      <div class="how-number">06</div>
+      <span class="how-icon">💾</span>
+      <div class="how-title">Export and share</div>
+      <div class="how-desc">Download your personalized MyYolk plan as a PDF or Excel workbook to keep, share, or hand to your financial advisor.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="features-section">
+  <div class="section-label reveal">Everything you need</div>
+  <h2 class="section-title reveal reveal-delay-1">The retirement planner<br>your future self deserves</h2>
+  <p class="section-sub reveal reveal-delay-2">Built for real people, not financial advisors. Simple enough for a 25-year-old. Powerful enough for a 55-year-old.</p>
+
+  <div class="features-grid">
+    <div class="feature-card reveal reveal-delay-1">
+      <span class="feature-icon">🤖</span>
+      <div class="feature-title">AI Pay Stub Reader</div>
+      <div class="feature-desc">Drop in your pay stub and watch your income, contributions, and employer match fill in automatically. No manual entry.</div>
+    </div>
+    <div class="feature-card reveal reveal-delay-2">
+      <span class="feature-icon">🏛️</span>
+      <div class="feature-title">SSA Statement Reader</div>
+      <div class="feature-desc">Upload your Social Security statement or let us estimate your benefits from your earnings history. Three methods, always accurate.</div>
+    </div>
+    <div class="feature-card reveal reveal-delay-3">
+      <span class="feature-icon">📈</span>
+      <div class="feature-title">40-Year Projection</div>
+      <div class="feature-desc">Watch every account — 401k, Roth, IRA, taxable, ESPP — compound year by year with live chart visualization.</div>
+    </div>
+    <div class="feature-card reveal reveal-delay-4">
+      <span class="feature-icon">🎯</span>
+      <div class="feature-title">Readiness Score</div>
+      <div class="feature-desc">A clear score showing exactly how covered your retirement spending is. No guessing — just a number and what to do next.</div>
+    </div>
+    <div class="feature-card reveal reveal-delay-5">
+      <span class="feature-icon">🔀</span>
+      <div class="feature-title">What-If Scenarios</div>
+      <div class="feature-desc">Retire at 62 vs 67? Save $500 more a month? See exactly how each decision changes your outcome in real time.</div>
+    </div>
+    <div class="feature-card reveal reveal-delay-5">
+      <span class="feature-icon">📊</span>
+      <div class="feature-title">Budget Analysis</div>
+      <div class="feature-desc">Model how your spending changes in retirement — healthcare goes up, commuting goes down. Smart sliders handle the math.</div>
+    </div>
+    <div class="feature-card reveal reveal-delay-1">
+      <span class="feature-icon">⚡</span>
+      <div class="feature-title">Early Retirement Planner</div>
+      <div class="feature-desc">Model layoffs, early retirement, or career changes. See your runway and portfolio survival across any scenario.</div>
+    </div>
+    <div class="feature-card reveal reveal-delay-2">
+      <span class="feature-icon">💾</span>
+      <div class="feature-title">Excel Export</div>
+      <div class="feature-desc">Download a fully-built Excel workbook with all your projections, formulas intact. A live model you can keep forever.</div>
+    </div>
+    <div class="feature-card reveal reveal-delay-3">
+      <span class="feature-icon">🔒</span>
+      <div class="feature-title">Private & Secure</div>
+      <div class="feature-desc">Your data never leaves your session unless you save it. No selling your information. No ads. Ever.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div style="text-align:center">
+    <div class="section-label reveal" style="display:inline-block">Pricing</div>
+    <h2 class="section-title reveal reveal-delay-1">Simple, honest pricing</h2>
+    <p class="section-sub reveal reveal-delay-2" style="margin: 0 auto">Start free. Upgrade when you're ready. No surprise fees, ever.</p>
+  </div>
+
+  <div class="pricing-grid">
+    <!-- FREE -->
+    <div class="pricing-card reveal reveal-delay-1">
+      <div class="pricing-plan">Starter</div>
+      <div class="pricing-name">Free Forever</div>
+      <div class="pricing-price">
+        <span class="pricing-amount">$0</span>
+        <span class="pricing-per">/month</span>
+      </div>
+      <div class="pricing-annual">&nbsp;</div>
+      <div class="pricing-divider"></div>
+      <ul class="pricing-features">
+        <li>Full 40-year projection</li>
+        <li>Income & contribution calculator</li>
+        <li>Readiness score</li>
+        <li>Budget tracker</li>
+        <li>What-if scenarios</li>
+        <li class="muted">AI pay stub reader</li>
+        <li class="muted">SSA statement reader</li>
+        <li class="muted">Excel export</li>
+        <li class="muted">Early retirement planner</li>
+      </ul>
+      <a href="#app" class="pricing-btn pricing-btn-outline">Get started free</a>
+    </div>
+
+    <!-- PRO -->
+    <div class="pricing-card featured reveal reveal-delay-2">
+      <div class="pricing-badge">Most Popular</div>
+      <div class="pricing-plan">Pro</div>
+      <div class="pricing-name">MyYolk Pro</div>
+      <div class="pricing-price">
+        <span class="pricing-amount">$9</span>
+        <span class="pricing-per">/month</span>
+      </div>
+      <div class="pricing-annual">$79/year — save 27%</div>
+      <div class="pricing-divider"></div>
+      <ul class="pricing-features">
+        <li>Everything in Free</li>
+        <li>AI pay stub reader</li>
+        <li>SSA statement reader</li>
+        <li>Excel export & PDF report</li>
+        <li>Early retirement planner</li>
+        <li>Multiple scenarios saved</li>
+        <li>Priority support</li>
+        <li class="muted">Advisor sharing</li>
+        <li class="muted">Team accounts</li>
+      </ul>
+      <a href="#app" class="pricing-btn pricing-btn-primary">Start free trial →</a>
+    </div>
+
+    <!-- FAMILY -->
+    <div class="pricing-card reveal reveal-delay-3">
+      <div class="pricing-plan">Family</div>
+      <div class="pricing-name">MyYolk Family</div>
+      <div class="pricing-price">
+        <span class="pricing-amount">$19</span>
+        <span class="pricing-per">/month</span>
+      </div>
+      <div class="pricing-annual">$149/year — save 34%</div>
+      <div class="pricing-divider"></div>
+      <ul class="pricing-features">
+        <li>Everything in Pro</li>
+        <li>Up to 5 household members</li>
+        <li>Joint retirement planning</li>
+        <li>Advisor sharing link</li>
+        <li>Couples scenario comparison</li>
+        <li>Dedicated support</li>
+        <li>Early access to new features</li>
+        <li class="muted">&nbsp;</li>
+        <li class="muted">&nbsp;</li>
+      </ul>
+      <a href="#app" class="pricing-btn pricing-btn-outline">Start free trial →</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section">
+  <div style="text-align:center">
+    <div class="section-label reveal" style="display:inline-block">What people are saying</div>
+    <h2 class="section-title reveal reveal-delay-1">Real people. Real plans.</h2>
+  </div>
+
+  <div class="testimonials-grid">
+    <div class="testimonial-card reveal reveal-delay-1">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-quote">"I'm 28 and retirement felt like something I'd deal with 'later.' MyYolk showed me that starting now vs. 35 is literally a million dollar difference. I was shook."</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar" style="background:var(--sage)">JM</div>
+        <div>
+          <div class="testimonial-name">Jamie M.</div>
+          <div class="testimonial-meta">28 · Software Engineer</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal reveal-delay-2">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-quote">"Uploaded my pay stub and it filled everything in automatically. I've tried four other retirement apps and none of them did that. This is the one."</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar" style="background:var(--clay)">RK</div>
+        <div>
+          <div class="testimonial-name">Rachel K.</div>
+          <div class="testimonial-meta">41 · Nurse Practitioner</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal reveal-delay-3">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-quote">"At 54 I thought I was behind. MyYolk showed me I'm actually on track — I just needed to see the numbers clearly. That peace of mind is worth everything."</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar" style="background:var(--forest)">DW</div>
+        <div>
+          <div class="testimonial-name">David W.</div>
+          <div class="testimonial-meta">54 · Operations Manager</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="section-label reveal" style="color:var(--sage-light);display:inline-block">Get started today</div>
+  <h2 class="section-title reveal reveal-delay-1">Your future self<br>will thank you.</h2>
+  <p class="section-sub reveal reveal-delay-2">Join thousands protecting the good stuff. Free to start, no credit card needed.</p>
+  <div class="cta-input-row reveal reveal-delay-3">
+    <input type="email" class="cta-input" placeholder="Enter your email">
+    <a href="#app" class="btn-primary">Get early access →</a>
+  </div>
+  <div class="cta-note reveal reveal-delay-4">No spam. No selling your data. Unsubscribe anytime.</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">My<span>Yolk</span></div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Support</a>
+    <a href="#app">Launch App</a>
+  </div>
+  <div class="footer-disclaimer">MyYolk is not a registered investment advisor. All projections are estimates for planning purposes only. Past performance does not guarantee future results.</div>
+</footer>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

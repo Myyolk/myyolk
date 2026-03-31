@@ -1,0 +1,2549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyYolk — Retirement Planning</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sage: #c8860a;
+    --sage-light: #6a9e78;
+    --sage-pale: #fef3e0;
+    --clay: #d45f00;
+    --cream: #faf7f2;
+    --warm-white: #fff9f4;
+    --charcoal: #2c2c2c;
+    --mid: #6b6b6b;
+    --border: #e2ddd8;
+    --card: #ffffff;
+    --shadow: 0 2px 16px rgba(44,44,44,0.07);
+    --shadow-lg: 0 8px 40px rgba(44,44,44,0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--charcoal);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--sage-light); }
+  .header-badge {
+    background: var(--sage);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ── LAYOUT ── */
+  .app {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: calc(100vh - 64px);
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    background: var(--warm-white);
+    border-right: 1px solid var(--border);
+    padding: 2rem 1.25rem;
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+  }
+  .sidebar-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--mid);
+    margin-bottom: 0.75rem;
+    padding: 0 0.5rem;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.65rem 0.75rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--mid);
+    transition: all 0.15s;
+    margin-bottom: 2px;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+  .nav-item:hover { background: var(--sage-pale); color: var(--sage); }
+  .nav-item.active { background: var(--sage); color: #fff; }
+  .nav-item .icon { font-size: 1.1rem; width: 20px; text-align: center; }
+
+  .sidebar-divider { height: 1px; background: var(--border); margin: 1.25rem 0; }
+
+  /* Quick stats in sidebar */
+  .quick-stat {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.6rem;
+  }
+  .quick-stat-label { font-size: 0.72rem; color: var(--mid); margin-bottom: 2px; font-weight: 500; }
+  .quick-stat-value { font-size: 1.05rem; font-weight: 600; color: var(--charcoal); }
+  .quick-stat-value.positive { color: var(--sage); }
+  .quick-stat-value.warning { color: var(--clay); }
+
+  /* ── MAIN CONTENT ── */
+  main {
+    padding: 2.5rem 2.5rem 4rem;
+    overflow-y: auto;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .page-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--charcoal);
+    margin-bottom: 0.4rem;
+    line-height: 1.2;
+  }
+  .page-subtitle {
+    color: var(--mid);
+    font-size: 0.92rem;
+    margin-bottom: 2rem;
+    font-weight: 400;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--charcoal);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--sage);
+    flex-shrink: 0;
+  }
+
+  /* ── FORM GRID ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+  .form-grid.single { grid-template-columns: 1fr; }
+
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--mid);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .field input, .field select {
+    padding: 0.65rem 0.9rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--charcoal);
+    background: var(--warm-white);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+  }
+  .field input:focus, .field select:focus {
+    border-color: var(--sage);
+    box-shadow: 0 0 0 3px rgba(74,124,89,0.12);
+    background: #fff;
+  }
+  .field .hint { font-size: 0.75rem; color: var(--mid); margin-top: 2px; }
+
+  .field-full { grid-column: 1 / -1; }
+
+  /* ── UPLOAD ZONE ── */
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--warm-white);
+    position: relative;
+  }
+  .upload-zone:hover, .upload-zone.drag-over {
+    border-color: var(--sage);
+    background: var(--sage-pale);
+  }
+  .upload-zone input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .upload-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+  .upload-title { font-weight: 600; font-size: 1rem; margin-bottom: 0.3rem; }
+  .upload-sub { font-size: 0.85rem; color: var(--mid); }
+
+  .upload-result {
+    display: none;
+    background: var(--sage-pale);
+    border: 1.5px solid var(--sage);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+    margin-top: 1rem;
+  }
+  .upload-result.show { display: flex; align-items: flex-start; gap: 12px; }
+  .upload-result-text { font-size: 0.88rem; color: var(--charcoal); }
+  .upload-result-text strong { display: block; margin-bottom: 4px; color: var(--sage); }
+
+  /* ── RESULTS GRID ── */
+  .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+  .result-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    box-shadow: var(--shadow);
+  }
+  .result-card.highlight {
+    background: var(--sage);
+    border-color: var(--sage);
+    color: #fff;
+  }
+  .result-label { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.7; margin-bottom: 6px; }
+  .result-value { font-size: 1.6rem; font-weight: 600; letter-spacing: -0.5px; }
+  .result-sub { font-size: 0.78rem; opacity: 0.7; margin-top: 4px; }
+
+  /* ── PROJECTION TABLE ── */
+  .table-wrap { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th {
+    background: var(--charcoal);
+    color: #fff;
+    padding: 0.7rem 1rem;
+    text-align: right;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+  th:first-child, th:nth-child(2) { text-align: left; }
+  td {
+    padding: 0.6rem 1rem;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+    color: var(--charcoal);
+    white-space: nowrap;
+  }
+  td:first-child, td:nth-child(2) { text-align: left; font-weight: 600; }
+  tr:nth-child(even) td { background: var(--cream); }
+  tr:hover td { background: var(--sage-pale); }
+  .highlight-row td { background: var(--sage-pale) !important; font-weight: 600; color: var(--sage); }
+
+  /* ── CHART BARS ── */
+  .chart-wrap { display: flex; align-items: flex-end; gap: 6px; height: 160px; padding: 0 0 0.5rem; }
+  .bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; height: 100%; justify-content: flex-end; }
+  .bar {
+    width: 100%;
+    border-radius: 4px 4px 0 0;
+    transition: opacity 0.2s;
+    cursor: default;
+    min-height: 2px;
+  }
+  .bar:hover { opacity: 0.8; }
+  .bar-label { font-size: 0.65rem; color: var(--mid); text-align: center; margin-top: 4px; }
+
+  /* ── READINESS METER ── */
+  .meter-wrap { margin: 1rem 0; }
+  .meter-bar {
+    height: 12px;
+    background: var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+  }
+  .meter-fill {
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, var(--clay), var(--sage-light));
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .meter-labels { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--mid); }
+
+  /* ── SCENARIO CARDS ── */
+  .scenario-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .scenario-card {
+    background: var(--warm-white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .scenario-card:hover { border-color: var(--sage); background: var(--sage-pale); }
+  .scenario-card.selected { border-color: var(--sage); background: var(--sage-pale); }
+  .scenario-name { font-weight: 600; margin-bottom: 4px; font-size: 0.9rem; }
+  .scenario-desc { font-size: 0.8rem; color: var(--mid); }
+  .scenario-result { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); font-size: 0.85rem; }
+  .scenario-result .val { font-weight: 700; color: var(--sage); font-size: 1.1rem; }
+
+  /* ── BUDGET ── */
+  .budget-category { margin-bottom: 1.25rem; }
+  .budget-cat-header {
+    font-weight: 600; font-size: 0.85rem;
+    color: var(--mid); text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 0.6rem;
+    padding-bottom: 0.4rem; border-bottom: 1px solid var(--border);
+  }
+  .budget-row {
+    display: grid;
+    grid-template-columns: 1fr 140px 140px;
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  .budget-row label { font-size: 0.88rem; color: var(--charcoal); }
+  .budget-row input {
+    padding: 0.5rem 0.75rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    background: var(--warm-white);
+    transition: border-color 0.15s;
+    text-align: right;
+  }
+  .budget-row input:focus { border-color: var(--sage); background: #fff; }
+  .budget-total {
+    display: grid;
+    grid-template-columns: 1fr 140px 140px;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-top: 2px solid var(--charcoal);
+    font-weight: 700;
+    margin-top: 0.5rem;
+  }
+  .budget-col-headers {
+    display: grid;
+    grid-template-columns: 1fr 140px 140px;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--mid);
+  }
+  .budget-col-headers span:not(:first-child) { text-align: right; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 0.7rem 1.5rem;
+    border-radius: 10px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-primary { background: var(--sage); color: #fff; }
+  .btn-primary:hover { background: var(--sage-light); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(74,124,89,0.3); }
+  .btn-secondary { background: var(--cream); color: var(--charcoal); border: 1.5px solid var(--border); }
+  .btn-secondary:hover { background: var(--sage-pale); border-color: var(--sage); color: var(--sage); }
+  .btn-clay { background: var(--clay); color: #fff; }
+  .btn-clay:hover { opacity: 0.9; }
+
+  .btn-row { display: flex; gap: 0.75rem; margin-top: 1.25rem; flex-wrap: wrap; }
+
+  /* ── ALERT / CALLOUT ── */
+  .callout {
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    display: flex; gap: 10px; align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  .callout.info { background: var(--sage-pale); border-left: 3px solid var(--sage); color: var(--charcoal); }
+  .callout.warn { background: #fef3e8; border-left: 3px solid var(--clay); }
+
+  /* ── LOADING SPINNER ── */
+  .spinner {
+    display: inline-block; width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── PROGRESS STEPS ── */
+  .steps { display: flex; gap: 0; margin-bottom: 2rem; }
+  .step {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    position: relative; font-size: 0.78rem; font-weight: 600;
+    color: var(--mid); text-align: center;
+  }
+  .step::before {
+    content: ''; position: absolute; top: 14px; left: 50%; right: -50%;
+    height: 2px; background: var(--border); z-index: 0;
+  }
+  .step:last-child::before { display: none; }
+  .step-dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--border); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700; margin-bottom: 6px;
+    position: relative; z-index: 1; transition: all 0.2s;
+  }
+  .step.done .step-dot { background: var(--sage); }
+  .step.active .step-dot { background: var(--charcoal); box-shadow: 0 0 0 3px var(--sage-pale); }
+
+  /* ── BUDGET ANALYSIS ── */
+  .spend-compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .spend-card {
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    border: 1.5px solid var(--border);
+  }
+  .spend-card.current  { background: #f0f4ff; border-color: #b0bcf0; }
+  .spend-card.retire   { background: var(--sage-pale); border-color: #9ec4ab; }
+  .spend-card.gap-ok   { background: #f0faf4; border-color: #9ec4ab; }
+  .spend-card.gap-warn { background: #fff7f0; border-color: #f0b88a; }
+  .spend-card.gap-bad  { background: #fff0f0; border-color: #f0a0a0; }
+  .spend-card-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mid); margin-bottom: 6px; }
+  .spend-card-value { font-size: 1.55rem; font-weight: 700; letter-spacing: -0.5px; color: var(--charcoal); }
+  .spend-card-sub   { font-size: 0.78rem; color: var(--mid); margin-top: 4px; }
+
+  .sustainability-bar-wrap { margin: 0.5rem 0 1rem; }
+  .sustainability-bar {
+    height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; margin-bottom: 6px;
+  }
+  .sustainability-fill {
+    height: 100%; border-radius: 5px;
+    transition: width 0.7s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .sust-ok   { background: linear-gradient(90deg, var(--sage), var(--sage-light)); }
+  .sust-warn { background: linear-gradient(90deg, #e8a020, #f0c060); }
+  .sust-bad  { background: linear-gradient(90deg, #d94040, #e87070); }
+
+  .category-breakdown-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+  .cat-bar-item { display: flex; flex-direction: column; gap: 4px; }
+  .cat-bar-label { font-size: 0.78rem; font-weight: 600; color: var(--charcoal); display: flex; justify-content: space-between; }
+  .cat-bar-track { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .cat-bar-fill  { height: 100%; border-radius: 4px; background: var(--sage); transition: width 0.5s; }
+  .cat-bar-pct   { font-size: 0.7rem; color: var(--mid); }
+
+  .insight-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 0.6rem;
+    font-size: 0.88rem;
+  }
+  .insight-row.green { background: var(--sage-pale); border-left: 3px solid var(--sage); }
+  .insight-row.amber { background: #fff7f0; border-left: 3px solid var(--clay); }
+  .insight-row.red   { background: #fff0f0; border-left: 3px solid #d94040; }
+  .insight-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+  .insight-text strong { display: block; font-weight: 600; margin-bottom: 2px; }
+
+  .retire-adj-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.75rem;
+  }
+  .adj-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.6rem 0.9rem;
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.85rem;
+  }
+  .adj-row label { color: var(--charcoal); font-weight: 500; }
+  .adj-row input[type=range] { width: 80px; accent-color: var(--sage); }
+  .adj-row .adj-val { font-weight: 700; color: var(--sage); font-size: 0.9rem; min-width: 40px; text-align: right; }
+
+  .inflation-note {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.78rem; color: var(--mid);
+    background: var(--cream); border: 1px solid var(--border);
+    border-radius: 20px; padding: 3px 12px; margin-top: 0.5rem;
+  }
+
+  /* ── SECTION FADE IN ── */
+  .tab-panel.active { animation: fadeUp 0.25s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    main { padding: 1.5rem; }
+    .form-grid, .form-grid.three { grid-template-columns: 1fr; }
+    .results-grid { grid-template-columns: 1fr 1fr; }
+    .scenario-grid { grid-template-columns: 1fr; }
+  }
+
+  .section-sep { height: 1px; background: var(--border); margin: 1.5rem 0; }
+
+  /* Summary big number */
+  .big-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3.5rem;
+    color: var(--sage);
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+
+  .tag {
+    display: inline-block; padding: 3px 10px;
+    border-radius: 20px; font-size: 0.72rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .tag-green { background: var(--sage-pale); color: var(--sage); }
+  .tag-orange { background: #fef3e8; color: var(--clay); }
+  .tag-gray { background: #f0ede8; color: var(--mid); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">My<span>Yolk</span></div>
+  <div class="header-badge">Protect the Good Stuff</div>
+</header>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-label">Planning Steps</div>
+
+    <button class="nav-item active" onclick="showTab('profile')">
+      <span class="icon">👤</span> My Profile
+    </button>
+    <button class="nav-item" onclick="showTab('income')">
+      <span class="icon">💼</span> Income & Pay
+    </button>
+    <button class="nav-item" onclick="showTab('accounts')">
+      <span class="icon">🏦</span> Accounts & Savings
+    </button>
+    <button class="nav-item" onclick="showTab('budget')">
+      <span class="icon">📊</span> Budget
+    </button>
+    <button class="nav-item" onclick="showTab('projections')">
+      <span class="icon">📈</span> Projections
+    </button>
+    <button class="nav-item" onclick="showTab('readiness')">
+      <span class="icon">🎯</span> Readiness
+    </button>
+    <button class="nav-item" onclick="showTab('whatif')">
+      <span class="icon">🔀</span> What-If Scenarios
+    </button>
+    <button class="nav-item" onclick="showTab('early')">
+      <span class="icon">⚡</span> Early Retirement
+    </button>
+    <button class="nav-item" onclick="showTab('summary')">
+      <span class="icon">✨</span> Summary
+    </button>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-label">Live Snapshot</div>
+    <div class="quick-stat" style="background:var(--charcoal);border-color:var(--charcoal)">
+      <div class="quick-stat-label" style="color:rgba(255,255,255,0.6)">Planning for</div>
+      <div class="quick-stat-value" style="color:#fff;font-family:DM Serif Display,serif;font-size:1.15rem" id="sb-name">—</div>
+    </div>
+
+    <div class="quick-stat">
+      <div class="quick-stat-label">Current Portfolio</div>
+      <div class="quick-stat-value positive" id="sb-portfolio">—</div>
+    </div>
+    <div class="quick-stat">
+      <div class="quick-stat-label">At Retirement (Age <span id="sb-age-label">65</span>)</div>
+      <div class="quick-stat-value positive" id="sb-at-ret">—</div>
+    </div>
+    <div class="quick-stat">
+      <div class="quick-stat-label">Safe Withdrawal / yr</div>
+      <div class="quick-stat-value" id="sb-withdrawal">—</div>
+    </div>
+    <div class="quick-stat">
+      <div class="quick-stat-label">Readiness Ratio</div>
+      <div class="quick-stat-value" id="sb-readiness">—</div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- ══ PROFILE TAB ══ -->
+    <div class="tab-panel active" id="tab-profile">
+      <h1 class="page-title" id="profileGreeting">Let's get to know you</h1>
+      <p class="page-subtitle" id="profileSub">A few basics to build your MyYolk retirement plan.</p>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Personal Information</div>
+        <div class="form-grid" style="margin-bottom:1rem">
+          <div class="field">
+            <label>First Name</label>
+            <input type="text" id="firstName" placeholder="e.g. Alex" oninput="updateGreeting()">
+          </div>
+          <div class="field">
+            <label>Date of Birth</label>
+            <input type="date" id="dob">
+            <button id="calcAgeBtn" style="margin-top:8px;padding:8px 16px;background:var(--sage);color:#fff;border:none;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;">Calculate Age</button>
+            <div class="hint" id="ageDisplay">Enter your birthday then click Calculate Age</div>
+          </div>
+        </div>
+        <div class="form-grid three">
+          <div class="field">
+            <label>Current Age</label>
+            <input type="text" id="age" value="" placeholder="Click Calculate Age above" oninput="recalc();estimateSS()" style="background:var(--sage-pale);color:var(--sage);font-weight:600">
+            <div class="hint">Calculated from date of birth · editable</div>
+          </div>
+          <div class="field">
+            <label>State of Residence</label>
+            <select id="stateRes" onchange="recalc()" style="width:100%">
+<option value="">Select your state...</option>
+              <option value="AL">Alabama</option>
+              <option value="AK">Alaska (No income tax)</option>
+              <option value="AZ">Arizona</option>
+              <option value="AR">Arkansas</option>
+              <option value="CA">California</option>
+              <option value="CO">Colorado</option>
+              <option value="CT">Connecticut</option>
+              <option value="DE">Delaware</option>
+              <option value="FL">Florida (No income tax)</option>
+              <option value="GA">Georgia</option>
+              <option value="HI">Hawaii</option>
+              <option value="ID">Idaho</option>
+              <option value="IL">Illinois</option>
+              <option value="IN">Indiana</option>
+              <option value="IA">Iowa</option>
+              <option value="KS">Kansas</option>
+              <option value="KY">Kentucky</option>
+              <option value="LA">Louisiana</option>
+              <option value="ME">Maine</option>
+              <option value="MD">Maryland</option>
+              <option value="MA">Massachusetts</option>
+              <option value="MI">Michigan</option>
+              <option value="MN">Minnesota</option>
+              <option value="MS">Mississippi</option>
+              <option value="MO">Missouri</option>
+              <option value="MT">Montana</option>
+              <option value="NE">Nebraska</option>
+              <option value="NV">Nevada (No income tax)</option>
+              <option value="NH">New Hampshire</option>
+              <option value="NJ">New Jersey</option>
+              <option value="NM">New Mexico</option>
+              <option value="NY">New York</option>
+              <option value="NC">North Carolina</option>
+              <option value="ND">North Dakota</option>
+              <option value="OH">Ohio</option>
+              <option value="OK">Oklahoma</option>
+              <option value="OR">Oregon</option>
+              <option value="PA">Pennsylvania (No tax on retirement income)</option>
+              <option value="RI">Rhode Island</option>
+              <option value="SC">South Carolina</option>
+              <option value="SD">South Dakota (No income tax)</option>
+              <option value="TN">Tennessee (No income tax)</option>
+              <option value="TX">Texas (No income tax)</option>
+              <option value="UT">Utah</option>
+              <option value="VT">Vermont</option>
+              <option value="VA">Virginia</option>
+              <option value="WA">Washington (No income tax)</option>
+              <option value="WV">West Virginia</option>
+              <option value="WI">Wisconsin</option>
+              <option value="WY">Wyoming (No income tax)</option>
+            </select>
+            <div class="hint">Used to calculate state tax on retirement income</div>
+          </div>
+          <div class="field">
+            <label>Target Retirement Age</label>
+            <input type="number" id="retAge" value="" placeholder="e.g. 65" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Life Expectancy</label>
+            <input type="number" id="lifeExp" value="" placeholder="e.g. 90" oninput="recalc()">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Upload a Pay Stub <span class="tag tag-gray" style="margin-left:auto;font-family:DM Sans">Optional</span></div>
+        <p style="font-size:0.88rem;color:var(--mid);margin-bottom:1rem;">Upload a recent pay stub and we'll read your income and contribution details automatically.</p>
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" accept=".pdf,image/*" onchange="handleUpload(event)">
+          <div class="upload-icon">📄</div>
+          <div class="upload-title">Drop your pay stub here</div>
+          <div class="upload-sub">PDF or image · Your data stays private</div>
+        </div>
+        <div class="upload-result" id="uploadResult">
+          <div style="font-size:1.5rem">✅</div>
+          <div class="upload-result-text">
+            <strong id="uploadStatus">Reading your pay stub…</strong>
+            <span id="uploadDetails"></span>
+          </div>
+        </div>
+        <div id="uploadLoading" style="display:none;margin-top:1rem;">
+          <div class="callout info">
+            <div class="spinner" style="border-color:rgba(74,124,89,0.3);border-top-color:var(--sage)"></div>
+            <span>Reading your pay stub with AI — this takes a few seconds…</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="showTab('income')">Next: Income & Pay →</button>
+      </div>
+    </div>
+
+    <!-- ══ INCOME TAB ══ -->
+    <div class="tab-panel" id="tab-income">
+      <h1 class="page-title">Income & Pay</h1>
+      <p class="page-subtitle">Tell us about your earnings. You can also upload a pay stub on the Profile page to fill this in automatically.</p>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Income Type</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>How are you paid?</label>
+            <select id="incomeType" onchange="toggleIncomeType()">
+              <option value="salary">Salary</option>
+              <option value="hourly">Hourly</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Pay Frequency</label>
+            <select id="payFreq">
+              <option value="biweekly">Biweekly (26x/yr)</option>
+              <option value="semimonthly">Semi-monthly (24x/yr)</option>
+              <option value="monthly">Monthly (12x/yr)</option>
+              <option value="weekly">Weekly (52x/yr)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="salaryCard">
+        <div class="card-title"><span class="dot"></span> Salary Details</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Annual Base Salary ($)</label>
+            <input type="number" id="salary" value="" placeholder="e.g. 120000" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Performance / Annual Bonus ($)</label>
+            <input type="number" id="bonus" value="" placeholder="e.g. 20000" oninput="recalc()">
+            <div style="display:flex;gap:1rem;margin-top:4px;flex-wrap:wrap">
+              <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
+                <input type="checkbox" id="bonus401k" checked onchange="recalc()"> 401k applies
+              </label>
+              <label style="font-size:0.78rem;color:var(--sage);font-weight:500">Recurring · projected forward</label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Retention Bonus ($)</label>
+            <input type="number" id="bonusRetention" value="" placeholder="e.g. 50000" oninput="recalc()">
+            <div style="display:flex;gap:1rem;margin-top:4px;flex-wrap:wrap">
+              <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
+                <input type="checkbox" id="bonusRetention401k" onchange="recalc()"> 401k applies
+              </label>
+              <label style="font-size:0.78rem;color:#c96a3a;font-weight:500">One-time · NOT projected forward</label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Sign-On Bonus ($)</label>
+            <input type="number" id="bonusSignOn" value="" placeholder="e.g. 10000" oninput="recalc()">
+            <div style="display:flex;gap:1rem;margin-top:4px;flex-wrap:wrap">
+              <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
+                <input type="checkbox" id="bonusSignOn401k" onchange="recalc()"> 401k applies
+              </label>
+              <label style="font-size:0.78rem;color:#c96a3a;font-weight:500">One-time · NOT projected forward</label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Profit Sharing / Commission ($)</label>
+            <input type="number" id="bonusProfitShare" value="" placeholder="e.g. 5000" oninput="recalc()">
+            <div style="display:flex;gap:1rem;margin-top:4px;flex-wrap:wrap">
+              <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
+                <input type="checkbox" id="bonusProfitShare401k" checked onchange="recalc()"> 401k applies
+              </label>
+              <label style="font-size:0.78rem;color:var(--sage);font-weight:500">Recurring · projected forward</label>
+            </div>
+          </div>
+          <div class="field">
+            <label>RSU / Stock Vesting ($)</label>
+            <input type="number" id="bonusRSU" value="" placeholder="e.g. 15000" oninput="recalc()">
+            <div style="display:flex;gap:1rem;margin-top:4px;flex-wrap:wrap">
+              <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
+                <input type="checkbox" id="bonusRSU401k" onchange="recalc()"> 401k applies
+              </label>
+              <label style="font-size:0.78rem;color:#c96a3a;font-weight:500">One-time · NOT projected forward</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="hourlyCard" style="display:none">
+        <div class="card-title"><span class="dot"></span> Hourly Details</div>
+        <div class="form-grid three">
+          <div class="field">
+            <label>Hourly Rate ($)</label>
+            <input type="number" id="hourlyRate" value="" placeholder="e.g. 35" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Hours / Week</label>
+            <input type="number" id="hoursWeek" value="40" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Overtime Hours / Week</label>
+            <input type="number" id="otHours" value="0" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Overtime Multiplier</label>
+            <input type="number" id="otMult" value="1.5" step="0.1" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Weeks / Year</label>
+            <input type="number" id="weeksYear" value="52" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Annual Bonus ($)</label>
+            <input type="number" id="bonusHourly" value="0" oninput="recalc()">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Calculated Income</div>
+        <div class="results-grid">
+          <div class="result-card highlight">
+            <div class="result-label">Total Annual Income</div>
+            <div class="result-value" id="totalIncome">$0</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Monthly (Avg)</div>
+            <div class="result-value" id="monthlyIncome">$0</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Per Paycheck</div>
+            <div class="result-value" id="paycheckIncome">$0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="showTab('profile')">← Back</button>
+        <button class="btn btn-primary" onclick="showTab('accounts')">Next: Accounts →</button>
+      </div>
+    </div>
+
+    <!-- ══ ACCOUNTS TAB ══ -->
+    <div class="tab-panel" id="tab-accounts">
+      <h1 class="page-title">Accounts & Savings</h1>
+      <p class="page-subtitle">Enter your current balances and how much you're contributing to each account.</p>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Current Balances</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Traditional 401(k) ($)</label>
+            <input type="number" id="bal401k" value="" placeholder="0" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Roth 401(k) ($)</label>
+            <input type="number" id="balRoth401" value="" placeholder="0" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Roth IRA ($)</label>
+            <input type="number" id="balRothIRA" value="" placeholder="0" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Taxable Investments ($)</label>
+            <input type="number" id="balTaxable" value="" placeholder="0" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>HSA ($)</label>
+            <input type="number" id="balHSA" value="" placeholder="0" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Cash Savings ($)</label>
+            <input type="number" id="balCash" value="" placeholder="0" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>ESPP Balance ($)</label>
+            <input type="number" id="balESPP" value="" placeholder="0" oninput="recalc()">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> 401(k) Contributions</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Your 401(k) Contribution %</label>
+            <input type="number" id="contrib401k" value="" placeholder="e.g. 10" step="0.1" oninput="recalc()">
+            <div class="hint">% of gross pay</div>
+          </div>
+          <div class="field">
+            <label>Employer Match %</label>
+            <input type="number" id="empMatch" value="" placeholder="e.g. 6" step="0.1" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Match Cap %</label>
+            <input type="number" id="matchCap" value="" placeholder="e.g. 5" step="0.1" oninput="recalc()">
+            <div class="hint">Max % employer will match</div>
+          </div>
+          <div class="field">
+            <label>Roth 401(k) %</label>
+            <input type="number" id="contribRoth401" value="" placeholder="e.g. 5" step="0.1" oninput="recalc()">
+          </div>
+        </div>
+        <div class="field" style="margin-top:1rem;max-width:240px">
+          <label>Apply contributions to bonus?</label>
+          <select id="applyBonus">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Other Contributions</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Roth IRA Annual ($)</label>
+            <input type="number" id="contribRothIRA" value="" placeholder="e.g. 7000" oninput="recalc()">
+            <div class="hint">2024 limit: $7,000 (50+: $8,000)</div>
+          </div>
+          <div class="field">
+            <label>Taxable Investing / year ($)</label>
+            <input type="number" id="contribTaxable" value="" placeholder="e.g. 12000" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>ESPP % of Salary</label>
+            <input type="number" id="contribESPP" value="" placeholder="e.g. 5" step="0.1" oninput="recalc()">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Growth Rate</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Expected Annual Return</label>
+            <select id="rorChoice" onchange="toggleCustomROR()">
+              <option value="conservative">Conservative (5%)</option>
+              <option value="expected" selected>Expected (7%)</option>
+              <option value="aggressive">Aggressive (9%)</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+          <div class="field" id="customRORField" style="display:none">
+            <label>Custom Rate (%)</label>
+            <input type="number" id="customROR" value="8" step="0.1" oninput="recalc()">
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="ssCard">
+        <div class="card-title"><span class="dot"></span> Social Security Estimates</div>
+
+        <!-- SS Method Tabs -->
+        <div style="display:flex;gap:0;margin-bottom:1.5rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden">
+          <button class="ss-method-btn active" id="ssBtn-upload" onclick="switchSSMethod('upload')" style="flex:1;padding:0.6rem 0.5rem;border:none;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--sage);color:#fff;transition:all 0.15s">📄 Upload Statement</button>
+          <button class="ss-method-btn" id="ssBtn-manual" onclick="switchSSMethod('manual')" style="flex:1;padding:0.6rem 0.5rem;border:none;border-left:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid);transition:all 0.15s">✏️ Enter Manually</button>
+          <button class="ss-method-btn" id="ssBtn-estimate" onclick="switchSSMethod('estimate')" style="flex:1;padding:0.6rem 0.5rem;border:none;border-left:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid);transition:all 0.15s">🧮 Estimate for Me</button>
+        </div>
+
+        <!-- UPLOAD METHOD -->
+        <div id="ss-method-upload">
+          <div class="callout info" style="margin-bottom:1rem">
+            <span>💡</span>
+            <div>
+              <strong>Get your official statement:</strong> Go to <a href="https://www.ssa.gov/myaccount" target="_blank" style="color:var(--sage);font-weight:600">ssa.gov/myaccount</a> → Sign in → click <em>"View your Social Security Statement"</em> → Download as PDF. Then upload it here.
+            </div>
+          </div>
+          <div class="upload-zone" id="ssUploadZone" style="padding:1.5rem">
+            <input type="file" accept=".pdf,image/*" onchange="handleSSUpload(event)">
+            <div class="upload-icon" style="font-size:2rem;margin-bottom:0.5rem">🏛️</div>
+            <div class="upload-title" style="font-size:0.95rem">Drop your SSA Statement PDF here</div>
+            <div class="upload-sub">We'll read your benefit amounts at 62, 67, and 70 automatically</div>
+          </div>
+          <div id="ssUploadLoading" style="display:none;margin-top:1rem">
+            <div class="callout info">
+              <div class="spinner" style="border-color:rgba(74,124,89,0.3);border-top-color:var(--sage)"></div>
+              <span>Reading your SSA statement — just a moment…</span>
+            </div>
+          </div>
+          <div class="upload-result" id="ssUploadResult" style="margin-top:1rem">
+            <div style="font-size:1.5rem">✅</div>
+            <div class="upload-result-text">
+              <strong id="ssUploadStatus">Reading…</strong>
+              <span id="ssUploadDetails"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- MANUAL METHOD -->
+        <div id="ss-method-manual" style="display:none">
+          <div class="callout info" style="margin-bottom:1rem">
+            <span>📍</span>
+            <div>Find these numbers at <a href="https://www.ssa.gov/myaccount" target="_blank" style="color:var(--sage);font-weight:600">ssa.gov/myaccount</a> under <em>"Retirement Benefits."</em> They show your estimated monthly benefit if you claim at each age.</div>
+          </div>
+          <div class="form-grid three">
+            <div class="field">
+              <label>Monthly Benefit at 62 ($)</label>
+              <input type="number" id="ss62" value="" placeholder="e.g. 1,800" oninput="ssManualUpdate()">
+              <div class="hint">Reduced early benefit</div>
+            </div>
+            <div class="field">
+              <label>Monthly Benefit at 67 ($)</label>
+              <input type="number" id="ss67" value="" placeholder="e.g. 2,500" oninput="recalc()">
+              <div class="hint">Full retirement age</div>
+            </div>
+            <div class="field">
+              <label>Monthly Benefit at 70 ($)</label>
+              <input type="number" id="ss70" value="" placeholder="e.g. 3,200" oninput="recalc()">
+              <div class="hint">Maximum delayed benefit</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ESTIMATE METHOD -->
+        <div id="ss-method-estimate" style="display:none">
+          <div class="callout info" style="margin-bottom:1rem">
+            <span>🧮</span>
+            <div>We'll estimate your benefit using your income and years worked. <strong>This is an approximation</strong> — upload your SSA statement or enter manually for exact figures. SS benefits are also subject to future policy changes.</div>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label>Years Worked (est.)</label>
+              <input type="number" id="ssYearsWorked" value="30" min="1" max="50" oninput="estimateSS()">
+              <div class="hint">Years contributing to Social Security</div>
+            </div>
+            <div class="field">
+              <label>Average Annual Income ($)</label>
+              <input type="number" id="ssAvgIncome" value="" placeholder="e.g. 85000" oninput="estimateSS()">
+              <div class="hint">Lifetime average, or leave blank to use current salary</div>
+            </div>
+          </div>
+          <div style="margin-top:1rem;padding:1rem;background:var(--sage-pale);border-radius:var(--radius-sm);border:1px solid #9ec4ab">
+            <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--sage);margin-bottom:0.75rem">Estimated Monthly Benefits</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;text-align:center">
+              <div>
+                <div style="font-size:1.4rem;font-weight:700;color:var(--charcoal)" id="est-ss62">—</div>
+                <div style="font-size:0.75rem;color:var(--mid);margin-top:2px">At age 62</div>
+              </div>
+              <div>
+                <div style="font-size:1.4rem;font-weight:700;color:var(--sage)" id="est-ss67">—</div>
+                <div style="font-size:0.75rem;color:var(--mid);margin-top:2px">At age 67</div>
+              </div>
+              <div>
+                <div style="font-size:1.4rem;font-weight:700;color:var(--charcoal)" id="est-ss70">—</div>
+                <div style="font-size:0.75rem;color:var(--mid);margin-top:2px">At age 70</div>
+              </div>
+            </div>
+            <div style="margin-top:0.75rem;font-size:0.75rem;color:var(--mid);font-style:italic">⚠️ Estimates only. Future benefits depend on your full earnings record and may change with policy. Upload your SSA statement for accuracy.</div>
+          </div>
+          <input type="hidden" id="ss62" value="">
+          <input type="hidden" id="ss67" value="">
+          <input type="hidden" id="ss70" value="">
+        </div>
+
+        <!-- Shared SS display (shown in all modes once populated) -->
+        <div id="ssSummaryRow" style="display:none;margin-top:1rem;padding:0.85rem 1rem;background:var(--cream);border-radius:var(--radius-sm);border:1px solid var(--border);display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap">
+          <span style="font-size:0.78rem;font-weight:600;color:var(--mid)">LOADED ESTIMATES</span>
+          <span>Age 62: <strong id="ss-disp62">—</strong>/mo</span>
+          <span>Age 67: <strong id="ss-disp67">—</strong>/mo</span>
+          <span>Age 70: <strong id="ss-disp70">—</strong>/mo</span>
+          <button onclick="clearSS()" style="margin-left:auto;font-size:0.78rem;color:var(--clay);background:none;border:none;cursor:pointer;font-family:DM Sans;font-weight:600">✕ Clear</button>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="showTab('income')">← Back</button>
+        <button class="btn btn-primary" onclick="showTab('budget')">Next: Budget →</button>
+      </div>
+    </div>
+
+    <!-- ══ BUDGET TAB ══ -->
+    <div class="tab-panel" id="tab-budget">
+      <h1 class="page-title">Monthly Budget</h1>
+      <p class="page-subtitle">Enter your estimated monthly expenses. This helps calculate how much you'll need in retirement.</p>
+
+      <div class="card">
+        <div class="budget-col-headers">
+          <span>Category</span>
+          <span>Monthly ($)</span>
+          <span>Annual ($)</span>
+        </div>
+
+        <div class="budget-category">
+          <div class="budget-cat-header">🏠 Housing</div>
+          <div class="budget-row"><label>Mortgage / Rent</label><input type="number" class="bud-m" data-key="mortgage" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Property Taxes</label><input type="number" class="bud-m" data-key="propTax" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Home Insurance</label><input type="number" class="bud-m" data-key="homeIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Utilities</label><input type="number" class="bud-m" data-key="utilities" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Internet</label><input type="number" class="bud-m" data-key="internet" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Home Maintenance</label><input type="number" class="bud-m" data-key="homeMaint" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+        </div>
+
+        <div class="budget-category">
+          <div class="budget-cat-header">🚗 Transportation</div>
+          <div class="budget-row"><label>Gas</label><input type="number" class="bud-m" data-key="gas" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Car Insurance</label><input type="number" class="bud-m" data-key="carIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Maintenance / Repairs</label><input type="number" class="bud-m" data-key="carMaint" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+        </div>
+
+        <div class="budget-category">
+          <div class="budget-cat-header">🍽️ Food</div>
+          <div class="budget-row"><label>Groceries</label><input type="number" class="bud-m" data-key="groceries" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Dining Out</label><input type="number" class="bud-m" data-key="dining" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+        </div>
+
+        <div class="budget-category">
+          <div class="budget-cat-header">🏥 Health</div>
+          <div class="budget-row"><label>Medical Premiums</label><input type="number" class="bud-m" data-key="medPrem" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Prescriptions</label><input type="number" class="bud-m" data-key="rx" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Out-of-Pocket</label><input type="number" class="bud-m" data-key="oop" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+        </div>
+
+        <div class="budget-category">
+          <div class="budget-cat-header">🎭 Lifestyle</div>
+          <div class="budget-row"><label>Subscriptions / Streaming</label><input type="number" class="bud-m" data-key="subs" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Entertainment</label><input type="number" class="bud-m" data-key="entertain" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Shopping / Clothing</label><input type="number" class="bud-m" data-key="shopping" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Pets</label><input type="number" class="bud-m" data-key="pets" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Gifts / Family</label><input type="number" class="bud-m" data-key="gifts" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Other</label><input type="number" class="bud-m" data-key="other" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+        </div>
+
+        <div class="budget-total">
+          <span style="font-size:0.95rem">Total Monthly Expenses</span>
+          <span id="budgetMonthlyTotal" style="text-align:right;color:var(--sage)">$0</span>
+          <span id="budgetAnnualTotal" style="text-align:right;color:var(--sage)">$0</span>
+        </div>
+      </div>
+
+      <!-- ── BUDGET ANALYSIS PANEL ── -->
+
+      <!-- Current vs Retirement Spend -->
+      <div class="card" id="budgetAnalysisPanel">
+        <div class="card-title"><span class="dot"></span> Current vs. Retirement Spending</div>
+        <div class="spend-compare-grid">
+          <div class="spend-card current">
+            <div class="spend-card-label">📅 Current Monthly</div>
+            <div class="spend-card-value" id="ba-currentMonthly">$0</div>
+            <div class="spend-card-sub" id="ba-currentAnnual">$0 / year</div>
+          </div>
+          <div class="spend-card retire" id="ba-retireCard">
+            <div class="spend-card-label">🎯 Est. Retirement Monthly</div>
+            <div class="spend-card-value" id="ba-retireMonthly">$0</div>
+            <div class="spend-card-sub" id="ba-retireAnnual">$0 / year · inflation-adjusted</div>
+          </div>
+          <div class="spend-card gap-ok" id="ba-gapCard">
+            <div class="spend-card-label" id="ba-gapLabel">📊 Coverage Gap</div>
+            <div class="spend-card-value" id="ba-gapValue">—</div>
+            <div class="spend-card-sub" id="ba-gapSub">vs. projected withdrawal income</div>
+          </div>
+        </div>
+
+        <!-- Sustainability bar -->
+        <div style="margin-bottom:0.5rem;font-size:0.82rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.5px">Spending Sustainability</div>
+        <div class="sustainability-bar-wrap">
+          <div class="sustainability-bar">
+            <div class="sustainability-fill" id="ba-sustFill" style="width:0%"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--mid)">
+            <span>0%</span><span>Covered at 100%</span><span>150%+</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:0.75rem">
+          <div style="font-size:1.6rem;font-weight:700" id="ba-coveragePct">—</div>
+          <div style="font-size:0.88rem;color:var(--mid)" id="ba-coverageDesc">Enter your budget and account info to see coverage</div>
+        </div>
+        <div class="inflation-note">
+          <span>💡</span>
+          <span>Retirement spending estimated with <strong id="ba-inflRate">3%</strong> annual inflation over <strong id="ba-inflYears">—</strong> years</span>
+        </div>
+      </div>
+
+      <!-- Retirement Lifestyle Adjustments -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Retirement Lifestyle Adjustments
+          <span style="font-size:0.78rem;font-weight:400;color:var(--mid);margin-left:auto">Drag sliders to model how expenses will change</span>
+        </div>
+        <p style="font-size:0.85rem;color:var(--mid);margin-bottom:1rem">Some costs go down in retirement (commuting, work clothes), others go up (healthcare, leisure). Adjust the sliders to reflect your expected lifestyle.</p>
+        <div class="retire-adj-grid">
+          <div class="adj-row">
+            <label>🏠 Housing</label>
+            <input type="range" min="50" max="150" value="90" step="5" oninput="updateAdj(this,'adj-housing')" id="sl-housing">
+            <span class="adj-val" id="adj-housing">90%</span>
+          </div>
+          <div class="adj-row">
+            <label>🚗 Transport</label>
+            <input type="range" min="20" max="120" value="60" step="5" oninput="updateAdj(this,'adj-transport')" id="sl-transport">
+            <span class="adj-val" id="adj-transport">60%</span>
+          </div>
+          <div class="adj-row">
+            <label>🍽️ Food</label>
+            <input type="range" min="50" max="150" value="90" step="5" oninput="updateAdj(this,'adj-food')" id="sl-food">
+            <span class="adj-val" id="adj-food">90%</span>
+          </div>
+          <div class="adj-row">
+            <label>🏥 Healthcare</label>
+            <input type="range" min="100" max="300" value="150" step="10" oninput="updateAdj(this,'adj-health')" id="sl-health">
+            <span class="adj-val" id="adj-health">150%</span>
+          </div>
+          <div class="adj-row">
+            <label>🎭 Lifestyle</label>
+            <input type="range" min="50" max="200" value="120" step="5" oninput="updateAdj(this,'adj-lifestyle')" id="sl-lifestyle">
+            <span class="adj-val" id="adj-lifestyle">120%</span>
+          </div>
+          <div class="adj-row">
+            <label>Inflation Rate</label>
+            <input type="range" min="1" max="6" value="3" step="0.5" oninput="updateAdj(this,'adj-infl')" id="sl-infl">
+            <span class="adj-val" id="adj-infl">3%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Breakdown -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Spending Breakdown by Category</div>
+        <div class="category-breakdown-grid" id="ba-catBreakdown">
+          <div style="color:var(--mid);font-size:0.85rem;grid-column:1/-1">Enter your budget above to see the breakdown.</div>
+        </div>
+      </div>
+
+      <!-- Smart Insights -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Spending Insights</div>
+        <div id="ba-insights">
+          <div style="color:var(--mid);font-size:0.85rem">Fill in your budget and account details to unlock personalized insights.</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="showTab('accounts')">← Back</button>
+        <button class="btn btn-primary" onclick="showTab('projections')">Next: Projections →</button>
+      </div>
+    </div>
+
+    <!-- ══ PROJECTIONS TAB ══ -->
+    <div class="tab-panel" id="tab-projections">
+      <h1 class="page-title">40-Year Projection</h1>
+      <p class="page-subtitle">Watch your portfolio grow year by year based on your inputs.</p>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Portfolio Growth</div>
+        <div class="chart-wrap" id="projChart"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Year-by-Year Breakdown</div>
+        <div class="table-wrap">
+          <table id="projTable">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Age</th>
+                <th>Trad 401k</th>
+                <th>Roth 401k</th>
+                <th>Roth IRA</th>
+                <th>Taxable</th>
+                <th>ESPP</th>
+                <th>Total Portfolio</th>
+              </tr>
+            </thead>
+            <tbody id="projTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="showTab('budget')">← Back</button>
+        <button class="btn btn-primary" onclick="showTab('readiness')">Next: Readiness →</button>
+      </div>
+    </div>
+
+    <!-- ══ READINESS TAB ══ -->
+    <div class="tab-panel" id="tab-readiness">
+      <h1 class="page-title">Retirement Readiness</h1>
+      <p class="page-subtitle">Are you on track? Here's your personalized readiness score.</p>
+
+      <div class="card" style="text-align:center;padding:2.5rem">
+        <div style="font-size:0.85rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--mid);margin-bottom:0.5rem">Projected Portfolio at Retirement</div>
+        <div class="big-number" id="readPortfolio">$—</div>
+        <div style="color:var(--mid);font-size:0.9rem;margin-top:0.5rem">At age <span id="readRetAge">—</span></div>
+      </div>
+
+      <div class="results-grid">
+        <div class="result-card">
+          <div class="result-label">Safe Withdrawal (4%)</div>
+          <div class="result-value" id="readWithdrawal">$—</div>
+          <div class="result-sub">Per year</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Social Security</div>
+          <div class="result-value" id="readSS">$—</div>
+          <div class="result-sub">Annual (at retirement age)</div>
+        </div>
+        <div class="result-card highlight">
+          <div class="result-label">Total Retirement Income</div>
+          <div class="result-value" id="readTotal">$—</div>
+          <div class="result-sub">Per year</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Readiness Score</div>
+        <div class="meter-wrap">
+          <div class="meter-bar"><div class="meter-fill" id="meterFill" style="width:0%"></div></div>
+          <div class="meter-labels"><span>0%</span><span>Fully Funded at 100%</span><span>150%+</span></div>
+        </div>
+        <div style="margin-top:1rem;display:flex;align-items:center;gap:12px">
+          <div style="font-size:2rem;font-weight:700;color:var(--sage)" id="readScore">—</div>
+          <div>
+            <div style="font-weight:600" id="readAssess">—</div>
+            <div style="font-size:0.82rem;color:var(--mid)" id="readAssessSub">Enter your data to see your score</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Annual Spending in Retirement</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Expected Annual Spending ($)</label>
+            <input type="number" id="retSpending" placeholder="e.g. 80000" oninput="recalc()">
+            <div class="hint">Your budget total is <span id="budgetHint">$0/yr</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="showTab('projections')">← Back</button>
+        <button class="btn btn-primary" onclick="showTab('whatif')">Next: What-If →</button>
+      </div>
+    </div>
+
+    <!-- ══ WHAT-IF TAB ══ -->
+    <div class="tab-panel" id="tab-whatif">
+      <h1 class="page-title">What-If Scenarios</h1>
+      <p class="page-subtitle">Explore how different choices affect your retirement outcome.</p>
+
+      <div class="form-grid" style="margin-bottom:1.5rem">
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title"><span class="dot"></span> Adjust the Scenario</div>
+          <div class="field" style="margin-bottom:1rem">
+            <label>Alternate Retirement Age</label>
+            <input type="number" id="wi-retAge" placeholder="e.g. 62" oninput="calcWhatIf()">
+          </div>
+          <div class="field" style="margin-bottom:1rem">
+            <label>Alternate Growth Rate (%)</label>
+            <input type="number" id="wi-ror" placeholder="e.g. 7" step="0.1" oninput="calcWhatIf()">
+          </div>
+          <div class="field" style="margin-bottom:1rem">
+            <label>Extra Annual Savings ($)</label>
+            <input type="number" id="wi-extraSavings" placeholder="e.g. 5000" oninput="calcWhatIf()">
+          </div>
+          <div class="field">
+            <label>Annual Spending in Retirement ($)</label>
+            <input type="number" id="wi-spending" placeholder="e.g. 80000" oninput="calcWhatIf()">
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title"><span class="dot"></span> What-If Results</div>
+          <div style="margin-bottom:1rem">
+            <div style="font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:4px">Projected Portfolio</div>
+            <div style="font-size:1.8rem;font-weight:700;color:var(--sage)" id="wi-portfolio">$—</div>
+          </div>
+          <div style="margin-bottom:1rem">
+            <div style="font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:4px">Safe Withdrawal (4%)</div>
+            <div style="font-size:1.4rem;font-weight:700" id="wi-withdrawal">$—</div>
+          </div>
+          <div style="margin-bottom:1rem">
+            <div style="font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:4px">Readiness Ratio</div>
+            <div style="font-size:1.4rem;font-weight:700;color:var(--clay)" id="wi-ratio">—</div>
+          </div>
+          <div>
+            <div style="font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:4px">Assessment</div>
+            <div style="font-weight:600" id="wi-assess">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Quick Comparisons</div>
+        <div class="scenario-grid" id="scenarioCards"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="showTab('readiness')">← Back</button>
+        <button class="btn btn-primary" onclick="showTab('early')">Next: Early Retirement →</button>
+      </div>
+    </div>
+
+    <!-- ══ EARLY RETIREMENT TAB ══ -->
+    <div class="tab-panel" id="tab-early">
+      <h1 class="page-title">Early Retirement & Layoff</h1>
+      <p class="page-subtitle">What if income stopped earlier than planned? Model the impact.</p>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Scenario Inputs</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Age Income Stops</label>
+            <input type="number" id="er-stopAge" placeholder="e.g. 55" oninput="calcEarly()">
+          </div>
+          <div class="field">
+            <label>Planned Retirement Age</label>
+            <input type="number" id="er-retAge" placeholder="e.g. 65" oninput="calcEarly()">
+          </div>
+          <div class="field">
+            <label>Severance Amount ($)</label>
+            <input type="number" id="er-severance" value="0" oninput="calcEarly()">
+          </div>
+          <div class="field">
+            <label>Unemployment Monthly ($)</label>
+            <input type="number" id="er-unemp" value="0" oninput="calcEarly()">
+          </div>
+          <div class="field">
+            <label>Unemployment Duration (months)</label>
+            <input type="number" id="er-unempMonths" value="6" oninput="calcEarly()">
+          </div>
+          <div class="field">
+            <label>Monthly Budget Post-Layoff ($)</label>
+            <input type="number" id="er-budget" placeholder="e.g. 8000" oninput="calcEarly()">
+          </div>
+        </div>
+      </div>
+
+      <div class="results-grid">
+        <div class="result-card">
+          <div class="result-label">Portfolio When Income Stops</div>
+          <div class="result-value" id="er-portAtStop">$—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Cash Runway</div>
+          <div class="result-value" id="er-runway">— yrs</div>
+          <div class="result-sub">From portfolio + severance</div>
+        </div>
+        <div class="result-card highlight">
+          <div class="result-label">Est. Portfolio at Retirement</div>
+          <div class="result-value" id="er-portAtRet">$—</div>
+          <div class="result-sub">Market growth, no new contributions</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Retirement Outcome</div>
+        <div class="form-grid">
+          <div style="">
+            <div style="font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:4px">Safe Withdrawal (4%)</div>
+            <div style="font-size:1.6rem;font-weight:700;color:var(--sage)" id="er-withdrawal">$—</div>
+          </div>
+          <div>
+            <div style="font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:4px">Assessment</div>
+            <div style="font-size:1.1rem;font-weight:600" id="er-assess">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="showTab('whatif')">← Back</button>
+        <button class="btn btn-primary" onclick="showTab('summary')">Next: Summary →</button>
+      </div>
+    </div>
+
+    <!-- ══ SUMMARY TAB ══ -->
+    <div class="tab-panel" id="tab-summary">
+      <h1 class="page-title">Your Retirement Summary</h1>
+      <p class="page-subtitle">Everything in one place.</p>
+
+      <div class="card" style="padding:2rem 2.5rem">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start">
+          <div>
+            <div style="font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--mid);margin-bottom:8px">Projected Retirement Portfolio</div>
+            <div class="big-number" id="sum-portfolio">$—</div>
+            <div style="color:var(--mid);margin-top:6px;font-size:0.88rem">At age <span id="sum-retAge">—</span> · <span id="sum-yearsLeft">—</span> years from now</div>
+          </div>
+          <div style="padding-top:0.5rem">
+            <div id="sum-tag" class="tag tag-gray" style="margin-bottom:1rem;font-size:0.8rem">—</div>
+            <div style="font-size:0.88rem;color:var(--mid);line-height:1.7" id="sum-narrative">Fill in your information across the tabs to generate your personalized summary.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-grid">
+        <div class="result-card">
+          <div class="result-label">Total Annual Income</div>
+          <div class="result-value" id="sum-income">$—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Annual Contributions</div>
+          <div class="result-value" id="sum-contribs">$—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Growth Rate</div>
+          <div class="result-value" id="sum-ror">—</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Safe Withdrawal</div>
+          <div class="result-value" id="sum-withdrawal">$—</div>
+          <div class="result-sub">per year (4% rule)</div>
+        </div>
+        <div class="result-card">
+          <div class="result-label">Social Security</div>
+          <div class="result-value" id="sum-ss">$—</div>
+          <div class="result-sub">annual</div>
+        </div>
+        <div class="result-card highlight">
+          <div class="result-label">Readiness Ratio</div>
+          <div class="result-value" id="sum-ratio">—</div>
+          <div class="result-sub" id="sum-ratioSub">vs. spending goal</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Current Portfolio Breakdown</div>
+        <div id="sum-breakdown" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0.75rem;margin-top:0.5rem"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="showTab('early')">← Back</button>
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Print / Save Your MyYolk Plan</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════
+let state = {
+  age: 0, retAge: 0, lifeExp: 90,
+  incomeType: 'salary',
+  salary: 0, bonus: 0, payFreq: 'biweekly',
+  hourlyRate: 0, hoursWeek: 40, otHours: 0, otMult: 1.5, weeksYear: 52, bonusHourly: 0,
+  bal401k: 0, balRoth401: 0, balRothIRA: 0, balTaxable: 0, balHSA: 0, balCash: 0, balESPP: 0,
+  contrib401k: 0, contribRoth401: 0, empMatch: 0, matchCap: 0, applyBonus: 'yes',
+  contribRothIRA: 0, contribTaxable: 0, contribESPP: 0,
+  rorChoice: 'expected', customROR: 8,
+  ss62: 0, ss67: 0, ss70: 0,
+  retSpending: 0,
+  budgetMonthly: 0,
+};
+
+// ── NAV ──
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelector(`[onclick="showTab('${name}')"]`).classList.add('active');
+  window.scrollTo(0,0);
+  recalc();
+}
+
+// ── INCOME TYPE TOGGLE ──
+function toggleIncomeType() {
+  const t = document.getElementById('incomeType').value;
+  document.getElementById('salaryCard').style.display = t === 'salary' ? '' : 'none';
+  document.getElementById('hourlyCard').style.display = t === 'hourly' ? '' : 'none';
+  recalc();
+}
+
+function toggleCustomROR() {
+  const v = document.getElementById('rorChoice').value;
+  document.getElementById('customRORField').style.display = v === 'custom' ? '' : 'none';
+  recalc();
+}
+
+// ── BUDGET ──
+function calcBudget(input) {
+  const val = parseFloat(input.value) || 0;
+  const row = input.closest('.budget-row');
+  row.querySelectorAll('.bud-a')[0].value = Math.round(val * 12);
+  updateBudgetTotals();
+  calcBudgetAnalysis();
+  recalc();
+}
+
+function updateBudgetTotals() {
+  let total = 0;
+  document.querySelectorAll('.bud-m').forEach(i => total += parseFloat(i.value) || 0);
+  state.budgetMonthly = total;
+  document.getElementById('budgetMonthlyTotal').textContent = fmt(total);
+  document.getElementById('budgetAnnualTotal').textContent = fmt(total * 12);
+  const hint = document.getElementById('budgetHint');
+  if (hint) hint.textContent = fmt(total * 12) + '/yr';
+}
+
+// ── CORE MATH ──
+function getActiveROR() {
+  const choice = document.getElementById('rorChoice')?.value || 'expected';
+  if (choice === 'conservative') return 0.05;
+  if (choice === 'expected') return 0.07;
+  if (choice === 'aggressive') return 0.09;
+  return (parseFloat(document.getElementById('customROR')?.value) || 8) / 100;
+}
+
+function getTotalIncome() {
+  const t = document.getElementById('incomeType')?.value || 'salary';
+  if (t === 'salary') {
+    const sal = parseFloat(document.getElementById('salary')?.value) || 0;
+    const bon = parseFloat(document.getElementById('bonus')?.value) || 0;
+    return sal + bon;
+  } else {
+    const hr = parseFloat(document.getElementById('hourlyRate')?.value) || 0;
+    const hw = parseFloat(document.getElementById('hoursWeek')?.value) || 40;
+    const ot = parseFloat(document.getElementById('otHours')?.value) || 0;
+    const om = parseFloat(document.getElementById('otMult')?.value) || 1.5;
+    const wy = parseFloat(document.getElementById('weeksYear')?.value) || 52;
+    const bon = parseFloat(document.getElementById('bonusHourly')?.value) || 0;
+    return (hr * hw * wy) + (hr * om * ot * wy) + bon;
+  }
+}
+
+function getContributions() {
+  const income = getTotalIncome();
+  const sal = parseFloat(document.getElementById('salary')?.value) || 0;
+  const bon = parseFloat(document.getElementById('bonus')?.value) || 0;
+  const applyB = document.getElementById('applyBonus')?.value === 'yes';
+  const base = applyB ? income : sal;
+
+  const c401k = (parseFloat(document.getElementById('contrib401k')?.value) || 0) / 100;
+  const cRoth401 = (parseFloat(document.getElementById('contribRoth401')?.value) || 0) / 100;
+  const empM = (parseFloat(document.getElementById('empMatch')?.value) || 0) / 100;
+  const mCap = (parseFloat(document.getElementById('matchCap')?.value) || 0) / 100;
+  const cRothIRA = parseFloat(document.getElementById('contribRothIRA')?.value) || 0;
+  const cTaxable = parseFloat(document.getElementById('contribTaxable')?.value) || 0;
+  const cESPP = (parseFloat(document.getElementById('contribESPP')?.value) || 0) / 100;
+
+  const trad401 = base * c401k;
+  const roth401 = base * cRoth401;
+  const match = base * Math.min(empM, mCap);
+  const rothIRA = cRothIRA;
+  const taxable = cTaxable;
+  const espp = sal * cESPP;
+  const total = trad401 + roth401 + match + rothIRA + taxable + espp;
+
+  return { trad401, roth401, match, rothIRA, taxable, espp, total };
+}
+
+function getCurrentPortfolio() {
+  return (parseFloat(document.getElementById('bal401k')?.value) || 0)
+       + (parseFloat(document.getElementById('balRoth401')?.value) || 0)
+       + (parseFloat(document.getElementById('balRothIRA')?.value) || 0)
+       + (parseFloat(document.getElementById('balTaxable')?.value) || 0)
+       + (parseFloat(document.getElementById('balHSA')?.value) || 0)
+       + (parseFloat(document.getElementById('balCash')?.value) || 0)
+       + (parseFloat(document.getElementById('balESPP')?.value) || 0);
+}
+
+function buildProjections() {
+  const age = parseInt(document.getElementById('age')?.value) || 0;
+  if (!age) return [];
+
+  const ror = getActiveROR();
+  const contribs = getContributions();
+  const sal = parseFloat(document.getElementById('salary')?.value) || getTotalIncome();
+
+  let b401 = parseFloat(document.getElementById('bal401k')?.value) || 0;
+  let bR401 = parseFloat(document.getElementById('balRoth401')?.value) || 0;
+  let bRIRA = parseFloat(document.getElementById('balRothIRA')?.value) || 0;
+  let bTax = parseFloat(document.getElementById('balTaxable')?.value) || 0;
+  let bESPP = parseFloat(document.getElementById('balESPP')?.value) || 0;
+
+  const rows = [];
+  const currentYear = new Date().getFullYear();
+
+  for (let i = 0; i < 40; i++) {
+    const yr = currentYear + i;
+    const a = age + i;
+    const startTotal = b401 + bR401 + bRIRA + bTax + bESPP;
+
+    b401 = (b401 + contribs.trad401 + contribs.match) * (1 + ror);
+    bR401 = (bR401 + contribs.roth401) * (1 + ror);
+    bRIRA = (bRIRA + contribs.rothIRA) * (1 + ror);
+    bTax = (bTax + contribs.taxable) * (1 + ror);
+    bESPP = (bESPP + contribs.espp) * (1 + ror);
+
+    const endTotal = b401 + bR401 + bRIRA + bTax + bESPP;
+    rows.push({ yr, a, b401, bR401, bRIRA, bTax, bESPP, endTotal });
+  }
+  return rows;
+}
+
+function getSS(retireAge) {
+  const ss62 = parseFloat(document.getElementById('ss62')?.value) || 0;
+  const ss67 = parseFloat(document.getElementById('ss67')?.value) || 0;
+  const ss70 = parseFloat(document.getElementById('ss70')?.value) || 0;
+  if (retireAge <= 62) return ss62 * 12;
+  if (retireAge <= 67) return ss67 * 12;
+  return ss70 * 12;
+}
+
+// ── MAIN RECALC ──
+function recalc() {
+  const age = parseInt(document.getElementById('age')?.value) || 0;
+  const retAge = parseInt(document.getElementById('retAge')?.value) || 65;
+  const income = getTotalIncome();
+  const contribs = getContributions();
+  const ror = getActiveROR();
+  const currentPort = getCurrentPortfolio();
+
+  // Income tab
+  const freqMap = { biweekly: 26, semimonthly: 24, monthly: 12, weekly: 52 };
+  const freq = freqMap[document.getElementById('payFreq')?.value] || 26;
+  document.getElementById('totalIncome').textContent = fmt(income);
+  document.getElementById('monthlyIncome').textContent = fmt(income / 12);
+  document.getElementById('paycheckIncome').textContent = fmt(income / freq);
+
+  // Projections
+  const projRows = buildProjections();
+
+  // Find portfolio at retirement
+  const yearsToRet = retAge - age;
+  let portAtRet = 0;
+  if (projRows.length > 0 && yearsToRet > 0 && yearsToRet <= 40) {
+    portAtRet = projRows[yearsToRet - 1]?.endTotal || 0;
+  } else if (yearsToRet <= 0 && projRows.length > 0) {
+    portAtRet = projRows[0].endTotal;
+  }
+
+  const withdrawal4 = portAtRet * 0.04;
+  const ssAnnual = getSS(retAge);
+  const totalRetIncome = withdrawal4 + ssAnnual;
+  const spending = parseFloat(document.getElementById('retSpending')?.value) || (state.budgetMonthly * 12) || 0;
+  const ratio = spending > 0 ? totalRetIncome / spending : 0;
+
+  // Update readiness tab
+  setEl('readPortfolio', fmt(portAtRet));
+  setEl('readRetAge', retAge || '—');
+  setEl('readWithdrawal', fmt(withdrawal4));
+  setEl('readSS', fmt(ssAnnual));
+  setEl('readTotal', fmt(totalRetIncome));
+  setEl('budgetHint', fmt(state.budgetMonthly * 12) + '/yr');
+
+  const scoreText = ratio > 0 ? Math.round(ratio * 100) + '%' : '—';
+  setEl('readScore', scoreText);
+  const meterPct = Math.min(ratio * 100, 150);
+  const meterEl = document.getElementById('meterFill');
+  if (meterEl) meterEl.style.width = meterPct + '%';
+
+  let assessText = '—', assessSub = 'Enter your data to see your score';
+  if (ratio > 0) {
+    if (ratio >= 1.2) { assessText = '✅ Fully on track'; assessSub = "You're in great shape — even with some cushion."; }
+    else if (ratio >= 1.0) { assessText = '✅ On track'; assessSub = "You're meeting your spending goal."; }
+    else if (ratio >= 0.8) { assessText = '⚠️ Getting close'; assessSub = 'A little more savings or a later retirement date could help.'; }
+    else { assessText = '🔴 Needs attention'; assessSub = 'Consider saving more, retiring later, or spending less.'; }
+  }
+  setEl('readAssess', assessText);
+  setEl('readAssessSub', assessSub);
+
+  // Projection table
+  const tbody = document.getElementById('projTableBody');
+  if (tbody) {
+    tbody.innerHTML = '';
+    projRows.forEach(r => {
+      const isRet = r.a === retAge;
+      const tr = document.createElement('tr');
+      if (isRet) tr.classList.add('highlight-row');
+      tr.innerHTML = `<td>${r.yr}</td><td>${r.a}${isRet ? ' 🎯' : ''}</td>
+        <td>${fmt(r.b401)}</td><td>${fmt(r.bR401)}</td>
+        <td>${fmt(r.bRIRA)}</td><td>${fmt(r.bTax)}</td>
+        <td>${fmt(r.bESPP)}</td>
+        <td><strong>${fmt(r.endTotal)}</strong></td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Chart
+  renderChart(projRows, retAge, age);
+
+  // Sidebar
+  setEl('sb-portfolio', fmt(currentPort));
+  setEl('sb-age-label', retAge);
+  setEl('sb-at-ret', fmt(portAtRet));
+  setEl('sb-withdrawal', fmt(withdrawal4));
+  setEl('sb-readiness', ratio > 0 ? Math.round(ratio * 100) + '%' : '—');
+
+  // Summary
+  setEl('sum-portfolio', fmt(portAtRet));
+  setEl('sum-retAge', retAge || '—');
+  setEl('sum-yearsLeft', age && retAge ? Math.max(0, retAge - age) : '—');
+  setEl('sum-income', fmt(income));
+  setEl('sum-contribs', fmt(contribs.total));
+  setEl('sum-ror', Math.round(ror * 100) + '%');
+  setEl('sum-withdrawal', fmt(withdrawal4));
+  setEl('sum-ss', fmt(ssAnnual));
+  setEl('sum-ratio', ratio > 0 ? Math.round(ratio * 100) + '%' : '—');
+
+  const sumTag = document.getElementById('sum-tag');
+  if (sumTag && ratio > 0) {
+    sumTag.className = 'tag ' + (ratio >= 1 ? 'tag-green' : ratio >= 0.8 ? 'tag-orange' : 'tag-gray');
+    sumTag.textContent = ratio >= 1.2 ? 'Fully Funded' : ratio >= 1 ? 'On Track' : ratio >= 0.8 ? 'Close' : 'Needs Review';
+  }
+
+  const narrative = document.getElementById('sum-narrative');
+  if (narrative && age && retAge && income > 0) {
+    narrative.textContent = `Based on your current portfolio of ${fmt(currentPort)}, annual income of ${fmt(income)}, and a ${Math.round(ror*100)}% growth rate, your portfolio is projected to reach ${fmt(portAtRet)} by age ${retAge}. Your safe withdrawal rate would generate ${fmt(withdrawal4)} per year. ${ratio >= 1 ? "You appear to be on track for your retirement goals." : "Consider increasing contributions or adjusting your retirement timeline."}`;
+  }
+
+  // Breakdown
+  const bkd = document.getElementById('sum-breakdown');
+  if (bkd) {
+    const accounts = [
+      ['Traditional 401k', parseFloat(document.getElementById('bal401k')?.value)||0, '#4a7c59'],
+      ['Roth 401k', parseFloat(document.getElementById('balRoth401')?.value)||0, '#6a9e78'],
+      ['Roth IRA', parseFloat(document.getElementById('balRothIRA')?.value)||0, '#c96a3a'],
+      ['Taxable', parseFloat(document.getElementById('balTaxable')?.value)||0, '#8b6e4e'],
+      ['Cash', parseFloat(document.getElementById('balCash')?.value)||0, '#b5a499'],
+      ['ESPP', parseFloat(document.getElementById('balESPP')?.value)||0, '#2c2c2c'],
+    ];
+    bkd.innerHTML = accounts.map(([label, val, color]) => val > 0 ? `
+      <div style="background:var(--warm-white);border:1px solid var(--border);border-radius:10px;padding:1rem;border-left:4px solid ${color}">
+        <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:4px">${label}</div>
+        <div style="font-size:1.1rem;font-weight:700">${fmt(val)}</div>
+      </div>` : '').join('');
+  }
+
+  // What-if auto-populate defaults
+  const wiRetAge = document.getElementById('wi-retAge');
+  if (wiRetAge && !wiRetAge.value && retAge) wiRetAge.value = retAge;
+  const wiRor = document.getElementById('wi-ror');
+  if (wiRor && !wiRor.value) wiRor.value = Math.round(ror * 100);
+  const wiSpend = document.getElementById('wi-spending');
+  if (wiSpend && !wiSpend.value && spending) wiSpend.value = spending;
+  calcWhatIf();
+
+  // Early retirement defaults
+  const erRet = document.getElementById('er-retAge');
+  if (erRet && !erRet.value && retAge) erRet.value = retAge;
+  calcEarly();
+
+  // Budget analysis
+  calcBudgetAnalysis();
+}
+
+function renderChart(projRows, retAge, age) {
+  const chart = document.getElementById('projChart');
+  if (!chart || projRows.length === 0) return;
+  const maxVal = Math.max(...projRows.map(r => r.endTotal), 1);
+  // Sample every 5 years for readability
+  const sampled = projRows.filter((_, i) => i % 5 === 0 || projRows[i]?.a === retAge);
+  chart.innerHTML = sampled.map(r => {
+    const h = Math.max(4, (r.endTotal / maxVal) * 140);
+    const isRet = r.a === retAge;
+    return `<div class="bar-group">
+      <div class="bar" style="height:${h}px;background:${isRet ? 'var(--clay)' : 'var(--sage)'};opacity:${isRet?1:0.75};" title="${r.yr} (Age ${r.a}): ${fmt(r.endTotal)}"></div>
+      <div class="bar-label">${r.a}</div>
+    </div>`;
+  }).join('');
+}
+
+function calcWhatIf() {
+  const age = parseInt(document.getElementById('age')?.value) || 0;
+  const wiRetAge = parseInt(document.getElementById('wi-retAge')?.value) || 65;
+  const wiRor = (parseFloat(document.getElementById('wi-ror')?.value) || 7) / 100;
+  const wiExtra = parseFloat(document.getElementById('wi-extraSavings')?.value) || 0;
+  const wiSpend = parseFloat(document.getElementById('wi-spending')?.value) || 0;
+
+  const currentPort = getCurrentPortfolio();
+  const contribs = getContributions();
+  const totalAnnual = contribs.total + wiExtra;
+  const yrs = Math.max(0, wiRetAge - age);
+  const portAtRet = currentPort * Math.pow(1 + wiRor, yrs) + totalAnnual * ((Math.pow(1 + wiRor, yrs) - 1) / wiRor || yrs);
+  const withdrawal = portAtRet * 0.04;
+  const ratio = wiSpend > 0 ? withdrawal / wiSpend : 0;
+
+  setEl('wi-portfolio', fmt(portAtRet));
+  setEl('wi-withdrawal', fmt(withdrawal));
+  setEl('wi-ratio', ratio > 0 ? Math.round(ratio * 100) + '%' : '—');
+  setEl('wi-assess', ratio >= 1 ? '✅ On Track' : ratio > 0 ? '⚠️ Review Needed' : '—');
+
+  // Quick comparison scenarios
+  const scenarioEl = document.getElementById('scenarioCards');
+  if (scenarioEl && age && currentPort > 0) {
+    const rorBase = getActiveROR();
+    const scenarios = [
+      { name: 'Retire at 62', retA: 62, ror: rorBase, extra: 0 },
+      { name: 'Retire at 65', retA: 65, ror: rorBase, extra: 0 },
+      { name: 'Retire at 67', retA: 67, ror: rorBase, extra: 0 },
+      { name: '1% Higher Return', retA: parseInt(document.getElementById('retAge')?.value)||65, ror: rorBase+0.01, extra: 0 },
+      { name: '+$500/mo Savings', retA: parseInt(document.getElementById('retAge')?.value)||65, ror: rorBase, extra: 6000 },
+      { name: 'Conservative (5%)', retA: parseInt(document.getElementById('retAge')?.value)||65, ror: 0.05, extra: 0 },
+    ];
+    scenarioEl.innerHTML = scenarios.map(s => {
+      const y = Math.max(0, s.retA - age);
+      const tot = contribs.total + s.extra;
+      const p = currentPort * Math.pow(1+s.ror, y) + tot * ((Math.pow(1+s.ror,y)-1)/s.ror||y);
+      const w = p * 0.04;
+      return `<div class="scenario-card">
+        <div class="scenario-name">${s.name}</div>
+        <div class="scenario-result">
+          <div class="val">${fmt(p)}</div>
+          <div style="font-size:0.78rem;color:var(--mid)">4% withdrawal: ${fmt(w)}/yr</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function calcEarly() {
+  const age = parseInt(document.getElementById('age')?.value) || 0;
+  const stopAge = parseInt(document.getElementById('er-stopAge')?.value) || 0;
+  const erRetAge = parseInt(document.getElementById('er-retAge')?.value) || 65;
+  const severance = parseFloat(document.getElementById('er-severance')?.value) || 0;
+  const unemp = parseFloat(document.getElementById('er-unemp')?.value) || 0;
+  const unempMos = parseFloat(document.getElementById('er-unempMonths')?.value) || 0;
+  const erBudget = parseFloat(document.getElementById('er-budget')?.value) || 0;
+  const ror = getActiveROR();
+
+  const projRows = buildProjections();
+  const yearsToStop = stopAge - age;
+  const portAtStop = (yearsToStop > 0 && yearsToStop <= 40)
+    ? (projRows[yearsToStop - 1]?.endTotal || 0)
+    : (yearsToStop <= 0 ? getCurrentPortfolio() : 0);
+
+  const totalCushion = portAtStop + severance + (unemp * unempMos);
+  const annualBurn = erBudget * 12;
+  const runway = annualBurn > 0 ? totalCushion / annualBurn : 0;
+
+  const yearsGrow = Math.max(0, erRetAge - stopAge);
+  const portAtRet = totalCushion * Math.pow(1 + ror, yearsGrow);
+  const withdrawal = portAtRet * 0.04;
+
+  setEl('er-portAtStop', fmt(portAtStop));
+  setEl('er-runway', runway > 0 ? runway.toFixed(1) + ' yrs' : '—');
+  setEl('er-portAtRet', fmt(portAtRet));
+  setEl('er-withdrawal', fmt(withdrawal));
+  const spending = parseFloat(document.getElementById('retSpending')?.value) || (state.budgetMonthly * 12) || 0;
+  const ratio = spending > 0 ? withdrawal / spending : 0;
+  setEl('er-assess', ratio >= 1 ? '✅ Still on track' : portAtRet > 0 ? '⚠️ May need adjustments' : '—');
+}
+
+// ── PAY STUB UPLOAD ──
+async function handleUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  document.getElementById('uploadLoading').style.display = 'block';
+  document.getElementById('uploadResult').classList.remove('show');
+
+  // Convert to base64
+  const base64 = await new Promise(res => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.readAsDataURL(file);
+  });
+
+  const isPDF = file.type === 'application/pdf';
+  const mediaType = isPDF ? 'application/pdf' : file.type;
+
+  try {
+    const prompt = `You are reading a pay stub. Extract the following information and respond ONLY with a JSON object (no preamble, no markdown):
+{
+  "salary": <annual base salary as number, 0 if not found>,
+  "bonus": <annual bonus as number, 0 if not found>,
+  "payFreq": <"biweekly"|"semimonthly"|"monthly"|"weekly">,
+  "contrib401k": <employee 401k contribution percent as number e.g. 6 for 6%, 0 if not found>,
+  "contribRoth401": <Roth 401k contribution percent as number, 0 if not found>,
+  "empMatch": <employer match percent as number, 0 if not found>,
+  "matchCap": <match cap percent as number, 0 if not found>,
+  "contribRothIRA": <Roth IRA annual contribution as dollar amount, 0 if not found>,
+  "notes": "<brief note about what you found>"
+}
+If a value cannot be determined, use 0. Do not include any text outside the JSON.`;
+
+    const contentItem = isPDF
+      ? { type: 'document', source: { type: 'base64', media_type: mediaType, data: base64 } }
+      : { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } };
+
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: [contentItem, { type: 'text', text: prompt }] }]
+      })
+    });
+
+    const data = await resp.json();
+    const text = data.content?.map(c => c.text || '').join('') || '';
+
+    let parsed;
+    try {
+      parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
+    } catch { parsed = null; }
+
+    document.getElementById('uploadLoading').style.display = 'none';
+
+    if (parsed) {
+      // Populate fields
+      if (parsed.salary) { document.getElementById('salary').value = parsed.salary; }
+      if (parsed.bonus) { document.getElementById('bonus').value = parsed.bonus; }
+      if (parsed.payFreq) { document.getElementById('payFreq').value = parsed.payFreq; }
+      if (parsed.contrib401k) { document.getElementById('contrib401k').value = parsed.contrib401k; }
+      if (parsed.contribRoth401) { document.getElementById('contribRoth401').value = parsed.contribRoth401; }
+      if (parsed.empMatch) { document.getElementById('empMatch').value = parsed.empMatch; }
+      if (parsed.matchCap) { document.getElementById('matchCap').value = parsed.matchCap; }
+      if (parsed.contribRothIRA) { document.getElementById('contribRothIRA').value = parsed.contribRothIRA; }
+
+      document.getElementById('uploadStatus').textContent = '✅ Pay stub read successfully!';
+      document.getElementById('uploadDetails').textContent = parsed.notes || 'Fields have been filled in. Please review and adjust anything that looks off.';
+      document.getElementById('uploadResult').classList.add('show');
+      recalc();
+    } else {
+      document.getElementById('uploadStatus').textContent = '⚠️ Couldn\'t read all fields';
+      document.getElementById('uploadDetails').textContent = 'Please fill in your details manually below.';
+      document.getElementById('uploadResult').classList.add('show');
+    }
+
+  } catch(e) {
+    document.getElementById('uploadLoading').style.display = 'none';
+    document.getElementById('uploadStatus').textContent = '⚠️ Upload error — please fill in manually';
+    document.getElementById('uploadDetails').textContent = e.message || 'Something went wrong.';
+    document.getElementById('uploadResult').classList.add('show');
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// BUDGET ANALYSIS
+// ══════════════════════════════════════════════════════
+
+function updateAdj(slider, spanId) {
+  const v = parseFloat(slider.value);
+  const el = document.getElementById(spanId);
+  if (el) el.textContent = v + '%';
+  calcBudgetAnalysis();
+}
+
+function getAdj(id) {
+  return (parseFloat(document.getElementById(id)?.value) || 100) / 100;
+}
+
+function getBudgetCategories() {
+  // Map category keys to groups and slider adjustments
+  return [
+    { label: 'Housing',       keys: ['mortgage','propTax','homeIns','utilities','internet','homeMaint'], slider: 'sl-housing',   emoji: '🏠' },
+    { label: 'Transport',     keys: ['gas','carIns','carMaint'],                                          slider: 'sl-transport', emoji: '🚗' },
+    { label: 'Food',          keys: ['groceries','dining'],                                               slider: 'sl-food',      emoji: '🍽️' },
+    { label: 'Healthcare',    keys: ['medPrem','rx','oop'],                                               slider: 'sl-health',    emoji: '🏥' },
+    { label: 'Lifestyle',     keys: ['subs','entertain','shopping','pets','gifts','other'],               slider: 'sl-lifestyle', emoji: '🎭' },
+  ];
+}
+
+function getCatTotal(keys) {
+  return keys.reduce((sum, k) => {
+    const el = document.querySelector(`.bud-m[data-key="${k}"]`);
+    return sum + (parseFloat(el?.value) || 0);
+  }, 0);
+}
+
+function calcBudgetAnalysis() {
+  const cats = getBudgetCategories();
+
+  // --- Current spending totals ---
+  const catTotals = cats.map(c => ({ ...c, monthly: getCatTotal(c.keys) }));
+  const totalCurrentMonthly = catTotals.reduce((s, c) => s + c.monthly, 0);
+  const totalCurrentAnnual  = totalCurrentMonthly * 12;
+
+  // --- Inflation-adjusted retirement spending ---
+  const age    = parseInt(document.getElementById('age')?.value) || 0;
+  const retAge = parseInt(document.getElementById('retAge')?.value) || 65;
+  const inflRate = (parseFloat(document.getElementById('sl-infl')?.value) || 3) / 100;
+  const yrs = Math.max(0, retAge - age);
+
+  // Apply lifestyle adjustments per category then inflate
+  const retMonthly = catTotals.reduce((sum, c) => {
+    const adj = getAdj(c.slider);
+    return sum + c.monthly * adj;
+  }, 0);
+  const retMonthlyInflated = retMonthly * Math.pow(1 + inflRate, yrs);
+  const retAnnualInflated  = retMonthlyInflated * 12;
+
+  // --- Projected withdrawal income at retirement ---
+  const projRows = buildProjections();
+  let portAtRet = 0;
+  const yearsToRet = retAge - age;
+  if (projRows.length > 0 && yearsToRet > 0 && yearsToRet <= 40) {
+    portAtRet = projRows[yearsToRet - 1]?.endTotal || 0;
+  } else if (yearsToRet <= 0 && projRows.length > 0) {
+    portAtRet = projRows[0].endTotal;
+  }
+  const withdrawal = portAtRet * 0.04;
+  const ssAnnual   = getSS(retAge);
+  const totalRetIncome = withdrawal + ssAnnual;
+
+  // --- Gap ---
+  const gapAnnual = totalRetIncome - retAnnualInflated;
+  const coverage  = retAnnualInflated > 0 ? (totalRetIncome / retAnnualInflated) : 0;
+
+  // --- Savings rate sustainability check ---
+  const income = getTotalIncome();
+  const contribs = getContributions();
+  const savingsRate = income > 0 ? contribs.total / income : 0;
+
+  // ---- Update DOM ----
+  setEl('ba-currentMonthly', fmt(totalCurrentMonthly));
+  setEl('ba-currentAnnual',  fmt(totalCurrentAnnual) + ' / year');
+  setEl('ba-retireMonthly',  fmt(retMonthlyInflated));
+  setEl('ba-retireAnnual',   fmt(retAnnualInflated) + ' / year · inflation-adjusted');
+  setEl('ba-inflRate', (inflRate * 100).toFixed(1) + '%');
+  setEl('ba-inflYears', yrs + ' years');
+
+  // Gap card
+  const gapCard = document.getElementById('ba-gapCard');
+  if (gapCard) {
+    gapCard.className = 'spend-card ' + (gapAnnual >= 0 ? 'gap-ok' : coverage > 0.8 ? 'gap-warn' : 'gap-bad');
+  }
+  setEl('ba-gapLabel', gapAnnual >= 0 ? '✅ Surplus' : '⚠️ Shortfall');
+  setEl('ba-gapValue', totalRetIncome > 0 ? (gapAnnual >= 0 ? '+' : '') + fmt(Math.abs(gapAnnual)) + '/yr' : '—');
+  setEl('ba-gapSub', gapAnnual >= 0
+    ? 'Your income covers retirement spending'
+    : 'Annual income falls short of spending goal');
+
+  // Sustainability bar
+  const pct = Math.min(coverage * 100, 150);
+  const fill = document.getElementById('ba-sustFill');
+  if (fill) {
+    fill.style.width = pct + '%';
+    fill.className = 'sustainability-fill ' + (coverage >= 1 ? 'sust-ok' : coverage >= 0.8 ? 'sust-warn' : 'sust-bad');
+  }
+  setEl('ba-coveragePct', coverage > 0 ? Math.round(coverage * 100) + '%' : '—');
+
+  let coverDesc = 'Enter budget and account info to see coverage';
+  if (coverage >= 1.2) coverDesc = 'Excellent — your income well exceeds your projected retirement spending.';
+  else if (coverage >= 1.0) coverDesc = 'On track — projected income covers your retirement lifestyle.';
+  else if (coverage >= 0.8) coverDesc = 'Close — small adjustments to savings or spending will get you there.';
+  else if (coverage > 0) coverDesc = 'Gap detected — consider increasing contributions, retiring later, or reducing spending.';
+  setEl('ba-coverageDesc', coverDesc);
+
+  // Also push retirement spending back to readiness tab
+  const retSpendingEl = document.getElementById('retSpending');
+  if (retSpendingEl && !retSpendingEl.value) {
+    retSpendingEl.placeholder = fmt(retAnnualInflated).replace('$','') + ' (from budget)';
+  }
+
+  // ---- Category breakdown bars ----
+  const bkdEl = document.getElementById('ba-catBreakdown');
+  if (bkdEl && totalCurrentMonthly > 0) {
+    bkdEl.innerHTML = catTotals.map(c => {
+      const pctOfTotal = totalCurrentMonthly > 0 ? (c.monthly / totalCurrentMonthly) * 100 : 0;
+      const retAmt = c.monthly * getAdj(c.slider) * Math.pow(1 + inflRate, yrs);
+      return `<div class="cat-bar-item">
+        <div class="cat-bar-label">
+          <span>${c.emoji} ${c.label}</span>
+          <span>${fmt(c.monthly)}/mo</span>
+        </div>
+        <div class="cat-bar-track">
+          <div class="cat-bar-fill" style="width:${Math.min(pctOfTotal * 3, 100)}%"></div>
+        </div>
+        <div class="cat-bar-pct">${pctOfTotal.toFixed(0)}% of budget · Retirement est: ${fmt(retAmt)}/mo</div>
+      </div>`;
+    }).filter((_, i) => catTotals[i].monthly > 0).join('') || '<div style="color:var(--mid);font-size:0.85rem">No expenses entered yet.</div>';
+  }
+
+  // ---- Smart insights ----
+  const insightsEl = document.getElementById('ba-insights');
+  if (insightsEl && (totalCurrentMonthly > 0 || portAtRet > 0)) {
+    const insights = [];
+
+    // Savings rate insight
+    if (income > 0) {
+      if (savingsRate >= 0.20) {
+        insights.push({ cls: 'green', icon: '💪', title: `Strong savings rate: ${Math.round(savingsRate*100)}%`, body: 'Saving 20%+ of income puts you ahead of most Americans and accelerates your path to retirement.' });
+      } else if (savingsRate >= 0.10) {
+        insights.push({ cls: 'amber', icon: '📈', title: `Savings rate: ${Math.round(savingsRate*100)}%`, body: `Consider pushing toward 20%. Every extra 1% of your ${fmt(income)} income adds ${fmt(income * 0.01)} per year to your nest egg.` });
+      } else if (savingsRate > 0) {
+        insights.push({ cls: 'red', icon: '⚠️', title: `Low savings rate: ${Math.round(savingsRate*100)}%`, body: `Financial planners typically recommend saving 15–20% of income. Increasing by just 5% would add ${fmt(income * 0.05)}/year.` });
+      }
+    }
+
+    // Housing as % of budget
+    const housingCat = catTotals.find(c => c.label === 'Housing');
+    if (housingCat && totalCurrentMonthly > 0) {
+      const housingPct = (housingCat.monthly / totalCurrentMonthly) * 100;
+      if (housingPct > 40) {
+        insights.push({ cls: 'amber', icon: '🏠', title: `Housing is ${housingPct.toFixed(0)}% of your budget`, body: 'Financial guidelines suggest keeping housing under 30% of take-home pay. A high ratio here may be limiting your savings potential.' });
+      } else if (housingPct < 30 && housingCat.monthly > 0) {
+        insights.push({ cls: 'green', icon: '🏠', title: `Housing at a healthy ${housingPct.toFixed(0)}% of budget`, body: 'Good — keeping housing costs controlled is one of the biggest levers in building long-term wealth.' });
+      }
+    }
+
+    // Healthcare in retirement
+    const healthCat = catTotals.find(c => c.label === 'Healthcare');
+    if (age > 0 && retAge < 65) {
+      insights.push({ cls: 'amber', icon: '🏥', title: 'Healthcare bridge gap before Medicare', body: `You're planning to retire at ${retAge}, before Medicare eligibility at 65. Budget for private health insurance — often $500–$1,500+/month for a single person. This is one of the most underestimated costs in early retirement.` });
+    } else if (healthCat && healthCat.monthly < 200) {
+      insights.push({ cls: 'amber', icon: '🏥', title: 'Healthcare costs typically rise in retirement', body: `Your current healthcare budget is ${fmt(healthCat.monthly)}/mo. Plan for this to increase significantly — especially pre-Medicare. The slider above is set to 150% of current.` });
+    }
+
+    // Inflation impact
+    if (yrs > 10 && totalCurrentMonthly > 0) {
+      const inflImpact = retMonthlyInflated - retMonthly;
+      insights.push({ cls: 'amber', icon: '📊', title: `Inflation adds ${fmt(inflImpact)}/mo to your retirement needs`, body: `Over ${yrs} years at ${(inflRate*100).toFixed(1)}% inflation, your current ${fmt(retMonthly)}/mo lifestyle costs ${fmt(retMonthlyInflated)}/mo in future dollars. This is built into your retirement estimate above.` });
+    }
+
+    // Coverage result
+    if (coverage >= 1.2) {
+      insights.push({ cls: 'green', icon: '🎉', title: 'Your plan covers retirement spending with room to spare', body: `At your current trajectory, your income at retirement exceeds projected spending by ${fmt(gapAnnual)}/year. You could retire earlier, spend more, or leave a legacy.` });
+    } else if (coverage >= 1.0) {
+      insights.push({ cls: 'green', icon: '✅', title: 'You\'re on track to cover your retirement lifestyle', body: `Projected income of ${fmt(totalRetIncome)}/yr closely matches your estimated retirement spending of ${fmt(retAnnualInflated)}/yr.` });
+    } else if (coverage > 0) {
+      const shortfallMonthly = Math.abs(gapAnnual) / 12;
+      const extraNeeded = Math.abs(gapAnnual) / 0.04;
+      insights.push({ cls: 'red', icon: '📉', title: `Estimated ${fmt(shortfallMonthly)}/month shortfall in retirement`, body: `To eliminate this gap, you'd need approximately ${fmt(extraNeeded)} more in your portfolio at retirement, or reduce planned spending by ${fmt(shortfallMonthly)}/month.` });
+    }
+
+    insightsEl.innerHTML = insights.length
+      ? insights.map(i => `<div class="insight-row ${i.cls}">
+          <div class="insight-icon">${i.icon}</div>
+          <div class="insight-text"><strong>${i.title}</strong>${i.body}</div>
+        </div>`).join('')
+      : '<div style="color:var(--mid);font-size:0.85rem">Keep filling in your details for personalized insights.</div>';
+  }
+}
+
+// ── HELPERS ──
+function fmt(n) {
+  if (!n && n !== 0) return '$—';
+  return '$' + Math.round(n).toLocaleString();
+}
+function setEl(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+// ── DRAG & DROP ──
+const uz = document.getElementById('uploadZone');
+if (uz) {
+  uz.addEventListener('dragover', e => { e.preventDefault(); uz.classList.add('drag-over'); });
+  uz.addEventListener('dragleave', () => uz.classList.remove('drag-over'));
+  uz.addEventListener('drop', e => {
+    e.preventDefault(); uz.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f) handleUpload({ target: { files: [f] } });
+  });
+}
+
+
+// ══════════════════════════════════════════════════════
+// NAME & BIRTHDAY
+// ══════════════════════════════════════════════════════
+
+function calcAgeFromDOB() {
+  var dobEl = document.getElementById('dob');
+  var ageEl = document.getElementById('age');
+  var ageDisplay = document.getElementById('ageDisplay');
+  if (!dobEl || !dobEl.value) return;
+  var parts = dobEl.value.split('-');
+  if (parts.length !== 3) return;
+  var birthYear = parseInt(parts[0]);
+  var birthMonth = parseInt(parts[1]) - 1;
+  var birthDay = parseInt(parts[2]);
+  var today = new Date();
+  var age = today.getFullYear() - birthYear;
+  if (today.getMonth() < birthMonth || (today.getMonth() === birthMonth && today.getDate() < birthDay)) {
+    age--;
+  }
+  if (age >= 0 && age < 120) {
+    if (ageEl) ageEl.value = age;
+    var nextBirth = new Date(today.getFullYear(), birthMonth, birthDay);
+    if (nextBirth <= today) nextBirth.setFullYear(today.getFullYear() + 1);
+    var daysLeft = Math.ceil((nextBirth - today) / (1000 * 60 * 60 * 24));
+    if (ageDisplay) ageDisplay.textContent = 'You are ' + age + ' years old. Next birthday in ' + daysLeft + ' days';
+  }
+  updateGreeting();
+  recalc();
+}
+
+function updateGreeting() {
+  const name = (document.getElementById('firstName')?.value || '').trim();
+  const dob  = document.getElementById('dob')?.value;
+  const greetEl = document.getElementById('profileGreeting');
+  const subEl   = document.getElementById('profileSub');
+  // Update sidebar name
+  const sbName = document.getElementById('sb-name');
+
+  let hour = new Date().getHours();
+  let timeGreet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+
+  if (name) {
+    if (greetEl) greetEl.textContent = `${timeGreet}, ${name} 👋`;
+    if (subEl)   subEl.textContent = `Here's your personalized retirement plan, ${name}.`;
+    if (sbName)  sbName.textContent = name;
+    // Personalize page titles elsewhere
+    document.querySelectorAll('.personalized-name').forEach(el => el.textContent = name + "'s");
+  } else {
+    if (greetEl) greetEl.textContent = "Let's get to know you";
+    if (subEl)   subEl.textContent = 'A few basics to build your MyYolk retirement plan.';
+    if (sbName)  sbName.textContent = '—';
+    document.querySelectorAll('.personalized-name').forEach(el => el.textContent = 'Your');
+  }
+
+  // Set DOB max to today
+  const dobEl = document.getElementById('dob');
+  if (dobEl && !dobEl.max) {
+    const today = new Date().toISOString().split('T')[0];
+    dobEl.max = today;
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// SOCIAL SECURITY
+// ══════════════════════════════════════════════════════
+
+let ssMethod = 'upload';
+let ssValues = { ss62: 0, ss67: 0, ss70: 0 };
+
+function switchSSMethod(method) {
+  ssMethod = method;
+  ['upload','manual','estimate'].forEach(m => {
+    document.getElementById('ss-method-' + m).style.display = m === method ? 'block' : 'none';
+    const btn = document.getElementById('ssBtn-' + m);
+    if (btn) {
+      btn.style.background = m === method ? 'var(--sage)' : 'var(--warm-white)';
+      btn.style.color = m === method ? '#fff' : 'var(--mid)';
+    }
+  });
+  if (method === 'estimate') estimateSS();
+}
+
+function ssManualUpdate() {
+  const v62 = parseFloat(document.getElementById('ss62')?.value) || 0;
+  const v67 = parseFloat(document.getElementById('ss67')?.value) || 0;
+  const v70 = parseFloat(document.getElementById('ss70')?.value) || 0;
+  ssValues.ss62 = v62; ssValues.ss67 = v67; ssValues.ss70 = v70;
+  updateSSDisplay();
+}
+
+function updateSSDisplay() {
+  const s = ssValues;
+  const hasData = s.ss62 > 0 || s.ss67 > 0 || s.ss70 > 0;
+  const row = document.getElementById('ssSummaryRow');
+  if (row) row.style.display = hasData ? 'flex' : 'none';
+  setEl('ss-disp62', s.ss62 > 0 ? fmt(s.ss62).replace('$','$') : '—');
+  setEl('ss-disp67', s.ss67 > 0 ? fmt(s.ss67).replace('$','$') : '—');
+  setEl('ss-disp70', s.ss70 > 0 ? fmt(s.ss70).replace('$','$') : '—');
+  recalc();
+}
+
+function clearSS() {
+  ssValues = { ss62: 0, ss67: 0, ss70: 0 };
+  ['ss62','ss67','ss70'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  updateSSDisplay();
+}
+
+// Override getSS to use ssValues centrally
+function getSS(retireAge) {
+  // First try manual input fields (if visible)
+  const manual62 = parseFloat(document.getElementById('ss62')?.value) || 0;
+  const manual67 = parseFloat(document.getElementById('ss67')?.value) || 0;
+  const manual70 = parseFloat(document.getElementById('ss70')?.value) || 0;
+  // Merge: explicit manual overrides ssValues
+  const v62 = manual62 || ssValues.ss62;
+  const v67 = manual67 || ssValues.ss67;
+  const v70 = manual70 || ssValues.ss70;
+  if (retireAge <= 62) return v62 * 12;
+  if (retireAge <= 67) return v67 * 12;
+  return v70 * 12;
+}
+
+// ── SSA Statement Upload ──
+async function handleSSUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  document.getElementById('ssUploadLoading').style.display = 'block';
+  document.getElementById('ssUploadResult').classList.remove('show');
+
+  const base64 = await new Promise(res => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.readAsDataURL(file);
+  });
+
+  const isPDF = file.type === 'application/pdf';
+  const mediaType = isPDF ? 'application/pdf' : file.type;
+
+  const prompt = `This is a Social Security Administration (SSA) Social Security Statement. Extract the estimated monthly retirement benefit amounts and respond ONLY with a JSON object:
+{
+  "ss62": <estimated monthly benefit if claiming at age 62, as a number, 0 if not found>,
+  "ss67": <estimated monthly benefit if claiming at full retirement age (around 66-67), as a number, 0 if not found>,
+  "ss70": <estimated monthly benefit if claiming at age 70, as a number, 0 if not found>,
+  "fullRetirementAge": <the person's full retirement age shown on the statement, e.g. 67, 0 if not found>,
+  "currentEarnings": <most recent year earnings shown, 0 if not found>,
+  "notes": "<brief note about what you found>"
+}
+Look for a table or section labeled "Retirement Benefits" or "Your Estimated Benefits". Do not include any text outside the JSON.`;
+
+  try {
+    const contentItem = isPDF
+      ? { type: 'document', source: { type: 'base64', media_type: mediaType, data: base64 } }
+      : { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } };
+
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: [contentItem, { type: 'text', text: prompt }] }]
+      })
+    });
+
+    const data = await resp.json();
+    const text = data.content?.map(c => c.text || '').join('') || '';
+    let parsed;
+    try { parsed = JSON.parse(text.replace(/```json|```/g, '').trim()); } catch { parsed = null; }
+
+    document.getElementById('ssUploadLoading').style.display = 'none';
+
+    if (parsed && (parsed.ss62 > 0 || parsed.ss67 > 0 || parsed.ss70 > 0)) {
+      ssValues.ss62 = parsed.ss62 || 0;
+      ssValues.ss67 = parsed.ss67 || 0;
+      ssValues.ss70 = parsed.ss70 || 0;
+      document.getElementById('ssUploadStatus').textContent = '✅ SSA Statement read successfully!';
+      document.getElementById('ssUploadDetails').textContent =
+        `Found benefits: $${parsed.ss62}/mo at 62 · $${parsed.ss67}/mo at 67 · $${parsed.ss70}/mo at 70. ${parsed.notes || ''}`;
+      document.getElementById('ssUploadResult').classList.add('show');
+      updateSSDisplay();
+    } else {
+      document.getElementById('ssUploadStatus').textContent = "⚠️ Couldn't read benefit amounts";
+      document.getElementById('ssUploadDetails').textContent = 'Try the Manual Entry tab, or make sure you uploaded the correct SSA Statement PDF.';
+      document.getElementById('ssUploadResult').classList.add('show');
+    }
+  } catch(e) {
+    document.getElementById('ssUploadLoading').style.display = 'none';
+    document.getElementById('ssUploadStatus').textContent = '⚠️ Upload error';
+    document.getElementById('ssUploadDetails').textContent = 'Please use Manual Entry instead.';
+    document.getElementById('ssUploadResult').classList.add('show');
+  }
+}
+
+// ── SS Estimator ──
+function estimateSS() {
+  const salary = parseFloat(document.getElementById('salary')?.value)
+              || parseFloat(document.getElementById('ssAvgIncome')?.value) || 0;
+  const avgIncome = parseFloat(document.getElementById('ssAvgIncome')?.value) || salary;
+  const yearsWorked = parseFloat(document.getElementById('ssYearsWorked')?.value) || 30;
+
+  if (!avgIncome || !yearsWorked) {
+    setEl('est-ss62', '—'); setEl('est-ss67', '—'); setEl('est-ss70', '—');
+    return;
+  }
+
+  // Simplified AIME-based estimation (rough but directionally correct)
+  // SSA uses top 35 years. We pad with zeros if fewer years.
+  const aime = (avgIncome * Math.min(yearsWorked, 35)) / (35 * 12);
+
+  // 2024 bend points: 90% of first $1,174, 32% of $1,174–$7,078, 15% above
+  let pia = 0;
+  if (aime <= 1174)       pia = aime * 0.90;
+  else if (aime <= 7078)  pia = 1174 * 0.90 + (aime - 1174) * 0.32;
+  else                    pia = 1174 * 0.90 + (7078 - 1174) * 0.32 + (aime - 7078) * 0.15;
+
+  // FRA = 67 for born 1960+. Age 62 = 70% of PIA. Age 70 = 124% of PIA
+  const at67 = Math.round(pia);
+  const at62 = Math.round(pia * 0.70);
+  const at70 = Math.round(pia * 1.24);
+
+  setEl('est-ss62', '$' + at62.toLocaleString());
+  setEl('est-ss67', '$' + at67.toLocaleString());
+  setEl('est-ss70', '$' + at70.toLocaleString());
+
+  // Push into ssValues so recalc can use them
+  ssValues.ss62 = at62;
+  ssValues.ss67 = at67;
+  ssValues.ss70 = at70;
+  updateSSDisplay();
+}
+
+// Init DOB max
+(function() {
+  const dobEl = document.getElementById('dob');
+  if (dobEl) dobEl.max = new Date().toISOString().split('T')[0];
+  updateGreeting();
+})();
+
+
+// Init
+recalc();
+
+// Age button
+document.addEventListener("DOMContentLoaded", function() {
+  var btn = document.getElementById("calcAgeBtn");
+  if (btn) btn.addEventListener("click", calcAgeFromDOB);
+});
+</script>
+
+</body>
+</html>

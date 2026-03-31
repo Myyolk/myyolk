@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120">
+  <defs>
+    <radialGradient id="yolkGrad" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" style="stop-color:#FFD84D"/>
+      <stop offset="60%" style="stop-color:#F0A500"/>
+      <stop offset="100%" style="stop-color:#C8700A"/>
+    </radialGradient>
+    <radialGradient id="whiteGrad" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" style="stop-color:#FFFDF7"/>
+      <stop offset="100%" style="stop-color:#F5EDD8"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#C8700A" flood-opacity="0.25"/>
+    </filter>
+    <filter id="yolkShadow">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#7a3e00" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Egg white - organic shape -->
+  <ellipse cx="60" cy="62" rx="44" ry="50" fill="url(#whiteGrad)" filter="url(#shadow)"/>
+  
+  <!-- Egg white highlight -->
+  <ellipse cx="48" cy="42" rx="12" ry="8" fill="rgba(255,255,255,0.5)" transform="rotate(-20 48 42)"/>
+
+  <!-- Yolk -->
+  <circle cx="60" cy="65" r="26" fill="url(#yolkGrad)" filter="url(#yolkShadow)"/>
+  
+  <!-- Yolk shine -->
+  <ellipse cx="52" cy="56" rx="8" ry="5" fill="rgba(255,255,220,0.55)" transform="rotate(-30 52 56)"/>
+  <circle cx="55" cy="54" r="2.5" fill="rgba(255,255,255,0.4)"/>
+
+  <!-- Wordmark: My -->
+  <text x="118" y="52" 
+        font-family="Georgia, 'Times New Roman', serif" 
+        font-size="28" 
+        font-weight="400"
+        font-style="italic"
+        fill="#7a3e00"
+        letter-spacing="-0.5">My</text>
+
+  <!-- Wordmark: Yolk -->
+  <text x="118" y="88" 
+        font-family="Georgia, 'Times New Roman', serif" 
+        font-size="48" 
+        font-weight="700"
+        fill="#7a3e00"
+        letter-spacing="-1">Yolk</text>
+
+  <!-- Tagline -->
+  <text x="120" y="106" 
+        font-family="'Helvetica Neue', Arial, sans-serif" 
+        font-size="11" 
+        font-weight="500"
+        fill="#C8860A"
+        letter-spacing="2.5"
+        text-transform="uppercase">PROTECT THE GOOD STUFF</text>
+</svg>
