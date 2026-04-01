@@ -873,8 +873,8 @@
       <h1 class="page-title" id="incomePageTitle">Income & Pay</h1>
       <p class="page-subtitle">Tell us about your earnings. You can also upload a pay stub on the Profile page to fill this in automatically.</p>
 
-      <div class="card">
-        <div class="card-title"><span class="dot"></span> Income Type</div>
+      <div class="card" id="salaryCard">
+        <div class="card-title"><span class="dot"></span> 💼 <span id="yourIncomeLabel">Your Income</span></div>
         <div class="form-grid">
           <div class="field">
             <label>Employment Type</label>
@@ -896,16 +896,13 @@
               <option value="weekly">Weekly (52x/yr)</option>
             </select>
           </div>
-        </div>
-      </div>
-
-      <div class="card" id="salaryCard">
-        <div class="card-title"><span class="dot"></span> <span id="yourIncomeLabel">Income Details</span></div>
-        <div class="form-grid">
           <div class="field">
             <label>Annual Base Salary ($)</label>
             <input type="number" id="salary" value="" placeholder="e.g. 120000" oninput="recalc()">
           </div>
+        </div>
+        <div style="font-weight:600;font-size:0.85rem;color:var(--forest);margin:1rem 0 0.5rem">Bonuses & Additional Compensation</div>
+        <div class="form-grid">
           <div class="field">
             <label>Performance / Annual Bonus ($)</label>
             <input type="number" id="bonus" value="" placeholder="e.g. 20000" oninput="recalc()">
@@ -957,6 +954,21 @@
             </div>
           </div>
         </div>
+
+        <div class="results-grid" style="margin-top:1.5rem">
+          <div class="result-card highlight">
+            <div class="result-label" id="totalIncomeLabel">Total Annual Income</div>
+            <div class="result-value" id="totalIncome">$0</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Monthly (Avg)</div>
+            <div class="result-value" id="monthlyIncome">$0</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Per Paycheck</div>
+            <div class="result-value" id="paycheckIncome">$0</div>
+          </div>
+        </div>
       </div>
 
       <div class="card" id="hourlyCard" style="display:none">
@@ -989,28 +1001,10 @@
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-title"><span class="dot"></span> Calculated Income</div>
-        <div class="results-grid">
-          <div class="result-card highlight">
-            <div class="result-label">Total Annual Income</div>
-            <div class="result-value" id="totalIncome">$0</div>
-          </div>
-          <div class="result-card">
-            <div class="result-label">Monthly (Avg)</div>
-            <div class="result-value" id="monthlyIncome">$0</div>
-          </div>
-          <div class="result-card">
-            <div class="result-label">Per Paycheck</div>
-            <div class="result-value" id="paycheckIncome">$0</div>
-          </div>
-        </div>
-      </div>
-
       <!-- SPOUSE INCOME - hidden by default -->
       <div id="spouseIncomeCard" style="display:none">
         <div class="card" style="border:2px solid var(--gold)">
-          <div class="card-title"><span class="dot"></span> 👫 Spouse / Partner Income</div>
+          <div class="card-title"><span class="dot"></span> 👫 <span id="spouseIncomeTitle">Spouse / Partner Income</span></div>
           <div class="form-grid">
             <div class="field">
               <label>Employment Type</label>
@@ -1089,7 +1083,7 @@
 
           <div class="results-grid" style="margin-top:1.5rem">
             <div class="result-card highlight">
-              <div class="result-label">Spouse Total Income</div>
+              <div class="result-label" id="spouseTotalLabel">Spouse Total Income</div>
               <div class="result-value" id="spouseTotalIncome">$0</div>
             </div>
             <div class="result-card">
@@ -1504,8 +1498,13 @@
           <div class="budget-row"><label>Mortgage / Rent</label><input type="number" class="bud-m" data-key="mortgage" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
           <div class="budget-row"><label>Property Taxes</label><input type="number" class="bud-m" data-key="propTax" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
           <div class="budget-row"><label>Home Insurance</label><input type="number" class="bud-m" data-key="homeIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Utilities</label><input type="number" class="bud-m" data-key="utilities" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Electric</label><input type="number" class="bud-m" data-key="electric" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Gas / Heating Oil</label><input type="number" class="bud-m" data-key="gasHeat" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Water</label><input type="number" class="bud-m" data-key="water" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Sewerage</label><input type="number" class="bud-m" data-key="sewerage" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Trash / Recycling</label><input type="number" class="bud-m" data-key="trash" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
           <div class="budget-row"><label>Internet</label><input type="number" class="bud-m" data-key="internet" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Cell Phone</label><input type="number" class="bud-m" data-key="cellPhone" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
           <div class="budget-row"><label>Home Maintenance</label><input type="number" class="bud-m" data-key="homeMaint" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
         </div>
 
@@ -1530,10 +1529,25 @@
         </div>
 
         <div class="budget-category">
+          <div class="budget-cat-header">💼 Professional Services</div>
+          <div class="budget-row"><label>Legal / Attorney Fees</label><input type="number" class="bud-m" data-key="legal" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Accounting / Tax Prep</label><input type="number" class="bud-m" data-key="accounting" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Financial Advisor Fees</label><input type="number" class="bud-m" data-key="finAdvisor" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+        </div>
+
+        <div class="budget-category">
           <div class="budget-cat-header">🎭 Lifestyle</div>
           <div class="budget-row"><label>Subscriptions / Streaming</label><input type="number" class="bud-m" data-key="subs" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
           <div class="budget-row"><label>Entertainment</label><input type="number" class="bud-m" data-key="entertain" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
           <div class="budget-row"><label>Shopping / Clothing</label><input type="number" class="bud-m" data-key="shopping" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Gym / Fitness</label><input type="number" class="bud-m" data-key="gym" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Therapy / Counseling</label><input type="number" class="bud-m" data-key="therapy" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Vacation (monthly avg)</label><input type="number" class="bud-m" data-key="vacation" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Hobbies</label><input type="number" class="bud-m" data-key="hobbies" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Charitable Donations / Tithing</label><input type="number" class="bud-m" data-key="charity" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Lawn / Landscaping</label><input type="number" class="bud-m" data-key="lawn" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Cleaning Service</label><input type="number" class="bud-m" data-key="cleaning" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Security / Monitoring</label><input type="number" class="bud-m" data-key="security" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
           <div class="budget-row"><label>Pets</label><input type="number" class="bud-m" data-key="pets" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
           <div class="budget-row"><label>Gifts / Family</label><input type="number" class="bud-m" data-key="gifts" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
           <div class="budget-row"><label>Other</label><input type="number" class="bud-m" data-key="other" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
@@ -1542,7 +1556,7 @@
         <div class="budget-category">
           <div class="budget-cat-header">💳 Debt Payments</div>
           <div class="budget-row">
-            <label>Mortgage</label>
+            <label>1st Mortgage</label>
             <input type="number" class="bud-m" data-key="debtMortgage" placeholder="0" oninput="calcBudget(this)">
             <input type="number" class="bud-a" readonly placeholder="0">
           </div>
@@ -1551,6 +1565,16 @@
             <input type="month" id="mortgagePayoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
             <div style="font-size:0.75rem;color:#888;padding-top:4px" id="mortgagePayoffNote"></div>
           </div>
+          <div class="budget-row">
+            <label>2nd Mortgage / HELOC</label>
+            <input type="number" class="bud-m" data-key="debtMortgage2" placeholder="0" oninput="calcBudget(this)">
+            <input type="number" class="bud-a" readonly placeholder="0">
+          </div>
+          <div class="budget-row">
+            <label style="font-size:0.78rem;color:var(--sage)">↳ 2nd Mortgage Payoff</label>
+            <input type="month" id="mortgage2Payoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
+          </div>
+
           <div class="budget-row">
             <label>Car Loan 1</label>
             <input type="number" class="bud-m" data-key="debtCar1" placeholder="0" oninput="calcBudget(this)">
@@ -1745,6 +1769,10 @@
           <div class="field">
             <label>Student Loans - Payoff Year</label>
             <input type="number" id="studentLoanPayoffYear" value="" placeholder="e.g. 2030" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>2nd Mortgage / HELOC Balance ($)</label>
+            <input type="number" id="mortgage2Balance" value="" placeholder="e.g. 50000" oninput="recalc()">
           </div>
           <div class="field">
             <label>Credit Cards - Total Balance ($)</label>
@@ -2206,6 +2234,28 @@ function toggleCustomROR() {
   if (el) el.style.display = v === 'custom' ? '' : 'none';
 }
 
+
+// ── BUDGET CALCULATOR ──
+function calcBudget(input) {
+  // Sum all monthly budget inputs
+  var total = 0;
+  var inputs = document.querySelectorAll('.bud-m');
+  inputs.forEach(function(el) {
+    var val = parseFloat(el.value) || 0;
+    total += val;
+    // Update annual sibling
+    var parent = el.parentNode;
+    var annual = parent ? parent.querySelector('.bud-a') : null;
+    if (annual) annual.value = val > 0 ? Math.round(val * 12) : '';
+  });
+  // Update total expenses display
+  var totalEl = document.getElementById('totalExpenses');
+  if (totalEl) totalEl.value = Math.round(total);
+  var totalDisplayEl = document.getElementById('totalExpensesDisplay');
+  if (totalDisplayEl) totalDisplayEl.textContent = '$' + Math.round(total).toLocaleString();
+  recalc();
+}
+
 // ── SHOW TAB ──
 function showTab(name) {
   document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
@@ -2248,10 +2298,26 @@ function calcAgeFromDOB() {
 
 function updateGreeting() {
   var name = (document.getElementById('firstName')?.value || '').trim();
+  var spouseName = (document.getElementById('spouseFirstName')?.value || '').trim();
   var greetEl = document.getElementById('greeting');
   var subEl = document.getElementById('greetingSub');
   if (greetEl) greetEl.textContent = name ? 'Welcome, ' + name + ' 👋' : "Let's get to know you";
   if (subEl) subEl.textContent = name ? "Here's your personalized MyYolk retirement plan, " + name + "." : 'A few basics to build your MyYolk retirement plan.';
+  
+  // Update income card titles with first names
+  var cap = function(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; };
+  var yourLabel = document.getElementById('yourIncomeLabel');
+  if (yourLabel) yourLabel.textContent = name ? cap(name) + "'s Income" : "Your Income";
+  var yourSummaryLabel = document.getElementById('yourIncomeSummaryLabel');
+  if (yourSummaryLabel) yourSummaryLabel.textContent = name ? cap(name) + "'s Calculated Income" : "Your Calculated Income";
+  var totalIncomeLabel = document.getElementById('totalIncomeLabel');
+  if (totalIncomeLabel) totalIncomeLabel.textContent = name ? cap(name) + "'s Annual Income" : "Total Annual Income";
+  
+  // Update spouse income card title
+  var spouseCardTitle = document.getElementById('spouseIncomeTitle');
+  if (spouseCardTitle) spouseCardTitle.textContent = spouseName ? cap(spouseName) + "'s Income" : "Spouse / Partner Income";
+  var spouseTotalLabel = document.getElementById('spouseTotalLabel');
+  if (spouseTotalLabel) spouseTotalLabel.textContent = spouseName ? cap(spouseName) + "'s Annual Income" : "Spouse Total Income";
 }
 
 // ── MAIN RECALC ──
@@ -2339,6 +2405,17 @@ function recalc() {
 
   fmtEl('portfolioAtRetire', fmt(portfolio));
   fmtEl('safeWithdrawal', fmt(portfolio * 0.04 / 12));
+  
+  // Update Live Snapshot sidebar
+  var totalBal2 = getVal('bal401k') + getVal('balRoth401') + getVal('balRothIRA') + getVal('balTaxable') + getVal('balHSA') + getVal('balCash');
+  var homeEq2 = Math.max(0, getVal('homeValue') - getVal('homeMortgage'));
+  var sbName = (document.getElementById('firstName')?.value || '').trim();
+  fmtEl('sb-name', sbName ? sbName + "'s Plan" : 'My Plan');
+  fmtEl('sb-portfolio', totalBal2 > 0 ? fmt(totalBal2) : '—');
+  fmtEl('sb-at-ret', portfolio > 0 ? fmt(portfolio) : '—');
+  fmtEl('sb-withdrawal', portfolio > 0 ? fmt(portfolio * 0.04) + '/yr' : '—');
+  var sbScore = state.portfolioAtRetirement > 0 ? Math.min(150, Math.round((state.portfolioAtRetirement / Math.max(1, getVal('totalExpenses',3000)*12*Math.max(1,getVal('lifeExp',85)-getVal('retireAge',65))))*100)) : 0;
+  fmtEl('sb-readiness', sbScore > 0 ? sbScore + '%' : '—');
 
   // SS estimate
   estimateSS();
@@ -2430,7 +2507,7 @@ function updateSummary() {
   var personalProp = assetVehicles + getVal('assetJewelry') + getVal('assetCollectibles') + getVal('assetBusiness') + getVal('assetOther');
 
   var totalAssets = retAccounts + balCash + homeEquity + invPropEquity + personalProp;
-  var totalLiabilities = homeMortgage + getVal('creditCardBalance');
+  var totalLiabilities = homeMortgage + getVal('mortgage2Balance') + getVal('creditCardBalance');
   var netWorth = totalAssets - totalLiabilities;
 
   if (el('sumTotalAssets')) el('sumTotalAssets').textContent = fmt(totalAssets);
