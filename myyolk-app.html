@@ -1990,6 +1990,8 @@ function toggleCouple() {
     var el = document.getElementById(id);
     if (el) el.style.display = isCouple ? 'block' : 'none';
   });
+  recalc();
+});
   var isCouple = document.getElementById('planCouple') && document.getElementById('planCouple').checked;
   var ids = ['spouseProfileCard','spouseIncomeCard','spouseAccountsCard'];
   ids.forEach(function(id){ var el=document.getElementById(id); if(el) el.style.display=isCouple?'block':'none'; });
@@ -2358,6 +2360,10 @@ document.addEventListener('DOMContentLoaded', function() {
   if (b) b.addEventListener('click', calcAgeFromDOB);
   var sb = document.getElementById('calcSpouseAgeBtn');
   if (sb) sb.addEventListener('click', calcSpouseAge);
+  var b = document.getElementById('calcAgeBtn');
+  if (b) b.addEventListener('click', calcAgeFromDOB);
+  var sb = document.getElementById('calcSpouseAgeBtn');
+  if (sb) sb.addEventListener('click', calcSpouseAge);
   var calcBtn = document.getElementById('calcAgeBtn');
   if (calcBtn) calcBtn.addEventListener('click', calcAgeFromDOB);
   var spouseBtn = document.getElementById('calcSpouseAgeBtn');
@@ -2366,5 +2372,5 @@ document.addEventListener('DOMContentLoaded', function() {
   recalc();
 });
 </script>
-<script>document.addEventListener("DOMContentLoaded",function(){var b=document.getElementById("calcAgeBtn");if(b)b.addEventListener("click",calcAgeFromDOB);});</script><script>document.addEventListener("DOMContentLoaded",function(){var b=document.getElementById("calcAgeBtn");if(b)b.addEventListener("click",calcAgeFromDOB);var s=document.getElementById("calcSpouseAgeBtn");if(s)s.addEventListener("click",calcSpouseAge);});</script></body>
+</body>
 </html>
