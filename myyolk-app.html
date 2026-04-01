@@ -660,7 +660,7 @@
         <div class="form-grid" style="margin-bottom:1rem">
           <div class="field">
             <label>First Name</label>
-            <input type="text" id="firstName" placeholder="e.g. Dean" oninput="updateGreeting()"></div><div class="field"><label>Last Name</label><input type="text" id="lastName" placeholder="e.g. Sheppard">
+            <input type="text" id="firstName" placeholder="e.g. Alex" oninput="updateGreeting()"></div><div class="field"><label>Last Name</label><input type="text" id="lastName" placeholder="e.g. Smith">
           </div>
           <div class="field">
             <label>Date of Birth</label>
@@ -1986,6 +1986,11 @@ var getVal = function(id, def) { return parseFloat(document.getElementById(id)?.
 // ── COUPLE TOGGLE ──
 function toggleCouple() {
   var isCouple = document.getElementById('planCouple') && document.getElementById('planCouple').checked;
+  ['spouseProfileCard','spouseIncomeCard','spouseAccountsCard'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.style.display = isCouple ? 'block' : 'none';
+  });
+  var isCouple = document.getElementById('planCouple') && document.getElementById('planCouple').checked;
   var ids = ['spouseProfileCard','spouseIncomeCard','spouseAccountsCard'];
   ids.forEach(function(id){ var el=document.getElementById(id); if(el) el.style.display=isCouple?'block':'none'; });
   var isCouple = document.getElementById('planCouple')?.checked;
@@ -2349,6 +2354,10 @@ function updateSummary() {
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', function() {
+  var b = document.getElementById('calcAgeBtn');
+  if (b) b.addEventListener('click', calcAgeFromDOB);
+  var sb = document.getElementById('calcSpouseAgeBtn');
+  if (sb) sb.addEventListener('click', calcSpouseAge);
   var calcBtn = document.getElementById('calcAgeBtn');
   if (calcBtn) calcBtn.addEventListener('click', calcAgeFromDOB);
   var spouseBtn = document.getElementById('calcSpouseAgeBtn');
