@@ -643,12 +643,24 @@
       <h1 class="page-title" id="profileGreeting">Let's get to know you</h1>
       <p class="page-subtitle" id="profileSub">A few basics to build your MyYolk retirement plan.</p>
 
+      
+      <div class="card" style="background:linear-gradient(135deg,var(--sage-pale),#fff8e8);border:2px solid var(--gold)">
+        <div class="card-title"><span class="dot"></span> Who are you planning for?</div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap">
+          <label style="display:flex;align-items:center;gap:0.5rem;padding:0.75rem 1.5rem;border-radius:12px;cursor:pointer;border:2px solid var(--sage);background:#fff;font-weight:600;font-size:0.9rem">
+            <input type="radio" name="planningFor" id="planIndividual" value="individual" checked onchange="toggleCouple()"> Just Me
+          </label>
+          <label style="display:flex;align-items:center;gap:0.5rem;padding:0.75rem 1.5rem;border-radius:12px;cursor:pointer;border:2px solid #ddd;background:#fff;font-weight:600;font-size:0.9rem">
+            <input type="radio" name="planningFor" id="planCouple" value="couple" onchange="toggleCouple()"> Me + Spouse/Partner
+          </label>
+        </div>
+      </div>
       <div class="card">
         <div class="card-title"><span class="dot"></span> Personal Information</div>
         <div class="form-grid" style="margin-bottom:1rem">
           <div class="field">
             <label>First Name</label>
-            <input type="text" id="firstName" placeholder="e.g. Alex" oninput="updateGreeting()">
+            <input type="text" id="firstName" placeholder="e.g. Alex" oninput="updateGreeting()"></div><div class="field"><label>Last Name</label><input type="text" id="lastName" placeholder="e.g. Smith">
           </div>
           <div class="field">
             <label>Date of Birth</label>
@@ -787,6 +799,17 @@
             </select>
             <div class="hint">Leave blank if same state</div>
           </div>
+        </div>
+
+        <div style="margin-top:1.5rem">
+          <div style="font-weight:600;font-size:0.85rem;color:var(--forest);margin-bottom:0.75rem">📄 Upload Spouse Pay Stub <span style="font-size:0.75rem;font-weight:400;color:#888">Optional</span></div>
+          <div class="upload-zone" id="spouseUploadZone" onclick="document.getElementById('spousePayStubFile').click()" style="cursor:pointer">
+            <input type="file" id="spousePayStubFile" accept=".pdf,image/*" style="display:none" onchange="handleSpousePayStub(this)">
+            <div style="font-size:1.5rem;margin-bottom:0.5rem">📄</div>
+            <div style="font-weight:600;font-size:0.85rem">Drop spouse pay stub here</div>
+            <div style="font-size:0.75rem;color:#888;margin-top:4px">PDF or image · Reads salary & contributions automatically</div>
+          </div>
+          <div id="spouseUploadStatus" style="margin-top:0.5rem;font-size:0.82rem;color:var(--sage)"></div>
         </div>
       </div>
 
