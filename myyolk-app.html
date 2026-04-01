@@ -643,24 +643,12 @@
       <h1 class="page-title" id="profileGreeting">Let's get to know you</h1>
       <p class="page-subtitle" id="profileSub">A few basics to build your MyYolk retirement plan.</p>
 
-      
-      <div class="card" style="background:linear-gradient(135deg,var(--sage-pale),#fff8e8);border:2px solid var(--gold)">
-        <div class="card-title"><span class="dot"></span> Who are you planning for?</div>
-        <div style="display:flex;gap:1rem;flex-wrap:wrap">
-          <label style="display:flex;align-items:center;gap:0.5rem;padding:0.75rem 1.5rem;border-radius:12px;cursor:pointer;border:2px solid var(--sage);background:#fff;font-weight:600;font-size:0.9rem">
-            <input type="radio" name="planningFor" id="planIndividual" value="individual" checked onchange="toggleCouple()"> Just Me
-          </label>
-          <label style="display:flex;align-items:center;gap:0.5rem;padding:0.75rem 1.5rem;border-radius:12px;cursor:pointer;border:2px solid #ddd;background:#fff;font-weight:600;font-size:0.9rem">
-            <input type="radio" name="planningFor" id="planCouple" value="couple" onchange="toggleCouple()"> Me + Spouse/Partner
-          </label>
-        </div>
-      </div>
       <div class="card">
         <div class="card-title"><span class="dot"></span> Personal Information</div>
         <div class="form-grid" style="margin-bottom:1rem">
           <div class="field">
             <label>First Name</label>
-            <input type="text" id="firstName" placeholder="e.g. Alex" oninput="updateGreeting()"></div><div class="field"><label>Last Name</label><input type="text" id="lastName" placeholder="e.g. Smith">
+            <input type="text" id="firstName" placeholder="e.g. Alex" oninput="updateGreeting()">
           </div>
           <div class="field">
             <label>Date of Birth</label>
@@ -1985,8 +1973,8 @@ var getVal = function(id, def) { return parseFloat(document.getElementById(id)?.
 
 // ── COUPLE TOGGLE ──
 function toggleCouple() {
-  var isCouple = document.getElementById('planCouple') && document.getElementById('planCouple').checked;
-  ['spouseProfileCard','spouseIncomeCard','spouseAccountsCard'].forEach(function(id){
+  var isCouple = document.getElementById('planCouple')?.checked;
+  ['spouseProfileCard','spouseIncomeCard','spouseAccountsCard'].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.style.display = isCouple ? 'block' : 'none';
   });
@@ -2082,7 +2070,16 @@ function toggleCustomROR() {
 
 // ── SHOW TAB ──
 function showTab(name) {
-  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); 
+  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.nav-item').forEach(function(b) { b.classList.remove('active'); });
+  var panel = document.getElementById('tab-' + name);
+  if (panel) panel.classList.add('active');
+  var btn = document.querySelector('[onclick="showTab(''+name+'')"]');
+  if (btn) btn.classList.add('active');
+  window.scrollTo(0,0);
+  recalc();
+}
+
 // ── AGE CALCULATOR ──
 function calcAgeFromDOB() {
   var dobEl = document.getElementById('dob');
@@ -2342,8 +2339,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if (b) b.addEventListener('click', calcAgeFromDOB);
   var sb = document.getElementById('calcSpouseAgeBtn');
   if (sb) sb.addEventListener('click', calcSpouseAge);
-  if (typeof toggleIncomeType === 'function') toggleIncomeType();
-  if (typeof recalc === 'function') recalc();
+  if (typeof toggleIncomeType==='function') toggleIncomeType();
+  if (typeof recalc==='function') recalc();
 });
 </script>
 </body>
