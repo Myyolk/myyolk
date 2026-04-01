@@ -1991,16 +1991,6 @@ function toggleCouple() {
     if (el) el.style.display = isCouple ? 'block' : 'none';
   });
   recalc();
-});
-  var isCouple = document.getElementById('planCouple') && document.getElementById('planCouple').checked;
-  var ids = ['spouseProfileCard','spouseIncomeCard','spouseAccountsCard'];
-  ids.forEach(function(id){ var el=document.getElementById(id); if(el) el.style.display=isCouple?'block':'none'; });
-  var isCouple = document.getElementById('planCouple')?.checked;
-  ['spouseProfileCard','spouseIncomeCard','spouseAccountsCard'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) el.style.display = isCouple ? 'block' : 'none';
-  });
-  recalc();
 }
 
 function calcSpouseAge() {
