@@ -2336,25 +2336,14 @@ function updateSummary() {
 }
 
 // ── INIT ──
+
 document.addEventListener('DOMContentLoaded', function() {
   var b = document.getElementById('calcAgeBtn');
   if (b) b.addEventListener('click', calcAgeFromDOB);
   var sb = document.getElementById('calcSpouseAgeBtn');
   if (sb) sb.addEventListener('click', calcSpouseAge);
-  var b = document.getElementById('calcAgeBtn');
-  if (b) b.addEventListener('click', calcAgeFromDOB);
-  var sb = document.getElementById('calcSpouseAgeBtn');
-  if (sb) sb.addEventListener('click', calcSpouseAge);
-  var b = document.getElementById('calcAgeBtn');
-  if (b) b.addEventListener('click', calcAgeFromDOB);
-  var sb = document.getElementById('calcSpouseAgeBtn');
-  if (sb) sb.addEventListener('click', calcSpouseAge);
-  var calcBtn = document.getElementById('calcAgeBtn');
-  if (calcBtn) calcBtn.addEventListener('click', calcAgeFromDOB);
-  var spouseBtn = document.getElementById('calcSpouseAgeBtn');
-  if (spouseBtn) spouseBtn.addEventListener('click', calcSpouseAge);
-  toggleIncomeType();
-  recalc();
+  if (typeof toggleIncomeType === 'function') toggleIncomeType();
+  if (typeof recalc === 'function') recalc();
 });
 </script>
 </body>
