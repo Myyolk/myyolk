@@ -877,10 +877,14 @@
         <div class="card-title"><span class="dot"></span> Income Type</div>
         <div class="form-grid">
           <div class="field">
-            <label>How are you paid?</label>
+            <label>Employment Type</label>
             <select id="incomeType" onchange="toggleIncomeType()">
               <option value="salary">Salary</option>
               <option value="hourly">Hourly</option>
+              <option value="selfemployed">Self-employed / 1099</option>
+              <option value="contract">Contract / Per Job</option>
+              <option value="retired">Already Retired</option>
+              <option value="notworking">Not Currently Working</option>
             </select>
           </div>
           <div class="field">
@@ -2256,19 +2260,34 @@ function recalc() {
   var incomeType = document.getElementById('incomeType')?.value || 'salary';
   var sal = getVal('salary');
   var bon = getVal('bonus');
+  var bonRetention = getVal('bonusRetention');
+  var bonSignOn = getVal('bonusSignOn');
+  var bonProfitShare = getVal('bonusProfitShare');
+  var bonRSU = getVal('bonusRSU');
+  
   state.salary = sal;
-  state.income = sal + bon;
-  state.bonusRetention = getVal('bonusRetention');
+  // Total annual income includes ALL bonuses for THIS year
+  state.income = sal + bon + bonRetention + bonSignOn + bonProfitShare + bonRSU;
+  // Recurring income (for projections) - excludes one-time bonuses
+  state.recurringIncome = sal + bon + bonProfitShare;
+  state.bonusRetention = bonRetention;
 
   // Spouse income
-  var isCouple = document.getElementById('planCouple')?.checked;
-  state.spouseIncome = isCouple ? (getVal('spouseSalary') + getVal('spouseBonus')) : 0;
+  var isCouple = document.getElementById('planCouple') && document.getElementById('planCouple').checked;
+  var spouseBon = getVal('spouseBonus');
+  var spouseBonRetention = getVal('spouseBonusRetention');
+  var spouseBonSignOn = getVal('spouseBonusSignOn');
+  var spouseBonProfitShare = getVal('spouseBonusProfitShare');
+  var spouseBonRSU = getVal('spouseBonusRSU');
+  state.spouseIncome = isCouple ? (getVal('spouseSalary') + spouseBon + spouseBonRetention + spouseBonSignOn + spouseBonProfitShare + spouseBonRSU) : 0;
   state.householdIncome = state.income + state.spouseIncome;
 
   // Pay frequency
   var freq = document.getElementById('payFreq')?.value || 'biweekly';
   var periods = {biweekly:26, semimonthly:24, monthly:12, weekly:52}[freq] || 26;
-  fmtEl('totalIncome', fmt(state.householdIncome || state.income));
+    // Display current year total income (all bonuses)
+  fmtEl('totalIncome', fmt(state.income + (state.spouseIncome || 0)));
+  fmtEl('monthlyIncome', fmt((state.income + (state.spouseIncome || 0))/12));
   fmtEl('monthlyIncome', fmt((state.householdIncome || state.income)/12));
   fmtEl('paycheckIncome', fmt(state.income/periods));
 
@@ -2472,13 +2491,15 @@ function updateSummary() {
 // ── INIT ──
 
 
+
 document.addEventListener('DOMContentLoaded', function() {
   var b = document.getElementById('calcAgeBtn');
   if (b) b.addEventListener('click', calcAgeFromDOB);
   var sb = document.getElementById('calcSpouseAgeBtn');
   if (sb) sb.addEventListener('click', calcSpouseAge);
-  if (typeof toggleIncomeType==='function') toggleIncomeType();
-  if (typeof recalc==='function') recalc();
+  if (typeof toggleIncomeType === 'function') toggleIncomeType();
+  if (typeof toggleCouple === 'function') toggleCouple();
+  if (typeof recalc === 'function') recalc();
 });
 </script>
 </body>
