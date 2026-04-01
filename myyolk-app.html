@@ -1009,21 +1009,22 @@
           <div class="card-title"><span class="dot"></span> 👫 Spouse / Partner Income</div>
           <div class="form-grid">
             <div class="field">
-              <label>Spouse Employment Type</label>
+              <label>Employment Type</label>
               <select id="spouseIncomeType" onchange="recalc()">
                 <option value="salary">Salary</option>
                 <option value="hourly">Hourly</option>
                 <option value="selfemployed">Self-employed / 1099</option>
+                <option value="contract">Contract / Per Job</option>
                 <option value="retired">Already Retired</option>
                 <option value="notworking">Not Currently Working</option>
               </select>
             </div>
             <div class="field">
-              <label>Spouse Annual Base Salary ($)</label>
+              <label>Annual Base Salary ($)</label>
               <input type="number" id="spouseSalary" value="" placeholder="e.g. 80000" oninput="recalc()">
             </div>
             <div class="field">
-              <label>Spouse Pay Frequency</label>
+              <label>Pay Frequency</label>
               <select id="spousePayFreq" onchange="recalc()">
                 <option value="biweekly">Biweekly (26x/yr)</option>
                 <option value="semimonthly">Semi-monthly (24x/yr)</option>
@@ -1031,9 +1032,69 @@
                 <option value="weekly">Weekly (52x/yr)</option>
               </select>
             </div>
+          </div>
+
+          <div style="font-weight:600;font-size:0.85rem;color:var(--forest);margin:1rem 0 0.5rem">Bonuses & Additional Compensation</div>
+          <div class="form-grid">
             <div class="field">
-              <label>Spouse Performance Bonus ($)</label>
+              <label>Performance / Annual Bonus ($)</label>
               <input type="number" id="spouseBonus" value="" placeholder="e.g. 10000" oninput="recalc()">
+              <div style="display:flex;gap:1rem;margin-top:4px;flex-wrap:wrap">
+                <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px"><input type="checkbox" id="spouseBonus401k" checked onchange="recalc()"> 401k applies</label>
+                <label style="font-size:0.78rem;color:var(--sage);font-weight:500">Recurring</label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Retention Bonus ($)</label>
+              <input type="number" id="spouseBonusRetention" value="" placeholder="e.g. 50000" oninput="recalc()">
+              <div style="display:flex;gap:1rem;margin-top:4px;flex-wrap:wrap">
+                <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px"><input type="checkbox" id="spouseBonusRetention401k" onchange="recalc()"> 401k applies</label>
+                <label style="font-size:0.78rem;color:#c96a3a;font-weight:500">One-time</label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Sign-On Bonus ($)</label>
+              <input type="number" id="spouseBonusSignOn" value="" placeholder="e.g. 10000" oninput="recalc()">
+              <div style="display:flex;gap:1rem;margin-top:4px;flex-wrap:wrap">
+                <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px"><input type="checkbox" id="spouseBonusSignOn401k" onchange="recalc()"> 401k applies</label>
+                <label style="font-size:0.78rem;color:#c96a3a;font-weight:500">One-time</label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Profit Sharing / Commission ($)</label>
+              <input type="number" id="spouseBonusProfitShare" value="" placeholder="e.g. 5000" oninput="recalc()">
+              <div style="display:flex;gap:1rem;margin-top:4px;flex-wrap:wrap">
+                <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px"><input type="checkbox" id="spouseBonusProfitShare401k" checked onchange="recalc()"> 401k applies</label>
+                <label style="font-size:0.78rem;color:var(--sage);font-weight:500">Recurring</label>
+              </div>
+            </div>
+            <div class="field">
+              <label>RSU / Stock Vesting ($)</label>
+              <input type="number" id="spouseBonusRSU" value="" placeholder="e.g. 15000" oninput="recalc()">
+              <div style="display:flex;gap:1rem;margin-top:4px;flex-wrap:wrap">
+                <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px"><input type="checkbox" id="spouseBonusRSU401k" onchange="recalc()"> 401k applies</label>
+                <label style="font-size:0.78rem;color:#c96a3a;font-weight:500">One-time</label>
+              </div>
+            </div>
+            <div class="field">
+              <label>ESPP / Stock Purchase ($/yr)</label>
+              <input type="number" id="spouseESPP" value="" placeholder="e.g. 5000" oninput="recalc()">
+              <div class="hint">Annual contribution to stock purchase plan</div>
+            </div>
+          </div>
+
+          <div class="results-grid" style="margin-top:1.5rem">
+            <div class="result-card highlight">
+              <div class="result-label">Spouse Total Income</div>
+              <div class="result-value" id="spouseTotalIncome">$0</div>
+            </div>
+            <div class="result-card">
+              <div class="result-label">Monthly</div>
+              <div class="result-value" id="spouseMonthlyIncome">$0</div>
+            </div>
+            <div class="result-card">
+              <div class="result-label">Per Paycheck</div>
+              <div class="result-value" id="spousePaycheckIncome">$0</div>
             </div>
           </div>
         </div>
