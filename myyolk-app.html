@@ -2082,24 +2082,7 @@ function toggleCustomROR() {
 
 // ── SHOW TAB ──
 function showTab(name) {
-  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
-  document.querySelectorAll('.nav-item').forEach(function(b) { b.classList.remove('active'); });
-  var panel = document.getElementById('tab-' + name);
-  if (panel) panel.classList.add('active');
-  var btns = document.querySelectorAll('.nav-item');
-  btns.forEach(function(b) { if (b.getAttribute('onclick') && b.getAttribute('onclick').indexOf(name) > -1) b.classList.add('active'); });
-  window.scrollTo(0,0);
-  recalc();
-});
-  document.querySelectorAll('.nav-item').forEach(function(b) { b.classList.remove('active'); });
-  var panel = document.getElementById('tab-' + name);
-  if (panel) panel.classList.add('active');
-  var btn = document.querySelector('[onclick="showTab(''+name+'')"]');
-  if (btn) btn.classList.add('active');
-  window.scrollTo(0,0);
-  recalc();
-}
-
+  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); 
 // ── AGE CALCULATOR ──
 function calcAgeFromDOB() {
   var dobEl = document.getElementById('dob');
