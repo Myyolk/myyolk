@@ -2300,6 +2300,7 @@ function calcBudget(input) {
   var annualTotal = document.getElementById('budgetAnnualTotal');
   if (annualTotal) annualTotal.textContent = '$' + Math.round(total * 12).toLocaleString();
   recalc();
+  if (typeof updateBudgetAnalysis === 'function') updateBudgetAnalysis();
 }
 
 // ── SHOW TAB ──
@@ -2775,6 +2776,7 @@ function clearData() {
     location.reload();
   }
 }
+
 
 document.addEventListener('DOMContentLoaded', function() {
   var b=document.getElementById('calcAgeBtn'); if(b) b.addEventListener('click',calcAgeFromDOB);
