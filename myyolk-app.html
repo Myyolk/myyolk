@@ -1573,27 +1573,13 @@
           </div>
 
           <div id="spouseSSNeverWorkedFields" style="display:none">
-            <div style="padding:0.75rem;background:var(--sage-pale);border-radius:8px;font-size:0.85rem;color:var(--forest);margin-bottom:1rem">
-              💡 <strong>Spousal Benefit:</strong> Your spouse is entitled to up to <strong>50% of your SS benefit</strong> at your full retirement age, even without any work history. The app will automatically calculate this.
+            <div style="padding:1rem;background:var(--sage-pale);border-radius:8px;font-size:0.85rem;color:var(--forest);margin-bottom:1rem">
+              💡 <strong>Spousal Benefit:</strong> <span id="spouseNeverWorkedMsg">Your spouse</span> is entitled to <strong>50% of your SS benefit</strong> at the age you claim — automatically calculated below. No separate claiming age needed.
             </div>
-            <div class="form-grid">
-              <div class="field">
-                <label>Spouse SS Claiming Age</label>
-                <select id="spouseSsAgeNoWork" onchange="recalc()" style="width:100%">
-                  <option value="62">62 — Reduced spousal benefit</option>
-                  <option value="63">63</option>
-                  <option value="64">64</option>
-                  <option value="65">65</option>
-                  <option value="66">66</option>
-                  <option value="67" selected>67 — Full 50% spousal benefit</option>
-                </select>
-                <div class="hint">Spousal benefit max is 50% of your benefit at age 67. Cannot be delayed past 67 for extra credit.</div>
-              </div>
-              <div style="padding:0.75rem;background:#fff;border:2px solid var(--gold);border-radius:8px;text-align:center;margin-top:0.75rem">
-                <div style="font-size:0.78rem;font-weight:600;color:var(--mid);margin-bottom:4px">Estimated Spousal Benefit</div>
-                <div style="font-size:1.8rem;font-weight:700;color:var(--sage)" id="spouseSsEstimate">—</div>
-                <div style="font-size:0.75rem;color:var(--mid)">Per month (50% of your SS benefit)</div>
-              </div>
+            <div style="padding:0.75rem;background:#fff;border:2px solid var(--gold);border-radius:8px;text-align:center">
+              <div style="font-size:0.78rem;font-weight:600;color:var(--mid);margin-bottom:4px" id="spouseSsEstimateLabel">Estimated Spousal Benefit</div>
+              <div style="font-size:1.8rem;font-weight:700;color:var(--sage)" id="spouseSsEstimate">—</div>
+              <div style="font-size:0.75rem;color:var(--mid)" id="spouseSsEstimateSub">50% of your SS benefit at your claiming age</div>
             </div>
           </div>
 
@@ -2710,6 +2696,14 @@ function recalc() {
     var spousalPct = spouseClaimAge >= 67 ? 0.5 : 0.5 * (1 - (67 - spouseClaimAge) * 0.083);
     state.spouseSsMonthly = state.ssMonthly * spousalPct;
     fmtEl('spouseSsEstimate', fmt(state.spouseSsMonthly) + '/mo');
+    var spouseName = (document.getElementById('spouseFirstName')?.value || 'Your spouse').trim();
+    var cap = spouseName.charAt(0).toUpperCase() + spouseName.slice(1);
+    var yourName = (document.getElementById('firstName')?.value || 'your').trim();
+    var yourCap = yourName.charAt(0).toUpperCase() + yourName.slice(1);
+    var claimAge = document.getElementById('ssClaimingAge')?.value || document.getElementById('ssClaimingAgeManual')?.value || '67';
+    fmtEl('spouseNeverWorkedMsg', cap);
+    fmtEl('spouseSsEstimateLabel', cap + "'s Spousal Benefit");
+    fmtEl('spouseSsEstimateSub', '50% of ' + yourCap + "'s benefit at age " + claimAge);
   } else if (isCouple) {
     var spouseOwnSS = getVal('spouseSsManual', 0);
     var spousalBenefit = state.ssMonthly * 0.5;
