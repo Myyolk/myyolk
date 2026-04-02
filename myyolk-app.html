@@ -2528,6 +2528,8 @@ function handleSSUpload(event) {
 
 // ── SHOW TAB ──
 function showTab(name) {
+  var main = document.querySelector('main');
+  if(main) main.scrollTop = 0;
   document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
   document.querySelectorAll('.nav-item').forEach(function(b) { b.classList.remove('active'); });
   var panel = document.getElementById('tab-' + name);
@@ -3034,6 +3036,7 @@ function clearData() {
     location.reload();
   }
 }
+
 
 
 
