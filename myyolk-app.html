@@ -572,7 +572,28 @@
 <body>
 
 <header>
-  <div class="logo">My<span>Yolk</span></div>
+  <div class="logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="180" height="54" style="display:block">
+      <defs>
+        <linearGradient id="hsky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1a2a4a"/>
+          <stop offset="55%" stop-color="#8b3a2a"/>
+          <stop offset="100%" stop-color="#f5a623"/>
+        </linearGradient>
+        <clipPath id="hbadge">
+          <circle cx="28" cy="28" r="24"/>
+        </clipPath>
+      </defs>
+      <circle cx="28" cy="28" r="24" fill="url(#hsky)"/>
+      <path d="M4 40 Q12 28 20 32 Q26 35 32 24 Q38 14 52 32 L52 52 L4 52 Z" fill="#0a1628" opacity="0.75" clip-path="url(#hbadge)"/>
+      <circle cx="28" cy="26" r="13" fill="#F7C06B" clip-path="url(#hbadge)"/>
+      <circle cx="28" cy="26" r="10" fill="#F5A623" clip-path="url(#hbadge)"/>
+      <circle cx="22" cy="20" r="4" fill="#F8D070" opacity="0.4" clip-path="url(#hbadge)"/>
+      <circle cx="28" cy="28" r="24" fill="none" stroke="#F5A623" stroke-width="1.5"/>
+      <text x="60" y="24" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#ffffff">My<tspan fill="#F5A623">Yolk</tspan></text>
+      <text x="60" y="38" font-family="Arial, sans-serif" font-size="7" fill="rgba(255,255,255,0.6)" letter-spacing="1.5">RETIREMENT PLANNING</text>
+    </svg>
+  </div>
   <div class="header-badge">Protect the Good Stuff</div>
 </header>
 
@@ -2129,6 +2150,7 @@
         <div style="font-size:0.85rem;color:#666;margin-bottom:1.5rem">Download your complete retirement plan as a PDF to save, print, or share with a financial advisor.</div>
         <button onclick="alert('Export coming soon! This will be a premium feature.')" style="padding:12px 32px;background:var(--gold);color:#fff;border:none;border-radius:12px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">📄 Download My Plan - $9</button>
         <div style="font-size:0.75rem;color:#999;margin-top:0.75rem">One-time purchase · Instant download · Your data stays private</div>
+        <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid #eee"><button onclick="clearData()" style="background:none;border:none;color:#c96a3a;font-family:DM Sans,sans-serif;font-size:0.8rem;cursor:pointer;text-decoration:underline">🗑️ Clear all my saved data</button></div>
       </div>
 
       <div class="btn-row">
@@ -2338,6 +2360,7 @@ function updateGreeting() {
 
 // ── MAIN RECALC ──
 function recalc() {
+  saveData();
   // Income
   var incomeType = document.getElementById('incomeType')?.value || 'salary';
   var sal = getVal('salary');
@@ -2433,7 +2456,7 @@ function recalc() {
   var totalBal2 = getVal('bal401k') + getVal('balRoth401') + getVal('balRothIRA') + getVal('balTaxable') + getVal('balHSA') + getVal('balCash');
   var homeEq2 = Math.max(0, getVal('homeValue') - getVal('homeMortgage'));
   var sbName = (document.getElementById('firstName')?.value || '').trim();
-  fmtEl('sb-name', sbName ? sbName + "'s Plan" : 'My Plan');
+  fmtEl('sb-name', sbName ? sbName + "'s Yolk" : 'My Yolk');
   fmtEl('sb-portfolio', totalBal2 > 0 ? fmt(totalBal2) : '—');
   fmtEl('sb-at-ret', portfolio > 0 ? fmt(portfolio) : '—');
   fmtEl('sb-withdrawal', portfolio > 0 ? fmt(portfolio * 0.04) + '/yr' : '—');
@@ -2617,6 +2640,50 @@ document.addEventListener('DOMContentLoaded', function() {
   if (typeof toggleCouple === 'function') toggleCouple();
   if (typeof recalc === 'function') recalc();
 });
+
+// ── AUTO SAVE / LOAD ──
+var SAVE_KEY = 'myyolk_data_v1';
+
+function saveData() {
+  try {
+    var inputs = document.querySelectorAll('input, select, textarea');
+    var data = {};
+    inputs.forEach(function(el) {
+      if (el.id && el.type !== 'file') {
+        data[el.id] = el.type === 'checkbox' ? el.checked : el.value;
+      }
+    });
+    localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+  } catch(e) {}
+}
+
+function loadData() {
+  try {
+    var saved = localStorage.getItem(SAVE_KEY);
+    if (!saved) return;
+    var data = JSON.parse(saved);
+    Object.keys(data).forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      if (el.type === 'checkbox') el.checked = data[id];
+      else el.value = data[id];
+    });
+    // Trigger recalcs after loading
+    if (typeof updateGreeting === 'function') updateGreeting();
+    if (typeof toggleCouple === 'function') toggleCouple();
+    if (typeof toggleIncomeType === 'function') toggleIncomeType();
+    if (typeof recalc === 'function') recalc();
+    console.log('MyYolk: data loaded from local storage');
+  } catch(e) {}
+}
+
+function clearData() {
+  if (confirm('Clear all saved data? This cannot be undone.')) {
+    localStorage.removeItem(SAVE_KEY);
+    location.reload();
+  }
+}
+
 </script>
 </body>
 </html>
