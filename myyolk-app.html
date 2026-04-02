@@ -2490,6 +2490,7 @@ function recalc() {
   if (manual > 0) { state.ssMonthly = manual; fmtEl('ssEstimate', fmt(manual) + '/mo'); return; }
   var avgIncome = state.salary;
   if (!avgIncome) { fmtEl('ssEstimate', '—'); return; }
+  var yrs = getVal('ssYearsWorked', 30);
   var aime = (avgIncome * Math.min(yrs,35)) / (35*12);
   var pia = 0;
   if (aime <= 1115) pia = aime * 0.9;
@@ -2776,6 +2777,7 @@ function clearData() {
     location.reload();
   }
 }
+
 
 
 
