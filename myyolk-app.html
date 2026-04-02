@@ -1523,64 +1523,64 @@
           <div class="budget-row">
             <label>Rent <span style="font-size:0.75rem;color:#888;font-weight:400">(renters only)</span></label>
             <input type="number" class="bud-m" data-key="rent" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" readonly placeholder="0">
+            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
           </div>
           <div style="font-size:0.75rem;color:#888;font-style:italic;padding:0 0 6px">🏠 Homeowners: enter your mortgage in the Debt Payments section below</div>
-          <div class="budget-row"><label>Property Taxes</label><input type="number" class="bud-m" data-key="propTax" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Home Insurance</label><input type="number" class="bud-m" data-key="homeIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Electric</label><input type="number" class="bud-m" data-key="electric" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Gas / Heating Oil</label><input type="number" class="bud-m" data-key="gasHeat" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Water</label><input type="number" class="bud-m" data-key="water" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Sewerage</label><input type="number" class="bud-m" data-key="sewerage" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Trash / Recycling</label><input type="number" class="bud-m" data-key="trash" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Internet</label><input type="number" class="bud-m" data-key="internet" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Telephone <span style="font-size:0.75rem;color:#888;font-weight:400">(Cell &amp; Home)</span></label><input type="number" class="bud-m" data-key="cellPhone" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Home Maintenance</label><input type="number" class="bud-m" data-key="homeMaint" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Property Taxes</label><input type="number" class="bud-m" data-key="propTax" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Home Insurance</label><input type="number" class="bud-m" data-key="homeIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Electric</label><input type="number" class="bud-m" data-key="electric" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Gas / Heating Oil</label><input type="number" class="bud-m" data-key="gasHeat" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Water</label><input type="number" class="bud-m" data-key="water" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Sewerage</label><input type="number" class="bud-m" data-key="sewerage" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Trash / Recycling</label><input type="number" class="bud-m" data-key="trash" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Internet</label><input type="number" class="bud-m" data-key="internet" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Telephone <span style="font-size:0.75rem;color:#888;font-weight:400">(Cell &amp; Home)</span></label><input type="number" class="bud-m" data-key="cellPhone" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Home Maintenance</label><input type="number" class="bud-m" data-key="homeMaint" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
         </div>
 
         <div class="budget-category">
           <div class="budget-cat-header">🚗 Transportation</div>
-          <div class="budget-row"><label>Gas</label><input type="number" class="bud-m" data-key="gas" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Car Insurance</label><input type="number" class="bud-m" data-key="carIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Maintenance / Repairs</label><input type="number" class="bud-m" data-key="carMaint" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Gas</label><input type="number" class="bud-m" data-key="gas" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Car Insurance</label><input type="number" class="bud-m" data-key="carIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Maintenance / Repairs</label><input type="number" class="bud-m" data-key="carMaint" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
         </div>
 
         <div class="budget-category">
           <div class="budget-cat-header">🍽️ Food</div>
-          <div class="budget-row"><label>Groceries</label><input type="number" class="bud-m" data-key="groceries" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Dining Out</label><input type="number" class="bud-m" data-key="dining" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Groceries</label><input type="number" class="bud-m" data-key="groceries" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Dining Out</label><input type="number" class="bud-m" data-key="dining" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
         </div>
 
         <div class="budget-category">
           <div class="budget-cat-header">🏥 Health</div>
-          <div class="budget-row"><label>Medical Premiums</label><input type="number" class="bud-m" data-key="medPrem" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Prescriptions</label><input type="number" class="bud-m" data-key="rx" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Out-of-Pocket</label><input type="number" class="bud-m" data-key="oop" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Medical Premiums</label><input type="number" class="bud-m" data-key="medPrem" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Prescriptions</label><input type="number" class="bud-m" data-key="rx" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Out-of-Pocket</label><input type="number" class="bud-m" data-key="oop" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
         </div>
 
         <div class="budget-category">
           <div class="budget-cat-header">💼 Professional Services</div>
-          <div class="budget-row"><label>Legal / Attorney Fees</label><input type="number" class="bud-m" data-key="legal" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Accounting / Tax Prep</label><input type="number" class="bud-m" data-key="accounting" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Financial Advisor Fees</label><input type="number" class="bud-m" data-key="finAdvisor" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Legal / Attorney Fees</label><input type="number" class="bud-m" data-key="legal" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Accounting / Tax Prep</label><input type="number" class="bud-m" data-key="accounting" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Financial Advisor Fees</label><input type="number" class="bud-m" data-key="finAdvisor" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
         </div>
 
         <div class="budget-category">
           <div class="budget-cat-header">🎭 Lifestyle</div>
-          <div class="budget-row"><label>Subscriptions / Streaming</label><input type="number" class="bud-m" data-key="subs" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Entertainment</label><input type="number" class="bud-m" data-key="entertain" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Shopping / Clothing</label><input type="number" class="bud-m" data-key="shopping" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Gym / Fitness</label><input type="number" class="bud-m" data-key="gym" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Therapy / Counseling</label><input type="number" class="bud-m" data-key="therapy" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Vacation (monthly avg)</label><input type="number" class="bud-m" data-key="vacation" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Hobbies</label><input type="number" class="bud-m" data-key="hobbies" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Charitable Donations / Tithing</label><input type="number" class="bud-m" data-key="charity" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Lawn / Landscaping</label><input type="number" class="bud-m" data-key="lawn" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Cleaning Service</label><input type="number" class="bud-m" data-key="cleaning" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Security / Monitoring</label><input type="number" class="bud-m" data-key="security" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Pets</label><input type="number" class="bud-m" data-key="pets" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Gifts / Family</label><input type="number" class="bud-m" data-key="gifts" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Other</label><input type="number" class="bud-m" data-key="other" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Subscriptions / Streaming</label><input type="number" class="bud-m" data-key="subs" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Entertainment</label><input type="number" class="bud-m" data-key="entertain" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Shopping / Clothing</label><input type="number" class="bud-m" data-key="shopping" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Gym / Fitness</label><input type="number" class="bud-m" data-key="gym" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Therapy / Counseling</label><input type="number" class="bud-m" data-key="therapy" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Vacation (monthly avg)</label><input type="number" class="bud-m" data-key="vacation" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Hobbies</label><input type="number" class="bud-m" data-key="hobbies" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Charitable Donations / Tithing</label><input type="number" class="bud-m" data-key="charity" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Lawn / Landscaping</label><input type="number" class="bud-m" data-key="lawn" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Cleaning Service</label><input type="number" class="bud-m" data-key="cleaning" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Security / Monitoring</label><input type="number" class="bud-m" data-key="security" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Pets</label><input type="number" class="bud-m" data-key="pets" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Gifts / Family</label><input type="number" class="bud-m" data-key="gifts" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Other</label><input type="number" class="bud-m" data-key="other" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
         </div>
 
         <div class="budget-category">
@@ -1588,7 +1588,7 @@
           <div class="budget-row">
             <label>1st Mortgage <span style="font-size:0.75rem;color:#888;font-weight:400">(P&amp;I only)</span></label>
             <input type="number" class="bud-m" data-key="debtMortgage" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" readonly placeholder="0">
+            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
           </div>
           <div class="budget-row" id="mortgagePayoffRow">
             <label style="font-size:0.78rem;color:var(--sage)">↳ Payoff Date</label>
@@ -1601,7 +1601,7 @@
           <div class="budget-row">
             <label>2nd Mortgage / HELOC <span style="font-size:0.75rem;color:#888;font-weight:400">(P&amp;I only)</span></label>
             <input type="number" class="bud-m" data-key="debtMortgage2" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" readonly placeholder="0">
+            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
           </div>
           <div class="budget-row">
             <label style="font-size:0.78rem;color:var(--sage)">↳ 2nd Mortgage Payoff</label>
@@ -1611,7 +1611,7 @@
           <div class="budget-row">
             <label>Car Loan 1</label>
             <input type="number" class="bud-m" data-key="debtCar1" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" readonly placeholder="0">
+            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
           </div>
           <div class="budget-row">
             <label style="font-size:0.78rem;color:var(--sage)">↳ Car Loan 1 Payoff</label>
@@ -1620,7 +1620,7 @@
           <div class="budget-row">
             <label>Car Loan 2</label>
             <input type="number" class="bud-m" data-key="debtCar2" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" readonly placeholder="0">
+            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
           </div>
           <div class="budget-row">
             <label style="font-size:0.78rem;color:var(--sage)">↳ Car Loan 2 Payoff</label>
@@ -1629,7 +1629,7 @@
           <div class="budget-row">
             <label>Student Loans</label>
             <input type="number" class="bud-m" data-key="debtStudent" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" readonly placeholder="0">
+            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
           </div>
           <div class="budget-row">
             <label style="font-size:0.78rem;color:var(--sage)">↳ Student Loan Payoff</label>
@@ -1639,28 +1639,28 @@
             <div class="budget-row">
               <label>Credit Card 1</label>
               <input type="number" class="bud-m" data-key="debtCC1" placeholder="0" oninput="calcBudget(this)">
-              <input type="number" class="bud-a" readonly placeholder="0">
+              <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
             </div>
             <div class="budget-row">
               <label>Credit Card 2</label>
               <input type="number" class="bud-m" data-key="debtCC2" placeholder="0" oninput="calcBudget(this)">
-              <input type="number" class="bud-a" readonly placeholder="0">
+              <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
             </div>
             <div class="budget-row">
               <label>Credit Card 3</label>
               <input type="number" class="bud-m" data-key="debtCC3" placeholder="0" oninput="calcBudget(this)">
-              <input type="number" class="bud-a" readonly placeholder="0">
+              <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
             </div>
           </div>
           <div class="budget-row">
             <label>Personal Loan</label>
             <input type="number" class="bud-m" data-key="debtPersonal" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" readonly placeholder="0">
+            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
           </div>
           <div class="budget-row">
             <label>Other Debt</label>
             <input type="number" class="bud-m" data-key="debtOther" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" readonly placeholder="0">
+            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
           </div>
           <div style="padding:8px 0 4px;font-size:0.78rem;color:var(--sage);font-style:italic">
             💡 Debts with payoff dates will be removed from your retirement expense projections automatically
@@ -2279,22 +2279,26 @@ function toggleCustomROR() {
 
 // ── BUDGET CALCULATOR ──
 function calcBudget(input) {
-  // Sum all monthly budget inputs
+  if (input && input.classList.contains('bud-a')) {
+    var annualVal = parseFloat(input.value) || 0;
+    var parent = input.parentNode;
+    var monthly = parent ? parent.querySelector('.bud-m') : null;
+    if (monthly) monthly.value = annualVal > 0 ? Math.round(annualVal / 12) : '';
+  }
   var total = 0;
-  var inputs = document.querySelectorAll('.bud-m');
-  inputs.forEach(function(el) {
+  document.querySelectorAll('.bud-m').forEach(function(el) {
     var val = parseFloat(el.value) || 0;
     total += val;
-    // Update annual sibling
     var parent = el.parentNode;
     var annual = parent ? parent.querySelector('.bud-a') : null;
-    if (annual) annual.value = val > 0 ? Math.round(val * 12) : '';
+    if (annual && document.activeElement !== annual) annual.value = val > 0 ? Math.round(val * 12) : '';
   });
-  // Update total expenses display
   var totalEl = document.getElementById('totalExpenses');
   if (totalEl) totalEl.value = Math.round(total);
-  var totalDisplayEl = document.getElementById('totalExpensesDisplay');
-  if (totalDisplayEl) totalDisplayEl.textContent = '$' + Math.round(total).toLocaleString();
+  var monthlyTotal = document.getElementById('budgetMonthlyTotal');
+  if (monthlyTotal) monthlyTotal.textContent = '$' + Math.round(total).toLocaleString();
+  var annualTotal = document.getElementById('budgetAnnualTotal');
+  if (annualTotal) annualTotal.textContent = '$' + Math.round(total * 12).toLocaleString();
   recalc();
 }
 
@@ -2540,6 +2544,95 @@ function updateWhatIf() {}
 
 // ── EARLY RETIREMENT ──
 function updateEarly() {}
+
+// ── BUDGET ANALYSIS ──
+function updateBudgetAnalysis() {
+  var monthly = getVal('totalExpenses', 0);
+  if (monthly === 0) return;
+  
+  var currentAge = getVal('age', 30);
+  var retireAge = getVal('retireAge', 65);
+  var yearsToRetire = Math.max(0, retireAge - currentAge);
+  
+  // Get lifestyle adjustment sliders
+  var adjHousing = (parseFloat(document.getElementById('sl-housing')?.value) || 90) / 100;
+  var adjTransport = (parseFloat(document.getElementById('sl-transport')?.value) || 60) / 100;
+  var adjFood = (parseFloat(document.getElementById('sl-food')?.value) || 90) / 100;
+  var adjHealth = (parseFloat(document.getElementById('sl-health')?.value) || 150) / 100;
+  var adjLifestyle = (parseFloat(document.getElementById('sl-lifestyle')?.value) || 120) / 100;
+  var inflRate = (parseFloat(document.getElementById('sl-infl')?.value) || 3) / 100;
+  
+  // Estimate retirement spending with adjustments (simplified average)
+  var avgAdj = (adjHousing + adjTransport + adjFood + adjHealth + adjLifestyle) / 5;
+  var retireMonthly = monthly * avgAdj * Math.pow(1 + inflRate, yearsToRetire);
+  
+  // Safe withdrawal income
+  var portfolio = state.portfolioAtRetirement || 0;
+  var wRate = (parseFloat(document.getElementById('withdrawalRate')?.value) || 4) / 100;
+  var monthlyWithdrawal = portfolio * wRate / 12;
+  var monthlySSIncome = state.ssMonthly || 0;
+  var totalMonthlyIncome = monthlyWithdrawal + monthlySSIncome;
+  
+  // Coverage
+  var coveragePct = retireMonthly > 0 ? Math.min(150, Math.round((totalMonthlyIncome / retireMonthly) * 100)) : 0;
+  var gap = totalMonthlyIncome - retireMonthly;
+  
+  // Update elements
+  var fmtEl2 = function(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; };
+  fmtEl2('ba-currentMonthly', fmt(monthly));
+  fmtEl2('ba-currentAnnual', fmt(monthly * 12) + ' / year');
+  fmtEl2('ba-retireMonthly', fmt(retireMonthly));
+  fmtEl2('ba-retireAnnual', fmt(retireMonthly * 12) + ' / year · inflation-adjusted');
+  fmtEl2('ba-inflRate', (inflRate * 100).toFixed(1) + '%');
+  fmtEl2('ba-inflYears', yearsToRetire + ' years');
+  fmtEl2('ba-coveragePct', coveragePct + '%');
+  
+  var gapEl = document.getElementById('ba-gapValue');
+  if (gapEl) {
+    gapEl.textContent = gap >= 0 ? '+' + fmt(gap) + '/mo surplus' : fmt(Math.abs(gap)) + '/mo shortfall';
+    gapEl.style.color = gap >= 0 ? 'var(--sage)' : '#c0392b';
+  }
+  
+  var gapCard = document.getElementById('ba-gapCard');
+  if (gapCard) gapCard.className = gap >= 0 ? 'spend-card gap-ok' : 'spend-card gap-bad';
+  
+  var coverDesc = document.getElementById('ba-coverageDesc');
+  if (coverDesc) {
+    if (coveragePct >= 100) coverDesc.textContent = 'Your retirement income covers your expected expenses!';
+    else if (coveragePct >= 75) coverDesc.textContent = 'Almost there - small gap to close before retirement';
+    else if (coveragePct >= 50) coverDesc.textContent = 'Meaningful gap - consider saving more or adjusting plans';
+    else coverDesc.textContent = 'Significant gap - retirement planning adjustments recommended';
+  }
+  
+  var fill = document.getElementById('ba-sustFill');
+  if (fill) fill.style.width = Math.min(100, coveragePct * 0.67) + '%';
+
+  // Update category breakdown
+  var cats = [
+    {label:'🏠 Housing', keys:['mortgage','rent','propTax','homeIns','electric','gasHeat','water','sewerage','trash','internet','cellPhone','homeMaint']},
+    {label:'🚗 Transport', keys:['gas','carIns','carMaint']},
+    {label:'🍽️ Food', keys:['groceries','dining']},
+    {label:'🏥 Health', keys:['medPrem','rx','oop','gym','therapy']},
+    {label:'💼 Professional', keys:['legal','accounting','finAdvisor']},
+    {label:'🎭 Lifestyle', keys:['subs','entertain','shopping','vacation','hobbies','charity','lawn','cleaning','security','pets','gifts','other']}
+  ];
+  var breakdown = document.getElementById('ba-catBreakdown');
+  if (breakdown && monthly > 0) {
+    breakdown.innerHTML = cats.map(function(cat) {
+      var catTotal = cat.keys.reduce(function(sum, key) {
+        var el = document.querySelector('[data-key="' + key + '"]');
+        return sum + (el ? parseFloat(el.value) || 0 : 0);
+      }, 0);
+      if (catTotal === 0) return '';
+      var pct = Math.round((catTotal / monthly) * 100);
+      return '<div style="margin-bottom:0.75rem">' +
+        '<div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px">' +
+        '<span>' + cat.label + '</span><span style="font-weight:600">' + fmt(catTotal) + '/mo (' + pct + '%)</span></div>' +
+        '<div style="height:8px;background:#f0e8d8;border-radius:4px">' +
+        '<div style="height:8px;background:var(--sage);border-radius:4px;width:' + pct + '%"></div></div></div>';
+    }).join('');
+  }
+}
 
 // ── SUMMARY ──
 function updateSummary() {
