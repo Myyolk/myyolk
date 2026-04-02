@@ -1,58 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" width="200" height="80">
   <defs>
-    <radialGradient id="yolkGrad" cx="50%" cy="45%" r="50%">
-      <stop offset="0%" style="stop-color:#FFD84D"/>
-      <stop offset="60%" style="stop-color:#F0A500"/>
-      <stop offset="100%" style="stop-color:#C8700A"/>
-    </radialGradient>
-    <radialGradient id="whiteGrad" cx="50%" cy="40%" r="55%">
-      <stop offset="0%" style="stop-color:#FFFDF7"/>
-      <stop offset="100%" style="stop-color:#F5EDD8"/>
-    </radialGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#C8700A" flood-opacity="0.25"/>
-    </filter>
-    <filter id="yolkShadow">
-      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#7a3e00" flood-opacity="0.2"/>
-    </filter>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a2a4a"/>
+      <stop offset="55%" stop-color="#8b3a2a"/>
+      <stop offset="100%" stop-color="#f5a623"/>
+    </linearGradient>
+    <clipPath id="badge">
+      <rect x="2" y="2" width="56" height="56" rx="28"/>
+    </clipPath>
   </defs>
 
-  <!-- Egg white - organic shape -->
-  <ellipse cx="60" cy="62" rx="44" ry="50" fill="url(#whiteGrad)" filter="url(#shadow)"/>
-  
-  <!-- Egg white highlight -->
-  <ellipse cx="48" cy="42" rx="12" ry="8" fill="rgba(255,255,255,0.5)" transform="rotate(-20 48 42)"/>
+  <!-- Circle badge -->
+  <rect x="2" y="2" width="56" height="56" rx="28" fill="url(#sky)"/>
 
-  <!-- Yolk -->
-  <circle cx="60" cy="65" r="26" fill="url(#yolkGrad)" filter="url(#yolkShadow)"/>
-  
-  <!-- Yolk shine -->
-  <ellipse cx="52" cy="56" rx="8" ry="5" fill="rgba(255,255,220,0.55)" transform="rotate(-30 52 56)"/>
-  <circle cx="55" cy="54" r="2.5" fill="rgba(255,255,255,0.4)"/>
+  <!-- Rolling hills silhouette -->
+  <path d="M2 42 Q12 30 22 34 Q30 37 38 28 Q46 20 58 36 L58 58 L2 58 Z" fill="#0a1628" opacity="0.75" clip-path="url(#badge)"/>
 
-  <!-- Wordmark: My -->
-  <text x="118" y="52" 
-        font-family="Georgia, 'Times New Roman', serif" 
-        font-size="28" 
-        font-weight="400"
-        font-style="italic"
-        fill="#7a3e00"
-        letter-spacing="-0.5">My</text>
+  <!-- Sun / yolk -->
+  <circle cx="30" cy="30" r="16" fill="#F7C06B" clip-path="url(#badge)"/>
+  <circle cx="30" cy="30" r="13" fill="#F5A623" clip-path="url(#badge)"/>
+  <circle cx="24" cy="24" r="5" fill="#F8D070" opacity="0.4" clip-path="url(#badge)"/>
 
-  <!-- Wordmark: Yolk -->
-  <text x="118" y="88" 
-        font-family="Georgia, 'Times New Roman', serif" 
-        font-size="48" 
-        font-weight="700"
-        fill="#7a3e00"
-        letter-spacing="-1">Yolk</text>
+  <!-- Gold ring -->
+  <rect x="2" y="2" width="56" height="56" rx="28" fill="none" stroke="#F5A623" stroke-width="2"/>
 
-  <!-- Tagline -->
-  <text x="120" y="106" 
-        font-family="'Helvetica Neue', Arial, sans-serif" 
-        font-size="11" 
-        font-weight="500"
-        fill="#C8860A"
-        letter-spacing="2.5"
-        text-transform="uppercase">PROTECT THE GOOD STUFF</text>
+  <!-- MyYolk wordmark -->
+  <text x="68" y="28" font-family="Georgia, serif" font-size="22" font-weight="700" fill="#2D4A35">My<tspan fill="#F5A623">Yolk</tspan></text>
+  <text x="68" y="44" font-family="Arial, sans-serif" font-size="8" fill="#888" letter-spacing="2">RETIREMENT PLANNING</text>
 </svg>
