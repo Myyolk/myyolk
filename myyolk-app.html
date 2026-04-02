@@ -2340,6 +2340,106 @@ function calcBudget(input) {
   if (typeof updateBudgetAnalysis === 'function') updateBudgetAnalysis();
 }
 
+
+// ── SS METHODS ──
+function switchSSMethod(method) {
+  ['upload','manual','estimate'].forEach(function(m) {
+    var panel = document.getElementById('ss-method-' + m);
+    var btn = document.getElementById('ssBtn-' + m);
+    if (panel) panel.style.display = m === method ? 'block' : 'none';
+    if (btn) {
+      btn.style.background = m === method ? 'var(--sage)' : 'var(--warm-white)';
+      btn.style.color = m === method ? '#fff' : 'var(--mid)';
+    }
+  });
+}
+
+function ssManualUpdate() {
+  var val62 = getVal('ss62', 0);
+  var val67 = getVal('ss67', 0);
+  var val70 = getVal('ss70', 0);
+  var ssAge = getVal('ssAge', 67);
+  if (ssAge <= 62) state.ssMonthly = val62;
+  else if (ssAge <= 67) state.ssMonthly = val67;
+  else state.ssMonthly = val70;
+  fmtEl('ssEstimate', fmt(state.ssMonthly) + '/mo');
+  updateSummaryRow();
+  recalc();
+}
+
+function updateSummaryRow() {
+  var row = document.getElementById('ssSummaryRow');
+  if (!row) return;
+  var v62 = getVal('ss62',0), v67 = getVal('ss67',0), v70 = getVal('ss70',0);
+  if (v62 > 0 || v67 > 0 || v70 > 0) {
+    row.style.display = 'flex';
+    fmtEl('ss-disp62', '$' + Math.round(v62).toLocaleString());
+    fmtEl('ss-disp67', '$' + Math.round(v67).toLocaleString());
+    fmtEl('ss-disp70', '$' + Math.round(v70).toLocaleString());
+  }
+}
+
+function clearSS() {
+  ['ss62','ss67','ss70','ssManual'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  state.ssMonthly = 0;
+  var row = document.getElementById('ssSummaryRow');
+  if (row) row.style.display = 'none';
+  fmtEl('ssEstimate', '—');
+  recalc();
+}
+
+function handleSSUpload(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var statusEl = document.getElementById('ssUploadStatus');
+  var loadingEl = document.getElementById('ssUploadLoading');
+  if (loadingEl) loadingEl.style.display = 'block';
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var base64 = e.target.result.split(',')[1];
+    var mediaType = file.type || 'application/pdf';
+    fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: [{
+            type: 'document',
+            source: { type: 'base64', media_type: mediaType, data: base64 }
+          }, {
+            type: 'text',
+            text: 'Extract SS benefit estimates from this Social Security statement. Return ONLY valid JSON: {"at62": number, "at67": number, "at70": number}'
+          }]
+        }]
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var text = (data.content||[]).map(function(c){return c.text||'';}).join('');
+      var clean = text.replace(/```json|```/g,'').trim();
+      var parsed = JSON.parse(clean);
+      if (parsed.at62) { var el = document.getElementById('ss62'); if(el) el.value = parsed.at62; }
+      if (parsed.at67) { var el = document.getElementById('ss67'); if(el) el.value = parsed.at67; }
+      if (parsed.at70) { var el = document.getElementById('ss70'); if(el) el.value = parsed.at70; }
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (statusEl) statusEl.textContent = '✅ SS statement read successfully!';
+      updateSummaryRow();
+      ssManualUpdate();
+    })
+    .catch(function() {
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (statusEl) statusEl.textContent = '⚠️ Could not read statement — please enter manually';
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
 // ── SHOW TAB ──
 function showTab(name) {
   document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
