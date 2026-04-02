@@ -2547,7 +2547,11 @@ function updateEarly() {}
 
 // ── BUDGET ANALYSIS ──
 function updateBudgetAnalysis() {
-  var monthly = getVal('totalExpenses', 0);
+  // Sum all monthly budget inputs directly
+  var monthly = 0;
+  document.querySelectorAll('.bud-m').forEach(function(el) {
+    monthly += parseFloat(el.value) || 0;
+  });
   if (monthly === 0) return;
   
   var currentAge = getVal('age', 30);
