@@ -2498,6 +2498,9 @@ function recalc() {
   var adjFactor = ssAge < 67 ? (1 - (67-ssAge)*0.067) : (ssAge > 67 ? (1 + (ssAge-67)*0.08) : 1);
   state.ssMonthly = pia * adjFactor;
   fmtEl('ssEstimate', fmt(state.ssMonthly) + '/mo');
+  updateReadiness();
+  updateBudgetAnalysis();
+  updateSummary();
 }
 
 // ── READINESS ──
@@ -2728,15 +2731,7 @@ function updateSummary() {
 
 
 
-document.addEventListener('DOMContentLoaded', function() {
-  var b = document.getElementById('calcAgeBtn');
-  if (b) b.addEventListener('click', calcAgeFromDOB);
-  var sb = document.getElementById('calcSpouseAgeBtn');
-  if (sb) sb.addEventListener('click', calcSpouseAge);
-  if (typeof toggleIncomeType === 'function') toggleIncomeType();
-  if (typeof toggleCouple === 'function') toggleCouple();
-  if (typeof recalc === 'function') recalc();
-});
+
 
 // ── AUTO SAVE / LOAD ──
 var SAVE_KEY = 'myyolk_data_v1';
@@ -2781,6 +2776,15 @@ function clearData() {
   }
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+  var b=document.getElementById('calcAgeBtn'); if(b) b.addEventListener('click',calcAgeFromDOB);
+  var sb=document.getElementById('calcSpouseAgeBtn'); if(sb) sb.addEventListener('click',calcSpouseAge);
+  loadData();
+  if(typeof toggleIncomeType==='function') toggleIncomeType();
+  if(typeof toggleCouple==='function') toggleCouple();
+  if(typeof updatePlanningFor==='function') updatePlanningFor();
+  if(typeof recalc==='function') recalc();
+});
 </script>
 </body>
 </html>
