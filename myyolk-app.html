@@ -1495,7 +1495,12 @@
 
         <div class="budget-category">
           <div class="budget-cat-header">🏠 Housing</div>
-          <div class="budget-row"><label>Mortgage / Rent</label><input type="number" class="bud-m" data-key="mortgage" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row">
+            <label>Rent <span style="font-size:0.75rem;color:#888;font-weight:400">(renters only)</span></label>
+            <input type="number" class="bud-m" data-key="rent" placeholder="0" oninput="calcBudget(this)">
+            <input type="number" class="bud-a" readonly placeholder="0">
+          </div>
+          <div style="font-size:0.75rem;color:#888;font-style:italic;padding:0 0 6px">🏠 Homeowners: enter your mortgage in the Debt Payments section below</div>
           <div class="budget-row"><label>Property Taxes</label><input type="number" class="bud-m" data-key="propTax" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
           <div class="budget-row"><label>Home Insurance</label><input type="number" class="bud-m" data-key="homeIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
           <div class="budget-row"><label>Electric</label><input type="number" class="bud-m" data-key="electric" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
@@ -1504,7 +1509,7 @@
           <div class="budget-row"><label>Sewerage</label><input type="number" class="bud-m" data-key="sewerage" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
           <div class="budget-row"><label>Trash / Recycling</label><input type="number" class="bud-m" data-key="trash" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
           <div class="budget-row"><label>Internet</label><input type="number" class="bud-m" data-key="internet" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
-          <div class="budget-row"><label>Cell Phone</label><input type="number" class="bud-m" data-key="cellPhone" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
+          <div class="budget-row"><label>Telephone <span style="font-size:0.75rem;color:#888;font-weight:400">(Cell &amp; Home)</span></label><input type="number" class="bud-m" data-key="cellPhone" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
           <div class="budget-row"><label>Home Maintenance</label><input type="number" class="bud-m" data-key="homeMaint" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" readonly placeholder="0"></div>
         </div>
 
@@ -1556,7 +1561,7 @@
         <div class="budget-category">
           <div class="budget-cat-header">💳 Debt Payments</div>
           <div class="budget-row">
-            <label>1st Mortgage</label>
+            <label>1st Mortgage <span style="font-size:0.75rem;color:#888;font-weight:400">(P&amp;I only)</span></label>
             <input type="number" class="bud-m" data-key="debtMortgage" placeholder="0" oninput="calcBudget(this)">
             <input type="number" class="bud-a" readonly placeholder="0">
           </div>
@@ -1565,8 +1570,11 @@
             <input type="month" id="mortgagePayoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
             <div style="font-size:0.75rem;color:#888;padding-top:4px" id="mortgagePayoffNote"></div>
           </div>
+          <div style="font-size:0.75rem;color:#888;font-style:italic;padding:2px 0 6px">
+            💡 If your payment includes escrow (taxes &amp; insurance), check the boxes below and leave Property Taxes &amp; Home Insurance at $0
+          </div>
           <div class="budget-row">
-            <label>2nd Mortgage / HELOC</label>
+            <label>2nd Mortgage / HELOC <span style="font-size:0.75rem;color:#888;font-weight:400">(P&amp;I only)</span></label>
             <input type="number" class="bud-m" data-key="debtMortgage2" placeholder="0" oninput="calcBudget(this)">
             <input type="number" class="bud-a" readonly placeholder="0">
           </div>
@@ -1887,6 +1895,14 @@
             <label>Expected Annual Spending ($)</label>
             <input type="number" id="retSpending" placeholder="e.g. 80000" oninput="recalc()">
             <div class="hint">Your budget total is <span id="budgetHint">$0/yr</span></div>
+          </div>
+          <div class="field">
+            <label>Withdrawal Rate: <span id="withdrawalRateDisplay" style="color:var(--sage);font-weight:700">4.0%</span></label>
+            <input type="range" id="withdrawalRate" min="2" max="6" value="4" step="0.1" oninput="updateWithdrawalRate(this)" style="width:100%;accent-color:var(--sage)">
+            <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--mid)">
+              <span>2% Conservative</span><span>4% Standard</span><span>6% Aggressive</span>
+            </div>
+            <div class="hint" id="withdrawalRateHint">The 4% rule is based on historical data showing portfolios lasting 30+ years at this rate.</div>
           </div>
         </div>
       </div>
@@ -2351,11 +2367,17 @@ function recalc() {
   // Pay frequency
   var freq = document.getElementById('payFreq')?.value || 'biweekly';
   var periods = {biweekly:26, semimonthly:24, monthly:12, weekly:52}[freq] || 26;
-    // Display current year total income (all bonuses)
-  fmtEl('totalIncome', fmt(state.income + (state.spouseIncome || 0)));
-  fmtEl('monthlyIncome', fmt((state.income + (state.spouseIncome || 0))/12));
-  fmtEl('monthlyIncome', fmt((state.householdIncome || state.income)/12));
+  // YOUR income only (not combined with spouse)
+  fmtEl('totalIncome', fmt(state.income));
+  fmtEl('monthlyIncome', fmt(state.income/12));
   fmtEl('paycheckIncome', fmt(state.income/periods));
+  
+  // Spouse income display
+  var spouseFreq = document.getElementById('spousePayFreq')?.value || 'biweekly';
+  var spousePeriods = {biweekly:26, semimonthly:24, monthly:12, weekly:52}[spouseFreq] || 26;
+  fmtEl('spouseTotalIncome', fmt(state.spouseIncome));
+  fmtEl('spouseMonthlyIncome', fmt(state.spouseIncome/12));
+  fmtEl('spousePaycheckIncome', fmt(state.spouseIncome/spousePeriods));
 
   // Accounts
   var bal401k = getVal('bal401k');
@@ -2404,7 +2426,8 @@ function recalc() {
   state.portfolioAtRetirement = portfolio;
 
   fmtEl('portfolioAtRetire', fmt(portfolio));
-  fmtEl('safeWithdrawal', fmt(portfolio * 0.04 / 12));
+  var wRate = (parseFloat(document.getElementById('withdrawalRate')?.value) || 4) / 100;
+  fmtEl('safeWithdrawal', fmt(portfolio * wRate / 12));
   
   // Update Live Snapshot sidebar
   var totalBal2 = getVal('bal401k') + getVal('balRoth401') + getVal('balRothIRA') + getVal('balTaxable') + getVal('balHSA') + getVal('balCash');
@@ -2471,6 +2494,22 @@ function updateReadiness() {
     scoreEl.textContent = score;
     scoreEl.style.color = score >= 80 ? 'var(--sage)' : score >= 50 ? '#c96a3a' : '#c0392b';
   }
+}
+
+// ── WITHDRAWAL RATE ──
+function updateWithdrawalRate(slider) {
+  var rate = parseFloat(slider.value);
+  var el = document.getElementById('withdrawalRateDisplay');
+  if (el) el.textContent = rate.toFixed(1) + '%';
+  var hint = document.getElementById('withdrawalRateHint');
+  if (hint) {
+    if (rate < 3) hint.textContent = 'Very conservative — your money will very likely outlast you.';
+    else if (rate < 3.5) hint.textContent = 'Conservative — historically very safe for 30+ year retirements.';
+    else if (rate < 4.5) hint.textContent = 'The 4% rule — historically survived all 30-year periods since 1926.';
+    else if (rate < 5.5) hint.textContent = 'Moderately aggressive — some historical periods ran short. Monitor carefully.';
+    else hint.textContent = '⚠️ Aggressive — high risk of running out of money. Consider part-time income.';
+  }
+  recalc();
 }
 
 // ── WHAT IF ──
