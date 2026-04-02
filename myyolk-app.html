@@ -1686,7 +1686,7 @@
             <div class="spend-card-sub" id="ba-currentAnnual">$0 / year</div>
           </div>
           <div class="spend-card retire" id="ba-retireCard">
-            <div class="spend-card-label">🎯 Est. Retirement Monthly</div>
+            <div class="spend-card-label" id="ba-retireLabel">🎯 Est. Retirement Monthly</div>
             <div class="spend-card-value" id="ba-retireMonthly">$0</div>
             <div class="spend-card-sub" id="ba-retireAnnual">$0 / year · inflation-adjusted</div>
           </div>
@@ -2589,7 +2589,7 @@ function updateBudgetAnalysis() {
   var fmtEl2 = function(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; };
   fmtEl2('ba-currentMonthly', fmt(monthly));
   fmtEl2('ba-currentAnnual', fmt(monthly * 12) + ' / year');
-  fmtEl2('ba-retireMonthly', fmt(retireMonthly));
+  var retLabel = document.getElementById('ba-retireLabel'); if (retLabel) retLabel.textContent = 'Est. Retirement Monthly @ age ' + retireAge; fmtEl2('ba-retireMonthly', fmt(retireMonthly));
   fmtEl2('ba-retireAnnual', fmt(retireMonthly * 12) + ' / year · inflation-adjusted');
   fmtEl2('ba-inflRate', (inflRate * 100).toFixed(1) + '%');
   fmtEl2('ba-inflYears', yearsToRetire + ' years');
@@ -2776,6 +2776,7 @@ function clearData() {
     location.reload();
   }
 }
+
 
 
 
