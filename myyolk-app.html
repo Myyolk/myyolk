@@ -1135,7 +1135,7 @@
       <p class="page-subtitle">Enter your current balances and how much you're contributing to each account.</p>
 
       <div class="card">
-        <div class="card-title"><span class="dot"></span> Current Balances</div>
+        <div class="card-title"><span class="dot"></span> <span id="acct-bal-title">Your</span> Current Balances</div>
         <div class="form-grid">
           <div class="field">
             <label>Traditional 401(k) ($)</label>
@@ -1169,7 +1169,7 @@
       </div>
 
       <div class="card">
-        <div class="card-title"><span class="dot"></span> 401(k) Contributions</div>
+        <div class="card-title"><span class="dot"></span> <span id="acct-401k-title">Your</span> 401(k) Contributions</div>
         <div class="form-grid">
           <div class="field">
             <label>Your 401(k) Contribution %</label>
@@ -1253,7 +1253,7 @@
       </div>
 
       <div class="card" id="ssCard">
-        <div class="card-title"><span class="dot"></span> Social Security Estimates</div>
+        <div class="card-title"><span class="dot"></span> <span id="acct-ss-title">Your</span> Social Security</div>
 
         <!-- SS Method Tabs -->
         <div style="display:flex;gap:0;margin-bottom:1.5rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden">
@@ -1485,7 +1485,7 @@
       <!-- SPOUSE ACCOUNTS - hidden by default -->
       <div id="spouseAccountsCard" style="display:none">
         <div class="card" style="border:2px solid var(--gold)">
-          <div class="card-title"><span class="dot"></span> 👫 Spouse / Partner Accounts</div>
+          <div class="card-title"><span class="dot"></span> <span id="acct-spouse-title">Spouse / Partner</span> Accounts</div>
           <div class="form-grid">
             <div class="field">
               <label>Spouse Traditional 401(k) ($)</label>
@@ -2635,6 +2635,11 @@ function updatePlanningFor() {
   } else {
     sbNameEl.innerHTML = '<span style="' + green + '">My</span>' + yolk;
   }
+  var st = function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
+  st('acct-bal-title',(cap1||'Your')+"'s");
+  st('acct-401k-title',(cap1||'Your')+"'s");
+  st('acct-ss-title',(cap1||'Your')+"'s");
+  st('acct-spouse-title',cap2||'Spouse / Partner');
 }
 
 function updateGreeting() {
@@ -3034,15 +3039,7 @@ function updateSummary() {
 
 
 
-document.addEventListener('DOMContentLoaded', function() {
-  var b = document.getElementById('calcAgeBtn');
-  if (b) b.addEventListener('click', calcAgeFromDOB);
-  var sb = document.getElementById('calcSpouseAgeBtn');
-  if (sb) sb.addEventListener('click', calcSpouseAge);
-  if (typeof toggleIncomeType === 'function') toggleIncomeType();
-  if (typeof toggleCouple === 'function') toggleCouple();
-  if (typeof recalc === 'function') recalc();
-});
+
 
 // ── AUTO SAVE / LOAD ──
 var SAVE_KEY = 'myyolk_data_v1';
@@ -3087,6 +3084,16 @@ function clearData() {
   }
 }
 
+
+document.addEventListener('DOMContentLoaded', function() {
+  var b=document.getElementById('calcAgeBtn'); if(b) b.addEventListener('click',calcAgeFromDOB);
+  var sb=document.getElementById('calcSpouseAgeBtn'); if(sb) sb.addEventListener('click',calcSpouseAge);
+  loadData();
+  if(typeof toggleIncomeType==='function') toggleIncomeType();
+  if(typeof toggleCouple==='function') toggleCouple();
+  if(typeof updatePlanningFor==='function') updatePlanningFor();
+  if(typeof recalc==='function') recalc();
+});
 </script>
 </body>
 </html>
