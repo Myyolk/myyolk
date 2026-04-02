@@ -1188,7 +1188,7 @@
       </div>
 
       <div class="card">
-        <div class="card-title"><span class="dot"></span> Other Contributions</div>
+        <div class="card-title"><span class="dot"></span> <span id="acct-other-title">Your</span> Other Contributions</div>
         <div class="form-grid">
           <div class="field"><label>Roth IRA Annual ($)</label><input type="number" id="contribRothIRA" value="" placeholder="e.g. 7000" oninput="recalc()"></div>
           <div class="field"><label>Taxable Investing / year ($)</label><input type="number" id="contribTaxable" value="" placeholder="e.g. 5000" oninput="recalc()"></div>
@@ -1324,6 +1324,14 @@
         </div>
 
         <div class="card">
+          <div class="card-title"><span class="dot"></span> <span id="spouse-other-title">Spouse</span>&apos;s Other Contributions</div>
+          <div class="form-grid">
+            <div class="field"><label>Roth IRA Annual ($)</label><input type="number" id="spouseContribRothIRA" value="" placeholder="e.g. 7000" oninput="recalc()"></div>
+            <div class="field"><label>Taxable Investing / year ($)</label><input type="number" id="spouseContribTaxable" value="" placeholder="e.g. 5000" oninput="recalc()"></div>
+          </div>
+        </div>
+
+        <div class="card">
           <div class="card-title"><span class="dot"></span> <span id="spouse-ss-title">Spouse</span>&apos;s Social Security</div>
           <div style="margin-bottom:1rem">
             <label style="font-size:0.85rem;font-weight:600">Work history:</label>
@@ -1408,9 +1416,6 @@
           <div class="budget-row"><label>Medical Premiums</label><input type="number" class="bud-m" data-key="medPrem" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Prescriptions</label><input type="number" class="bud-m" data-key="rx" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Out-of-Pocket</label><input type="number" class="bud-m" data-key="oop" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
-          <div class="budget-row"><label>Physical Therapy</label><input type="number" class="bud-m" data-key="physTherapy" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
-          <div class="budget-row"><label>Massage Therapy</label><input type="number" class="bud-m" data-key="massage" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
-          <div class="budget-row"><label>Mental Health / Therapy</label><input type="number" class="bud-m" data-key="mentalHealth" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
         </div>
 
         <div class="budget-category">
@@ -2406,6 +2411,8 @@ function updatePlanningFor() {
   }
   var st = function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
   st('acct-bal-title',(cap1||'Your')+"'s");
+  st('acct-other-title',(cap1||'Your')+"'s");
+  st('spouse-other-title',cap2||'Spouse');
   st('acct-401k-title',(cap1||'Your')+"'s");
   st('acct-ss-title',(cap1||'Your')+"'s");
   st('spouse-bal-title',cap2||'Spouse');
