@@ -1131,40 +1131,19 @@
 
     <!-- ══ ACCOUNTS TAB ══ -->
     <div class="tab-panel" id="tab-accounts">
-      <h1 class="page-title">Accounts & Savings</h1>
-      <p class="page-subtitle">Enter your current balances and how much you're contributing to each account.</p>
+      <h1 class="page-title">Accounts &amp; Savings</h1>
+      <p class="page-subtitle">Enter your current balances and contribution details.</p>
 
       <div class="card">
         <div class="card-title"><span class="dot"></span> <span id="acct-bal-title">Your</span> Current Balances</div>
         <div class="form-grid">
-          <div class="field">
-            <label>Traditional 401(k) ($)</label>
-            <input type="number" id="bal401k" value="" placeholder="0" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Roth 401(k) ($)</label>
-            <input type="number" id="balRoth401" value="" placeholder="0" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Roth IRA ($)</label>
-            <input type="number" id="balRothIRA" value="" placeholder="0" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Taxable Investments ($)</label>
-            <input type="number" id="balTaxable" value="" placeholder="0" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>HSA ($)</label>
-            <input type="number" id="balHSA" value="" placeholder="0" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Cash Savings ($)</label>
-            <input type="number" id="balCash" value="" placeholder="0" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>ESPP Balance ($)</label>
-            <input type="number" id="balESPP" value="" placeholder="0" oninput="recalc()">
-          </div>
+          <div class="field"><label>Traditional 401(k) ($)</label><input type="number" id="bal401k" value="" placeholder="0" oninput="recalc()"></div>
+          <div class="field"><label>Roth 401(k) ($)</label><input type="number" id="balRoth401" value="" placeholder="0" oninput="recalc()"></div>
+          <div class="field"><label>Roth IRA ($)</label><input type="number" id="balRothIRA" value="" placeholder="0" oninput="recalc()"></div>
+          <div class="field"><label>Taxable Investments ($)</label><input type="number" id="balTaxable" value="" placeholder="0" oninput="recalc()"></div>
+          <div class="field"><label>HSA ($)</label><input type="number" id="balHSA" value="" placeholder="0" oninput="recalc()"></div>
+          <div class="field"><label>Cash / Savings ($)</label><input type="number" id="balCash" value="" placeholder="0" oninput="recalc()"></div>
+          <div class="field"><label>ESPP Balance ($)</label><input type="number" id="balESPP" value="" placeholder="0" oninput="recalc()"></div>
         </div>
       </div>
 
@@ -1190,7 +1169,7 @@
               </label>
             </div>
             <div id="split401kFields" style="display:none;margin-top:0.75rem;padding:0.75rem;background:var(--sage-pale);border-radius:8px">
-              <div style="font-size:0.78rem;font-weight:600;color:var(--forest);margin-bottom:0.5rem">Split your contribution between Traditional and Roth:</div>
+              <div style="font-size:0.78rem;font-weight:600;color:var(--forest);margin-bottom:0.5rem">Split your contribution:</div>
               <div style="display:flex;gap:1rem;flex-wrap:wrap">
                 <div style="flex:1;min-width:120px">
                   <label style="font-size:0.78rem">Traditional %</label>
@@ -1203,33 +1182,17 @@
               </div>
             </div>
           </div>
-          <div class="field">
-            <label>Employer Match %</label>
-            <input type="number" id="empMatch" value="" placeholder="e.g. 6" step="0.1" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Match Cap %</label>
-            <input type="number" id="matchCap" value="" placeholder="e.g. 5" step="0.1" oninput="recalc()">
-            <div class="hint">Max % employer will match</div>
-          </div>
+          <div class="field"><label>Employer Match %</label><input type="number" id="empMatch" value="" placeholder="e.g. 6" step="0.1" oninput="recalc()"></div>
+          <div class="field"><label>Match Cap %</label><input type="number" id="matchCap" value="" placeholder="e.g. 5" step="0.1" oninput="recalc()"><div class="hint">Max % employer will match</div></div>
         </div>
+      </div>
 
       <div class="card">
         <div class="card-title"><span class="dot"></span> Other Contributions</div>
         <div class="form-grid">
-          <div class="field">
-            <label>Roth IRA Annual ($)</label>
-            <input type="number" id="contribRothIRA" value="" placeholder="e.g. 7000" oninput="recalc()">
-            <div class="hint">2024 limit: $7,000 (50+: $8,000)</div>
-          </div>
-          <div class="field">
-            <label>Taxable Investing / year ($)</label>
-            <input type="number" id="contribTaxable" value="" placeholder="e.g. 12000" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>ESPP % of Salary</label>
-            <input type="number" id="contribESPP" value="" placeholder="e.g. 5" step="0.1" oninput="recalc()">
-          </div>
+          <div class="field"><label>Roth IRA Annual ($)</label><input type="number" id="contribRothIRA" value="" placeholder="e.g. 7000" oninput="recalc()"></div>
+          <div class="field"><label>Taxable Investing / year ($)</label><input type="number" id="contribTaxable" value="" placeholder="e.g. 5000" oninput="recalc()"></div>
+          <div class="field"><label>ESPP % of Salary</label><input type="number" id="contribESPP" value="" placeholder="e.g. 10" step="0.1" oninput="recalc()"></div>
         </div>
       </div>
 
@@ -1238,16 +1201,16 @@
         <div class="form-grid">
           <div class="field">
             <label>Expected Annual Return</label>
-            <select id="rorChoice" onchange="toggleCustomROR()">
-              <option value="conservative">Conservative (5%)</option>
-              <option value="expected" selected>Expected (7%)</option>
-              <option value="aggressive">Aggressive (9%)</option>
+            <select id="growthRate" onchange="recalc()" style="width:100%">
+              <option value="0.05">Conservative (5%)</option>
+              <option value="0.07" selected>Moderate (7%)</option>
+              <option value="0.09">Aggressive (9%)</option>
               <option value="custom">Custom</option>
             </select>
           </div>
-          <div class="field" id="customRORField" style="display:none">
+          <div class="field" id="customRateField" style="display:none">
             <label>Custom Rate (%)</label>
-            <input type="number" id="customROR" value="8" step="0.1" oninput="recalc()">
+            <input type="number" id="customRate" value="" placeholder="e.g. 8" step="0.1" oninput="recalc()">
           </div>
         </div>
       </div>
@@ -1255,231 +1218,84 @@
       <div class="card" id="ssCard">
         <div class="card-title"><span class="dot"></span> <span id="acct-ss-title">Your</span> Social Security</div>
 
-        <!-- SS Method Tabs -->
         <div style="display:flex;gap:0;margin-bottom:1.5rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden">
-          <button class="ss-method-btn active" id="ssBtn-upload" onclick="switchSSMethod('upload')" style="flex:1;padding:0.6rem 0.5rem;border:none;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--sage);color:#fff;transition:all 0.15s">📄 Upload Statement</button>
-          <button class="ss-method-btn" id="ssBtn-manual" onclick="switchSSMethod('manual')" style="flex:1;padding:0.6rem 0.5rem;border:none;border-left:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid);transition:all 0.15s">✏️ Enter Manually</button>
-          <button class="ss-method-btn" id="ssBtn-estimate" onclick="switchSSMethod('estimate')" style="flex:1;padding:0.6rem 0.5rem;border:none;border-left:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid);transition:all 0.15s">🧮 Estimate for Me</button>
+          <button class="ss-method-btn active" id="ssBtn-upload" onclick="switchSSMethod('upload')" style="flex:1;padding:0.6rem 0.5rem;border:none;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--sage);color:#fff">Upload Statement</button>
+          <button class="ss-method-btn" id="ssBtn-manual" onclick="switchSSMethod('manual')" style="flex:1;padding:0.6rem 0.5rem;border:none;border-left:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Enter Manually</button>
+          <button class="ss-method-btn" id="ssBtn-estimate" onclick="switchSSMethod('estimate')" style="flex:1;padding:0.6rem 0.5rem;border:none;border-left:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Estimate for Me</button>
         </div>
 
-        <!-- UPLOAD METHOD -->
         <div id="ss-method-upload">
-          <div class="callout info" style="margin-bottom:1rem">
-            <span>💡</span>
-            <div>
-              <strong>Get your official statement:</strong> Go to <a href="https://www.ssa.gov/myaccount" target="_blank" style="color:var(--sage);font-weight:600">ssa.gov/myaccount</a> → Sign in → click <em>"View your Social Security Statement"</em> → Download as PDF. Then upload it here.
-            </div>
-          </div>
           <div class="upload-zone" id="ssUploadZone" style="padding:1.5rem">
             <input type="file" accept=".pdf,image/*" onchange="handleSSUpload(event)">
-            <div class="upload-icon" style="font-size:2rem;margin-bottom:0.5rem">🏛️</div>
-            <div class="upload-title" style="font-size:0.95rem">Drop your SSA Statement PDF here</div>
-            <div class="upload-sub">We'll read your benefit amounts at 62, 67, and 70 automatically</div>
+            <div style="font-size:2rem;margin-bottom:0.5rem">🏛️</div>
+            <div style="font-size:0.95rem;font-weight:600">Drop your SSA Statement PDF here</div>
+            <div style="font-size:0.82rem;color:var(--mid)">We will read your benefit amounts automatically</div>
           </div>
-          <div id="ssUploadLoading" style="display:none;margin-top:1rem">
-            <div class="callout info">
-              <div class="spinner" style="border-color:rgba(74,124,89,0.3);border-top-color:var(--sage)"></div>
-              <span>Reading your SSA statement - just a moment…</span>
-            </div>
-          </div>
-          <div class="upload-result" id="ssUploadResult" style="margin-top:1rem">
-            <div style="font-size:1.5rem">✅</div>
-            <div class="upload-result-text">
-              <strong id="ssUploadStatus">Reading…</strong>
-              <span id="ssUploadDetails"></span>
-            </div>
+          <div id="ssUploadLoading" style="display:none;margin-top:1rem">Reading your SSA statement...</div>
+          <div id="ssUploadResult" style="margin-top:1rem;display:none">
+            <strong id="ssUploadStatus"></strong>
           </div>
         </div>
 
-        <!-- MANUAL METHOD -->
         <div id="ss-method-manual" style="display:none">
-          <div class="callout info" style="margin-bottom:1rem">
-            <span>📍</span>
-            <div>Find these numbers at <a href="https://www.ssa.gov/myaccount" target="_blank" style="color:var(--sage);font-weight:600">ssa.gov/myaccount</a> under <em>"Retirement Benefits."</em> They show your estimated monthly benefit if you claim at each age.</div>
-          </div>
           <div class="form-grid three">
-            <div class="field">
-              <label>Monthly Benefit at 62 ($)</label>
-              <input type="number" id="ss62" value="" placeholder="e.g. 1,800" oninput="ssManualUpdate()">
-              <div class="hint">Reduced early benefit</div>
-            </div>
-            <div class="field">
-              <label>Monthly Benefit at 67 ($)</label>
-              <input type="number" id="ss67" value="" placeholder="e.g. 2,500" oninput="ssManualUpdate()">
-              <div class="hint">Full retirement age</div>
-            </div>
-            <div class="field">
-              <label>Monthly Benefit at 70 ($)</label>
-              <input type="number" id="ss70" value="" placeholder="e.g. 3,200" oninput="ssManualUpdate()">
-              <div class="hint">Maximum delayed benefit</div>
-            </div>
+            <div class="field"><label>Monthly Benefit at 62 ($)</label><input type="number" id="ss62" value="" placeholder="e.g. 1800" oninput="ssManualUpdate()"><div class="hint">Reduced early benefit</div></div>
+            <div class="field"><label>Monthly Benefit at 67 ($)</label><input type="number" id="ss67" value="" placeholder="e.g. 2500" oninput="ssManualUpdate()"><div class="hint">Full retirement age</div></div>
+            <div class="field"><label>Monthly Benefit at 70 ($)</label><input type="number" id="ss70" value="" placeholder="e.g. 3200" oninput="ssManualUpdate()"><div class="hint">Maximum delayed benefit</div></div>
           </div>
           <div class="field" style="margin-top:1rem;max-width:300px">
             <label>Planned SS Claiming Age</label>
             <select id="ssClaimingAgeManual" onchange="ssManualUpdate()" style="width:100%">
-              <option value="62">62 — Early (reduced benefit)</option>
-              <option value="63">63</option>
-              <option value="64">64</option>
-              <option value="65">65</option>
-              <option value="66">66</option>
-              <option value="67" selected>67 — Full retirement age</option>
-              <option value="68">68</option>
-              <option value="69">69</option>
-              <option value="70">70 — Maximum benefit</option>
+              <option value="62">62 - Early</option><option value="63">63</option><option value="64">64</option>
+              <option value="65">65</option><option value="66">66</option><option value="67" selected>67 - Full</option>
+              <option value="68">68</option><option value="69">69</option><option value="70">70 - Maximum</option>
             </select>
-            <div class="hint">App uses the benefit amount closest to your claiming age</div>
           </div>
         </div>
 
-        <!-- ESTIMATE METHOD -->
         <div id="ss-method-estimate" style="display:none">
-          <div class="callout info" style="margin-bottom:1rem">
-            <span>🧮</span>
-            <div>We'll estimate your benefit using your income and years of US SS earnings. SSA averages your top 35 years - fewer than 35 years means zeros fill the gap and reduce your benefit. <strong>This is an approximation</strong> - upload your SSA statement or enter manually for exact figures. SS benefits are also subject to future policy changes.</div>
-          </div>
           <div class="form-grid">
             <div class="field">
               <label>Years Worked (est.)</label>
               <input type="number" id="ssYearsWorked" value="30" min="1" max="50" oninput="estimateSS()">
               <div class="hint" id="ssYearsHint" style="color:var(--clay)"></div>
-              <div class="hint">Years contributing to Social Security</div>
             </div>
             <div class="field">
               <label>Average Annual Income ($)</label>
               <input type="number" id="ssAvgIncome" value="" placeholder="e.g. 85000" oninput="estimateSS()">
-              <div class="hint">Lifetime average, or leave blank to use current salary</div>
             </div>
             <div class="field">
               <label>Planned SS Claiming Age</label>
               <select id="ssClaimingAge" onchange="estimateSS()" style="width:100%">
-                <option value="62">62 — Early (reduced benefit)</option>
-                <option value="63">63</option>
-                <option value="64">64</option>
-                <option value="65">65</option>
-                <option value="66">66</option>
-                <option value="67" selected>67 — Full retirement age</option>
-                <option value="68">68</option>
-                <option value="69">69</option>
-                <option value="70">70 — Maximum benefit</option>
+                <option value="62">62 - Early</option><option value="63">63</option><option value="64">64</option>
+                <option value="65">65</option><option value="66">66</option><option value="67" selected>67 - Full</option>
+                <option value="68">68</option><option value="69">69</option><option value="70">70 - Maximum</option>
               </select>
-              <div class="hint">Each year you delay past 62 increases your benefit by ~6-8%</div>
             </div>
           </div>
           <div style="margin-top:1rem;padding:1rem;background:var(--sage-pale);border-radius:var(--radius-sm);border:1px solid #9ec4ab">
-            <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--sage);margin-bottom:0.75rem">Estimated Monthly Benefits</div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;text-align:center;margin-bottom:1rem">
-              <div>
-                <div style="font-size:1.2rem;font-weight:700;color:var(--charcoal)" id="est-ss62">—</div>
-                <div style="font-size:0.75rem;color:var(--mid);margin-top:2px">At age 62</div>
-              </div>
-              <div>
-                <div style="font-size:1.2rem;font-weight:700;color:var(--sage)" id="est-ss67">—</div>
-                <div style="font-size:0.75rem;color:var(--mid);margin-top:2px">At age 67</div>
-              </div>
-              <div>
-                <div style="font-size:1.2rem;font-weight:700;color:var(--charcoal)" id="est-ss70">—</div>
-                <div style="font-size:0.75rem;color:var(--mid);margin-top:2px">At age 70</div>
-              </div>
+              <div><div style="font-size:1.2rem;font-weight:700" id="est-ss62">-</div><div style="font-size:0.75rem;color:var(--mid)">At age 62</div></div>
+              <div><div style="font-size:1.2rem;font-weight:700;color:var(--sage)" id="est-ss67">-</div><div style="font-size:0.75rem;color:var(--mid)">At age 67</div></div>
+              <div><div style="font-size:1.2rem;font-weight:700" id="est-ss70">-</div><div style="font-size:0.75rem;color:var(--mid)">At age 70</div></div>
             </div>
             <div style="padding:0.75rem;background:#fff;border:2px solid var(--sage);border-radius:8px;text-align:center">
               <div style="font-size:0.78rem;font-weight:600;color:var(--mid);margin-bottom:4px" id="ssClaimAgeDisplay">Select your claiming age above</div>
-              <div style="font-size:1.8rem;font-weight:700;color:var(--sage)" id="ssEstimate">—</div>
+              <div style="font-size:1.8rem;font-weight:700;color:var(--sage)" id="ssEstimate">-</div>
               <div style="font-size:0.75rem;color:var(--mid)">Your estimated monthly benefit</div>
             </div>
-            <div style="margin-top:0.75rem;font-size:0.75rem;color:var(--mid);font-style:italic">⚠️ Estimates only. Future benefits depend on your full earnings record and may change with policy. Upload your SSA statement for accuracy.</div>
           </div>
-          <input type="hidden" id="ss62" value="">
-          <input type="hidden" id="ss67" value="">
-          <input type="hidden" id="ss70" value="">
+          <button onclick="clearSS()" style="margin-top:0.75rem;font-size:0.78rem;color:var(--clay);background:none;border:none;cursor:pointer;font-family:DM Sans;font-weight:600">Clear SS Data</button>
         </div>
-
-        <!-- Shared SS display (shown in all modes once populated) -->
-        <div id="ssSummaryRow" style="display:none;margin-top:1rem;padding:0.85rem 1rem;background:var(--cream);border-radius:var(--radius-sm);border:1px solid var(--border);display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap">
-          <span style="font-size:0.78rem;font-weight:600;color:var(--mid)">LOADED ESTIMATES</span>
-          <span>Age 62: <strong id="ss-disp62">—</strong>/mo</span>
-          <span>Age 67: <strong id="ss-disp67">—</strong>/mo</span>
-          <span>Age 70: <strong id="ss-disp70">—</strong>/mo</span>
-          <button onclick="clearSS()" style="margin-left:auto;font-size:0.78rem;color:var(--clay);background:none;border:none;cursor:pointer;font-family:DM Sans;font-weight:600">✕ Clear</button>
-        </div>
-      </div>
-
       </div>
 
       <div class="card">
-        <div class="card-title"><span class="dot"></span> Personal Property & Other Assets</div>
-        <p style="font-size:0.85rem;color:#666;margin-bottom:1rem">These assets contribute to your net worth even if they don't generate income.</p>
+        <div class="card-title"><span class="dot"></span> Personal Property &amp; Other Assets</div>
         <div class="form-grid">
-          <div class="field">
-            <label>Vehicles - Total Estimated Value ($)</label>
-            <input type="number" id="assetVehicles" value="" placeholder="e.g. 45000" oninput="recalc()">
-            <div class="hint">Combined value of all vehicles you own</div>
-          </div>
-          <div class="field">
-            <label>Jewelry & Valuables ($)</label>
-            <input type="number" id="assetJewelry" value="" placeholder="e.g. 5000" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Collectibles / Art ($)</label>
-            <input type="number" id="assetCollectibles" value="" placeholder="e.g. 0" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Business Ownership Value ($)</label>
-            <input type="number" id="assetBusiness" value="" placeholder="e.g. 0" oninput="recalc()">
-            <div class="hint">Estimated value if sold</div>
-          </div>
-          <div class="field">
-            <label>Other Assets ($)</label>
-            <input type="number" id="assetOther" value="" placeholder="e.g. 0" oninput="recalc()">
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title"><span class="dot"></span> Real Estate & Property</div>
-        <p style="font-size:0.85rem;color:#666;margin-bottom:1rem">Your home and any investment properties are major retirement assets.</p>
-
-        <div style="margin-bottom:1.5rem">
-          <div style="font-weight:600;font-size:0.9rem;color:var(--forest);margin-bottom:0.75rem">🏠 Primary Home</div>
-          <div class="form-grid">
-            <div class="field">
-              <label>Current Home Value ($)</label>
-              <input type="number" id="homeValue" value="" placeholder="e.g. 350000" oninput="recalc()">
-            </div>
-            <div class="field">
-              <label>Mortgage Balance ($)</label>
-              <input type="number" id="homeMortgage" value="" placeholder="e.g. 19000" oninput="recalc()">
-              <div class="hint">Enter 0 if paid off</div>
-            </div>
-            <div class="field">
-              <label>Monthly Mortgage Payment ($)</label>
-              <input type="number" id="homeMortgagePayment" value="" placeholder="e.g. 1800" oninput="recalc()">
-            </div>
-            <div class="field">
-              <label>Mortgage Payoff Year</label>
-              <input type="number" id="homeMortgagePayoffYear" value="" placeholder="e.g. 2026" oninput="recalc()">
-              <div class="hint">Year your mortgage ends</div>
-            </div>
-            <div class="field">
-              <label>Plan at Retirement</label>
-              <select id="homePlan" onchange="recalc()">
-                <option value="stay">Stay in home</option>
-                <option value="downsize">Sell and downsize</option>
-                <option value="sell">Sell and rent</option>
-                <option value="rentout">Keep and rent out</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Expected Annual Appreciation (%)</label>
-              <input type="number" id="homeAppreciation" value="3" step="0.1" oninput="recalc()">
-              <div class="hint">Historical average ~3%/year</div>
-            </div>
-          </div>
-        </div>
-
-        <div id="investmentProperties">
-          <div style="font-weight:600;font-size:0.9rem;color:var(--forest);margin-bottom:0.75rem">🏘️ Investment Properties</div>
-          <div id="propList"></div>
-          <button onclick="addProperty()" style="margin-top:0.5rem;padding:8px 16px;background:transparent;color:var(--sage);border:2px solid var(--sage);border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;">+ Add Investment Property</button>
+          <div class="field"><label>Primary Home Value ($)</label><input type="number" id="homeValue" value="" placeholder="0" oninput="recalc()"></div>
+          <div class="field"><label>Mortgage Balance ($)</label><input type="number" id="mortgageBalance" value="" placeholder="0" oninput="recalc()"></div>
+          <div class="field"><label>Vehicle Value ($)</label><input type="number" id="vehicleValue" value="" placeholder="0" oninput="recalc()"></div>
+          <div class="field"><label>Other Assets ($)</label><input type="number" id="otherAssets" value="" placeholder="0" oninput="recalc()"></div>
         </div>
       </div>
 
@@ -1487,39 +1303,39 @@
       <div id="spouseAccountsCard" style="display:none">
 
         <div class="card">
-          <div class="card-title"><span class="dot"></span> <span id="spouse-bal-title">Spouse</span>'s Current Balances</div>
+          <div class="card-title"><span class="dot"></span> <span id="spouse-bal-title">Spouse</span>&apos;s Current Balances</div>
           <div class="form-grid">
             <div class="field"><label>Traditional 401(k) ($)</label><input type="number" id="spouseBal401k" value="" placeholder="0" oninput="recalc()"></div>
             <div class="field"><label>Roth 401(k) ($)</label><input type="number" id="spouseBalRoth401" value="" placeholder="0" oninput="recalc()"></div>
             <div class="field"><label>Roth IRA ($)</label><input type="number" id="spouseBalRothIRA" value="" placeholder="0" oninput="recalc()"></div>
-            <div class="field"><label>Taxable Investments ($)</label><input type="number" id="spouseBalTaxable" value="" placeholder="0" oninput="recalc()"></div>
+            <div class="field"><label>Taxable ($)</label><input type="number" id="spouseBalTaxable" value="" placeholder="0" oninput="recalc()"></div>
             <div class="field"><label>HSA ($)</label><input type="number" id="spouseBalHSA" value="" placeholder="0" oninput="recalc()"></div>
-            <div class="field"><label>Cash Savings ($)</label><input type="number" id="spouseBalCash" value="" placeholder="0" oninput="recalc()"></div>
+            <div class="field"><label>Cash ($)</label><input type="number" id="spouseBalCash" value="" placeholder="0" oninput="recalc()"></div>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-title"><span class="dot"></span> <span id="spouse-401k-title">Spouse</span>'s 401(k) Contributions</div>
+          <div class="card-title"><span class="dot"></span> <span id="spouse-401k-title">Spouse</span>&apos;s 401(k) Contributions</div>
           <div class="form-grid">
-            <div class="field"><label>401(k) Contribution %</label><input type="number" id="spouseContrib401k" value="" placeholder="e.g. 10" step="0.1" oninput="recalc()"></div>
+            <div class="field"><label>Contribution %</label><input type="number" id="spouseContrib401k" value="" placeholder="e.g. 10" step="0.1" oninput="recalc()"></div>
             <div class="field"><label>Employer Match %</label><input type="number" id="spouseEmpMatch" value="" placeholder="e.g. 6" step="0.1" oninput="recalc()"></div>
             <div class="field"><label>Roth 401(k) %</label><input type="number" id="spouseContribRoth401" value="" placeholder="e.g. 5" step="0.1" oninput="recalc()"></div>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-title"><span class="dot"></span> <span id="spouse-ss-title">Spouse</span>'s Social Security</div>
+          <div class="card-title"><span class="dot"></span> <span id="spouse-ss-title">Spouse</span>&apos;s Social Security</div>
           <div style="margin-bottom:1rem">
             <label style="font-size:0.85rem;font-weight:600">Work history:</label>
             <div style="display:flex;gap:1.5rem;margin-top:0.5rem;flex-wrap:wrap">
-              <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;cursor:pointer"><input type="radio" name="spouseSSType" id="spouseSSWorked" value="worked" checked onchange="toggleSpouseSSType()" style="accent-color:var(--sage)"> Has worked / has SS earnings</label>
-              <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;cursor:pointer"><input type="radio" name="spouseSSType" id="spouseSSNeverWorked" value="neverworked" onchange="toggleSpouseSSType()" style="accent-color:var(--sage)"> Never worked / no SS earnings</label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;cursor:pointer"><input type="radio" name="spouseSSType" id="spouseSSWorked" value="worked" checked onchange="toggleSpouseSSType()" style="accent-color:var(--sage)"> Has worked</label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;cursor:pointer"><input type="radio" name="spouseSSType" id="spouseSSNeverWorked" value="neverworked" onchange="toggleSpouseSSType()" style="accent-color:var(--sage)"> Never worked</label>
             </div>
           </div>
           <div id="spouseSSWorkedFields">
             <div class="form-grid">
-              <div class="field"><label>SS Estimate ($/mo)</label><input type="number" id="spouseSsManual" value="" placeholder="e.g. 1800" oninput="recalc()"><div class="hint">From SSA statement or estimate</div></div>
-              <div class="field"><label>SS Claiming Age</label><select id="spouseSsAge" onchange="recalc()" style="width:100%"><option value="62">62 - Early</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67" selected>67 - Full</option><option value="68">68</option><option value="69">69</option><option value="70">70 - Maximum</option></select></div>
+              <div class="field"><label>SS Estimate ($/mo)</label><input type="number" id="spouseSsManual" value="" placeholder="e.g. 1800" oninput="recalc()"></div>
+              <div class="field"><label>SS Claiming Age</label><select id="spouseSsAge" onchange="recalc()" style="width:100%"><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67" selected>67 - Full</option><option value="68">68</option><option value="69">69</option><option value="70">70</option></select></div>
               <div class="field"><label>Years of SS Earnings</label><input type="number" id="spouseSsYears" value="30" min="1" max="50" oninput="recalc()"></div>
             </div>
           </div>
@@ -1535,13 +1351,12 @@
           </div>
         </div>
 
-        <div class="btn-row">
-          <button class="btn btn-secondary" onclick="showTab('income')">← Back</button>
-          <button class="btn btn-primary" onclick="showTab('budget')">Next: Budget →</button>
-        </div>
       </div>
 
-    </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="showTab('income')">Back</button>
+        <button class="btn btn-primary" onclick="showTab('budget')">Next: Budget</button>
+      </div>
     </div>
 
     <div class="tab-panel" id="tab-budget">
@@ -3036,6 +2851,7 @@ function clearData() {
     location.reload();
   }
 }
+
 
 
 
