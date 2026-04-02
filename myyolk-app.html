@@ -1523,25 +1523,72 @@
             </div>
           </div>
           <div style="font-weight:600;font-size:0.85rem;color:var(--forest);margin:1rem 0 0.5rem">Spouse Social Security</div>
-          <div class="form-grid">
-            <div class="field">
-              <label>Spouse SS Estimate ($/mo)</label>
-              <input type="number" id="spouseSsManual" value="" placeholder="e.g. 1800" oninput="recalc()">
-              <div class="hint">From SSA statement or estimate</div>
-            </div>
-            <div class="field">
-              <label>Spouse SS Claiming Age</label>
-              <input type="number" id="spouseSsAge" value="67" min="62" max="70" oninput="recalc()">
-              <div class="hint">62 = reduced · 67 = full · 70 = maximum</div>
-            </div>
-            <div class="field">
-              <label>Years of Spouse SS Earnings</label>
-              <input type="number" id="spouseSsYears" value="30" min="1" max="50" oninput="recalc()">
-              <div class="hint" id="spouseSsYearsHint" style="color:var(--clay)"></div>
+          
+          <div style="margin-bottom:1rem">
+            <label style="font-size:0.85rem;font-weight:600">Spouse work history:</label>
+            <div style="display:flex;gap:1.5rem;margin-top:0.5rem;flex-wrap:wrap">
+              <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;cursor:pointer">
+                <input type="radio" name="spouseSSType" id="spouseSSWorked" value="worked" checked onchange="toggleSpouseSSType()" style="accent-color:var(--sage)">
+                Has worked / has SS earnings
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;cursor:pointer">
+                <input type="radio" name="spouseSSType" id="spouseSSNeverWorked" value="neverworked" onchange="toggleSpouseSSType()" style="accent-color:var(--sage)">
+                Never worked / no SS earnings
+              </label>
             </div>
           </div>
+
+          <div id="spouseSSWorkedFields">
+            <div class="form-grid">
+              <div class="field">
+                <label>Spouse SS Estimate ($/mo)</label>
+                <input type="number" id="spouseSsManual" value="" placeholder="e.g. 1800" oninput="recalc()">
+                <div class="hint">From SSA statement or estimate</div>
+              </div>
+              <div class="field">
+                <label>Spouse SS Claiming Age</label>
+                <select id="spouseSsAge" onchange="recalc()" style="width:100%">
+                  <option value="62">62 — Early (reduced)</option>
+                  <option value="63">63</option>
+                  <option value="64">64</option>
+                  <option value="65">65</option>
+                  <option value="66">66</option>
+                  <option value="67" selected>67 — Full retirement age</option>
+                  <option value="68">68</option>
+                  <option value="69">69</option>
+                  <option value="70">70 — Maximum</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Years of Spouse SS Earnings</label>
+                <input type="number" id="spouseSsYears" value="30" min="1" max="50" oninput="recalc()">
+                <div class="hint" id="spouseSsYearsHint" style="color:var(--clay)"></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="spouseSSNeverWorkedFields" style="display:none">
+            <div style="padding:0.75rem;background:var(--sage-pale);border-radius:8px;font-size:0.85rem;color:var(--forest);margin-bottom:1rem">
+              💡 <strong>Spousal Benefit:</strong> Your spouse is entitled to up to <strong>50% of your SS benefit</strong> at your full retirement age, even without any work history. The app will automatically calculate this.
+            </div>
+            <div class="form-grid">
+              <div class="field">
+                <label>Spouse SS Claiming Age</label>
+                <select id="spouseSsAgeNoWork" onchange="recalc()" style="width:100%">
+                  <option value="62">62 — Reduced spousal benefit</option>
+                  <option value="63">63</option>
+                  <option value="64">64</option>
+                  <option value="65">65</option>
+                  <option value="66">66</option>
+                  <option value="67" selected>67 — Full 50% spousal benefit</option>
+                </select>
+                <div class="hint">Spousal benefit max is 50% of your benefit at age 67. Cannot be delayed past 67 for extra credit.</div>
+              </div>
+            </div>
+          </div>
+
           <div style="padding:0.75rem;background:var(--sage-pale);border-radius:8px;font-size:0.82rem;color:var(--sage);margin-top:0.75rem">
-            💡 <strong>Spousal SS Benefit:</strong> Your spouse may be eligible for up to 50% of your SS benefit if it exceeds their own earned benefit. The app will calculate whichever is higher.
+            💡 <strong>Spousal SS Benefit:</strong> If your spouse worked, SS pays whichever is higher — their own benefit OR 50% of yours. The app calculates whichever is greater.
           </div>
         </div>
       </div>
@@ -2372,6 +2419,16 @@ function calcBudget(input) {
 
 
 
+
+function toggleSpouseSSType() {
+  var neverWorked = document.getElementById('spouseSSNeverWorked')?.checked;
+  var workedFields = document.getElementById('spouseSSWorkedFields');
+  var neverWorkedFields = document.getElementById('spouseSSNeverWorkedFields');
+  if (workedFields) workedFields.style.display = neverWorked ? 'none' : 'block';
+  if (neverWorkedFields) neverWorkedFields.style.display = neverWorked ? 'block' : 'none';
+  recalc();
+}
+
 // ── SS ESTIMATE ──
 function estimateSS() {
   var yrs = getVal('ssYearsWorked', 30);
@@ -2635,6 +2692,20 @@ function recalc() {
   var spouseBonProfitShare = getVal('spouseBonusProfitShare');
   var spouseBonRSU = getVal('spouseBonusRSU');
   state.spouseIncome = isCouple ? (getVal('spouseSalary') + spouseBon + spouseBonRetention + spouseBonSignOn + spouseBonProfitShare + spouseBonRSU) : 0;
+  
+  // Spousal SS benefit calculation
+  var spouseNeverWorked = document.getElementById('spouseSSNeverWorked')?.checked;
+  if (isCouple && spouseNeverWorked) {
+    var spouseClaimAge = parseInt(document.getElementById('spouseSsAgeNoWork')?.value) || 67;
+    var spousalPct = spouseClaimAge >= 67 ? 0.5 : 0.5 * (1 - (67 - spouseClaimAge) * 0.083);
+    state.spouseSsMonthly = state.ssMonthly * spousalPct;
+  } else if (isCouple) {
+    var spouseOwnSS = getVal('spouseSsManual', 0);
+    var spousalBenefit = state.ssMonthly * 0.5;
+    state.spouseSsMonthly = Math.max(spouseOwnSS, spousalBenefit);
+  } else {
+    state.spouseSsMonthly = 0;
+  }
   state.householdIncome = state.income + state.spouseIncome;
 
   // Pay frequency
