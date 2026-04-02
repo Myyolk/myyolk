@@ -1367,19 +1367,24 @@
           </div>
           <div style="margin-top:1rem;padding:1rem;background:var(--sage-pale);border-radius:var(--radius-sm);border:1px solid #9ec4ab">
             <div style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--sage);margin-bottom:0.75rem">Estimated Monthly Benefits</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;text-align:center">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;text-align:center;margin-bottom:1rem">
               <div>
-                <div style="font-size:1.4rem;font-weight:700;color:var(--charcoal)" id="est-ss62">—</div>
+                <div style="font-size:1.2rem;font-weight:700;color:var(--charcoal)" id="est-ss62">—</div>
                 <div style="font-size:0.75rem;color:var(--mid);margin-top:2px">At age 62</div>
               </div>
               <div>
-                <div style="font-size:1.4rem;font-weight:700;color:var(--sage)" id="est-ss67">—</div>
+                <div style="font-size:1.2rem;font-weight:700;color:var(--sage)" id="est-ss67">—</div>
                 <div style="font-size:0.75rem;color:var(--mid);margin-top:2px">At age 67</div>
               </div>
               <div>
-                <div style="font-size:1.4rem;font-weight:700;color:var(--charcoal)" id="est-ss70">—</div>
+                <div style="font-size:1.2rem;font-weight:700;color:var(--charcoal)" id="est-ss70">—</div>
                 <div style="font-size:0.75rem;color:var(--mid);margin-top:2px">At age 70</div>
               </div>
+            </div>
+            <div style="padding:0.75rem;background:#fff;border:2px solid var(--sage);border-radius:8px;text-align:center">
+              <div style="font-size:0.78rem;font-weight:600;color:var(--mid);margin-bottom:4px" id="ssClaimAgeDisplay">Select your claiming age above</div>
+              <div style="font-size:1.8rem;font-weight:700;color:var(--sage)" id="ssEstimate">—</div>
+              <div style="font-size:0.75rem;color:var(--mid)">Your estimated monthly benefit</div>
             </div>
             <div style="margin-top:0.75rem;font-size:0.75rem;color:var(--mid);font-style:italic">⚠️ Estimates only. Future benefits depend on your full earnings record and may change with policy. Upload your SSA statement for accuracy.</div>
           </div>
@@ -1583,6 +1588,11 @@
                   <option value="67" selected>67 — Full 50% spousal benefit</option>
                 </select>
                 <div class="hint">Spousal benefit max is 50% of your benefit at age 67. Cannot be delayed past 67 for extra credit.</div>
+              </div>
+              <div style="padding:0.75rem;background:#fff;border:2px solid var(--gold);border-radius:8px;text-align:center;margin-top:0.75rem">
+                <div style="font-size:0.78rem;font-weight:600;color:var(--mid);margin-bottom:4px">Estimated Spousal Benefit</div>
+                <div style="font-size:1.8rem;font-weight:700;color:var(--sage)" id="spouseSsEstimate">—</div>
+                <div style="font-size:0.75rem;color:var(--mid)">Per month (50% of your SS benefit)</div>
               </div>
             </div>
           </div>
@@ -2479,7 +2489,7 @@ function estimateSS() {
   
   // Update claiming age display
   var claimDisplay = document.getElementById('ssClaimAgeDisplay');
-  if (claimDisplay) claimDisplay.textContent = 'At age ' + claimAge + ': $' + Math.round(selectedBenefit).toLocaleString() + '/mo';
+  if (claimDisplay) claimDisplay.textContent = 'Your benefit at age ' + claimAge + ':';
 }
 
 // ── SS METHODS ──
@@ -2699,6 +2709,7 @@ function recalc() {
     var spouseClaimAge = parseInt(document.getElementById('spouseSsAgeNoWork')?.value) || 67;
     var spousalPct = spouseClaimAge >= 67 ? 0.5 : 0.5 * (1 - (67 - spouseClaimAge) * 0.083);
     state.spouseSsMonthly = state.ssMonthly * spousalPct;
+    fmtEl('spouseSsEstimate', fmt(state.spouseSsMonthly) + '/mo');
   } else if (isCouple) {
     var spouseOwnSS = getVal('spouseSsManual', 0);
     var spousalBenefit = state.ssMonthly * 0.5;
