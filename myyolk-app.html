@@ -1484,119 +1484,60 @@
 
       <!-- SPOUSE ACCOUNTS - hidden by default -->
       <div id="spouseAccountsCard" style="display:none">
-        <div class="card" style="border:2px solid var(--gold)">
-          <div class="card-title"><span class="dot"></span> <span id="acct-spouse-title">Spouse / Partner</span> Accounts</div>
-          <div class="form-grid">
-            <div class="field">
-              <label>Spouse Traditional 401(k) ($)</label>
-              <input type="number" id="spouseBal401k" value="" placeholder="0" oninput="recalc()">
-            </div>
-            <div class="field">
-              <label>Spouse Roth 401(k) ($)</label>
-              <input type="number" id="spouseBalRoth401" value="" placeholder="0" oninput="recalc()">
-            </div>
-            <div class="field">
-              <label>Spouse Roth IRA ($)</label>
-              <input type="number" id="spouseBalRothIRA" value="" placeholder="0" oninput="recalc()">
-            </div>
-            <div class="field">
-              <label>Spouse Taxable Investments ($)</label>
-              <input type="number" id="spouseBalTaxable" value="" placeholder="0" oninput="recalc()">
-            </div>
-            <div class="field">
-              <label>Spouse HSA ($)</label>
-              <input type="number" id="spouseBalHSA" value="" placeholder="0" oninput="recalc()">
-            </div>
-            <div class="field">
-              <label>Spouse Cash Savings ($)</label>
-              <input type="number" id="spouseBalCash" value="" placeholder="0" oninput="recalc()">
-            </div>
-          </div>
-          <div style="font-weight:600;font-size:0.85rem;color:var(--forest);margin:1rem 0 0.5rem">Spouse 401(k) Contributions</div>
-          <div class="form-grid">
-            <div class="field">
-              <label>Spouse 401(k) Contribution %</label>
-              <input type="number" id="spouseContrib401k" value="" placeholder="e.g. 10" step="0.1" oninput="recalc()">
-            </div>
-            <div class="field">
-              <label>Spouse Employer Match %</label>
-              <input type="number" id="spouseEmpMatch" value="" placeholder="e.g. 6" step="0.1" oninput="recalc()">
-            </div>
-            <div class="field">
-              <label>Spouse Roth 401(k) %</label>
-              <input type="number" id="spouseContribRoth401" value="" placeholder="e.g. 5" step="0.1" oninput="recalc()">
-            </div>
-          </div>
-          <div style="font-weight:600;font-size:0.85rem;color:var(--forest);margin:1rem 0 0.5rem">Spouse Social Security</div>
-          
-          <div style="margin-bottom:1rem">
-            <label style="font-size:0.85rem;font-weight:600">Spouse work history:</label>
-            <div style="display:flex;gap:1.5rem;margin-top:0.5rem;flex-wrap:wrap">
-              <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;cursor:pointer">
-                <input type="radio" name="spouseSSType" id="spouseSSWorked" value="worked" checked onchange="toggleSpouseSSType()" style="accent-color:var(--sage)">
-                Has worked / has SS earnings
-              </label>
-              <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;cursor:pointer">
-                <input type="radio" name="spouseSSType" id="spouseSSNeverWorked" value="neverworked" onchange="toggleSpouseSSType()" style="accent-color:var(--sage)">
-                Never worked / no SS earnings
-              </label>
-            </div>
-          </div>
 
+        <div class="card">
+          <div class="card-title"><span class="dot"></span> <span id="spouse-bal-title">Spouse</span>'s Current Balances</div>
+          <div class="form-grid">
+            <div class="field"><label>Traditional 401(k) ($)</label><input type="number" id="spouseBal401k" value="" placeholder="0" oninput="recalc()"></div>
+            <div class="field"><label>Roth 401(k) ($)</label><input type="number" id="spouseBalRoth401" value="" placeholder="0" oninput="recalc()"></div>
+            <div class="field"><label>Roth IRA ($)</label><input type="number" id="spouseBalRothIRA" value="" placeholder="0" oninput="recalc()"></div>
+            <div class="field"><label>Taxable Investments ($)</label><input type="number" id="spouseBalTaxable" value="" placeholder="0" oninput="recalc()"></div>
+            <div class="field"><label>HSA ($)</label><input type="number" id="spouseBalHSA" value="" placeholder="0" oninput="recalc()"></div>
+            <div class="field"><label>Cash Savings ($)</label><input type="number" id="spouseBalCash" value="" placeholder="0" oninput="recalc()"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="dot"></span> <span id="spouse-401k-title">Spouse</span>'s 401(k) Contributions</div>
+          <div class="form-grid">
+            <div class="field"><label>401(k) Contribution %</label><input type="number" id="spouseContrib401k" value="" placeholder="e.g. 10" step="0.1" oninput="recalc()"></div>
+            <div class="field"><label>Employer Match %</label><input type="number" id="spouseEmpMatch" value="" placeholder="e.g. 6" step="0.1" oninput="recalc()"></div>
+            <div class="field"><label>Roth 401(k) %</label><input type="number" id="spouseContribRoth401" value="" placeholder="e.g. 5" step="0.1" oninput="recalc()"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="dot"></span> <span id="spouse-ss-title">Spouse</span>'s Social Security</div>
+          <div style="margin-bottom:1rem">
+            <label style="font-size:0.85rem;font-weight:600">Work history:</label>
+            <div style="display:flex;gap:1.5rem;margin-top:0.5rem;flex-wrap:wrap">
+              <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;cursor:pointer"><input type="radio" name="spouseSSType" id="spouseSSWorked" value="worked" checked onchange="toggleSpouseSSType()" style="accent-color:var(--sage)"> Has worked / has SS earnings</label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;cursor:pointer"><input type="radio" name="spouseSSType" id="spouseSSNeverWorked" value="neverworked" onchange="toggleSpouseSSType()" style="accent-color:var(--sage)"> Never worked / no SS earnings</label>
+            </div>
+          </div>
           <div id="spouseSSWorkedFields">
             <div class="form-grid">
-              <div class="field">
-                <label>Spouse SS Estimate ($/mo)</label>
-                <input type="number" id="spouseSsManual" value="" placeholder="e.g. 1800" oninput="recalc()">
-                <div class="hint">From SSA statement or estimate</div>
-              </div>
-              <div class="field">
-                <label>Spouse SS Claiming Age</label>
-                <select id="spouseSsAge" onchange="recalc()" style="width:100%">
-                  <option value="62">62 — Early (reduced)</option>
-                  <option value="63">63</option>
-                  <option value="64">64</option>
-                  <option value="65">65</option>
-                  <option value="66">66</option>
-                  <option value="67" selected>67 — Full retirement age</option>
-                  <option value="68">68</option>
-                  <option value="69">69</option>
-                  <option value="70">70 — Maximum</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>Years of Spouse SS Earnings</label>
-                <input type="number" id="spouseSsYears" value="30" min="1" max="50" oninput="recalc()">
-                <div class="hint" id="spouseSsYearsHint" style="color:var(--clay)"></div>
-              </div>
+              <div class="field"><label>SS Estimate ($/mo)</label><input type="number" id="spouseSsManual" value="" placeholder="e.g. 1800" oninput="recalc()"><div class="hint">From SSA statement or estimate</div></div>
+              <div class="field"><label>SS Claiming Age</label><select id="spouseSsAge" onchange="recalc()" style="width:100%"><option value="62">62 - Early</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67" selected>67 - Full</option><option value="68">68</option><option value="69">69</option><option value="70">70 - Maximum</option></select></div>
+              <div class="field"><label>Years of SS Earnings</label><input type="number" id="spouseSsYears" value="30" min="1" max="50" oninput="recalc()"></div>
             </div>
           </div>
-
           <div id="spouseSSNeverWorkedFields" style="display:none">
             <div style="padding:1rem;background:var(--sage-pale);border-radius:8px;font-size:0.85rem;color:var(--forest);margin-bottom:1rem">
-              💡 <strong>Spousal Benefit:</strong> <span id="spouseNeverWorkedMsg">Your spouse</span> is entitled to <strong>50% of your SS benefit</strong> at the age you claim — automatically calculated below. No separate claiming age needed.
+              <strong>Spousal Benefit:</strong> <span id="spouseNeverWorkedMsg">Your spouse</span> is entitled to <strong>50% of your SS benefit</strong> at the age you claim.
             </div>
             <div style="padding:0.75rem;background:#fff;border:2px solid var(--gold);border-radius:8px;text-align:center">
               <div style="font-size:0.78rem;font-weight:600;color:var(--mid);margin-bottom:4px" id="spouseSsEstimateLabel">Estimated Spousal Benefit</div>
-              <div style="font-size:1.8rem;font-weight:700;color:var(--sage)" id="spouseSsEstimate">—</div>
+              <div style="font-size:1.8rem;font-weight:700;color:var(--sage)" id="spouseSsEstimate">-</div>
               <div style="font-size:0.75rem;color:var(--mid)" id="spouseSsEstimateSub">50% of your SS benefit at your claiming age</div>
             </div>
           </div>
-
-          <div style="padding:0.75rem;background:var(--sage-pale);border-radius:8px;font-size:0.82rem;color:var(--sage);margin-top:0.75rem">
-            💡 <strong>Spousal SS Benefit:</strong> If your spouse worked, SS pays whichever is higher — their own benefit OR 50% of yours. The app calculates whichever is greater.
-          </div>
         </div>
+
+        <button class="btn btn-secondary" onclick="showTab('income')">Back</button>
+        <button class="btn btn-primary" onclick="showTab('budget')">Next: Budget</button>
       </div>
 
-        <button class="btn btn-secondary" onclick="showTab('income')">← Back</button>
-        <button class="btn btn-primary" onclick="showTab('budget')">Next: Budget →</button>
-      </div>
-    </div>
-
-    </div>
-
-    <!-- ══ BUDGET TAB ══ -->
     <div class="tab-panel" id="tab-budget">
       <h1 class="page-title">Monthly Budget</h1>
       <p class="page-subtitle">Enter your estimated monthly expenses. This helps calculate how much you'll need in retirement.</p>
@@ -2641,7 +2582,9 @@ function updatePlanningFor() {
   st('acct-bal-title',(cap1||'Your')+"'s");
   st('acct-401k-title',(cap1||'Your')+"'s");
   st('acct-ss-title',(cap1||'Your')+"'s");
-  st('acct-spouse-title',cap2||'Spouse / Partner');
+  st('spouse-bal-title',cap2||'Spouse');
+  st('spouse-401k-title',cap2||'Spouse');
+  st('spouse-ss-title',cap2||'Spouse');
 }
 
 function updateGreeting() {
@@ -3085,6 +3028,7 @@ function clearData() {
     location.reload();
   }
 }
+
 
 
 
