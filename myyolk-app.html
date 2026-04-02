@@ -3085,10 +3085,12 @@ function clearData() {
 }
 
 
+
 document.addEventListener('DOMContentLoaded', function() {
   var b=document.getElementById('calcAgeBtn'); if(b) b.addEventListener('click',calcAgeFromDOB);
   var sb=document.getElementById('calcSpouseAgeBtn'); if(sb) sb.addEventListener('click',calcSpouseAge);
   loadData();
+  if(typeof showTab==='function') showTab('profile');
   if(typeof toggleIncomeType==='function') toggleIncomeType();
   if(typeof toggleCouple==='function') toggleCouple();
   if(typeof updatePlanningFor==='function') updatePlanningFor();
