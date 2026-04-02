@@ -2341,6 +2341,44 @@ function calcBudget(input) {
 }
 
 
+
+// ── SS ESTIMATE ──
+function estimateSS() {
+  var yrs = getVal('ssYearsWorked', 30);
+  var hintEl = document.getElementById('ssYearsHint');
+  if (hintEl) {
+    if (yrs < 35) {
+      hintEl.textContent = '⚠️ Less than 35 years - ' + (35-yrs) + ' zero-earning years will reduce your benefit';
+      hintEl.style.display = 'block';
+    } else {
+      hintEl.textContent = '';
+    }
+  }
+  var avgIncome = parseFloat(document.getElementById('ssAvgIncome')?.value) || state.salary || 0;
+  if (!avgIncome) {
+    ['est-ss62','est-ss67','est-ss70'].forEach(function(id){ fmtEl(id, '—'); });
+    return;
+  }
+  var aime = (avgIncome * Math.min(yrs, 35)) / (35 * 12);
+  var pia = 0;
+  if (aime <= 1115) pia = aime * 0.9;
+  else if (aime <= 6721) pia = 1003.5 + (aime - 1115) * 0.32;
+  else pia = 2978.42 + (aime - 6721) * 0.15;
+
+  var at62 = pia * (1 - (67 - 62) * 0.067);
+  var at67 = pia;
+  var at70 = pia * (1 + (70 - 67) * 0.08);
+
+  fmtEl('est-ss62', '$' + Math.round(at62).toLocaleString());
+  fmtEl('est-ss67', '$' + Math.round(at67).toLocaleString());
+  fmtEl('est-ss70', '$' + Math.round(at70).toLocaleString());
+
+  // Auto-populate the ss fields based on claiming age
+  var ssAge = getVal('ssAge', 67);
+  state.ssMonthly = ssAge <= 62 ? at62 : ssAge >= 70 ? at70 : at67;
+  fmtEl('ssEstimate', fmt(state.ssMonthly) + '/mo');
+}
+
 // ── SS METHODS ──
 function switchSSMethod(method) {
   ['upload','manual','estimate'].forEach(function(m) {
