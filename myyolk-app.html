@@ -2461,7 +2461,7 @@ function recalc() {
 
   // Projections
   var currentAge = getVal('age', 30);
-  var retireAge = getVal('retireAge', 65);
+  var retireAge = getVal('retAge', 65);
   var lifeExp = getVal('lifeExp', 85);
   var rorChoice = document.getElementById('rorChoice')?.value || 'expected';
   var rorMap = {conservative:0.05, expected:0.07, aggressive:0.09};
@@ -2508,7 +2508,7 @@ function recalc() {
 function updateReadiness() {
   var portfolio = state.portfolioAtRetirement;
   var currentAge = getVal('age',30);
-  var retireAge = getVal('retireAge',65);
+  var retireAge = getVal('retAge',65);
   var lifeExp = getVal('lifeExp',85);
   var retireYears = Math.max(1, lifeExp - retireAge);
 
@@ -2559,7 +2559,7 @@ function updateBudgetAnalysis() {
   if (monthly === 0) return;
   
   var currentAge = getVal('age', 30);
-  var retireAge = getVal('retireAge', 65);
+  var retireAge = getVal('retAge', 65);
   var yearsToRetire = Math.max(0, retireAge - currentAge);
   
   // Get lifestyle adjustment sliders
@@ -2689,7 +2689,7 @@ function updateSummary() {
   // Milestones
   var milestones = [];
   var currentAge = getVal('age');
-  var retireAge = getVal('retireAge', 65);
+  var retireAge = getVal('retAge', 65);
   var currentYear = new Date().getFullYear();
   if (currentAge > 0) {
     milestones.push({ year: currentYear + (retireAge-currentAge), label: '🎯 Target retirement at age ' + retireAge });
@@ -2776,6 +2776,7 @@ function clearData() {
     location.reload();
   }
 }
+
 
 
 document.addEventListener('DOMContentLoaded', function() {
