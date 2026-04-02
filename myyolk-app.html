@@ -1175,6 +1175,33 @@
             <label>Your 401(k) Contribution %</label>
             <input type="number" id="contrib401k" value="" placeholder="e.g. 10" step="0.1" oninput="recalc()">
             <div class="hint">% of gross pay</div>
+            <div style="display:flex;gap:1.5rem;margin-top:0.6rem;flex-wrap:wrap">
+              <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;font-weight:500;cursor:pointer">
+                <input type="radio" name="contrib401kType" id="contrib401kTraditional" value="traditional" checked onchange="toggleSplit401k()" style="accent-color:var(--sage)">
+                Traditional <span style="font-size:0.75rem;color:#888;font-weight:400">(pre-tax)</span>
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;font-weight:500;cursor:pointer">
+                <input type="radio" name="contrib401kType" id="contrib401kRoth" value="roth" onchange="toggleSplit401k()" style="accent-color:var(--sage)">
+                Roth <span style="font-size:0.75rem;color:#888;font-weight:400">(after-tax)</span>
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;font-weight:500;cursor:pointer">
+                <input type="radio" name="contrib401kType" id="contrib401kSplit" value="split" onchange="toggleSplit401k()" style="accent-color:var(--sage)">
+                Split <span style="font-size:0.75rem;color:#888;font-weight:400">(both)</span>
+              </label>
+            </div>
+            <div id="split401kFields" style="display:none;margin-top:0.75rem;padding:0.75rem;background:var(--sage-pale);border-radius:8px">
+              <div style="font-size:0.78rem;font-weight:600;color:var(--forest);margin-bottom:0.5rem">Split your contribution between Traditional and Roth:</div>
+              <div style="display:flex;gap:1rem;flex-wrap:wrap">
+                <div style="flex:1;min-width:120px">
+                  <label style="font-size:0.78rem">Traditional %</label>
+                  <input type="number" id="contrib401kSplitTrad" value="" placeholder="e.g. 6" step="0.1" oninput="recalc()" style="width:100%;padding:6px;border:1px solid #ddd;border-radius:6px;font-family:DM Sans">
+                </div>
+                <div style="flex:1;min-width:120px">
+                  <label style="font-size:0.78rem">Roth %</label>
+                  <input type="number" id="contribRoth401" value="" placeholder="e.g. 4" step="0.1" oninput="recalc()" style="width:100%;padding:6px;border:1px solid #ddd;border-radius:6px;font-family:DM Sans">
+                </div>
+              </div>
+            </div>
           </div>
           <div class="field">
             <label>Employer Match %</label>
@@ -1185,19 +1212,7 @@
             <input type="number" id="matchCap" value="" placeholder="e.g. 5" step="0.1" oninput="recalc()">
             <div class="hint">Max % employer will match</div>
           </div>
-          <div class="field">
-            <label>Roth 401(k) %</label>
-            <input type="number" id="contribRoth401" value="" placeholder="e.g. 5" step="0.1" oninput="recalc()">
-          </div>
         </div>
-        <div class="field" style="margin-top:1rem;max-width:240px">
-          <label>Apply 401k to performance bonus?</label>
-          <select id="applyBonus">
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </div>
-      </div>
 
       <div class="card">
         <div class="card-title"><span class="dot"></span> Other Contributions</div>
@@ -1563,6 +1578,17 @@
           <div class="budget-row"><label>Legal / Attorney Fees</label><input type="number" class="bud-m" data-key="legal" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Accounting / Tax Prep</label><input type="number" class="bud-m" data-key="accounting" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Financial Advisor Fees</label><input type="number" class="bud-m" data-key="finAdvisor" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+        </div>
+
+        <div class="budget-category">
+          <div class="budget-cat-header">🎓 Education & Family</div>
+          <div class="budget-row"><label>College / Tuition</label><input type="number" class="bud-m" data-key="tuition" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>529 / Education Savings</label><input type="number" class="bud-m" data-key="edu529" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>K-12 / Private School</label><input type="number" class="bud-m" data-key="k12" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Tutoring / Activities</label><input type="number" class="bud-m" data-key="tutoring" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Child Support / Alimony</label><input type="number" class="bud-m" data-key="childSupport" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Childcare / Daycare</label><input type="number" class="bud-m" data-key="childcare" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Parent / Elder Care</label><input type="number" class="bud-m" data-key="elderCare" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
         </div>
 
         <div class="budget-category">
@@ -2180,6 +2206,13 @@ var fmtEl = function(id, val) { var el = document.getElementById(id); if (el) el
 var getVal = function(id, def) { return parseFloat(document.getElementById(id)?.value) || (def || 0); };
 
 // ── COUPLE TOGGLE ──
+function toggleSplit401k() {
+  var splitEl = document.getElementById('split401kFields');
+  var isSplit = document.getElementById('contrib401kSplit')?.checked;
+  if (splitEl) splitEl.style.display = isSplit ? 'block' : 'none';
+  recalc();
+}
+
 function toggleCouple() {
   var isCouple = document.getElementById('planCouple')?.checked;
   ['spouseProfileCard','spouseIncomeCard','spouseAccountsCard'].forEach(function(id) {
@@ -2283,7 +2316,7 @@ function calcBudget(input) {
     var annualVal = parseFloat(input.value) || 0;
     var parent = input.parentNode;
     var monthly = parent ? parent.querySelector('.bud-m') : null;
-    if (monthly) monthly.value = annualVal > 0 ? Math.round(annualVal / 12) : '';
+    if (monthly) monthly.value = annualVal > 0 ? (annualVal / 12).toFixed(2).replace(/\.00$/, '') : '';
   }
   var total = 0;
   document.querySelectorAll('.bud-m').forEach(function(el) {
@@ -2291,7 +2324,11 @@ function calcBudget(input) {
     total += val;
     var parent = el.parentNode;
     var annual = parent ? parent.querySelector('.bud-a') : null;
-    if (annual && document.activeElement !== annual) annual.value = val > 0 ? Math.round(val * 12) : '';
+    if (annual && document.activeElement !== annual && !input.classList.contains('bud-m')) {
+      annual.value = val > 0 ? Math.round(val * 12) : '';
+    } else if (annual && input === el) {
+      annual.value = val > 0 ? Math.round(val * 12) : '';
+    }
   });
   var totalEl = document.getElementById('totalExpenses');
   if (totalEl) totalEl.value = Math.round(total);
@@ -2500,6 +2537,8 @@ function recalc() {
   var adjFactor = ssAge < 67 ? (1 - (67-ssAge)*0.067) : (ssAge > 67 ? (1 + (ssAge-67)*0.08) : 1);
   state.ssMonthly = pia * adjFactor;
   fmtEl('ssEstimate', fmt(state.ssMonthly) + '/mo');
+  
+  // Update all panels
   updateReadiness();
   updateBudgetAnalysis();
   updateSummary();
@@ -2590,7 +2629,9 @@ function updateBudgetAnalysis() {
   var fmtEl2 = function(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; };
   fmtEl2('ba-currentMonthly', fmt(monthly));
   fmtEl2('ba-currentAnnual', fmt(monthly * 12) + ' / year');
-  var retLabel = document.getElementById('ba-retireLabel'); if (retLabel) retLabel.textContent = 'Est. Retirement Monthly @ age ' + retireAge; fmtEl2('ba-retireMonthly', fmt(retireMonthly));
+  var retLabel = document.getElementById('ba-retireLabel');
+  if (retLabel) retLabel.textContent = 'Est. Retirement Monthly @ age ' + retireAge;
+  fmtEl2('ba-retireMonthly', fmt(retireMonthly));
   fmtEl2('ba-retireAnnual', fmt(retireMonthly * 12) + ' / year · inflation-adjusted');
   fmtEl2('ba-inflRate', (inflRate * 100).toFixed(1) + '%');
   fmtEl2('ba-inflYears', yearsToRetire + ' years');
@@ -2733,7 +2774,15 @@ function updateSummary() {
 
 
 
-
+document.addEventListener('DOMContentLoaded', function() {
+  var b = document.getElementById('calcAgeBtn');
+  if (b) b.addEventListener('click', calcAgeFromDOB);
+  var sb = document.getElementById('calcSpouseAgeBtn');
+  if (sb) sb.addEventListener('click', calcSpouseAge);
+  if (typeof toggleIncomeType === 'function') toggleIncomeType();
+  if (typeof toggleCouple === 'function') toggleCouple();
+  if (typeof recalc === 'function') recalc();
+});
 
 // ── AUTO SAVE / LOAD ──
 var SAVE_KEY = 'myyolk_data_v1';
@@ -2778,19 +2827,6 @@ function clearData() {
   }
 }
 
-
-
-
-
-document.addEventListener('DOMContentLoaded', function() {
-  var b=document.getElementById('calcAgeBtn'); if(b) b.addEventListener('click',calcAgeFromDOB);
-  var sb=document.getElementById('calcSpouseAgeBtn'); if(sb) sb.addEventListener('click',calcSpouseAge);
-  loadData();
-  if(typeof toggleIncomeType==='function') toggleIncomeType();
-  if(typeof toggleCouple==='function') toggleCouple();
-  if(typeof updatePlanningFor==='function') updatePlanningFor();
-  if(typeof recalc==='function') recalc();
-});
 </script>
 </body>
 </html>
