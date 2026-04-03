@@ -3277,8 +3277,8 @@ function calcReadiness() {
   document.querySelectorAll('.bud-m').forEach(function(input) {
     budgetTotal += parseFloat(input.value) || 0;
   });
-  // Trigger budget calc to ensure ba-retireMonthly is populated
-  if(typeof calcBudget === 'function') calcBudget(null);
+  // Trigger budget analysis to ensure ba-retireMonthly is populated
+  if(typeof updateBudgetAnalysis === 'function') updateBudgetAnalysis();
   // Try to get the budget tab's retirement estimate (includes lifestyle sliders)
   var retireMonthlyEl = document.getElementById('ba-retireMonthly');
   var inflatedBudget = 0;
