@@ -2683,8 +2683,8 @@ function updatePlanningFor() {
   var isCouple = document.getElementById('planCouple') && document.getElementById('planCouple').checked;
   var cap1 = name1 ? name1.charAt(0).toUpperCase() + name1.slice(1) : '';
   var cap2 = name2 ? name2.charAt(0).toUpperCase() + name2.slice(1) : '';
-  var green = 'color:#2D4A35;font-weight:700;font-family:DM Serif Display,serif';
-  var gold = 'color:#F5A623;font-weight:700;font-family:DM Serif Display,serif';
+  var green = 'color:#2D4A35;font-weight:700;font-family:Georgia,serif;font-size:1.15rem';
+  var gold = 'color:#F0A500;font-weight:700;font-family:Georgia,serif;font-size:1.15rem';
   var yolk = '<span style="' + gold + '">Yolk</span>';
   if (cap1 && isCouple && cap2) {
     sbNameEl.innerHTML = '<span style="' + green + '">' + cap1 + ' &amp; ' + cap2 + "'s </span>" + yolk;
