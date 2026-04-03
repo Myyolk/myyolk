@@ -975,10 +975,6 @@
             <input type="text" id="spouseAge" placeholder="Auto-filled from birthday" style="background:var(--sage-pale);color:var(--sage);font-weight:600">
           </div>
           <div class="field">
-            <label>Spouse Target Retirement Age</label>
-            <input type="number" id="spouseRetireAge" value="65" oninput="recalc()">
-          </div>
-          <div class="field">
             <label>Spouse State of Residence</label>
             <select id="spouseStateRes" onchange="recalc()" style="width:100%">
               <option value="">Same as mine (optional)</option>
@@ -1034,6 +1030,14 @@
               <option value="WY">Wyoming (No income tax)</option>
             </select>
             <div class="hint">Leave blank if same state</div>
+          </div>
+          <div class="field">
+            <label>Spouse Target Retirement Age</label>
+            <input type="number" id="spouseRetireAge" value="65" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Spouse Life Expectancy</label>
+            <input type="number" id="spouseLifeExp" value="" placeholder="e.g. 90" oninput="recalc()">
           </div>
           <div class="field">
             <label>Job Title / Role</label>
