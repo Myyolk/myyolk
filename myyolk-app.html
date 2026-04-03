@@ -2596,21 +2596,29 @@ function estimateSS() {
   else if (aime <= 6721) pia = 1003.5 + (aime - 1115) * 0.32;
   else pia = 2978.42 + (aime - 6721) * 0.15;
 
-  var at62 = pia * (1 - (67 - 62) * 0.067);
-  var at67 = pia;
-  var at70 = pia * (1 + (70 - 67) * 0.08);
+  // SSA accurate reduction rules:
+  // Ages 62-64 (25-36 months early): 5/9 of 1% per month for first 36 months
+  // Ages 64-67 (1-24 months early): 5/12 of 1% per month for additional months
+  // Ages 67-70: 8% per year increase (delayed credits)
+  var benefitAtAge = function(age) {
+    if (age >= 70) return pia * (1 + (70 - 67) * 0.08);
+    if (age >= 67) return pia * (1 + (age - 67) * 0.08);
+    var monthsEarly = (67 - age) * 12;
+    var reduction = 0;
+    if (monthsEarly <= 36) {
+      reduction = monthsEarly * (5/9) * 0.01;
+    } else {
+      reduction = 36 * (5/9) * 0.01 + (monthsEarly - 36) * (5/12) * 0.01;
+    }
+    return pia * (1 - reduction);
+  };
 
-  // Generate estimates for ALL ages 62-70
+  var at62 = benefitAtAge(62);
+  var at67 = pia;
+  var at70 = benefitAtAge(70);
+
   var claimDropdown = document.getElementById('ssClaimingAge');
   var claimAge = claimDropdown ? parseInt(claimDropdown.value) || 67 : 67;
-  
-  // Calculate benefit at each specific age
-  var benefitAtAge = function(age) {
-    if (age <= 62) return at62;
-    if (age >= 70) return at70;
-    if (age < 67) return pia * (1 - (67 - age) * 0.067);
-    return pia * (1 + (age - 67) * 0.08);
-  };
 
   fmtEl('est-ss62', '$' + Math.round(at62).toLocaleString());
   fmtEl('est-ss67', '$' + Math.round(at67).toLocaleString());
