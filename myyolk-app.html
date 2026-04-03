@@ -2732,8 +2732,7 @@ function applyTranslations() {
     if(match && navMap[match[1]]) {
       var icon = el.querySelector('.nav-icon');
       var iconHtml = icon ? icon.outerHTML : '';
-      var textNode = Array.from(el.childNodes).find(function(n){ return n.nodeType === 3; });
-      if(textNode) textNode.textContent = ' ' + t(navMap[match[1]]);
+      el.innerHTML = iconHtml + ' ' + t(navMap[match[1]]);
     }
   });
 
