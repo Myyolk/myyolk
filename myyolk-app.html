@@ -3237,12 +3237,32 @@ function calcReadiness() {
   // Monthly income at retirement
   var portfolioIncome = (portfolio * 0.04) / 12;
 
-  // SS income
+  // SS income - check all methods
   var ssIncome = 0;
-  var ssAge = parseInt(document.getElementById('ssClaimingAge')?.value) || parseInt(document.getElementById('ssClaimingAgeManual')?.value) || 67;
-  if(ssAge <= 62) ssIncome = parseFloat(document.getElementById('ss62')?.value) || 0;
-  else if(ssAge >= 70) ssIncome = parseFloat(document.getElementById('ss70')?.value) || 0;
-  else ssIncome = parseFloat(document.getElementById('ss67')?.value) || parseFloat(document.getElementById('ssEstimate')?.innerText?.replace(/[^0-9]/g,'')) || 0;
+  // Manual entry method
+  var ssManual62 = parseFloat(document.getElementById('ss62')?.value) || 0;
+  var ssManual67 = parseFloat(document.getElementById('ss67')?.value) || 0;
+  var ssManual70 = parseFloat(document.getElementById('ss70')?.value) || 0;
+  var ssManualAge = parseInt(document.getElementById('ssClaimingAgeManual')?.value) || 67;
+  if(ssManual67 || ssManual62 || ssManual70) {
+    if(ssManualAge <= 62) ssIncome = ssManual62;
+    else if(ssManualAge >= 70) ssIncome = ssManual70;
+    else ssIncome = ssManual67;
+  }
+  // Estimate method
+  if(!ssIncome) {
+    var ssEstEl = document.getElementById('ssEstimate');
+    if(ssEstEl && ssEstEl.textContent && ssEstEl.textContent !== '-') {
+      ssIncome = parseFloat(ssEstEl.textContent.replace(/[^0-9.]/g,'')) || 0;
+    }
+  }
+  // Upload method
+  if(!ssIncome) {
+    var ssDispAge = parseInt(document.getElementById('ssClaimingAge')?.value) || 67;
+    if(ssDispAge <= 62) ssIncome = parseFloat(document.getElementById('ss-disp62')?.textContent?.replace(/[^0-9.]/g,'')) || 0;
+    else if(ssDispAge >= 70) ssIncome = parseFloat(document.getElementById('ss-disp70')?.textContent?.replace(/[^0-9.]/g,'')) || 0;
+    else ssIncome = parseFloat(document.getElementById('ss-disp67')?.textContent?.replace(/[^0-9.]/g,'')) || 0;
+  }
 
   // Additional income
   var additionalIncome = 0;
