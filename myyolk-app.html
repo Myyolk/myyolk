@@ -1,24 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GK7V9FX3KQ">document.addEventListener('DOMContentLoaded', function() {
-  var b=document.getElementById('calcAgeBtn'); if(b) b.addEventListener('click',calcAgeFromDOB);
-  var sb=document.getElementById('calcSpouseAgeBtn'); if(sb) sb.addEventListener('click',calcSpouseAge);
-  loadData();
-  if(typeof showTab==='function') showTab('profile');
-  if(typeof toggleIncomeType==='function') toggleIncomeType();
-  if(typeof toggleCouple==='function') toggleCouple();
-  if(typeof updatePlanningFor==='function') updatePlanningFor();
-  if(typeof recalc==='function') recalc();
-});
-</script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-GK7V9FX3KQ');
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MyYolk - Retirement Planning</title>
@@ -589,7 +571,136 @@
   input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
   input[type=number] { -moz-appearance: textfield; }
 
-</style>
+
+  /* ── FEEDBACK WIDGET ── */
+  #feedbackBtn {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: var(--sage);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 0.6rem 1.2rem;
+    font-family: DM Sans, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  #feedbackBtn:hover { background: var(--forest); transform: translateY(-2px); }
+  #feedbackPanel {
+    position: fixed;
+    bottom: 4.5rem;
+    right: 1.5rem;
+    width: 320px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    z-index: 1001;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  #feedbackPanel.open { display: flex; }
+  .feedback-header {
+    background: var(--sage);
+    color: #fff;
+    padding: 0.75rem 1rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .feedback-notes {
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .feedback-note {
+    background: var(--warm-white);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.82rem;
+  }
+  .feedback-note-tab {
+    font-size: 0.72rem;
+    color: var(--sage);
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .feedback-input-area {
+    padding: 0.75rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .feedback-input-area textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem;
+    font-family: DM Sans, sans-serif;
+    font-size: 0.82rem;
+    resize: none;
+    height: 70px;
+    box-sizing: border-box;
+  }
+  .feedback-input-area textarea:focus { outline: none; border-color: var(--sage); }
+  .feedback-actions { display: flex; gap: 0.5rem; }
+  .feedback-add-btn {
+    flex: 1;
+    background: var(--sage);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem;
+    font-family: DM Sans, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .feedback-send-btn {
+    flex: 1;
+    background: var(--gold);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem;
+    font-family: DM Sans, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .feedback-email {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.4rem 0.5rem;
+    font-family: DM Sans, sans-serif;
+    font-size: 0.82rem;
+    box-sizing: border-box;
+  }
+  .feedback-empty {
+    color: var(--mid);
+    font-size: 0.82rem;
+    text-align: center;
+    padding: 0.5rem;
+    font-style: italic;
+  }
+
+  </style>
 </head>
 <body>
 
@@ -2367,6 +2478,86 @@ function handleSSUpload(event) {
   reader.readAsDataURL(file);
 }
 
+
+// ── FEEDBACK WIDGET ──
+var feedbackNotes = [];
+var currentTabName = 'Profile';
+
+var tabNames = {
+  'profile': 'My Profile',
+  'income': 'Income & Pay',
+  'accounts': 'Accounts & Savings',
+  'budget': 'Budget',
+  'projections': 'Projections',
+  'readiness': 'Readiness',
+  'whatif': 'What-If Scenarios',
+  'early': 'Early Retirement',
+  'summary': 'Summary'
+};
+
+function toggleFeedback() {
+  var panel = document.getElementById('feedbackPanel');
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open')) {
+    document.getElementById('feedbackText').focus();
+  }
+}
+
+function addFeedbackNote() {
+  var text = document.getElementById('feedbackText').value.trim();
+  if (!text) return;
+  feedbackNotes.push({ tab: currentTabName, note: text, time: new Date().toLocaleTimeString() });
+  document.getElementById('feedbackText').value = '';
+  renderFeedbackNotes();
+  // Track in GA
+  if (typeof gtag === 'function') {
+    gtag('event', 'feedback_note_added', { tab: currentTabName });
+  }
+}
+
+function renderFeedbackNotes() {
+  var container = document.getElementById('feedbackNotes');
+  if (feedbackNotes.length === 0) {
+    container.innerHTML = '<div class="feedback-empty">Add notes as you explore — send all at once when ready.</div>';
+    return;
+  }
+  container.innerHTML = feedbackNotes.map(function(n) {
+    return '<div class="feedback-note"><div class="feedback-note-tab">📍 ' + n.tab + ' — ' + n.time + '</div>' + n.note + '</div>';
+  }).join('');
+  container.scrollTop = container.scrollHeight;
+}
+
+function sendFeedback() {
+  if (feedbackNotes.length === 0) {
+    alert('Add at least one note before sending!');
+    return;
+  }
+  var email = document.getElementById('feedbackEmail').value.trim();
+  var body = feedbackNotes.map(function(n, i) {
+    return (i+1) + '. [' + n.tab + '] ' + n.note;
+  }).join('\n');
+  if (email) body += '\n\nReply to: ' + email;
+  
+  var mailto = 'mailto:myyolkapp@gmail.com?subject=MyYolk%20Feedback&body=' + encodeURIComponent(body);
+  window.location.href = mailto;
+  
+  // Track in GA
+  if (typeof gtag === 'function') {
+    gtag('event', 'feedback_sent', { notes_count: feedbackNotes.length });
+  }
+  
+  feedbackNotes = [];
+  renderFeedbackNotes();
+  toggleFeedback();
+}
+
+// Update current tab name when switching tabs
+var origShowTab = showTab;
+showTab = function(name) {
+  currentTabName = tabNames[name] || name;
+  origShowTab(name);
+};
+
 // ── SHOW TAB ──
 function showTab(name) {
   var main = document.querySelector('main');
@@ -2897,7 +3088,38 @@ function clearData() {
 
 
 
-
+document.addEventListener('DOMContentLoaded', function() {
+  var b=document.getElementById('calcAgeBtn'); if(b) b.addEventListener('click',calcAgeFromDOB);
+  var sb=document.getElementById('calcSpouseAgeBtn'); if(sb) sb.addEventListener('click',calcSpouseAge);
+  loadData();
+  if(typeof showTab==='function') showTab('profile');
+  if(typeof toggleIncomeType==='function') toggleIncomeType();
+  if(typeof toggleCouple==='function') toggleCouple();
+  if(typeof updatePlanningFor==='function') updatePlanningFor();
+  if(typeof recalc==='function') recalc();
+});
 </script>
+
+  <!-- FEEDBACK WIDGET -->
+  <button id="feedbackBtn" onclick="toggleFeedback()">💬 Feedback</button>
+
+  <div id="feedbackPanel">
+    <div class="feedback-header">
+      <span>📝 Your Notes</span>
+      <button onclick="toggleFeedback()" style="background:none;border:none;color:#fff;cursor:pointer;font-size:1rem">✕</button>
+    </div>
+    <div class="feedback-notes" id="feedbackNotes">
+      <div class="feedback-empty">Add notes as you explore — send all at once when ready.</div>
+    </div>
+    <div class="feedback-input-area">
+      <textarea id="feedbackText" placeholder="What's on your mind? A suggestion, confusion, or idea..."></textarea>
+      <input class="feedback-email" id="feedbackEmail" type="email" placeholder="Email (optional — if you'd like a response)">
+      <div class="feedback-actions">
+        <button class="feedback-add-btn" onclick="addFeedbackNote()">+ Add Note</button>
+        <button class="feedback-send-btn" onclick="sendFeedback()">Send All ✓</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
