@@ -2078,71 +2078,97 @@
       <h1 class="page-title">Retirement Readiness</h1>
       <p class="page-subtitle">Are you on track? Here's your personalized readiness score.</p>
 
-      <div class="card" style="text-align:center;padding:2.5rem">
-        <div style="font-size:0.85rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--mid);margin-bottom:0.5rem">Projected Portfolio at Retirement</div>
-        <div class="big-number" id="readPortfolio">$—</div>
-        <div style="color:var(--mid);font-size:0.9rem;margin-top:0.5rem">At age <span id="readRetAge">—</span></div>
-      </div>
-
-      <div class="results-grid">
-        <div class="result-card">
-          <div class="result-label">Safe Withdrawal (4%)</div>
-          <div class="result-value" id="readWithdrawal">$—</div>
-          <div class="result-sub">Per year</div>
-        </div>
-        <div class="result-card">
-          <div class="result-label">Social Security</div>
-          <div class="result-value" id="readSS">$—</div>
-          <div class="result-sub">Annual (at retirement age)</div>
-        </div>
-        <div class="result-card highlight">
-          <div class="result-label">Total Retirement Income</div>
-          <div class="result-value" id="readTotal">$—</div>
-          <div class="result-sub">Per year</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title"><span class="dot"></span> Readiness Score</div>
-        <div class="meter-wrap">
-          <div class="meter-bar"><div class="meter-fill" id="meterFill" style="width:0%"></div></div>
-          <div class="meter-labels"><span>0%</span><span>Fully Funded at 100%</span><span>150%+</span></div>
-        </div>
-        <div style="margin-top:1rem;display:flex;align-items:center;gap:12px">
-          <div style="font-size:2rem;font-weight:700;color:var(--sage)" id="readScore">—</div>
-          <div>
-            <div style="font-weight:600" id="readAssess">—</div>
-            <div style="font-size:0.82rem;color:var(--mid)" id="readAssessSub">Enter your data to see your score</div>
+      <!-- SCORE CARD -->
+      <div class="card" style="text-align:center;padding:2rem">
+        <div style="position:relative;display:inline-block;margin-bottom:1rem">
+          <svg width="160" height="160" viewBox="0 0 160 160">
+            <circle cx="80" cy="80" r="65" fill="none" stroke="#f0e8da" stroke-width="14"/>
+            <circle cx="80" cy="80" r="65" fill="none" stroke="#2D4A35" stroke-width="14"
+              stroke-dasharray="408" stroke-dashoffset="408"
+              stroke-linecap="round" transform="rotate(-90 80 80)"
+              id="readinessArc" style="transition:stroke-dashoffset 1s ease"/>
+          </svg>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
+            <div id="readinessScore" style="font-size:2.2rem;font-weight:800;color:var(--forest)">—</div>
+            <div style="font-size:0.75rem;color:var(--mid);font-weight:600">READINESS</div>
           </div>
         </div>
+        <div id="readinessVerdict" style="font-size:1.1rem;font-weight:700;margin-bottom:0.25rem">Enter your information to see your score</div>
+        <div id="readinessSubtitle" style="font-size:0.85rem;color:var(--mid)"></div>
       </div>
 
+      <!-- INCOME vs EXPENSES -->
       <div class="card">
-        <div class="card-title"><span class="dot"></span> Annual Spending in Retirement</div>
+        <div class="card-title"><span class="dot"></span> Monthly Income at Retirement</div>
         <div class="form-grid">
           <div class="field">
-            <label>Expected Annual Spending ($)</label>
-            <input type="number" id="retSpending" placeholder="e.g. 80000" oninput="recalc()">
-            <div class="hint">Your budget total is <span id="budgetHint">$0/yr</span></div>
+            <label>Portfolio Drawdown (4% rule)</label>
+            <div id="rdPortfolioIncome" style="font-size:1.1rem;font-weight:700;color:var(--sage);padding:0.5rem 0">—</div>
           </div>
           <div class="field">
-            <label>Withdrawal Rate: <span id="withdrawalRateDisplay" style="color:var(--sage);font-weight:700">4.0%</span></label>
-            <input type="range" id="withdrawalRate" min="2" max="6" value="4" step="0.1" oninput="updateWithdrawalRate(this)" style="width:100%;accent-color:var(--sage)">
-            <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--mid)">
-              <span>2% Conservative</span><span>4% Standard</span><span>6% Aggressive</span>
-            </div>
-            <div class="hint" id="withdrawalRateHint">The 4% rule is based on historical data showing portfolios lasting 30+ years at this rate.</div>
+            <label>Social Security (your est.)</label>
+            <div id="rdSSIncome" style="font-size:1.1rem;font-weight:700;color:var(--sage);padding:0.5rem 0">—</div>
+          </div>
+          <div class="field">
+            <label>Additional Income Sources</label>
+            <div id="rdAdditionalIncome" style="font-size:1.1rem;font-weight:700;color:var(--sage);padding:0.5rem 0">—</div>
+          </div>
+          <div class="field" style="background:var(--sage-pale);border-radius:8px;padding:0.75rem">
+            <label style="color:var(--forest);font-weight:700">Total Monthly Income</label>
+            <div id="rdTotalIncome" style="font-size:1.3rem;font-weight:800;color:var(--forest);padding:0.25rem 0">—</div>
           </div>
         </div>
+      </div>
+
+      <!-- EXPENSES -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Monthly Expenses at Retirement</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Current Monthly Budget</label>
+            <div id="rdCurrentBudget" style="font-size:1.1rem;font-weight:700;color:var(--clay);padding:0.5rem 0">—</div>
+          </div>
+          <div class="field">
+            <label>Inflation Adjusted (3%/yr)</label>
+            <div id="rdInflatedBudget" style="font-size:1.1rem;font-weight:700;color:var(--clay);padding:0.5rem 0">—</div>
+            <div class="hint">Estimated expenses at retirement age</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GAP ANALYSIS -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Gap Analysis</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;text-align:center;margin-bottom:1.5rem">
+          <div style="padding:1rem;background:var(--sage-pale);border-radius:10px">
+            <div style="font-size:0.78rem;color:var(--mid);margin-bottom:4px">Monthly Income</div>
+            <div id="gapIncome" style="font-size:1.2rem;font-weight:700;color:var(--sage)">—</div>
+          </div>
+          <div style="padding:1rem;background:#fff0f0;border-radius:10px">
+            <div style="font-size:0.78rem;color:var(--mid);margin-bottom:4px">Monthly Expenses</div>
+            <div id="gapExpenses" style="font-size:1.2rem;font-weight:700;color:var(--clay)">—</div>
+          </div>
+          <div id="gapCard" style="padding:1rem;border-radius:10px">
+            <div style="font-size:0.78rem;color:var(--mid);margin-bottom:4px">Monthly Gap</div>
+            <div id="gapAmount" style="font-size:1.2rem;font-weight:700">—</div>
+          </div>
+        </div>
+        <div id="rdYearsLast" style="padding:1rem;background:var(--warm-white);border-radius:8px;font-size:0.9rem;color:var(--forest);text-align:center"></div>
+      </div>
+
+      <!-- ACTION ITEMS -->
+      <div class="card" id="rdActionsCard" style="display:none">
+        <div class="card-title"><span class="dot"></span> Recommended Actions</div>
+        <div id="rdActions" style="display:flex;flex-direction:column;gap:0.75rem"></div>
       </div>
 
       <div class="btn-row">
-        <button class="btn btn-secondary" onclick="showTab('projections')">← Back</button>
-        <button class="btn btn-primary" onclick="showTab('whatif')">Next: What-If →</button>
+        <button class="btn btn-secondary" onclick="showTab('budget')">← Back</button>
+        <button class="btn btn-primary" onclick="showTab('projections')">See Projections →</button>
       </div>
+
     </div>
 
-    <!-- ══ WHAT-IF TAB ══ -->
     <div class="tab-panel" id="tab-whatif">
       <h1 class="page-title">What-If Scenarios</h1>
       <p class="page-subtitle">Explore how different choices affect your retirement outcome.</p>
@@ -3165,7 +3191,191 @@ showTab = function(name) {
   if(name === 'projections' && typeof Chart !== 'undefined') {
     setTimeout(calcProjections, 100);
   }
+  if(name === 'readiness') {
+    setTimeout(calcReadiness, 100);
+  }
 };
+
+
+// ── READINESS SCORE ──
+function calcReadiness() {
+  var age = parseInt(document.getElementById('age')?.value) || 0;
+  var retAge = parseInt(document.getElementById('retAge')?.value) || 65;
+  var lifeExp = parseInt(document.getElementById('lifeExp')?.value) || 85;
+  var yearsToRetire = Math.max(retAge - age, 0);
+  var yearsInRetirement = Math.max(lifeExp - retAge, 0);
+  var growthRate = parseFloat(document.getElementById('growthRate')?.value) || 0.07;
+  if(document.getElementById('growthRate')?.value === 'custom') {
+    growthRate = (parseFloat(document.getElementById('customRate')?.value) || 7) / 100;
+  }
+
+  // Portfolio at retirement
+  var bal401k = parseFloat(document.getElementById('bal401k')?.value) || 0;
+  var balRoth401 = parseFloat(document.getElementById('balRoth401')?.value) || 0;
+  var balRothIRA = parseFloat(document.getElementById('balRothIRA')?.value) || 0;
+  var balTaxable = parseFloat(document.getElementById('balTaxable')?.value) || 0;
+  var balHSA = parseFloat(document.getElementById('balHSA')?.value) || 0;
+  var balCash = parseFloat(document.getElementById('balCash')?.value) || 0;
+  var totalNow = bal401k + balRoth401 + balRothIRA + balTaxable + balHSA + balCash;
+
+  var salary = parseFloat(document.getElementById('grossSalary')?.value) || 0;
+  if(!salary) {
+    var hourly = parseFloat(document.getElementById('hourlyRate')?.value) || 0;
+    salary = hourly * (parseFloat(document.getElementById('hoursPerWeek')?.value) || 40) * 52;
+  }
+  var contrib401k = (parseFloat(document.getElementById('contrib401k')?.value) || 0) / 100;
+  var empMatch = Math.min((parseFloat(document.getElementById('empMatch')?.value)||0)/100, (parseFloat(document.getElementById('matchCap')?.value)||100)/100);
+  var contribRothIRA = parseFloat(document.getElementById('contribRothIRA')?.value) || 0;
+  var contribTaxable = parseFloat(document.getElementById('contribTaxable')?.value) || 0;
+  var annualContrib = (salary * contrib401k) + (salary * empMatch) + contribRothIRA + contribTaxable;
+
+  var portfolio = totalNow;
+  for(var i = 0; i < yearsToRetire; i++) {
+    portfolio = (portfolio + annualContrib) * (1 + growthRate);
+  }
+
+  // Monthly income at retirement
+  var portfolioIncome = (portfolio * 0.04) / 12;
+
+  // SS income
+  var ssIncome = 0;
+  var ssAge = parseInt(document.getElementById('ssClaimingAge')?.value) || parseInt(document.getElementById('ssClaimingAgeManual')?.value) || 67;
+  if(ssAge <= 62) ssIncome = parseFloat(document.getElementById('ss62')?.value) || 0;
+  else if(ssAge >= 70) ssIncome = parseFloat(document.getElementById('ss70')?.value) || 0;
+  else ssIncome = parseFloat(document.getElementById('ss67')?.value) || parseFloat(document.getElementById('ssEstimate')?.innerText?.replace(/[^0-9]/g,'')) || 0;
+
+  // Additional income
+  var additionalIncome = 0;
+  document.querySelectorAll('.additional-income-row').forEach(function(row) {
+    additionalIncome += parseFloat(row.querySelector('.ai-amount')?.value) || 0;
+  });
+
+  var totalIncome = portfolioIncome + ssIncome + additionalIncome;
+
+  // Monthly expenses (from budget tab, inflation adjusted)
+  var budgetTotal = 0;
+  document.querySelectorAll('.bud-m').forEach(function(input) {
+    budgetTotal += parseFloat(input.value) || 0;
+  });
+  var inflatedBudget = budgetTotal * Math.pow(1.03, yearsToRetire);
+
+  // Gap
+  var gap = totalIncome - inflatedBudget;
+
+  // Years money lasts (if gap is negative)
+  var yearsLast = yearsInRetirement;
+  if(gap < 0 && inflatedBudget > 0) {
+    // Simplified: how long does portfolio last with withdrawals?
+    var remaining = portfolio;
+    var monthlyShortfall = Math.abs(gap);
+    yearsLast = 0;
+    while(remaining > 0 && yearsLast < 50) {
+      remaining = remaining * 1.04 - (monthlyShortfall * 12);
+      yearsLast++;
+    }
+  }
+
+  // Readiness score
+  var score = 0;
+  if(inflatedBudget > 0) {
+    score = Math.min(Math.round((totalIncome / inflatedBudget) * 100), 100);
+  } else if(portfolio > 0) {
+    score = 70; // Has savings but no budget entered
+  }
+  if(yearsLast < yearsInRetirement) {
+    score = Math.min(score, Math.round((yearsLast / yearsInRetirement) * 100));
+  }
+
+  // Update score circle
+  var arc = document.getElementById('readinessArc');
+  if(arc) {
+    var circumference = 408;
+    var offset = circumference - (score / 100) * circumference;
+    arc.style.strokeDashoffset = offset;
+    arc.style.stroke = score >= 80 ? '#2D4A35' : score >= 60 ? '#F0A500' : '#d45f00';
+  }
+
+  var scoreEl = document.getElementById('readinessScore');
+  if(scoreEl) scoreEl.textContent = score + '%';
+
+  var verdictEl = document.getElementById('readinessVerdict');
+  var subtitleEl = document.getElementById('readinessSubtitle');
+  if(verdictEl) {
+    if(score >= 80) {
+      verdictEl.textContent = '✅ On Track';
+      verdictEl.style.color = 'var(--sage)';
+      if(subtitleEl) subtitleEl.textContent = 'Your retirement plan looks solid. Keep it up!';
+    } else if(score >= 60) {
+      verdictEl.textContent = '⚠️ Needs Attention';
+      verdictEl.style.color = 'var(--gold)';
+      if(subtitleEl) subtitleEl.textContent = 'A few adjustments could significantly improve your outlook.';
+    } else {
+      verdictEl.textContent = '🔴 At Risk';
+      verdictEl.style.color = 'var(--clay)';
+      if(subtitleEl) subtitleEl.textContent = 'Your current plan may leave a significant gap in retirement.';
+    }
+  }
+
+  function fmt(n) { return '$' + Math.round(n).toLocaleString() + '/mo'; }
+
+  // Update income breakdown
+  var el;
+  el = document.getElementById('rdPortfolioIncome'); if(el) el.textContent = fmt(portfolioIncome);
+  el = document.getElementById('rdSSIncome'); if(el) el.textContent = ssIncome > 0 ? fmt(ssIncome) : 'Not entered';
+  el = document.getElementById('rdAdditionalIncome'); if(el) el.textContent = additionalIncome > 0 ? fmt(additionalIncome) : '$0/mo';
+  el = document.getElementById('rdTotalIncome'); if(el) el.textContent = fmt(totalIncome);
+  el = document.getElementById('rdCurrentBudget'); if(el) el.textContent = budgetTotal > 0 ? fmt(budgetTotal) : 'Not entered';
+  el = document.getElementById('rdInflatedBudget'); if(el) el.textContent = budgetTotal > 0 ? fmt(inflatedBudget) : 'Not entered';
+
+  // Gap analysis
+  el = document.getElementById('gapIncome'); if(el) el.textContent = fmt(totalIncome);
+  el = document.getElementById('gapExpenses'); if(el) el.textContent = budgetTotal > 0 ? fmt(inflatedBudget) : 'Not entered';
+  var gapEl = document.getElementById('gapAmount');
+  var gapCard = document.getElementById('gapCard');
+  if(gapEl && budgetTotal > 0) {
+    gapEl.textContent = (gap >= 0 ? '+' : '') + fmt(gap);
+    gapEl.style.color = gap >= 0 ? 'var(--sage)' : 'var(--clay)';
+    if(gapCard) gapCard.style.background = gap >= 0 ? 'var(--sage-pale)' : '#fff0f0';
+  }
+
+  var yearsLastEl = document.getElementById('rdYearsLast');
+  if(yearsLastEl && totalIncome > 0) {
+    if(gap >= 0) {
+      yearsLastEl.innerHTML = '<strong style="color:var(--sage)">✅ Your money is projected to last your full retirement</strong> (' + yearsInRetirement + ' years from age ' + retAge + ' to ' + lifeExp + ')';
+    } else {
+      yearsLastEl.innerHTML = '<strong style="color:var(--clay)">⚠️ At current trajectory, your portfolio may last approximately ' + yearsLast + ' years</strong> — running short around age ' + (retAge + yearsLast) + '. You need ' + yearsInRetirement + ' years of coverage.';
+    }
+  }
+
+  // Action items
+  var actions = [];
+  if(annualContrib < salary * 0.15) actions.push({ icon: '📈', text: 'Increase your contribution rate to at least 15% of income', impact: 'High' });
+  if(ssIncome === 0) actions.push({ icon: '🏛️', text: 'Enter your Social Security estimate on the Accounts tab', impact: 'Required' });
+  if(budgetTotal === 0) actions.push({ icon: '📋', text: 'Complete your Budget tab for a more accurate readiness score', impact: 'Required' });
+  if(gap < 0) actions.push({ icon: '⏳', text: 'Consider delaying retirement by 1-2 years to significantly boost your portfolio', impact: 'High' });
+  if(gap < 0) actions.push({ icon: '💰', text: 'Add additional income streams (rental, consulting, dividends) to close the gap', impact: 'Medium' });
+  if(portfolio < 500000) actions.push({ icon: '🚀', text: 'Consider maxing out your 401k ($23,500/yr) and Roth IRA ($7,000/yr)', impact: 'High' });
+
+  var actionsCard = document.getElementById('rdActionsCard');
+  var actionsDiv = document.getElementById('rdActions');
+  if(actionsCard && actionsDiv && actions.length > 0) {
+    actionsCard.style.display = 'block';
+    actionsDiv.innerHTML = actions.map(function(a) {
+      var color = a.impact === 'High' ? 'var(--clay)' : a.impact === 'Required' ? 'var(--gold)' : 'var(--sage)';
+      return '<div style="display:flex;gap:0.75rem;align-items:flex-start;padding:0.75rem;background:var(--warm-white);border-radius:8px"><span style="font-size:1.2rem">' + a.icon + '</span><div><div style="font-weight:600;color:var(--forest)">' + a.text + '</div><div style="font-size:0.75rem;margin-top:2px"><span style="background:' + color + ';color:#fff;padding:1px 8px;border-radius:10px;font-weight:600">' + a.impact + ' Impact</span></div></div></div>';
+    }).join('');
+  } else if(actionsCard && actions.length === 0) {
+    actionsCard.style.display = 'none';
+  }
+
+  // Update sidebar readiness
+  var sbReadiness = document.getElementById('sb-readiness');
+  if(sbReadiness) {
+    sbReadiness.textContent = score + '%';
+    sbReadiness.style.color = score >= 80 ? 'var(--sage)' : score >= 60 ? 'var(--gold)' : 'var(--clay)';
+  }
+}
+
 
 // ── SHOW TAB ──
   updateSnapshot();
@@ -3522,6 +3732,7 @@ function recalc() {
   updateSummary();
   if(typeof updateSnapshot==="function") updateSnapshot();
   if(typeof calcAdditionalIncome==="function") calcAdditionalIncome();
+  if(typeof calcReadiness==="function" && document.getElementById("tab-readiness")?.classList.contains("active")) calcReadiness();
   if(typeof calcAdditionalIncome==="function") calcAdditionalIncome();
 }
 
