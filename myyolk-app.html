@@ -3504,48 +3504,48 @@ function generatePDF() {
 
       // ── COVER PAGE ──
       doc.setFillColor(45, 74, 53);
-      doc.rect(0, 0, W, 80, 'F');
+      doc.rect(0, 0, W, 48, 'F');
 
       // Logo egg
       doc.setFillColor(255, 253, 240);
-      doc.ellipse(25, 35, 12, 15, 'F');
+      doc.ellipse(18, 24, 9, 11, 'F');
       doc.setFillColor(240, 165, 0);
-      doc.circle(26, 38, 7, 'F');
+      doc.circle(19, 26, 5, 'F');
 
-      // MyYolk title
+      // MyYolk title - white for both so visible on dark green
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(32);
-      doc.setTextColor(45, 74, 53);
-      doc.text('My', 42, 32);
-      doc.setTextColor(240, 165, 0);
-      doc.text('Yolk', 60, 32);
-      doc.setFontSize(10);
-      doc.setTextColor(200, 230, 200);
-      doc.setFont('helvetica', 'normal');
-      doc.text('RETIREMENT PLANNING', 42, 40);
-
-      // Report title
-      doc.setFontSize(22);
+      doc.setFontSize(24);
       doc.setTextColor(255, 255, 255);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Retirement Readiness Report', 42, 58);
+      doc.text('My', 33, 22);
+      doc.setTextColor(240, 165, 0);
+      doc.text('Yolk', 49, 22);
+      doc.setFontSize(7);
+      doc.setTextColor(180, 210, 180);
+      doc.setFont('helvetica', 'normal');
+      doc.text('RETIREMENT PLANNING', 33, 29);
 
-      // Name and date
+      // Report title and name on same header
       var firstName = document.getElementById('firstName')?.value || '';
       var spouseFirst = document.getElementById('spouseFirstName')?.value || '';
       var isCouple = document.getElementById('planCouple')?.checked;
       var reportName = firstName + (isCouple && spouseFirst ? ' & ' + spouseFirst : '');
-      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(16);
       doc.setTextColor(255, 255, 255);
-      doc.setFont('helvetica', 'normal');
-      if(reportName) doc.text(reportName, 42, 70);
+      doc.text('Retirement Readiness Report', 33, 40);
+      if(reportName) {
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(200, 225, 200);
+        doc.text(reportName, W - margin, 40, {align: 'right'});
+      }
 
       var today = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
-      doc.setFontSize(10);
-      doc.setTextColor(200, 220, 200);
-      doc.text('Generated: ' + today, 42, 76);
+      doc.setFontSize(8);
+      doc.setTextColor(160, 200, 160);
+      doc.text('Generated: ' + today, W - margin, 46, {align: 'right'});
 
-      y = 95;
+      y = 58;
 
       // ── SECTION: KEY NUMBERS ──
       doc.setFillColor(245, 240, 232);
@@ -3613,6 +3613,8 @@ function generatePDF() {
       y += 14;
 
       var rdPortfolio = document.getElementById('rdPortfolioIncome')?.textContent || '—';
+      // Ensure readiness is calculated
+      if(typeof calcReadiness === 'function') calcReadiness();
       var rdSS = document.getElementById('rdSSIncome')?.textContent || '—';
       var rdAdditional = document.getElementById('rdAdditionalIncome')?.textContent || '—';
       var rdTotal = document.getElementById('rdTotalIncome')?.textContent || '—';
