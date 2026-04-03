@@ -1863,7 +1863,7 @@
           <div class="spend-card gap-ok" id="ba-gapCard">
             <div class="spend-card-label" id="ba-gapLabel">📊 Coverage Gap</div>
             <div class="spend-card-value" id="ba-gapValue">—</div>
-            <div class="spend-card-sub" id="ba-gapSub">vs. projected withdrawal income</div>
+            <div class="spend-card-sub" id="ba-gapSub">vs. portfolio drawdown only &mdash; <span style="color:var(--sage);cursor:pointer;text-decoration:underline" onclick="showTab('readiness')">see Readiness tab</span> for full picture including SS</div>
           </div>
         </div>
 
@@ -3033,6 +3033,17 @@ function calcProjections() {
   var balCash = parseFloat(document.getElementById('balCash')?.value) || 0;
   var totalBalance = bal401k + balRoth401 + balRothIRA + balTaxable + balHSA + balCash;
 
+  // Spouse SS for projections
+  var spouseSsForProj = 0;
+  if(document.getElementById('planCouple')?.checked) {
+    var spSsEl = document.getElementById('spouseSsEstimate');
+    if(spSsEl && spSsEl.textContent && spSsEl.textContent !== '-') {
+      spouseSsForProj = parseFloat(spSsEl.textContent.replace(/[^0-9.]/g,'')) || 0;
+    }
+    var spSsManual = parseFloat(document.getElementById('spouseSsManual')?.value) || 0;
+    if(spSsManual) spouseSsForProj = spSsManual;
+  }
+
   // Annual contributions
   var salary = parseFloat(document.getElementById('grossSalary')?.value) || parseFloat(document.getElementById('hourlyRate')?.value * 2080) || 0;
   var contrib401k = (parseFloat(document.getElementById('contrib401k')?.value) || 0) / 100;
@@ -3237,7 +3248,7 @@ function calcReadiness() {
   // Monthly income at retirement
   var portfolioIncome = (portfolio * 0.04) / 12;
 
-  // SS income - check all methods
+  // SS income - check all methods (Dean + Densie)
   var ssIncome = 0;
   // Manual entry method
   var ssManual62 = parseFloat(document.getElementById('ss62')?.value) || 0;
@@ -3263,6 +3274,22 @@ function calcReadiness() {
     else if(ssDispAge >= 70) ssIncome = parseFloat(document.getElementById('ss-disp70')?.textContent?.replace(/[^0-9.]/g,'')) || 0;
     else ssIncome = parseFloat(document.getElementById('ss-disp67')?.textContent?.replace(/[^0-9.]/g,'')) || 0;
   }
+
+  // Spouse SS income
+  var spouseSsIncome = 0;
+  var isCouple = document.getElementById('planCouple')?.checked;
+  if(isCouple) {
+    var spouseSsManual = parseFloat(document.getElementById('spouseSsManual')?.value) || 0;
+    if(spouseSsManual) {
+      spouseSsIncome = spouseSsManual;
+    } else {
+      var spouseSsEstEl = document.getElementById('spouseSsEstimate');
+      if(spouseSsEstEl && spouseSsEstEl.textContent && spouseSsEstEl.textContent !== '-') {
+        spouseSsIncome = parseFloat(spouseSsEstEl.textContent.replace(/[^0-9.]/g,'')) || 0;
+      }
+    }
+  }
+  ssIncome += spouseSsIncome;
 
   // Additional income
   var additionalIncome = 0;
