@@ -1018,10 +1018,10 @@
       </div>
 
       <div class="card">
-        <div class="card-title"><span class="dot"></span> <span id="about-you-title">About You</span> <span style="font-size:0.78rem;color:var(--mid);font-weight:400">(optional — helps us improve MyYolk)</span></div>
+        <div class="card-title"><span class="dot"></span> About You <span style="font-size:0.78rem;color:var(--mid);font-weight:400">(optional)</span></div>
         <div class="form-grid">
           <div class="field">
-            <label id="jobTitle-label">Job Title / Role</label>
+            <label>Job Title / Role</label>
             <input type="text" id="jobTitle" placeholder="e.g. Drilling Engineer" oninput="saveData()">
           </div>
           <div class="field">
@@ -1042,7 +1042,7 @@
             </select>
           </div>
           <div class="field">
-            <label id="employmentStatus-label">Employment Status</label>
+            <label>Employment Status</label>
             <select id="employmentStatus" onchange="saveData()" style="width:100%">
               <option value="">Select status...</option>
               <option value="employed">Currently Employed</option>
@@ -1051,43 +1051,6 @@
               <option value="semiretired">Semi-Retired</option>
               <option value="selfemployed">Self-Employed</option>
             </select>
-          </div>
-        </div>
-        <div id="spouseAboutFields" style="display:none;margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--border)">
-          <div style="font-weight:600;font-size:0.85rem;color:var(--forest);margin-bottom:0.75rem" id="spouse-about-label">Spouse / Partner</div>
-          <div class="form-grid">
-            <div class="field">
-              <label>Job Title / Role</label>
-              <input type="text" id="spouseJobTitle" placeholder="e.g. Teacher" oninput="saveData()">
-            </div>
-            <div class="field">
-              <label>Industry</label>
-              <select id="spouseIndustry" onchange="saveData()" style="width:100%">
-                <option value="">Select industry...</option>
-                <option value="oilgas">Oil &amp; Gas / Energy</option>
-                <option value="tech">Technology</option>
-                <option value="healthcare">Healthcare</option>
-                <option value="finance">Finance &amp; Banking</option>
-                <option value="government">Government / Military</option>
-                <option value="education">Education</option>
-                <option value="manufacturing">Manufacturing</option>
-                <option value="construction">Construction</option>
-                <option value="selfemployed">Self-Employed / Business Owner</option>
-                <option value="retired">Retired</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Employment Status</label>
-              <select id="spouseEmploymentStatus" onchange="saveData()" style="width:100%">
-                <option value="">Select status...</option>
-                <option value="employed">Currently Employed</option>
-                <option value="laidoff">Recently Laid Off</option>
-                <option value="retired">Retired</option>
-                <option value="semiretired">Semi-Retired</option>
-                <option value="selfemployed">Self-Employed</option>
-              </select>
-            </div>
           </div>
         </div>
       </div>
@@ -2262,23 +2225,9 @@ function toggleSplit401k() {
   recalc();
 }
 
-function updateAboutYouSection() {
-  var isCouple = document.getElementById('planCouple') && document.getElementById('planCouple').checked;
-  var name1 = (document.getElementById('firstName')?.value || '').trim();
-  var name2 = (document.getElementById('spouseFirstName')?.value || '').trim();
-  var cap1 = name1 ? name1.charAt(0).toUpperCase() + name1.slice(1) : 'You';
-  var cap2 = name2 ? name2.charAt(0).toUpperCase() + name2.slice(1) : 'Spouse / Partner';
-  
-  var aboutTitle = document.getElementById('about-you-title');
-  var spouseAbout = document.getElementById('spouseAboutFields');
-  var spouseLabel = document.getElementById('spouse-about-label');
-  
-  if (aboutTitle) aboutTitle.textContent = 'About ' + cap1;
-  if (spouseAbout) spouseAbout.style.display = isCouple ? 'block' : 'none';
-  if (spouseLabel) spouseLabel.textContent = 'About ' + cap2;
-}
-
 function toggleCouple() {
+  // Update About You section
+  setTimeout(function(){ if(typeof updateAboutYouSection==='function') updateAboutYouSection(); }, 50);
   var isCouple = document.getElementById('planCouple')?.checked;
   ['spouseProfileCard','spouseIncomeCard','spouseAccountsCard'].forEach(function(id) {
     var el = document.getElementById(id);
