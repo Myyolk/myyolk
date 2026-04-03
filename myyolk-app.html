@@ -762,6 +762,15 @@
     </svg>
   </div>
   <div class="header-badge">Protect the Good Stuff</div>
+  <div id="langSelector" onclick="toggleLangDropdown()">
+    <span id="currentFlag">🇺🇸</span>
+    <span id="currentLang">EN</span>
+    <span style="font-size:0.7rem;opacity:0.8">▼</span>
+    <div id="langDropdown">
+      <div class="lang-option active" onclick="setLanguage('en', event)">🇺🇸 English</div>
+      <div class="lang-option" onclick="setLanguage('es', event)">🇪🇸 Español</div>
+    </div>
+  </div>
 </header>
 
 <div class="app">
