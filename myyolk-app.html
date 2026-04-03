@@ -2021,6 +2021,10 @@
           <div class="proj-stat-value" id="projYearsToRetire">—</div>
           <div class="proj-stat-label">Years Until Retirement</div>
         </div>
+        <div class="proj-stat" style="border:2px solid var(--gold)">
+          <div class="proj-stat-value" id="projNetWorth" style="color:var(--sage)">—</div>
+          <div class="proj-stat-label">Total Net Worth at Retirement</div>
+        </div>
       </div>
 
       <div class="card">
@@ -3027,6 +3031,23 @@ function calcProjections() {
   var canvas = document.getElementById('projChart');
   if(!canvas) return;
   if(projChartInstance) projChartInstance.destroy();
+  // Calculate home appreciation for net worth line
+  var homeVal = parseFloat(document.getElementById('homeValue')?.value) || 0;
+  var homeApprec = 0.03; // 3% annual appreciation
+  var secondHomeVal = parseFloat(document.getElementById('secondHomeValue')?.value) || 0;
+  var vehicle = parseFloat(document.getElementById('vehicleValue')?.value) || 0;
+  var otherAssets = parseFloat(document.getElementById('otherAssets')?.value) || 0;
+  var netWorthLine = values.map(function(v, i) {
+    var appreciatedHome = homeVal * Math.pow(1 + homeApprec, i);
+    var appreciatedSecond = secondHomeVal * Math.pow(1 + homeApprec, i);
+    return Math.round(v + appreciatedHome + appreciatedSecond + (i === 0 ? vehicle + otherAssets : 0));
+  });
+
+  // Update net worth at retirement stat
+  var nwEl = document.getElementById('projNetWorth');
+  var finalNW = netWorthLine[netWorthLine.length - 1];
+  if(nwEl) nwEl.textContent = finalNW >= 1000000 ? '$' + (finalNW/1000000).toFixed(2) + 'M' : '$' + (finalNW/1000).toFixed(0) + 'K';
+
   projChartInstance = new Chart(canvas, {
     type: 'line',
     data: {
@@ -3041,9 +3062,19 @@ function calcProjections() {
         pointRadius: 3,
         pointHoverRadius: 6
       },{
+        label: 'Total Net Worth (incl. home)',
+        data: netWorthLine,
+        borderColor: '#F0A500',
+        backgroundColor: 'rgba(240,165,0,0.05)',
+        borderWidth: 2,
+        fill: false,
+        tension: 0.4,
+        pointRadius: 2,
+        borderDash: [4,2]
+      },{
         label: 'Total Contributed',
         data: contribLine,
-        borderColor: '#F0A500',
+        borderColor: '#aaa',
         backgroundColor: 'transparent',
         borderDash: [6,3],
         fill: false,
