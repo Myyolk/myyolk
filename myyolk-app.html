@@ -1965,7 +1965,7 @@
 
     <!-- ══ PROJECTIONS TAB ══ -->
     <div class="tab-panel" id="tab-projections">
-      <h1 class="page-title">40-Year Projection</h1>
+      <h1 class="page-title" id="projTitle">Retirement Projection</h1>
       <p class="page-subtitle">Watch your portfolio grow year by year based on your inputs.</p>
 
       <!-- Summary stats -->
@@ -3010,6 +3010,9 @@ showTab = function(name) {
 };
 
 // ── SHOW TAB ──
+  updateSnapshot();
+}
+
 function showTab(name) {
   var main = document.querySelector('main');
   if(main) main.scrollTop = 0;
@@ -3105,6 +3108,84 @@ function updateGreeting() {
 }
 
 // ── MAIN RECALC ──
+
+function updateSnapshot() {
+  var age = parseInt(document.getElementById('age')?.value) || 0;
+  var retAge = parseInt(document.getElementById('retAge')?.value) || 65;
+  var growthRate = parseFloat(document.getElementById('growthRate')?.value) || 0.07;
+  if(document.getElementById('growthRate')?.value === 'custom') {
+    growthRate = (parseFloat(document.getElementById('customRate')?.value) || 7) / 100;
+  }
+
+  // Current balances
+  var bal401k = parseFloat(document.getElementById('bal401k')?.value) || 0;
+  var balRoth401 = parseFloat(document.getElementById('balRoth401')?.value) || 0;
+  var balRothIRA = parseFloat(document.getElementById('balRothIRA')?.value) || 0;
+  var balTaxable = parseFloat(document.getElementById('balTaxable')?.value) || 0;
+  var balHSA = parseFloat(document.getElementById('balHSA')?.value) || 0;
+  var balCash = parseFloat(document.getElementById('balCash')?.value) || 0;
+  var totalNow = bal401k + balRoth401 + balRothIRA + balTaxable + balHSA + balCash;
+
+  // Spouse balances
+  var spBal401k = parseFloat(document.getElementById('spouseBal401k')?.value) || 0;
+  var spBalRoth = parseFloat(document.getElementById('spouseBalRoth401')?.value) || 0;
+  var spBalIRA = parseFloat(document.getElementById('spouseBalRothIRA')?.value) || 0;
+  totalNow += spBal401k + spBalRoth + spBalIRA;
+
+  // Annual contributions
+  var salary = parseFloat(document.getElementById('grossSalary')?.value) || 0;
+  if(!salary) {
+    var hourly = parseFloat(document.getElementById('hourlyRate')?.value) || 0;
+    var hrs = parseFloat(document.getElementById('hoursPerWeek')?.value) || 40;
+    salary = hourly * hrs * 52;
+  }
+  var contrib401k = (parseFloat(document.getElementById('contrib401k')?.value) || 0) / 100;
+  var empMatch = Math.min(
+    (parseFloat(document.getElementById('empMatch')?.value) || 0) / 100,
+    (parseFloat(document.getElementById('matchCap')?.value) || 100) / 100
+  );
+  var contribRothIRA = parseFloat(document.getElementById('contribRothIRA')?.value) || 0;
+  var contribTaxable = parseFloat(document.getElementById('contribTaxable')?.value) || 0;
+  var annualContrib = (salary * contrib401k) + (salary * empMatch) + contribRothIRA + contribTaxable;
+
+  // Project to retirement
+  var yearsToRetire = Math.max(retAge - age, 0);
+  var portfolio = totalNow;
+  for(var i = 0; i < yearsToRetire; i++) {
+    portfolio = (portfolio + annualContrib) * (1 + growthRate);
+  }
+
+  // Safe withdrawal (4% rule / 12 months)
+  var monthlyWithdrawal = (portfolio * 0.04) / 12;
+
+  // Format helper
+  function fmt(n) {
+    if(n >= 1000000) return '$' + (n/1000000).toFixed(2) + 'M';
+    if(n >= 1000) return '$' + (n/1000).toFixed(0) + 'K';
+    return '$' + Math.round(n).toLocaleString();
+  }
+
+  // Update sidebar
+  var sbPortfolio = document.getElementById('sb-portfolio');
+  if(sbPortfolio) sbPortfolio.textContent = totalNow > 0 ? fmt(totalNow) : '—';
+
+  var sbAtRet = document.getElementById('sb-at-ret');
+  if(sbAtRet) sbAtRet.textContent = portfolio > 0 ? fmt(portfolio) : '—';
+
+  var sbAgeLabel = document.getElementById('sb-age-label');
+  if(sbAgeLabel) sbAgeLabel.textContent = retAge;
+
+  var sbWithdrawal = document.getElementById('sb-withdrawal');
+  if(sbWithdrawal) sbWithdrawal.textContent = portfolio > 0 ? '$' + Math.round(monthlyWithdrawal).toLocaleString() + '/mo' : '—';
+
+  var sbReadiness = document.getElementById('sb-readiness');
+  if(sbReadiness && portfolio > 0) {
+    var ratio = Math.min(Math.round((portfolio / (monthlyWithdrawal * 12 * 25)) * 100), 100);
+    sbReadiness.textContent = ratio + '%';
+    sbReadiness.style.color = ratio >= 80 ? 'var(--sage)' : ratio >= 60 ? 'var(--gold)' : 'var(--clay)';
+  }
+}
+
 function recalc() {
   saveData();
   // Income
