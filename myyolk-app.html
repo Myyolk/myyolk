@@ -1017,6 +1017,44 @@
         </div>
       </div>
 
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> About You <span style="font-size:0.78rem;color:var(--mid);font-weight:400">(optional)</span></div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Job Title / Role</label>
+            <input type="text" id="jobTitle" placeholder="e.g. Drilling Engineer" oninput="saveData()">
+          </div>
+          <div class="field">
+            <label>Industry</label>
+            <select id="industry" onchange="saveData()" style="width:100%">
+              <option value="">Select your industry...</option>
+              <option value="oilgas">Oil &amp; Gas / Energy</option>
+              <option value="tech">Technology</option>
+              <option value="healthcare">Healthcare</option>
+              <option value="finance">Finance &amp; Banking</option>
+              <option value="government">Government / Military</option>
+              <option value="education">Education</option>
+              <option value="manufacturing">Manufacturing</option>
+              <option value="construction">Construction</option>
+              <option value="selfemployed">Self-Employed / Business Owner</option>
+              <option value="retired">Retired</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Employment Status</label>
+            <select id="employmentStatus" onchange="saveData()" style="width:100%">
+              <option value="">Select status...</option>
+              <option value="employed">Currently Employed</option>
+              <option value="laidoff">Recently Laid Off</option>
+              <option value="retired">Retired</option>
+              <option value="semiretired">Semi-Retired</option>
+              <option value="selfemployed">Self-Employed</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       <div class="btn-row">
         <button class="btn btn-primary" onclick="showTab('income')">Next: Income & Pay →</button>
       </div>
