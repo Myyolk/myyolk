@@ -1556,6 +1556,9 @@
         <div class="form-grid">
           <div class="field"><label>Primary Home Value ($)</label><input type="number" id="homeValue" value="" placeholder="0" oninput="recalc()"></div>
           <div class="field"><label>Mortgage Balance ($)</label><input type="number" id="mortgageBalance" value="" placeholder="0" oninput="recalc()"></div>
+          <div class="field"><label>Second Home Value ($)</label><input type="number" id="secondHomeValue" value="" placeholder="0" oninput="recalc()"></div>
+          <div class="field"><label>Second Home Mortgage ($)</label><input type="number" id="secondHomeMortgage" value="" placeholder="0" oninput="recalc()"></div>
+          <div class="field"><label>Rental Income ($/mo)</label><input type="number" id="rentalIncome" value="" placeholder="0" oninput="recalc()"><div class="hint">If second home generates rental income</div></div>
           <div class="field"><label>Vehicle Value ($)</label><input type="number" id="vehicleValue" value="" placeholder="0" oninput="recalc()"></div>
           <div class="field"><label>Other Assets ($)</label><input type="number" id="otherAssets" value="" placeholder="0" oninput="recalc()"></div>
         </div>
@@ -3192,6 +3195,9 @@ function updateSnapshot() {
   var vehicle = parseFloat(document.getElementById('vehicleValue')?.value) || 0;
   var otherAssets = parseFloat(document.getElementById('otherAssets')?.value) || 0;
   var homeEquity = homeValue - mortgage;
+  var secondHomeValue = parseFloat(document.getElementById('secondHomeValue')?.value) || 0;
+  var secondHomeMortgage = parseFloat(document.getElementById('secondHomeMortgage')?.value) || 0;
+  var secondHomeEquity = secondHomeValue - secondHomeMortgage;
 
   // Spouse balances
   var spBal401k = parseFloat(document.getElementById('spouseBal401k')?.value) || 0;
@@ -3212,7 +3218,7 @@ function updateSnapshot() {
   var debtOther = parseFloat(document.getElementById('debtOther')?.value) || 0;
   var totalDebts = debtCredit + debtCar + debtStudent + debtOther;
 
-  var netWorth = totalNow + spouseTotal + balESPP + homeEquity + vehicle + otherAssets - totalDebts;
+  var netWorth = totalNow + spouseTotal + balESPP + homeEquity + secondHomeEquity + vehicle + otherAssets - totalDebts;
 
   var sbNetWorth = document.getElementById('sb-networth');
   if(sbNetWorth) sbNetWorth.textContent = netWorth > 0 ? fmt(netWorth) : '—';
