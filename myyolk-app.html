@@ -763,8 +763,33 @@
   .proj-table tr.retire-row { background: #fef3e0; font-weight: 700; }
   .proj-table tr.retire-row td { color: var(--forest); border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold); }
 
+  
+  /* ── PDF EXPORT ── */
+  #pdfBtn {
+    position: fixed;
+    bottom: 5rem;
+    right: 1.5rem;
+    background: var(--forest);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 0.6rem 1.2rem;
+    font-family: DM Sans, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  #pdfBtn:hover { background: #1a2e1f; transform: translateY(-2px); }
+
   </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -3453,6 +3478,232 @@ function calcReadiness() {
 }
 
 
+
+// ── PDF EXPORT ──
+function generatePDF() {
+  if(typeof window.jspdf === 'undefined' && typeof jsPDF === 'undefined') {
+    alert('PDF library loading... please try again in a moment.');
+    return;
+  }
+
+  var btn = document.getElementById('pdfBtn');
+  btn.textContent = '⏳ Generating...';
+  btn.disabled = true;
+
+  setTimeout(function() {
+    try {
+      var jsPDFLib = window.jspdf ? window.jspdf.jsPDF : jsPDF;
+      var doc = new jsPDFLib({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      var W = 210; var H = 297; var margin = 20; var y = 0;
+
+      // Colors
+      var forest = [45, 74, 53];
+      var gold = [240, 165, 0];
+      var mid = [107, 107, 107];
+      var light = [245, 240, 232];
+
+      // ── COVER PAGE ──
+      doc.setFillColor(45, 74, 53);
+      doc.rect(0, 0, W, 80, 'F');
+
+      // Logo egg
+      doc.setFillColor(255, 253, 240);
+      doc.ellipse(25, 35, 12, 15, 'F');
+      doc.setFillColor(240, 165, 0);
+      doc.circle(26, 38, 7, 'F');
+
+      // MyYolk title
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(32);
+      doc.setTextColor(45, 74, 53);
+      doc.text('My', 42, 32);
+      doc.setTextColor(240, 165, 0);
+      doc.text('Yolk', 60, 32);
+      doc.setFontSize(10);
+      doc.setTextColor(200, 230, 200);
+      doc.setFont('helvetica', 'normal');
+      doc.text('RETIREMENT PLANNING', 42, 40);
+
+      // Report title
+      doc.setFontSize(22);
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Retirement Readiness Report', 42, 58);
+
+      // Name and date
+      var firstName = document.getElementById('firstName')?.value || '';
+      var spouseFirst = document.getElementById('spouseFirstName')?.value || '';
+      var isCouple = document.getElementById('planCouple')?.checked;
+      var reportName = firstName + (isCouple && spouseFirst ? ' & ' + spouseFirst : '');
+      doc.setFontSize(14);
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'normal');
+      if(reportName) doc.text(reportName, 42, 70);
+
+      var today = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
+      doc.setFontSize(10);
+      doc.setTextColor(200, 220, 200);
+      doc.text('Generated: ' + today, 42, 76);
+
+      y = 95;
+
+      // ── SECTION: KEY NUMBERS ──
+      doc.setFillColor(245, 240, 232);
+      doc.rect(margin, y, W - margin*2, 50, 'F');
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(...forest);
+      doc.text('KEY RETIREMENT NUMBERS', margin + 5, y + 8);
+
+      var age = document.getElementById('age')?.value || '—';
+      var retAge = document.getElementById('retAge')?.value || '—';
+      var lifeExp = document.getElementById('lifeExp')?.value || '—';
+      var portfolio = document.getElementById('sb-portfolio')?.textContent || '—';
+      var atRet = document.getElementById('sb-at-ret')?.textContent || '—';
+      var withdrawal = document.getElementById('sb-withdrawal')?.textContent || '—';
+      var score = document.getElementById('readinessScore')?.textContent || '—';
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(...mid);
+
+      var col1x = margin + 5; var col2x = margin + 60; var col3x = margin + 120;
+
+      doc.text('Current Age', col1x, y + 18);
+      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(...forest);
+      doc.text(age, col1x, y + 26);
+
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...mid);
+      doc.text('Retirement Age', col2x, y + 18);
+      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(...forest);
+      doc.text(retAge, col2x, y + 26);
+
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...mid);
+      doc.text('Life Expectancy', col3x, y + 18);
+      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(...forest);
+      doc.text(lifeExp, col3x, y + 26);
+
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...mid);
+      doc.text('Current Portfolio', col1x, y + 36);
+      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(...gold);
+      doc.text(portfolio, col1x, y + 44);
+
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...mid);
+      doc.text('Portfolio at Retirement', col2x, y + 36);
+      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(...gold);
+      doc.text(atRet, col2x, y + 44);
+
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...mid);
+      doc.text('Readiness Score', col3x, y + 36);
+      doc.setFont('helvetica','bold'); doc.setFontSize(13);
+      doc.setTextColor(score && parseInt(score) >= 80 ? 45 : score && parseInt(score) >= 60 ? 200 : 212, 
+                       score && parseInt(score) >= 80 ? 74 : score && parseInt(score) >= 60 ? 130 : 95,
+                       score && parseInt(score) >= 80 ? 53 : score && parseInt(score) >= 60 ? 0 : 0);
+      doc.text(score, col3x, y + 44);
+
+      y += 60;
+
+      // ── SECTION: INCOME AT RETIREMENT ──
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...forest);
+      doc.text('MONTHLY INCOME AT RETIREMENT', margin, y + 6);
+      doc.setLineWidth(0.5); doc.setDrawColor(...gold);
+      doc.line(margin, y + 8, W - margin, y + 8);
+      y += 14;
+
+      var rdPortfolio = document.getElementById('rdPortfolioIncome')?.textContent || '—';
+      var rdSS = document.getElementById('rdSSIncome')?.textContent || '—';
+      var rdAdditional = document.getElementById('rdAdditionalIncome')?.textContent || '—';
+      var rdTotal = document.getElementById('rdTotalIncome')?.textContent || '—';
+
+      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(...mid);
+      doc.text('Portfolio Drawdown (4% rule):', margin, y); doc.setTextColor(...forest); doc.text(rdPortfolio, 120, y);
+      y += 7;
+      doc.setTextColor(...mid); doc.text('Social Security (combined):', margin, y); doc.setTextColor(...forest); doc.text(rdSS, 120, y);
+      y += 7;
+      doc.setTextColor(...mid); doc.text('Additional Income:', margin, y); doc.setTextColor(...forest); doc.text(rdAdditional, 120, y);
+      y += 7;
+      doc.setFillColor(...light); doc.rect(margin, y - 4, W - margin*2, 10, 'F');
+      doc.setFont('helvetica','bold'); doc.setTextColor(...forest);
+      doc.text('Total Monthly Income:', margin + 2, y + 3); doc.setTextColor(...gold[0], gold[1], gold[2]); doc.text(rdTotal, 120, y + 3);
+      y += 16;
+
+      // ── SECTION: GAP ANALYSIS ──
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...forest);
+      doc.text('GAP ANALYSIS', margin, y + 6);
+      doc.line(margin, y + 8, W - margin, y + 8);
+      y += 14;
+
+      var rdExpenses = document.getElementById('rdInflatedBudget')?.textContent || '—';
+      var rdGap = document.getElementById('gapAmount')?.textContent || '—';
+      var rdYears = document.getElementById('rdYearsLast')?.textContent || '—';
+
+      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(...mid);
+      doc.text('Monthly Income at Retirement:', margin, y); doc.setTextColor(...forest); doc.text(rdTotal, 120, y);
+      y += 7;
+      doc.setTextColor(...mid); doc.text('Monthly Expenses (inflation adj.):', margin, y); doc.setTextColor(...forest); doc.text(rdExpenses, 120, y);
+      y += 7;
+      doc.setFont('helvetica','bold');
+      doc.setTextColor(...mid); doc.text('Monthly Gap:', margin, y);
+      var gapNum = parseFloat((rdGap || '0').replace(/[^0-9.-]/g,''));
+      doc.setTextColor(gapNum >= 0 ? 45 : 212, gapNum >= 0 ? 74 : 95, gapNum >= 0 ? 53 : 0);
+      doc.text(rdGap, 120, y);
+      y += 12;
+
+      // Years message
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...mid);
+      var yearsText = rdYears.substring(0, 100);
+      var splitYears = doc.splitTextToSize(yearsText, W - margin*2);
+      doc.text(splitYears, margin, y);
+      y += splitYears.length * 5 + 8;
+
+      // ── SECTION: RECOMMENDED ACTIONS ──
+      var actions = document.querySelectorAll('#rdActions > div');
+      if(actions.length > 0) {
+        doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...forest);
+        doc.text('RECOMMENDED ACTIONS', margin, y + 6);
+        doc.line(margin, y + 8, W - margin, y + 8);
+        y += 14;
+
+        actions.forEach(function(action) {
+          var text = action.querySelector('div > div')?.textContent || '';
+          var impact = action.querySelector('span')?.textContent || '';
+          if(text && y < H - 30) {
+            doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...forest);
+            var split = doc.splitTextToSize('• ' + text, W - margin*2 - 5);
+            doc.text(split, margin, y);
+            y += split.length * 5;
+            doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...mid);
+            doc.text('Impact: ' + impact, margin + 4, y);
+            y += 7;
+          }
+        });
+      }
+
+      // ── FOOTER ──
+      doc.setFillColor(...forest);
+      doc.rect(0, H - 15, W, 15, 'F');
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(200, 220, 200);
+      doc.text('MyYolk™ Retirement Planning  |  myyolk.com  |  For informational purposes only. Not financial advice.', margin, H - 6);
+
+      // Save
+      var filename = (reportName ? reportName.replace(/[^a-zA-Z0-9]/g,'_') : 'MyYolk') + '_Retirement_Report_' + new Date().toISOString().split('T')[0] + '.pdf';
+      doc.save(filename);
+
+      // GA tracking
+      if(typeof gtag === 'function') gtag('event', 'pdf_download', {name: reportName});
+
+    } catch(err) {
+      console.error('PDF error:', err);
+      alert('PDF generation failed: ' + err.message);
+    }
+
+    btn.innerHTML = '📄 Download Report';
+    btn.disabled = false;
+  }, 100);
+}
+
+
 // ── SHOW TAB ──
   updateSnapshot();
 
@@ -3787,29 +4038,13 @@ function recalc() {
   var homeEq2 = Math.max(0, getVal('homeValue') - getVal('homeMortgage'));
   var sbName = (document.getElementById('firstName')?.value || '').trim();
   updatePlanningFor();
-  var manual = getVal('ssManual');
-  if (manual > 0) { state.ssMonthly = manual; fmtEl('ssEstimate', fmt(manual) + '/mo'); return; }
-  var avgIncome = state.salary;
-  if (!avgIncome) { fmtEl('ssEstimate', '—'); return; }
-  var yrs = getVal('ssYearsWorked', 30);
-  var aime = (avgIncome * Math.min(yrs,35)) / (35*12);
-  var pia = 0;
-  if (aime <= 1115) pia = aime * 0.9;
-  else if (aime <= 6721) pia = 1003.5 + (aime-1115)*0.32;
-  else pia = 2978.42 + (aime-6721)*0.15;
-  var ssAge = getVal('ssAge', 67);
-  // Accurate SSA reduction formula
-  var monthsEarly = ssAge < 67 ? (67 - ssAge) * 12 : 0;
-  var adjFactor;
-  if(monthsEarly <= 0) {
-    adjFactor = ssAge > 67 ? (1 + (ssAge - 67) * 0.08) : 1;
-  } else if(monthsEarly <= 36) {
-    adjFactor = 1 - monthsEarly * (5/9) * 0.01;
-  } else {
-    adjFactor = 1 - (36 * (5/9) * 0.01 + (monthsEarly - 36) * (5/12) * 0.01);
+  // Use estimateSS() to calculate SS - avoids duplicate logic
+  var ssMethod = document.querySelector('.ss-method-btn.active')?.id || 'ssBtn-estimate';
+  if(ssMethod === 'ssBtn-estimate' && state.salary) {
+    estimateSS();
+  } else if(ssMethod === 'ssBtn-manual') {
+    ssManualUpdate();
   }
-  state.ssMonthly = pia * adjFactor;
-  fmtEl('ssEstimate', fmt(state.ssMonthly) + '/mo');
   
   // Update all panels
   updateReadiness();
@@ -4145,6 +4380,10 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
     </div>
   </div>
+
+
+  <!-- PDF EXPORT BUTTON -->
+  <button id="pdfBtn" onclick="generatePDF()">📄 Download Report</button>
 
 </body>
 </html>
