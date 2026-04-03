@@ -2874,7 +2874,7 @@ var projChartInstance = null;
 
 function calcProjections() {
   var age = parseInt(document.getElementById('age')?.value) || 45;
-  var retireAge = parseInt(document.getElementById('retireAge')?.value) || 65;
+  var retireAge = parseInt(document.getElementById('retAge')?.value) || 65;
   var growthRate = parseFloat(document.getElementById('growthRate')?.value) || 0.07;
   var customRate = parseFloat(document.getElementById('customRate')?.value);
   if(document.getElementById('growthRate')?.value === 'custom' && customRate) growthRate = customRate / 100;
