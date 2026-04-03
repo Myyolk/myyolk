@@ -745,7 +745,25 @@
   .lang-option:hover { background: #f5f0e8; }
   .lang-option.active { background: #fef3e0; font-weight: 700; }
 
+  
+  /* ── PROJECTIONS ── */
+  .chart-wrap { position: relative; height: 320px; width: 100%; }
+  .proj-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+  .proj-stat { background: var(--warm-white); border-radius: 10px; padding: 1rem; text-align: center; border: 1px solid var(--border); }
+  .proj-stat-value { font-size: 1.4rem; font-weight: 700; color: var(--sage); }
+  .proj-stat-label { font-size: 0.78rem; color: var(--mid); margin-top: 4px; }
+  .proj-table-wrap { overflow-x: auto; }
+  .proj-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  .proj-table th { background: var(--sage); color: #fff; padding: 0.5rem 0.75rem; text-align: right; font-weight: 600; }
+  .proj-table th:first-child { text-align: left; }
+  .proj-table td { padding: 0.45rem 0.75rem; border-bottom: 1px solid var(--border); text-align: right; }
+  .proj-table td:first-child { text-align: left; font-weight: 600; color: var(--forest); }
+  .proj-table tr:nth-child(even) { background: var(--warm-white); }
+  .proj-table tr.retire-row { background: #fef3e0; font-weight: 700; }
+  .proj-table tr.retire-row td { color: var(--forest); border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold); }
+
   </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -1949,15 +1967,31 @@
       <h1 class="page-title">40-Year Projection</h1>
       <p class="page-subtitle">Watch your portfolio grow year by year based on your inputs.</p>
 
+      <!-- Summary stats -->
+      <div class="proj-summary">
+        <div class="proj-stat">
+          <div class="proj-stat-value" id="projFinalValue">—</div>
+          <div class="proj-stat-label">Projected Portfolio at Retirement</div>
+        </div>
+        <div class="proj-stat">
+          <div class="proj-stat-value" id="projMonthlyIncome">—</div>
+          <div class="proj-stat-label">Est. Monthly Drawdown (4% rule)</div>
+        </div>
+        <div class="proj-stat">
+          <div class="proj-stat-value" id="projYearsToRetire">—</div>
+          <div class="proj-stat-label">Years Until Retirement</div>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-title"><span class="dot"></span> Portfolio Growth</div>
-        <div class="chart-wrap" id="projChart"></div>
+        <div class="chart-wrap"><canvas id="projChart"></canvas></div>
       </div>
 
       <div class="card">
         <div class="card-title"><span class="dot"></span> Year-by-Year Breakdown</div>
-        <div class="table-wrap">
-          <table id="projTable">
+        <div class="proj-table-wrap">
+          <table class="proj-table" id="projTable">
             <thead>
               <tr>
                 <th>Year</th>
@@ -2831,6 +2865,147 @@ var origShowTab = showTab;
 showTab = function(name) {
   currentTabName = tabNames[name] || name;
   origShowTab(name);
+};
+
+
+// ── PROJECTIONS CHART ──
+var projChartInstance = null;
+
+function calcProjections() {
+  var age = parseInt(document.getElementById('age')?.value) || 45;
+  var retireAge = parseInt(document.getElementById('retireAge')?.value) || 65;
+  var growthRate = parseFloat(document.getElementById('growthRate')?.value) || 0.07;
+  var customRate = parseFloat(document.getElementById('customRate')?.value);
+  if(document.getElementById('growthRate')?.value === 'custom' && customRate) growthRate = customRate / 100;
+
+  // Current balances
+  var bal401k = parseFloat(document.getElementById('bal401k')?.value) || 0;
+  var balRoth401 = parseFloat(document.getElementById('balRoth401')?.value) || 0;
+  var balRothIRA = parseFloat(document.getElementById('balRothIRA')?.value) || 0;
+  var balTaxable = parseFloat(document.getElementById('balTaxable')?.value) || 0;
+  var balHSA = parseFloat(document.getElementById('balHSA')?.value) || 0;
+  var balCash = parseFloat(document.getElementById('balCash')?.value) || 0;
+  var totalBalance = bal401k + balRoth401 + balRothIRA + balTaxable + balHSA + balCash;
+
+  // Annual contributions
+  var salary = parseFloat(document.getElementById('grossSalary')?.value) || parseFloat(document.getElementById('hourlyRate')?.value * 2080) || 0;
+  var contrib401k = (parseFloat(document.getElementById('contrib401k')?.value) || 0) / 100;
+  var empMatch = (parseFloat(document.getElementById('empMatch')?.value) || 0) / 100;
+  var matchCap = (parseFloat(document.getElementById('matchCap')?.value) || 0) / 100;
+  var contribRothIRA = parseFloat(document.getElementById('contribRothIRA')?.value) || 0;
+  var contribTaxable = parseFloat(document.getElementById('contribTaxable')?.value) || 0;
+
+  var annualContrib = (salary * contrib401k) + (salary * Math.min(empMatch, matchCap || empMatch)) + contribRothIRA + contribTaxable;
+
+  var yearsToRetire = Math.max(retireAge - age, 0);
+  var labels = [], values = [], contribLine = [];
+  var portfolio = totalBalance;
+  var totalContributed = totalBalance;
+
+  for(var i = 0; i <= yearsToRetire; i++) {
+    labels.push(age + i);
+    values.push(Math.round(portfolio));
+    contribLine.push(Math.round(totalContributed));
+    portfolio = (portfolio + annualContrib) * (1 + growthRate);
+    totalContributed += annualContrib;
+  }
+
+  var finalValue = values[values.length - 1];
+  var monthlyIncome = Math.round((finalValue * 0.04) / 12);
+
+  // Update summary stats
+  var el = document.getElementById('projFinalValue');
+  if(el) el.textContent = '$' + (finalValue >= 1000000 ? (finalValue/1000000).toFixed(2) + 'M' : (finalValue/1000).toFixed(0) + 'K');
+  var mi = document.getElementById('projMonthlyIncome');
+  if(mi) mi.textContent = '$' + monthlyIncome.toLocaleString() + '/mo';
+  var yr = document.getElementById('projYearsToRetire');
+  if(yr) yr.textContent = yearsToRetire + ' years';
+
+  // Build chart
+  var canvas = document.getElementById('projChart');
+  if(!canvas) return;
+  if(projChartInstance) projChartInstance.destroy();
+  projChartInstance = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Portfolio Value',
+        data: values,
+        borderColor: '#2D4A35',
+        backgroundColor: 'rgba(45,74,53,0.08)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 3,
+        pointHoverRadius: 6
+      },{
+        label: 'Total Contributed',
+        data: contribLine,
+        borderColor: '#F0A500',
+        backgroundColor: 'transparent',
+        borderDash: [6,3],
+        fill: false,
+        tension: 0.4,
+        pointRadius: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              return ctx.dataset.label + ': $' + ctx.parsed.y.toLocaleString();
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          ticks: {
+            callback: function(v) {
+              return v >= 1000000 ? '$' + (v/1000000).toFixed(1) + 'M' : '$' + (v/1000).toFixed(0) + 'K';
+            }
+          },
+          grid: { color: 'rgba(0,0,0,0.05)' }
+        },
+        x: {
+          title: { display: true, text: 'Age' },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+
+  // Build table
+  var table = document.getElementById('projTable');
+  if(!table) return;
+  var retireRowAge = retireAge;
+  var rows = '<tr><th>Age</th><th>Year</th><th>Annual Contribution</th><th>Portfolio Value</th><th>Growth This Year</th></tr>';
+  var currentYear = new Date().getFullYear();
+  for(var j = 0; j < labels.length; j++) {
+    var isRetire = labels[j] === retireRowAge;
+    var growth = j === 0 ? 0 : Math.round(values[j] - values[j-1] - annualContrib);
+    rows += '<tr' + (isRetire ? ' class="retire-row"' : '') + '>';
+    rows += '<td>' + labels[j] + (isRetire ? ' 🎯' : '') + '</td>';
+    rows += '<td>' + (currentYear + j) + '</td>';
+    rows += '<td>$' + Math.round(annualContrib).toLocaleString() + '</td>';
+    rows += '<td>$' + values[j].toLocaleString() + '</td>';
+    rows += '<td>' + (growth >= 0 ? '+' : '') + '$' + growth.toLocaleString() + '</td>';
+    rows += '</tr>';
+  }
+  table.innerHTML = rows;
+}
+
+// Hook into showTab to run projections when that tab opens
+var _origShowTabProj = showTab;
+showTab = function(name) {
+  _origShowTabProj(name);
+  if(name === 'projections' && typeof Chart !== 'undefined') {
+    setTimeout(calcProjections, 100);
+  }
 };
 
 // ── SHOW TAB ──
