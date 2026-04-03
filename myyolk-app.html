@@ -3553,7 +3553,7 @@ function generatePDF() {
 
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
-      doc.setTextColor(...forest);
+      doc.setTextColor(45, 74, 53);
       doc.text('KEY RETIREMENT NUMBERS', margin + 5, y + 8);
 
       var age = document.getElementById('age')?.value || '—';
@@ -3566,48 +3566,49 @@ function generatePDF() {
 
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
-      doc.setTextColor(...mid);
+      doc.setTextColor(107, 107, 107);
 
       var col1x = margin + 5; var col2x = margin + 60; var col3x = margin + 120;
 
       doc.text('Current Age', col1x, y + 18);
-      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(...forest);
+      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(45, 74, 53);
       doc.text(age, col1x, y + 26);
 
-      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...mid);
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(107, 107, 107);
       doc.text('Retirement Age', col2x, y + 18);
-      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(...forest);
+      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(45, 74, 53);
       doc.text(retAge, col2x, y + 26);
 
-      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...mid);
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(107, 107, 107);
       doc.text('Life Expectancy', col3x, y + 18);
-      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(...forest);
+      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(45, 74, 53);
       doc.text(lifeExp, col3x, y + 26);
 
-      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...mid);
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(107, 107, 107);
       doc.text('Current Portfolio', col1x, y + 36);
-      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(...gold);
+      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(240, 165, 0);
       doc.text(portfolio, col1x, y + 44);
 
-      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...mid);
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(107, 107, 107);
       doc.text('Portfolio at Retirement', col2x, y + 36);
-      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(...gold);
+      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(240, 165, 0);
       doc.text(atRet, col2x, y + 44);
 
-      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...mid);
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(107, 107, 107);
       doc.text('Readiness Score', col3x, y + 36);
       doc.setFont('helvetica','bold'); doc.setFontSize(13);
-      doc.setTextColor(score && parseInt(score) >= 80 ? 45 : score && parseInt(score) >= 60 ? 200 : 212, 
-                       score && parseInt(score) >= 80 ? 74 : score && parseInt(score) >= 60 ? 130 : 95,
-                       score && parseInt(score) >= 80 ? 53 : score && parseInt(score) >= 60 ? 0 : 0);
+      var sc = parseInt(score) || 0;
+      if(sc >= 80) doc.setTextColor(45, 74, 53);
+      else if(sc >= 60) doc.setTextColor(200, 130, 0);
+      else doc.setTextColor(212, 95, 0);
       doc.text(score, col3x, y + 44);
 
       y += 60;
 
       // ── SECTION: INCOME AT RETIREMENT ──
-      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...forest);
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(45, 74, 53);
       doc.text('MONTHLY INCOME AT RETIREMENT', margin, y + 6);
-      doc.setLineWidth(0.5); doc.setDrawColor(...gold);
+      doc.setLineWidth(0.5); doc.setDrawColor(240, 165, 0);
       doc.line(margin, y + 8, W - margin, y + 8);
       y += 14;
 
@@ -3616,20 +3617,20 @@ function generatePDF() {
       var rdAdditional = document.getElementById('rdAdditionalIncome')?.textContent || '—';
       var rdTotal = document.getElementById('rdTotalIncome')?.textContent || '—';
 
-      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(...mid);
-      doc.text('Portfolio Drawdown (4% rule):', margin, y); doc.setTextColor(...forest); doc.text(rdPortfolio, 120, y);
+      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(107, 107, 107);
+      doc.text('Portfolio Drawdown (4% rule):', margin, y); doc.setTextColor(45, 74, 53); doc.text(rdPortfolio, 120, y);
       y += 7;
-      doc.setTextColor(...mid); doc.text('Social Security (combined):', margin, y); doc.setTextColor(...forest); doc.text(rdSS, 120, y);
+      doc.setTextColor(107, 107, 107); doc.text('Social Security (combined):', margin, y); doc.setTextColor(45, 74, 53); doc.text(rdSS, 120, y);
       y += 7;
-      doc.setTextColor(...mid); doc.text('Additional Income:', margin, y); doc.setTextColor(...forest); doc.text(rdAdditional, 120, y);
+      doc.setTextColor(107, 107, 107); doc.text('Additional Income:', margin, y); doc.setTextColor(45, 74, 53); doc.text(rdAdditional, 120, y);
       y += 7;
-      doc.setFillColor(...light); doc.rect(margin, y - 4, W - margin*2, 10, 'F');
-      doc.setFont('helvetica','bold'); doc.setTextColor(...forest);
-      doc.text('Total Monthly Income:', margin + 2, y + 3); doc.setTextColor(...gold[0], gold[1], gold[2]); doc.text(rdTotal, 120, y + 3);
+      doc.setFillColor(245, 240, 232); doc.rect(margin, y - 4, W - margin*2, 10, 'F');
+      doc.setFont('helvetica','bold'); doc.setTextColor(45, 74, 53);
+      doc.text('Total Monthly Income:', margin + 2, y + 3); doc.setTextColor(240, 165, 0); doc.text(rdTotal, 120, y + 3);
       y += 16;
 
       // ── SECTION: GAP ANALYSIS ──
-      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...forest);
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(45, 74, 53);
       doc.text('GAP ANALYSIS', margin, y + 6);
       doc.line(margin, y + 8, W - margin, y + 8);
       y += 14;
@@ -3638,20 +3639,20 @@ function generatePDF() {
       var rdGap = document.getElementById('gapAmount')?.textContent || '—';
       var rdYears = document.getElementById('rdYearsLast')?.textContent || '—';
 
-      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(...mid);
-      doc.text('Monthly Income at Retirement:', margin, y); doc.setTextColor(...forest); doc.text(rdTotal, 120, y);
+      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(107, 107, 107);
+      doc.text('Monthly Income at Retirement:', margin, y); doc.setTextColor(45, 74, 53); doc.text(rdTotal, 120, y);
       y += 7;
-      doc.setTextColor(...mid); doc.text('Monthly Expenses (inflation adj.):', margin, y); doc.setTextColor(...forest); doc.text(rdExpenses, 120, y);
+      doc.setTextColor(107, 107, 107); doc.text('Monthly Expenses (inflation adj.):', margin, y); doc.setTextColor(45, 74, 53); doc.text(rdExpenses, 120, y);
       y += 7;
       doc.setFont('helvetica','bold');
-      doc.setTextColor(...mid); doc.text('Monthly Gap:', margin, y);
+      doc.setTextColor(107, 107, 107); doc.text('Monthly Gap:', margin, y);
       var gapNum = parseFloat((rdGap || '0').replace(/[^0-9.-]/g,''));
       doc.setTextColor(gapNum >= 0 ? 45 : 212, gapNum >= 0 ? 74 : 95, gapNum >= 0 ? 53 : 0);
       doc.text(rdGap, 120, y);
       y += 12;
 
       // Years message
-      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...mid);
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(107, 107, 107);
       var yearsText = rdYears.substring(0, 100);
       var splitYears = doc.splitTextToSize(yearsText, W - margin*2);
       doc.text(splitYears, margin, y);
@@ -3660,7 +3661,7 @@ function generatePDF() {
       // ── SECTION: RECOMMENDED ACTIONS ──
       var actions = document.querySelectorAll('#rdActions > div');
       if(actions.length > 0) {
-        doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...forest);
+        doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(45, 74, 53);
         doc.text('RECOMMENDED ACTIONS', margin, y + 6);
         doc.line(margin, y + 8, W - margin, y + 8);
         y += 14;
@@ -3669,11 +3670,11 @@ function generatePDF() {
           var text = action.querySelector('div > div')?.textContent || '';
           var impact = action.querySelector('span')?.textContent || '';
           if(text && y < H - 30) {
-            doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...forest);
+            doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(45, 74, 53);
             var split = doc.splitTextToSize('• ' + text, W - margin*2 - 5);
             doc.text(split, margin, y);
             y += split.length * 5;
-            doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...mid);
+            doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(107, 107, 107);
             doc.text('Impact: ' + impact, margin + 4, y);
             y += 7;
           }
@@ -3681,7 +3682,7 @@ function generatePDF() {
       }
 
       // ── FOOTER ──
-      doc.setFillColor(...forest);
+      doc.setFillColor(45, 74, 53);
       doc.rect(0, H - 15, W, 15, 'F');
       doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(200, 220, 200);
       doc.text('MyYolk™ Retirement Planning  |  myyolk.com  |  For informational purposes only. Not financial advice.', margin, H - 6);
