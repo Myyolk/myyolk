@@ -3334,15 +3334,12 @@ function calcReadiness() {
     yearsLast = Math.min(yearsLast, yearsInRetirement);
   }
 
-  // Readiness score - use budget tab coverage % if available
+  // Readiness score - based on total income (incl. SS) vs inflated expenses
   var score = 0;
-  var baCoverageEl = document.getElementById('ba-coveragePct');
-  if(baCoverageEl && baCoverageEl.textContent && baCoverageEl.textContent !== '—') {
-    score = Math.min(parseInt(baCoverageEl.textContent) || 0, 100);
-  } else if(inflatedBudget > 0) {
+  if(inflatedBudget > 0 && totalIncome > 0) {
     score = Math.min(Math.round((totalIncome / inflatedBudget) * 100), 100);
   } else if(portfolio > 0) {
-    score = 70;
+    score = 70; // Has savings but no budget entered
   }
   if(yearsLast < yearsInRetirement) {
     score = Math.min(score, Math.round((yearsLast / yearsInRetirement) * 100));
