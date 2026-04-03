@@ -1,6 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GK7V9FX3KQ">document.addEventListener('DOMContentLoaded', function() {
+  var b=document.getElementById('calcAgeBtn'); if(b) b.addEventListener('click',calcAgeFromDOB);
+  var sb=document.getElementById('calcSpouseAgeBtn'); if(sb) sb.addEventListener('click',calcSpouseAge);
+  loadData();
+  if(typeof showTab==='function') showTab('profile');
+  if(typeof toggleIncomeType==='function') toggleIncomeType();
+  if(typeof toggleCouple==='function') toggleCouple();
+  if(typeof updatePlanningFor==='function') updatePlanningFor();
+  if(typeof recalc==='function') recalc();
+});
+</script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GK7V9FX3KQ');
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MyYolk - Retirement Planning</title>
@@ -2879,16 +2897,7 @@ function clearData() {
 
 
 
-document.addEventListener('DOMContentLoaded', function() {
-  var b=document.getElementById('calcAgeBtn'); if(b) b.addEventListener('click',calcAgeFromDOB);
-  var sb=document.getElementById('calcSpouseAgeBtn'); if(sb) sb.addEventListener('click',calcSpouseAge);
-  loadData();
-  if(typeof showTab==='function') showTab('profile');
-  if(typeof toggleIncomeType==='function') toggleIncomeType();
-  if(typeof toggleCouple==='function') toggleCouple();
-  if(typeof updatePlanningFor==='function') updatePlanningFor();
-  if(typeof recalc==='function') recalc();
-});
+
 </script>
 </body>
 </html>
