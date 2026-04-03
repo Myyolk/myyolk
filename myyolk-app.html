@@ -3289,15 +3289,9 @@ function calcReadiness() {
     inflatedBudget = budgetTotal * Math.pow(1.03, yearsToRetire);
   }
 
-  // Gap - use budget tab's gap directly if available (more accurate, includes lifestyle adjustments)
+  // Gap = total income (portfolio + SS + additional) minus inflation-adjusted expenses
+  // This is the TRUE gap because it includes ALL income sources
   var gap = totalIncome - inflatedBudget;
-  var baGapEl = document.getElementById('ba-gapValue');
-  if(baGapEl && baGapEl.textContent && baGapEl.textContent !== '—') {
-    var baGapText = baGapEl.textContent;
-    var baGapNum = parseFloat(baGapText.replace(/[^0-9.]/g,'')) || 0;
-    if(baGapText.includes('shortfall')) baGapNum = -baGapNum;
-    if(baGapNum !== 0) gap = baGapNum;
-  }
 
   // Years money lasts (if gap is negative)
   var yearsLast = yearsInRetirement;
