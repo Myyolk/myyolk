@@ -3289,29 +3289,39 @@ function calcReadiness() {
     inflatedBudget = budgetTotal * Math.pow(1.03, yearsToRetire);
   }
 
-  // Gap
+  // Gap - use budget tab's gap directly if available (more accurate, includes lifestyle adjustments)
   var gap = totalIncome - inflatedBudget;
+  var baGapEl = document.getElementById('ba-gapValue');
+  if(baGapEl && baGapEl.textContent && baGapEl.textContent !== '—') {
+    var baGapText = baGapEl.textContent;
+    var baGapNum = parseFloat(baGapText.replace(/[^0-9.]/g,'')) || 0;
+    if(baGapText.includes('shortfall')) baGapNum = -baGapNum;
+    if(baGapNum !== 0) gap = baGapNum;
+  }
 
   // Years money lasts (if gap is negative)
   var yearsLast = yearsInRetirement;
-  if(gap < 0 && inflatedBudget > 0) {
+  if(gap < 0 && portfolio > 0) {
     // How long does portfolio cover the shortfall at 1% real return in retirement
     var remaining = portfolio;
     var annualShortfall = Math.abs(gap) * 12;
     yearsLast = 0;
-    while(remaining > 0 && yearsLast < 60) {
+    while(remaining > 0 && yearsLast < yearsInRetirement + 1) {
       remaining = remaining * 1.01 - annualShortfall;
       yearsLast++;
-      if(yearsLast >= 60) break;
     }
+    yearsLast = Math.min(yearsLast, yearsInRetirement);
   }
 
-  // Readiness score
+  // Readiness score - use budget tab coverage % if available
   var score = 0;
-  if(inflatedBudget > 0) {
+  var baCoverageEl = document.getElementById('ba-coveragePct');
+  if(baCoverageEl && baCoverageEl.textContent && baCoverageEl.textContent !== '—') {
+    score = Math.min(parseInt(baCoverageEl.textContent) || 0, 100);
+  } else if(inflatedBudget > 0) {
     score = Math.min(Math.round((totalIncome / inflatedBudget) * 100), 100);
   } else if(portfolio > 0) {
-    score = 70; // Has savings but no budget entered
+    score = 70;
   }
   if(yearsLast < yearsInRetirement) {
     score = Math.min(score, Math.round((yearsLast / yearsInRetirement) * 100));
