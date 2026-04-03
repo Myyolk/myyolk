@@ -3277,13 +3277,15 @@ function calcReadiness() {
   document.querySelectorAll('.bud-m').forEach(function(input) {
     budgetTotal += parseFloat(input.value) || 0;
   });
+  // Trigger budget calc to ensure ba-retireMonthly is populated
+  if(typeof calcBudget === 'function') calcBudget(null);
   // Try to get the budget tab's retirement estimate (includes lifestyle sliders)
   var retireMonthlyEl = document.getElementById('ba-retireMonthly');
   var inflatedBudget = 0;
   if(retireMonthlyEl && retireMonthlyEl.textContent && retireMonthlyEl.textContent !== '—') {
     inflatedBudget = parseFloat(retireMonthlyEl.textContent.replace(/[^0-9.]/g,'')) || 0;
   }
-  if(!inflatedBudget) {
+  if(!inflatedBudget && budgetTotal > 0) {
     inflatedBudget = budgetTotal * Math.pow(1.03, yearsToRetire);
   }
 
