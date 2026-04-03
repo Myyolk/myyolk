@@ -2620,14 +2620,14 @@ function estimateSS() {
   var claimDropdown = document.getElementById('ssClaimingAge');
   var claimAge = claimDropdown ? parseInt(claimDropdown.value) || 67 : 67;
 
-  fmtEl('est-ss62', '$' + Math.round(at62).toLocaleString());
-  fmtEl('est-ss67', '$' + Math.round(at67).toLocaleString());
-  fmtEl('est-ss70', '$' + Math.round(at70).toLocaleString());
+  fmtEl('est-ss62', '$' + Math.round(benefitAtAge(62)).toLocaleString());
+  fmtEl('est-ss67', '$' + Math.round(pia).toLocaleString());
+  fmtEl('est-ss70', '$' + Math.round(benefitAtAge(70)).toLocaleString());
   
   // Show benefit at selected claiming age
   var selectedBenefit = benefitAtAge(claimAge);
   state.ssMonthly = selectedBenefit;
-  fmtEl('ssEstimate', fmt(state.ssMonthly) + '/mo');
+  fmtEl('ssEstimate', '$' + Math.round(selectedBenefit).toLocaleString() + '/mo');
   
   // Update claiming age display
   var claimDisplay = document.getElementById('ssClaimAgeDisplay');
