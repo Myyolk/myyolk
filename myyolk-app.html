@@ -3265,13 +3265,14 @@ function calcReadiness() {
   // Years money lasts (if gap is negative)
   var yearsLast = yearsInRetirement;
   if(gap < 0 && inflatedBudget > 0) {
-    // Simplified: how long does portfolio last with withdrawals?
+    // How long does portfolio cover the shortfall at 1% real return in retirement
     var remaining = portfolio;
-    var monthlyShortfall = Math.abs(gap);
+    var annualShortfall = Math.abs(gap) * 12;
     yearsLast = 0;
-    while(remaining > 0 && yearsLast < 50) {
-      remaining = remaining * 1.04 - (monthlyShortfall * 12);
+    while(remaining > 0 && yearsLast < 60) {
+      remaining = remaining * 1.01 - annualShortfall;
       yearsLast++;
+      if(yearsLast >= 60) break;
     }
   }
 
