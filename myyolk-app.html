@@ -700,6 +700,51 @@
     font-style: italic;
   }
 
+  
+  /* ── LANGUAGE SELECTOR ── */
+  #langSelector {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    padding: 0.3rem 0.75rem;
+    cursor: pointer;
+    font-family: DM Sans, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #fff;
+    position: relative;
+  }
+  #langSelector:hover { background: rgba(255,255,255,0.25); }
+  #langDropdown {
+    display: none;
+    position: absolute;
+    top: 2.2rem;
+    right: 0;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    overflow: hidden;
+    z-index: 1000;
+    min-width: 140px;
+  }
+  #langDropdown.open { display: block; }
+  .lang-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    font-family: DM Sans, sans-serif;
+    font-size: 0.85rem;
+    color: #2D4A35;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .lang-option:hover { background: #f5f0e8; }
+  .lang-option.active { background: #fef3e0; font-weight: 700; }
+
   </style>
 </head>
 <body>
@@ -2552,6 +2597,154 @@ function handleSSUpload(event) {
   };
   reader.readAsDataURL(file);
 }
+
+
+
+// ── LANGUAGE SELECTOR ──
+var currentLanguage = 'en';
+
+var translations = {
+  en: {
+    // Nav
+    'nav_profile': 'My Profile',
+    'nav_income': 'Income & Pay',
+    'nav_accounts': 'Accounts & Savings',
+    'nav_budget': 'Budget',
+    'nav_projections': 'Projections',
+    'nav_readiness': 'Readiness',
+    'nav_whatif': 'What-If Scenarios',
+    'nav_early': 'Early Retirement',
+    'nav_summary': 'Summary',
+    // Profile tab
+    'profile_title': 'My Profile',
+    'profile_subtitle': 'Tell us about yourself to personalize your retirement plan.',
+    'planning_for': 'Who are you planning for?',
+    'just_me': 'Just Me',
+    'me_and_spouse': 'Me & Spouse / Partner',
+    'personal_info': 'Personal Information',
+    'first_name': 'First Name',
+    'last_name': 'Last Name',
+    'dob': 'Date of Birth',
+    'current_age': 'Current Age',
+    'state': 'State of Residence',
+    'retire_age': 'Target Retirement Age',
+    'life_exp': 'Life Expectancy',
+    'job_title': 'Job Title / Role',
+    'industry': 'Industry',
+    'emp_status': 'Employment Status',
+    // Buttons
+    'next_income': 'Next: Income & Pay →',
+    'back': '← Back',
+    // Feedback
+    'feedback_btn': '💬 Feedback',
+    'feedback_title': '📝 Your Notes',
+    'feedback_placeholder': "What's on your mind? A suggestion, confusion, or idea...",
+    'feedback_email': 'Email (optional — if you'd like a response)',
+    'feedback_add': '+ Add Note',
+    'feedback_send': 'Send All ✓',
+    'feedback_empty': 'Add notes as you explore — send all at once when ready.',
+  },
+  es: {
+    // Nav
+    'nav_profile': 'Mi Perfil',
+    'nav_income': 'Ingresos',
+    'nav_accounts': 'Cuentas y Ahorros',
+    'nav_budget': 'Presupuesto',
+    'nav_projections': 'Proyecciones',
+    'nav_readiness': 'Preparación',
+    'nav_whatif': 'Escenarios',
+    'nav_early': 'Jubilación Anticipada',
+    'nav_summary': 'Resumen',
+    // Profile tab
+    'profile_title': 'Mi Perfil',
+    'profile_subtitle': 'Cuéntanos sobre ti para personalizar tu plan de jubilación.',
+    'planning_for': '¿Para quién estás planeando?',
+    'just_me': 'Solo Yo',
+    'me_and_spouse': 'Yo y Mi Pareja',
+    'personal_info': 'Información Personal',
+    'first_name': 'Nombre',
+    'last_name': 'Apellido',
+    'dob': 'Fecha de Nacimiento',
+    'current_age': 'Edad Actual',
+    'state': 'Estado de Residencia',
+    'retire_age': 'Edad de Jubilación',
+    'life_exp': 'Expectativa de Vida',
+    'job_title': 'Título / Puesto',
+    'industry': 'Industria',
+    'emp_status': 'Estado de Empleo',
+    // Buttons
+    'next_income': 'Siguiente: Ingresos →',
+    'back': '← Atrás',
+    // Feedback
+    'feedback_btn': '💬 Comentarios',
+    'feedback_title': '📝 Tus Notas',
+    'feedback_placeholder': '¿Qué tienes en mente? Una sugerencia, pregunta o idea...',
+    'feedback_email': 'Email (opcional)',
+    'feedback_add': '+ Agregar Nota',
+    'feedback_send': 'Enviar Todo ✓',
+    'feedback_empty': 'Agrega notas mientras exploras — envía todo al final.',
+  }
+};
+
+function t(key) {
+  var lang = translations[currentLanguage] || translations['en'];
+  return lang[key] || translations['en'][key] || key;
+}
+
+function toggleLangDropdown() {
+  var dd = document.getElementById('langDropdown');
+  dd.classList.toggle('open');
+}
+
+function setLanguage(lang, event) {
+  if(event) event.stopPropagation();
+  currentLanguage = lang;
+  document.getElementById('currentFlag').textContent = lang === 'es' ? '🇪🇸' : '🇺🇸';
+  document.getElementById('currentLang').textContent = lang === 'es' ? 'ES' : 'EN';
+  document.getElementById('langDropdown').classList.remove('open');
+  document.querySelectorAll('.lang-option').forEach(function(el) {
+    el.classList.remove('active');
+    if(el.getAttribute('onclick').includes("'" + lang + "'")) el.classList.add('active');
+  });
+  applyTranslations();
+  if(typeof gtag === 'function') gtag('event', 'language_change', {language: lang});
+}
+
+function applyTranslations() {
+  // Nav items
+  var navMap = {
+    'profile': 'nav_profile', 'income': 'nav_income', 'accounts': 'nav_accounts',
+    'budget': 'nav_budget', 'projections': 'nav_projections', 'readiness': 'nav_readiness',
+    'whatif': 'nav_whatif', 'early': 'nav_early', 'summary': 'nav_summary'
+  };
+  document.querySelectorAll('.nav-item').forEach(function(el) {
+    var onclick = el.getAttribute('onclick') || '';
+    var match = onclick.match(/showTab\('(\w+)'/);
+    if(match && navMap[match[1]]) {
+      var icon = el.querySelector('.nav-icon');
+      var iconHtml = icon ? icon.outerHTML : '';
+      var textNode = Array.from(el.childNodes).find(function(n){ return n.nodeType === 3; });
+      if(textNode) textNode.textContent = ' ' + t(navMap[match[1]]);
+    }
+  });
+
+  // Feedback widget
+  var fbBtn = document.getElementById('feedbackBtn');
+  if(fbBtn) fbBtn.innerHTML = t('feedback_btn');
+  var fbTitle = document.querySelector('.feedback-header span');
+  if(fbTitle) fbTitle.textContent = t('feedback_title');
+  var fbTextarea = document.getElementById('feedbackText');
+  if(fbTextarea) fbTextarea.placeholder = t('feedback_placeholder');
+  var fbEmail = document.getElementById('feedbackEmail');
+  if(fbEmail) fbEmail.placeholder = t('feedback_email');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  if(!document.getElementById('langSelector').contains(e.target)) {
+    document.getElementById('langDropdown').classList.remove('open');
+  }
+});
 
 
 // ── FEEDBACK WIDGET ──
