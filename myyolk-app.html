@@ -3272,12 +3272,20 @@ function calcReadiness() {
 
   var totalIncome = portfolioIncome + ssIncome + additionalIncome;
 
-  // Monthly expenses (from budget tab, inflation adjusted)
+  // Monthly expenses - use budget tab's analysis which includes lifestyle adjustments
   var budgetTotal = 0;
   document.querySelectorAll('.bud-m').forEach(function(input) {
     budgetTotal += parseFloat(input.value) || 0;
   });
-  var inflatedBudget = budgetTotal * Math.pow(1.03, yearsToRetire);
+  // Try to get the budget tab's retirement estimate (includes lifestyle sliders)
+  var retireMonthlyEl = document.getElementById('ba-retireMonthly');
+  var inflatedBudget = 0;
+  if(retireMonthlyEl && retireMonthlyEl.textContent && retireMonthlyEl.textContent !== '—') {
+    inflatedBudget = parseFloat(retireMonthlyEl.textContent.replace(/[^0-9.]/g,'')) || 0;
+  }
+  if(!inflatedBudget) {
+    inflatedBudget = budgetTotal * Math.pow(1.03, yearsToRetire);
+  }
 
   // Gap
   var gap = totalIncome - inflatedBudget;
