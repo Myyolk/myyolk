@@ -849,6 +849,15 @@
       <div class="quick-stat-label">Readiness Ratio</div>
       <div class="quick-stat-value" id="sb-readiness">—</div>
     </div>
+    <div style="height:1px;background:rgba(255,255,255,0.15);margin:0.75rem 0"></div>
+    <div class="quick-stat">
+      <div class="quick-stat-label" style="font-weight:700;color:var(--gold)">Total Net Worth</div>
+      <div class="quick-stat-value" id="sb-networth" style="font-size:1.2rem;color:var(--gold)">—</div>
+    </div>
+    <div class="quick-stat">
+      <div class="quick-stat-label">Home Equity</div>
+      <div class="quick-stat-value" id="sb-equity">—</div>
+    </div>
   </nav>
 
   <!-- MAIN -->
@@ -3183,6 +3192,20 @@ function updateSnapshot() {
     sbReadiness.textContent = ratio + '%';
     sbReadiness.style.color = ratio >= 80 ? 'var(--sage)' : ratio >= 60 ? 'var(--gold)' : 'var(--clay)';
   }
+
+  // Net Worth = investable portfolio + home equity + vehicles + other assets - debts
+  var homeValue = parseFloat(document.getElementById('homeValue')?.value) || 0;
+  var mortgage = parseFloat(document.getElementById('mortgageBalance')?.value) || 0;
+  var vehicle = parseFloat(document.getElementById('vehicleValue')?.value) || 0;
+  var otherAssets = parseFloat(document.getElementById('otherAssets')?.value) || 0;
+  var homeEquity = homeValue - mortgage;
+  var netWorth = totalNow + homeEquity + vehicle + otherAssets;
+
+  var sbNetWorth = document.getElementById('sb-networth');
+  if(sbNetWorth) sbNetWorth.textContent = netWorth > 0 ? fmt(netWorth) : '—';
+
+  var sbEquity = document.getElementById('sb-equity');
+  if(sbEquity) sbEquity.textContent = homeEquity > 0 ? fmt(homeEquity) : homeValue > 0 ? fmt(homeEquity) : '—';
 }
 
 function recalc() {
