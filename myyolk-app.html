@@ -3193,13 +3193,33 @@ function updateSnapshot() {
     sbReadiness.style.color = ratio >= 80 ? 'var(--sage)' : ratio >= 60 ? 'var(--gold)' : 'var(--clay)';
   }
 
-  // Net Worth = investable portfolio + home equity + vehicles + other assets - debts
+  // Net Worth = investable portfolio + spouse portfolio + home equity + vehicles + other assets - debts
   var homeValue = parseFloat(document.getElementById('homeValue')?.value) || 0;
   var mortgage = parseFloat(document.getElementById('mortgageBalance')?.value) || 0;
   var vehicle = parseFloat(document.getElementById('vehicleValue')?.value) || 0;
   var otherAssets = parseFloat(document.getElementById('otherAssets')?.value) || 0;
   var homeEquity = homeValue - mortgage;
-  var netWorth = totalNow + homeEquity + vehicle + otherAssets;
+
+  // Spouse balances
+  var spBal401k = parseFloat(document.getElementById('spouseBal401k')?.value) || 0;
+  var spBalRoth401 = parseFloat(document.getElementById('spouseBalRoth401')?.value) || 0;
+  var spBalRothIRA = parseFloat(document.getElementById('spouseBalRothIRA')?.value) || 0;
+  var spBalTaxable = parseFloat(document.getElementById('spouseBalTaxable')?.value) || 0;
+  var spBalHSA = parseFloat(document.getElementById('spouseBalHSA')?.value) || 0;
+  var spBalCash = parseFloat(document.getElementById('spouseBalCash')?.value) || 0;
+  var spouseTotal = spBal401k + spBalRoth401 + spBalRothIRA + spBalTaxable + spBalHSA + spBalCash;
+
+  // ESPP
+  var balESPP = parseFloat(document.getElementById('balESPP')?.value) || 0;
+
+  // Debts (non-mortgage)
+  var debtCredit = parseFloat(document.getElementById('debtCredit')?.value) || 0;
+  var debtCar = parseFloat(document.getElementById('debtCar')?.value) || 0;
+  var debtStudent = parseFloat(document.getElementById('debtStudent')?.value) || 0;
+  var debtOther = parseFloat(document.getElementById('debtOther')?.value) || 0;
+  var totalDebts = debtCredit + debtCar + debtStudent + debtOther;
+
+  var netWorth = totalNow + spouseTotal + balESPP + homeEquity + vehicle + otherAssets - totalDebts;
 
   var sbNetWorth = document.getElementById('sb-networth');
   if(sbNetWorth) sbNetWorth.textContent = netWorth > 0 ? fmt(netWorth) : '—';
