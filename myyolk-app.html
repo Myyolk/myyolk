@@ -3507,24 +3507,27 @@ function generatePDF() {
       doc.rect(0, 0, W, 50, 'F');
 
       // Egg icon with horizon line (matching app logo)
-      doc.setFillColor(255, 253, 240);
-      doc.ellipse(18, 25, 9, 11, 'F');
+      doc.setFillColor(255, 248, 220);
+      doc.ellipse(18, 25, 9, 12, 'F');
+      // Yolk circle
       doc.setFillColor(240, 165, 0);
-      doc.circle(19, 27, 5, 'F');
-      // Horizon line through yolk
-      doc.setDrawColor(255, 253, 240);
-      doc.setLineWidth(0.6);
+      doc.circle(19.5, 27, 6, 'F');
+      // Horizon line clipped inside egg
+      doc.setDrawColor(176, 117, 8);
+      doc.setLineWidth(1.2);
       doc.line(10, 27, 27, 27);
 
-      // MyYolk wordmark - My in forest green, Yolk in white
+      // MyYolk wordmark - tight spacing, My in dark green, Yolk in white
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(24);
-      doc.setTextColor(45, 74, 53);
+      doc.setFontSize(22);
+      doc.setTextColor(30, 55, 35);
       doc.text('My', 33, 23);
+      // Measure width of 'My' to place 'Yolk' right next to it
+      var myWidth = doc.getTextWidth('My');
       doc.setTextColor(255, 255, 255);
-      doc.text('Yolk', 49, 23);
-      doc.setFontSize(7);
-      doc.setTextColor(45, 74, 53);
+      doc.text('Yolk', 33 + myWidth + 1, 23);
+      doc.setFontSize(6.5);
+      doc.setTextColor(30, 55, 35);
       doc.setFont('helvetica', 'normal');
       doc.text('RETIREMENT PLANNING', 33, 30);
 
