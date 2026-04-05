@@ -2681,8 +2681,8 @@ function estimateSS() {
   var spouseSsMethod = document.getElementById('spouseSsMethod');
   if(spouseSsMethod && spouseSsMethod.value === 'spousal') {
     calcSpouseSsBenefit();
-  } else if(typeof calcSpouseSS === 'function') {
-    calcSpouseSS();
+  } else if(typeof calcSpouseSsBenefit === 'function') {
+    calcSpouseSsBenefit();
   }
 }
 
