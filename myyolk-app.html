@@ -1668,7 +1668,24 @@
           </div>
           <div id="spouseSSWorkedFields">
             <div class="form-grid">
-              <div class="field"><label>SS Estimate ($/mo)</label><input type="number" id="spouseSsManual" value="" placeholder="e.g. 1800" oninput="recalc()"></div>
+              <div class="field">
+                <label>Spouse SS Method</label>
+                <select id="spouseSsMethod" onchange="calcSpouseSsBenefit()" style="width:100%">
+                  <option value="spousal">Spousal Benefit (50% of mine)</option>
+                  <option value="own">Her Own Earned Benefit</option>
+                  <option value="higher">Use Whichever is Higher</option>
+                </select>
+                <div class="hint">SSA pays the higher of her own benefit or 50% of yours</div>
+              </div>
+              <div class="field" id="spouseSsOwnRow" style="display:none">
+                <label>Her Own SS Estimate ($/mo)</label>
+                <input type="number" id="spouseSsOwn" placeholder="e.g. 1200" oninput="calcSpouseSsBenefit()">
+              </div>
+              <div class="field">
+                <label>Spouse SS Benefit ($/mo)</label>
+                <div id="spouseSsResult" style="font-size:1.1rem;font-weight:700;color:var(--sage);padding:0.5rem 0">—</div>
+                <div id="spouseSsNote" class="hint"></div>
+              </div>
               <div class="field"><label>SS Claiming Age</label><select id="spouseSsAge" onchange="recalc()" style="width:100%"><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67" selected>67 - Full</option><option value="68">68</option><option value="69">69</option><option value="70">70</option></select></div>
               <div class="field"><label>Years of SS Earnings</label><input type="number" id="spouseSsYears" value="30" min="1" max="50" oninput="recalc()"></div>
             </div>
