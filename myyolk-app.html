@@ -876,6 +876,7 @@
     </div>
   </nav>
   <span id="sb-networth" style="display:none"></span>
+  <input id="spouseSsOwn" type="hidden" value="">
   <span id="sb-equity" style="display:none"></span>
 
   <!-- MAIN -->
@@ -1669,13 +1670,38 @@
           </div>
           <div id="spouseSSWorkedFields">
             <div class="form-grid">
-              <div class="field">
-                <label>Spouse's Own SS Estimate ($/mo)</label>
-                <input type="number" id="spouseSsOwn" placeholder="e.g. 1200" oninput="calcSpouseSsBenefit()">
-                <div class="hint">From her SSA statement or ssa.gov — leave blank if unknown</div>
+              <!-- Densie SS - 3 tab interface matching Dean's -->
+              <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1rem">
+                <button class="dss-btn" id="dssBtn-manual" onclick="switchDSSMethod('manual')" style="flex:1;padding:0.6rem 0.5rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--gold);color:#fff">Enter Manually</button>
+                <button class="dss-btn" id="dssBtn-estimate" onclick="switchDSSMethod('estimate')" style="flex:1;padding:0.6rem 0.5rem;border:none;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Estimate for Me</button>
+                <button class="dss-btn" id="dssBtn-spousal" onclick="switchDSSMethod('spousal')" style="flex:1;padding:0.6rem 0.5rem;border:none;border-left:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Spousal Only</button>
               </div>
-              <div class="field">
-                <label>Spouse's Claiming Age</label>
+
+              <!-- Manual Entry -->
+              <div id="dss-method-manual">
+                <div class="form-grid three">
+                  <div class="field"><label>Her Benefit at 62 ($)</label><input type="number" id="dss62" placeholder="e.g. 1200" oninput="dssManualUpdate()"><div class="hint">Reduced early benefit</div></div>
+                  <div class="field"><label>Her Benefit at 67 ($)</label><input type="number" id="dss67" placeholder="e.g. 1800" oninput="dssManualUpdate()"><div class="hint">Full retirement age</div></div>
+                  <div class="field"><label>Her Benefit at 70 ($)</label><input type="number" id="dss70" placeholder="e.g. 2200" oninput="dssManualUpdate()"><div class="hint">Maximum delayed benefit</div></div>
+                </div>
+              </div>
+
+              <!-- Estimate -->
+              <div id="dss-method-estimate" style="display:none">
+                <div class="form-grid">
+                  <div class="field"><label>Her Years Worked (Est.)</label><input type="number" id="dssYearsWorked" value="30" placeholder="e.g. 30" oninput="estimateDSS()"></div>
+                  <div class="field"><label>Her Avg Annual Income ($)</label><input type="number" id="dssAvgIncome" placeholder="e.g. 80000" oninput="estimateDSS()"></div>
+                </div>
+              </div>
+
+              <!-- Spousal Only -->
+              <div id="dss-method-spousal" style="display:none">
+                <div class="hint" style="padding:0.75rem;background:var(--warm-white);border-radius:8px">Densie will receive 50% of Dean's full benefit. No separate SS entry needed.</div>
+              </div>
+
+              <!-- Claiming Age -->
+              <div class="field" style="margin-top:0.75rem">
+                <label>Her Claiming Age</label>
                 <select id="spouseSsClaimAge" onchange="calcSpouseSsBenefit()" style="width:100%">
                   <option value="62">62 – Early</option>
                   <option value="63">63</option>
@@ -1688,7 +1714,9 @@
                   <option value="70">70 – Maximum</option>
                 </select>
               </div>
-              <div class="field" style="background:var(--sage-pale);border-radius:8px;padding:0.75rem">
+
+              <!-- Result -->
+              <div class="field" style="background:var(--sage-pale);border-radius:8px;padding:0.75rem;margin-top:0.5rem">
                 <label style="color:var(--forest);font-weight:700">Household SS Decision</label>
                 <div id="spouseSsResult" style="font-size:1.1rem;font-weight:700;color:var(--sage);padding:0.25rem 0">—</div>
                 <div id="spouseSsNote" class="hint" style="margin-top:4px"></div>
@@ -3073,6 +3101,52 @@ function calcSpouseSsBenefit() {
   state.spouseSsMonthly = spouseFinal;
   state.deanSsFinal = deanFinal;
   if(typeof recalc === 'function') recalc();
+}
+
+
+// ── DENSIE SS METHODS ──
+function switchDSSMethod(method) {
+  ['manual','estimate','spousal'].forEach(function(m) {
+    var el = document.getElementById('dss-method-' + m);
+    var btn = document.getElementById('dssBtn-' + m);
+    if(el) el.style.display = m === method ? 'block' : 'none';
+    if(btn) {
+      btn.style.background = m === method ? 'var(--gold)' : 'var(--warm-white)';
+      btn.style.color = m === method ? '#fff' : 'var(--mid)';
+    }
+  });
+  if(method === 'estimate') estimateDSS();
+  else calcSpouseSsBenefit();
+}
+
+function dssManualUpdate() {
+  var age = parseInt(document.getElementById('spouseSsClaimAge')?.value) || 67;
+  var v62 = parseFloat(document.getElementById('dss62')?.value) || 0;
+  var v67 = parseFloat(document.getElementById('dss67')?.value) || 0;
+  var v70 = parseFloat(document.getElementById('dss70')?.value) || 0;
+  var benefit = age <= 62 ? v62 : age >= 70 ? v70 : age < 67 ? (v62 + (v67-v62)*((age-62)/5)) : (v67 + (v70-v67)*((age-67)/3));
+  document.getElementById('spouseSsOwn').value = Math.round(benefit) || '';
+  calcSpouseSsBenefit();
+}
+
+function estimateDSS() {
+  var yrs = parseFloat(document.getElementById('dssYearsWorked')?.value) || 30;
+  var avgIncome = parseFloat(document.getElementById('dssAvgIncome')?.value) || 0;
+  if(!avgIncome) return;
+  var aime = (avgIncome * Math.min(yrs, 35)) / (35 * 12);
+  var pia = 0;
+  if(aime <= 1115) pia = aime * 0.9;
+  else if(aime <= 6721) pia = 1003.5 + (aime - 1115) * 0.32;
+  else pia = 2978.42 + (aime - 6721) * 0.15;
+  // Show estimated benefits
+  var dss62El = document.getElementById('dss62');
+  var dss67El = document.getElementById('dss67');
+  var dss70El = document.getElementById('dss70');
+  if(dss62El) dss62El.placeholder = '$' + Math.round(pia * 0.70).toLocaleString();
+  if(dss67El) dss67El.placeholder = '$' + Math.round(pia).toLocaleString();
+  if(dss70El) dss70El.placeholder = '$' + Math.round(pia * 1.24).toLocaleString();
+  document.getElementById('spouseSsOwn').value = Math.round(pia) || '';
+  calcSpouseSsBenefit();
 }
 
 // ── FEEDBACK WIDGET ──
