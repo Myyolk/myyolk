@@ -1010,6 +1010,7 @@
               <option value="">Select status...</option>
               <option value="employed">Currently Employed</option>
               <option value="laidoff">Recently Laid Off</option>
+              <option value="unemployed">Unemployed</option>
               <option value="retired">Retired</option>
               <option value="semiretired">Semi-Retired</option>
               <option value="selfemployed">Self-Employed</option>
@@ -2657,6 +2658,14 @@ function estimateSS() {
   // Update claiming age display
   var claimDisplay = document.getElementById('ssClaimAgeDisplay');
   if (claimDisplay) claimDisplay.textContent = 'Your benefit at age ' + claimAge + ':';
+
+  // Auto-recalc spouse SS if spouse uses spousal benefit
+  var spouseSsMethod = document.getElementById('spouseSsMethod');
+  if(spouseSsMethod && spouseSsMethod.value === 'spousal') {
+    calcSpouseSpousalBenefit(state.ssMonthly);
+  } else if(typeof calcSpouseSS === 'function') {
+    calcSpouseSS();
+  }
 }
 
 // ── SS METHODS ──
