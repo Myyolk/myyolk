@@ -1467,6 +1467,7 @@
           <div class="field"><label>Taxable Investments ($)</label><input type="number" id="balTaxable" value="" placeholder="0" oninput="recalc()"></div>
           <div class="field"><label>HSA ($)</label><input type="number" id="balHSA" value="" placeholder="0" oninput="recalc()"></div>
           <div class="field"><label>Cash / Savings ($)</label><input type="number" id="balCash" value="" placeholder="0" oninput="recalc()"></div>
+          <div class="field"><label>Savings Interest Rate (%/yr)</label><input type="number" id="savingsRate" value="4.5" placeholder="4.5" step="0.1" oninput="recalc()"><div class="hint">HYSA ~4-5%, checking ~0%. Does not use investment growth rate.</div></div>
           <div class="field"><label>ESPP Balance ($)</label><input type="number" id="balESPP" value="" placeholder="0" oninput="recalc()"></div>
         </div>
       </div>
@@ -3134,7 +3135,10 @@ function calcProjections() {
   var balTaxable = parseFloat(document.getElementById('balTaxable')?.value) || 0;
   var balHSA = parseFloat(document.getElementById('balHSA')?.value) || 0;
   var balCash = parseFloat(document.getElementById('balCash')?.value) || 0;
-  var totalBalance = bal401k + balRoth401 + balRothIRA + balTaxable + balHSA + balCash;
+  var savingsRate = (parseFloat(document.getElementById('savingsRate')?.value) || 4.5) / 100;
+  // Cash grows at savings rate, not investment rate
+  var balCashAtRetirement = balCash * Math.pow(1 + savingsRate, yearsToRetire);
+  var totalBalance = bal401k + balRoth401 + balRothIRA + balTaxable + balHSA; // exclude cash from investment growth
 
   // Spouse SS for projections
   var spouseSsForProj = 0;
@@ -3330,7 +3334,9 @@ function calcReadiness() {
   var balTaxable = parseFloat(document.getElementById('balTaxable')?.value) || 0;
   var balHSA = parseFloat(document.getElementById('balHSA')?.value) || 0;
   var balCash = parseFloat(document.getElementById('balCash')?.value) || 0;
-  var totalNow = bal401k + balRoth401 + balRothIRA + balTaxable + balHSA + balCash;
+  var savingsRate = (parseFloat(document.getElementById('savingsRate')?.value) || 4.5) / 100;
+  var balCashGrown = balCash * Math.pow(1 + savingsRate, yearsToRetire);
+  var totalNow = bal401k + balRoth401 + balRothIRA + balTaxable + balHSA + balCash; // current net worth includes cash
 
   var salary = parseFloat(document.getElementById('grossSalary')?.value) || 0;
   if(!salary) {
