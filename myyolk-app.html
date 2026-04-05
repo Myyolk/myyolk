@@ -2679,7 +2679,11 @@ function estimateSS() {
 
   // Auto-recalc spouse SS if spouse uses spousal benefit
   var spouseSsMethod = document.getElementById('spouseSsMethod');
-  if(typeof calcSpouseSsBenefit === 'function') calcSpouseSsBenefit();
+  if(spouseSsMethod && spouseSsMethod.value === 'spousal') {
+    calcSpouseSpousalBenefit(state.ssMonthly);
+  } else if(typeof calcSpouseSS === 'function') {
+    calcSpouseSS();
+  }
 }
 
 // ── SS METHODS ──
@@ -2998,6 +3002,40 @@ function calcAdditionalIncome() {
   return total;
 }
 
+
+
+// ── SPOUSE SS BENEFIT ──
+function calcSpouseSsBenefit() {
+  var method = document.getElementById('spouseSsMethod')?.value || 'spousal';
+  var ownRow = document.getElementById('spouseSsOwnRow');
+  if(ownRow) ownRow.style.display = (method === 'own' || method === 'higher') ? 'block' : 'none';
+  var deanBenefit = state.ssMonthly || 0;
+  var spousalBenefit = deanBenefit * 0.5;
+  var ownBenefit = parseFloat(document.getElementById('spouseSsOwn')?.value) || 0;
+  var finalBenefit = 0;
+  var note = '';
+  if(method === 'spousal') {
+    finalBenefit = spousalBenefit;
+    note = '50% of your age-67 benefit';
+  } else if(method === 'own') {
+    finalBenefit = ownBenefit;
+    note = 'Her own earned benefit';
+  } else {
+    if(ownBenefit >= spousalBenefit) {
+      finalBenefit = ownBenefit;
+      note = 'Using her own ($' + Math.round(ownBenefit).toLocaleString() + ') — higher than spousal ($' + Math.round(spousalBenefit).toLocaleString() + ')';
+    } else {
+      finalBenefit = spousalBenefit;
+      note = 'Using spousal ($' + Math.round(spousalBenefit).toLocaleString() + ') — higher than her own ($' + Math.round(ownBenefit).toLocaleString() + ')';
+    }
+  }
+  var resultEl = document.getElementById('spouseSsResult');
+  if(resultEl) resultEl.textContent = finalBenefit > 0 ? '$' + Math.round(finalBenefit).toLocaleString() + '/mo' : '—';
+  var noteEl = document.getElementById('spouseSsNote');
+  if(noteEl) noteEl.textContent = note;
+  state.spouseSsMonthly = finalBenefit;
+  if(typeof recalc === 'function') recalc();
+}
 
 // ── FEEDBACK WIDGET ──
 var feedbackNotes = [];
@@ -3340,8 +3378,12 @@ function calcReadiness() {
     else ssIncome = parseFloat(document.getElementById('ss-disp67')?.textContent?.replace(/[^0-9.]/g,'')) || 0;
   }
 
-  // Spouse SS income
+  // Spouse SS income - use calcSpouseSsBenefit result
   var spouseSsIncome = 0;
+  var isCouple = document.getElementById('planCouple')?.checked;
+  if(isCouple) {
+    spouseSsIncome = state.spouseSsMonthly || (state.ssMonthly || 0) * 0.5;
+  }
   var isCouple = document.getElementById('planCouple')?.checked;
   if(isCouple) {
     var spouseSsManual = parseFloat(document.getElementById('spouseSsManual')?.value) || 0;
