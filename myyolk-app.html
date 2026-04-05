@@ -3490,6 +3490,18 @@ function generatePDF() {
   btn.textContent = '⏳ Generating...';
   btn.disabled = true;
 
+  // Capture real SVG logo from app header
+  var _svg = document.querySelector('header svg');
+  new Promise(function(res) {
+    if(!_svg) { res(null); return; }
+    try {
+      var _c = document.createElement('canvas'); _c.width=500; _c.height=104;
+      var _x = _c.getContext('2d'), _i = new Image();
+      _i.onload = function(){ _x.drawImage(_i,0,0,500,104); res(_c.toDataURL('image/png')); };
+      _i.onerror = function(){ res(null); };
+      _i.src = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(_svg)],{type:'image/svg+xml'}));
+    } catch(e){ res(null); }
+  }).then(function(logoB64) {
   setTimeout(function() {
     try {
       var jsPDFLib = window.jspdf ? window.jspdf.jsPDF : jsPDF;
@@ -3502,9 +3514,10 @@ function generatePDF() {
       var mid = [107, 107, 107];
       var light = [245, 240, 232];
 
-      // ── COVER PAGE - Gold header matching app ──
+      // ── COVER PAGE - Gold header with real app logo ──
       doc.setFillColor(176, 117, 8);
-      doc.rect(0, 0, W, 50, 'F');
+      doc.rect(0, 0, W, 52, 'F');
+      if(logoB64) { doc.addImage(logoB64, 'PNG', 6, 5, 75, 15.6); }
 
       // Simple clean egg icon - no clipping needed
       // Egg outline filled cream
@@ -3709,6 +3722,7 @@ function generatePDF() {
     btn.innerHTML = '📄 Download Report';
     btn.disabled = false;
   }, 100);
+  }); // end logo promise
 }
 
 
