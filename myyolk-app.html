@@ -3506,19 +3506,13 @@ function generatePDF() {
       doc.setFillColor(176, 117, 8);
       doc.rect(0, 0, W, 50, 'F');
 
-      // Egg icon with horizon line
+      // Simple clean egg icon - no clipping needed
+      // Egg outline filled cream
       doc.setFillColor(255, 248, 220);
       doc.ellipse(18, 25, 9, 12, 'F');
+      // Gold yolk circle (off-center, slightly up)
       doc.setFillColor(240, 165, 0);
-      doc.circle(19.5, 27, 5.5, 'F');
-      // Gold horizon line inside egg
-      doc.setFillColor(240, 165, 0);
-      doc.rect(9.5, 26.5, 17, 1.2, 'F');
-      // Clip bottom of egg over line
-      doc.setFillColor(255, 248, 220);
-      doc.ellipse(18, 31.5, 9, 6.5, 'F');
-      doc.setFillColor(240, 165, 0);
-      doc.ellipse(19.5, 29, 5.5, 3.5, 'F');
+      doc.circle(18.5, 24, 6, 'F');
 
       // MyYolk wordmark - Times serif, My in dark green, Yolk in white, TM superscript
       doc.setFont('times', 'bold');
