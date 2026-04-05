@@ -3506,10 +3506,10 @@ function generatePDF() {
       doc.setTextColor(240, 165, 0);
       var myW = doc.getTextWidth('My');
       doc.text('Yolk', margin + myW, 22);
-      // "™" small superscript in gold
+      // "™" small superscript in gold - must measure Yolk at 28pt before shrinking font
+      var yolkW = doc.getTextWidth('Yolk');
       doc.setFontSize(9);
       doc.setTextColor(240, 165, 0);
-      var yolkW = doc.getTextWidth('Yolk');
       doc.text('™', margin + myW + yolkW + 0.5, 17);
       // "RETIREMENT PLANNING" in dark green
       doc.setFont('times', 'normal');
