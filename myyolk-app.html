@@ -3490,16 +3490,22 @@ function generatePDF() {
   btn.textContent = '⏳ Generating...';
   btn.disabled = true;
 
-  // Capture real SVG logo from app header
-  var _svg = document.querySelector('header svg');
+  // Render egg icon as standalone SVG (no text to avoid duplication)
   new Promise(function(res) {
-    if(!_svg) { res(null); return; }
     try {
-      var _c = document.createElement('canvas'); _c.width=500; _c.height=104;
+      var eggSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" width="100" height="120">' +
+        '<defs><clipPath id="ec"><ellipse cx="50" cy="60" rx="38" ry="50"/></clipPath></defs>' +
+        '<ellipse cx="50" cy="60" rx="38" ry="50" fill="#FFFCE8"/>' +
+        '<circle cx="55" cy="65" r="28" fill="#F0A500"/>' +
+        '<rect x="12" y="58" width="76" height="6" fill="#b07508" clip-path="url(#ec)"/>' +
+        '<ellipse cx="50" cy="20" rx="38" ry="32" fill="#FFFCE8"/>' +
+        '<ellipse cx="55" cy="42" rx="28" ry="16" fill="#F0A500"/>' +
+        '</svg>';
+      var _c = document.createElement('canvas'); _c.width=100; _c.height=120;
       var _x = _c.getContext('2d'), _i = new Image();
-      _i.onload = function(){ _x.drawImage(_i,0,0,500,104); res(_c.toDataURL('image/png')); };
+      _i.onload = function(){ _x.drawImage(_i,0,0,100,120); res(_c.toDataURL('image/png')); };
       _i.onerror = function(){ res(null); };
-      _i.src = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(_svg)],{type:'image/svg+xml'}));
+      _i.src = URL.createObjectURL(new Blob([eggSvg],{type:'image/svg+xml'}));
     } catch(e){ res(null); }
   }).then(function(logoB64) {
   setTimeout(function() {
@@ -3517,7 +3523,16 @@ function generatePDF() {
       // ── COVER PAGE - Gold header with real app logo ──
       doc.setFillColor(176, 117, 8);
       doc.rect(0, 0, W, 52, 'F');
-      if(logoB64) { doc.addImage(logoB64, 'PNG', 6, 5, 75, 15.6); }
+      if(logoB64) { doc.addImage(logoB64, 'PNG', 5, 4, 11, 13.2); }
+      // MyYolk wordmark next to egg
+      doc.setFont('times','bold'); doc.setFontSize(20); doc.setTextColor(45,74,53);
+      doc.text('My', 19, 15);
+      doc.setTextColor(255,255,255);
+      doc.text('Yolk', 19 + doc.getTextWidth('My'), 15);
+      doc.setFontSize(6.5); doc.setTextColor(255,255,255);
+      doc.text('™', 19 + doc.getTextWidth('My') + doc.getTextWidth('Yolk') + 0.3, 11);
+      doc.setFont('times','normal'); doc.setFontSize(6); doc.setTextColor(45,74,53);
+      doc.text('RETIREMENT PLANNING', 19, 20);
 
       // Simple clean egg icon - no clipping needed
       // Egg outline filled cream
