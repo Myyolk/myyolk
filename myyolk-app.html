@@ -2680,7 +2680,7 @@ function estimateSS() {
   // Auto-recalc spouse SS if spouse uses spousal benefit
   var spouseSsMethod = document.getElementById('spouseSsMethod');
   if(spouseSsMethod && spouseSsMethod.value === 'spousal') {
-    calcSpouseSpousalBenefit(state.ssMonthly);
+    calcSpouseSsBenefit();
   } else if(typeof calcSpouseSS === 'function') {
     calcSpouseSS();
   }
