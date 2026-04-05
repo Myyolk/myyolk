@@ -3494,24 +3494,31 @@ function generatePDF() {
       var doc = new jsPDFLib({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       var W = 210; var H = 297; var margin = 20; var y = 0;
 
-      // ── HEADER - gold bar, MyYolk text only ──
+      // ── HEADER - gold bar, MyYolk™ matching app exactly ──
       doc.setFillColor(176, 117, 8);
       doc.rect(0, 0, W, 48, 'F');
+      // "My" in dark forest green
       doc.setFont('times', 'bold');
       doc.setFontSize(28);
       doc.setTextColor(45, 74, 53);
       doc.text('My', margin, 22);
-      doc.setTextColor(255, 255, 255);
-      doc.text('Yolk', margin + doc.getTextWidth('My'), 22);
+      // "Yolk" in gold #F0A500
+      doc.setTextColor(240, 165, 0);
+      var myW = doc.getTextWidth('My');
+      doc.text('Yolk', margin + myW, 22);
+      // "™" small superscript in gold
       doc.setFontSize(9);
-      doc.setTextColor(255, 255, 255);
-      doc.text('™', margin + doc.getTextWidth('My') + doc.getTextWidth('Yolk') + 0.5, 16);
+      doc.setTextColor(240, 165, 0);
+      var yolkW = doc.getTextWidth('Yolk');
+      doc.text('™', margin + myW + yolkW + 0.5, 17);
+      // "RETIREMENT PLANNING" in dark green
       doc.setFont('times', 'normal');
       doc.setFontSize(7);
       doc.setTextColor(45, 74, 53);
       doc.text('RETIREMENT PLANNING', margin, 28);
+      // "Retirement Readiness Report" in white
       doc.setFont('times', 'bold');
-      doc.setFontSize(16);
+      doc.setFontSize(15);
       doc.setTextColor(255, 255, 255);
       doc.text('Retirement Readiness Report', margin, 40);
 
