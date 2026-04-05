@@ -3506,29 +3506,34 @@ function generatePDF() {
       doc.setFillColor(176, 117, 8);
       doc.rect(0, 0, W, 50, 'F');
 
-      // Egg icon with horizon line (matching app logo)
+      // Egg icon with horizon line
       doc.setFillColor(255, 248, 220);
       doc.ellipse(18, 25, 9, 12, 'F');
-      // Yolk circle
       doc.setFillColor(240, 165, 0);
-      doc.circle(19.5, 27, 6, 'F');
-      // Horizon line clipped inside egg
-      doc.setDrawColor(176, 117, 8);
-      doc.setLineWidth(1.2);
-      doc.line(10, 27, 27, 27);
+      doc.circle(19.5, 27, 5.5, 'F');
+      // Gold horizon line inside egg
+      doc.setFillColor(240, 165, 0);
+      doc.rect(9.5, 26.5, 17, 1.2, 'F');
+      // Clip bottom of egg over line
+      doc.setFillColor(255, 248, 220);
+      doc.ellipse(18, 31.5, 9, 6.5, 'F');
+      doc.setFillColor(240, 165, 0);
+      doc.ellipse(19.5, 29, 5.5, 3.5, 'F');
 
-      // MyYolk wordmark - tight spacing, My in dark green, Yolk in white
-      doc.setFont('helvetica', 'bold');
+      // MyYolk wordmark - Times serif, My in dark green, Yolk in white, TM superscript
+      doc.setFont('times', 'bold');
       doc.setFontSize(22);
       doc.setTextColor(30, 55, 35);
       doc.text('My', 33, 23);
-      // Measure width of 'My' to place 'Yolk' right next to it
       var myWidth = doc.getTextWidth('My');
       doc.setTextColor(255, 255, 255);
-      doc.text('Yolk', 33 + myWidth + 1, 23);
+      doc.text('Yolk', 33 + myWidth + 0.5, 23);
+      var yolkWidth = doc.getTextWidth('Yolk');
+      doc.setFontSize(7);
+      doc.text('TM', 33 + myWidth + 0.5 + yolkWidth + 0.3, 18);
       doc.setFontSize(6.5);
       doc.setTextColor(30, 55, 35);
-      doc.setFont('helvetica', 'normal');
+      doc.setFont('times', 'normal');
       doc.text('RETIREMENT PLANNING', 33, 30);
 
       // Report title
@@ -3690,9 +3695,9 @@ function generatePDF() {
       }
 
       // ── FOOTER ──
-      doc.setFillColor(45, 74, 53);
+      doc.setFillColor(176, 117, 8);
       doc.rect(0, H - 15, W, 15, 'F');
-      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(200, 220, 200);
+      doc.setFont('times','normal'); doc.setFontSize(8); doc.setTextColor(45, 74, 53);
       doc.text('MyYolk™ Retirement Planning  |  myyolk.com  |  For informational purposes only. Not financial advice.', margin, H - 6);
 
       // Save
