@@ -3502,29 +3502,33 @@ function generatePDF() {
       var mid = [107, 107, 107];
       var light = [245, 240, 232];
 
-      // ── COVER PAGE ──
-      doc.setFillColor(45, 74, 53);
-      doc.rect(0, 0, W, 48, 'F');
+      // ── COVER PAGE - Gold header matching app ──
+      doc.setFillColor(176, 117, 8);
+      doc.rect(0, 0, W, 50, 'F');
 
-      // Logo egg
+      // Egg icon with horizon line (matching app logo)
       doc.setFillColor(255, 253, 240);
-      doc.ellipse(18, 24, 9, 11, 'F');
+      doc.ellipse(18, 25, 9, 11, 'F');
       doc.setFillColor(240, 165, 0);
-      doc.circle(19, 26, 5, 'F');
+      doc.circle(19, 27, 5, 'F');
+      // Horizon line through yolk
+      doc.setDrawColor(255, 253, 240);
+      doc.setLineWidth(0.6);
+      doc.line(10, 27, 27, 27);
 
-      // MyYolk title - white for both so visible on dark green
+      // MyYolk wordmark - My in forest green, Yolk in white
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(24);
+      doc.setTextColor(45, 74, 53);
+      doc.text('My', 33, 23);
       doc.setTextColor(255, 255, 255);
-      doc.text('My', 33, 22);
-      doc.setTextColor(240, 165, 0);
-      doc.text('Yolk', 49, 22);
+      doc.text('Yolk', 49, 23);
       doc.setFontSize(7);
-      doc.setTextColor(180, 210, 180);
+      doc.setTextColor(45, 74, 53);
       doc.setFont('helvetica', 'normal');
-      doc.text('RETIREMENT PLANNING', 33, 29);
+      doc.text('RETIREMENT PLANNING', 33, 30);
 
-      // Report title and name on same header
+      // Report title
       var firstName = document.getElementById('firstName')?.value || '';
       var spouseFirst = document.getElementById('spouseFirstName')?.value || '';
       var isCouple = document.getElementById('planCouple')?.checked;
@@ -3532,20 +3536,19 @@ function generatePDF() {
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(16);
       doc.setTextColor(255, 255, 255);
-      doc.text('Retirement Readiness Report', 33, 40);
+      doc.text('Retirement Readiness Report', 33, 42);
       if(reportName) {
         doc.setFontSize(10);
         doc.setFont('helvetica', 'normal');
-        doc.setTextColor(200, 225, 200);
-        doc.text(reportName, W - margin, 40, {align: 'right'});
+        doc.setTextColor(45, 74, 53);
+        doc.text(reportName, W - margin, 36, {align: 'right'});
       }
-
       var today = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
       doc.setFontSize(8);
-      doc.setTextColor(160, 200, 160);
-      doc.text('Generated: ' + today, W - margin, 46, {align: 'right'});
+      doc.setTextColor(45, 74, 53);
+      doc.text('Generated: ' + today, W - margin, 43, {align: 'right'});
 
-      y = 58;
+      y = 60;
 
       // ── SECTION: KEY NUMBERS ──
       doc.setFillColor(245, 240, 232);
