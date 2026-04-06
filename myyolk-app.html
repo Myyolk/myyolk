@@ -3171,6 +3171,7 @@ function sendFeedback() {
 // Update current tab name when switching tabs
 var origShowTab = showTab;
 showTab = function(name) {
+  var tabNames = {profile:'My Profile',income:'Income',accounts:'Accounts',ss:'Social Security',budget:'Budget',projections:'Projections',readiness:'Readiness',whatif:'What-If',early:'Early Retirement',summary:'Summary'};
   currentTabName = tabNames[name] || name;
   origShowTab(name);
 };
