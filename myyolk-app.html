@@ -2580,7 +2580,7 @@ function estimateSS() {
   // Auto-recalc spouse SS if spouse uses spousal benefit
   var spouseSsMethod = document.getElementById('spouseSsMethod');
   if(spouseSsMethod && spouseSsMethod.value === 'spousal') {
-    calcSpouseSsBenefit();
+  // spouse SS updated via showTab
   } else if(typeof calcSpouseSsBenefit === 'function') {
     calcSpouseSsBenefit();
   }
@@ -2964,7 +2964,6 @@ function calcSpouseSsBenefit() {
 
   state.spouseSsMonthly = spouseFinal;
   state.deanSsFinal = deanFinal;
-  if(typeof recalc === 'function') recalc();
 }
 
 
