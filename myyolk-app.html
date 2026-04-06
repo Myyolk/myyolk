@@ -1658,7 +1658,7 @@
           </div>
           <div class="form-grid">
             <div class="field"><label>Her Claiming Age</label>
-              <select id="spouseSsClaimAge" onchange="calcSpouseSsBenefit()" style="width:100%">
+              <select id="spouseSsClaimAge" onchange="var m=document.getElementById('dss-method-estimate'); if(m&&m.style.display!=='none') estimateDSS(); else dssManualUpdate();" style="width:100%">
                 <option value="62">62 – Early</option><option value="63">63</option><option value="64">64</option>
                 <option value="65">65</option><option value="66">66</option><option value="67" selected>67 – Full</option>
                 <option value="68">68</option><option value="69">69</option><option value="70">70 – Maximum</option>
