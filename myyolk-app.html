@@ -1462,68 +1462,11 @@
       <h1 class="page-title">Accounts &amp; Savings</h1>
       <p class="page-subtitle">Enter your current balances and contribution details.</p>
 
-      <div class="card">
-        <div class="card-title"><span class="dot"></span> <span id="acct-bal-title">Your</span> Current Balances</div>
-        <div class="form-grid">
-          <div class="field"><label>Traditional 401(k) ($)</label><input type="number" id="bal401k" value="" placeholder="0" oninput="recalc()"></div>
-          <div class="field"><label>Roth 401(k) ($)</label><input type="number" id="balRoth401" value="" placeholder="0" oninput="recalc()"></div>
-          <div class="field"><label>Roth IRA ($)</label><input type="number" id="balRothIRA" value="" placeholder="0" oninput="recalc()"></div>
-          <div class="field"><label>Taxable Investments ($)</label><input type="number" id="balTaxable" value="" placeholder="0" oninput="recalc()"></div>
-          <div class="field"><label>HSA ($)</label><input type="number" id="balHSA" value="" placeholder="0" oninput="recalc()"></div>
-          <div class="field"><label>Cash / Savings ($)</label><input type="number" id="balCash" value="" placeholder="0" oninput="recalc()"></div>
-          <div class="field"><label>Savings Interest Rate (%/yr)</label><input type="number" id="savingsRate" value="4.5" placeholder="4.5" step="0.1" oninput="recalc()"><div class="hint">HYSA ~4-5%, checking ~0%. Does not use investment growth rate.</div></div>
-          <div class="field"><label>ESPP Balance ($)</label><input type="number" id="balESPP" value="" placeholder="0" oninput="recalc()"></div>
-        </div>
-      </div>
+      
 
-      <div class="card">
-        <div class="card-title"><span class="dot"></span> <span id="acct-401k-title">Your</span> 401(k) Contributions</div>
-        <div class="form-grid">
-          <div class="field">
-            <label>Your 401(k) Contribution %</label>
-            <input type="number" id="contrib401k" value="" placeholder="e.g. 10" step="0.1" oninput="recalc()">
-            <div class="hint">% of gross pay</div>
-            <div style="display:flex;gap:1.5rem;margin-top:0.6rem;flex-wrap:wrap">
-              <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;font-weight:500;cursor:pointer">
-                <input type="radio" name="contrib401kType" id="contrib401kTraditional" value="traditional" checked onchange="toggleSplit401k()" style="accent-color:var(--sage)">
-                Traditional <span style="font-size:0.75rem;color:#888;font-weight:400">(pre-tax)</span>
-              </label>
-              <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;font-weight:500;cursor:pointer">
-                <input type="radio" name="contrib401kType" id="contrib401kRoth" value="roth" onchange="toggleSplit401k()" style="accent-color:var(--sage)">
-                Roth <span style="font-size:0.75rem;color:#888;font-weight:400">(after-tax)</span>
-              </label>
-              <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;font-weight:500;cursor:pointer">
-                <input type="radio" name="contrib401kType" id="contrib401kSplit" value="split" onchange="toggleSplit401k()" style="accent-color:var(--sage)">
-                Split <span style="font-size:0.75rem;color:#888;font-weight:400">(both)</span>
-              </label>
-            </div>
-            <div id="split401kFields" style="display:none;margin-top:0.75rem;padding:0.75rem;background:var(--sage-pale);border-radius:8px">
-              <div style="font-size:0.78rem;font-weight:600;color:var(--forest);margin-bottom:0.5rem">Split your contribution:</div>
-              <div style="display:flex;gap:1rem;flex-wrap:wrap">
-                <div style="flex:1;min-width:120px">
-                  <label style="font-size:0.78rem">Traditional %</label>
-                  <input type="number" id="contrib401kSplitTrad" value="" placeholder="e.g. 6" step="0.1" oninput="recalc()" style="width:100%;padding:6px;border:1px solid #ddd;border-radius:6px;font-family:DM Sans">
-                </div>
-                <div style="flex:1;min-width:120px">
-                  <label style="font-size:0.78rem">Roth %</label>
-                  <input type="number" id="contribRoth401" value="" placeholder="e.g. 4" step="0.1" oninput="recalc()" style="width:100%;padding:6px;border:1px solid #ddd;border-radius:6px;font-family:DM Sans">
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="field"><label>Employer Match %</label><input type="number" id="empMatch" value="" placeholder="e.g. 6" step="0.1" oninput="recalc()"></div>
-          <div class="field"><label>Match Cap %</label><input type="number" id="matchCap" value="" placeholder="e.g. 5" step="0.1" oninput="recalc()"><div class="hint">Max % employer will match</div></div>
-        </div>
-      </div>
+      
 
-      <div class="card">
-        <div class="card-title"><span class="dot"></span> <span id="acct-other-title">Your</span> Other Contributions</div>
-        <div class="form-grid">
-          <div class="field"><label>Roth IRA Annual ($)</label><input type="number" id="contribRothIRA" value="" placeholder="e.g. 7000" oninput="recalc()"></div>
-          <div class="field"><label>Taxable Investing / year ($)</label><input type="number" id="contribTaxable" value="" placeholder="e.g. 5000" oninput="recalc()"></div>
-          <div class="field"><label>ESPP % of Salary</label><input type="number" id="contribESPP" value="" placeholder="e.g. 10" step="0.1" oninput="recalc()"></div>
-        </div>
-      </div>
+      
 
       
 
