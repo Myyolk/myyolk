@@ -3001,62 +3001,44 @@ function handleDSSUpload(event) {
 // ── SPOUSE SS BENEFIT - Bidirectional ──
 function calcSpouseSsBenefit() {
   var deanOwn = state.ssMonthly || 0;
+  // spouseSsOwn already contains the benefit at her chosen claiming age - NO further adjustment
   var spouseOwn = parseFloat(document.getElementById('spouseSsOwn')?.value) || 0;
 
-  // Apply claiming age adjustment for spouse
-  var spouseClaimAge = parseInt(document.getElementById('spouseSsClaimAge')?.value) || 67;
-  var spouseAdjusted = spouseOwn;
-  if(spouseOwn > 0) {
-    var monthsEarly = spouseClaimAge < 67 ? (67 - spouseClaimAge) * 12 : 0;
-    var adjFactor;
-    if(monthsEarly <= 0) {
-      adjFactor = spouseClaimAge > 67 ? (1 + (spouseClaimAge - 67) * 0.08) : 1;
-    } else if(monthsEarly <= 36) {
-      adjFactor = 1 - monthsEarly * (5/9) * 0.01;
-    } else {
-      adjFactor = 1 - (36 * (5/9) * 0.01 + (monthsEarly - 36) * (5/12) * 0.01);
-    }
-    spouseAdjusted = spouseOwn * adjFactor;
-  }
-
-  // SSA rule: each spouse gets the HIGHER of their own benefit OR 50% of the other's
+  // SSA rule: each spouse gets the HIGHER of own benefit OR 50% of the other's
   var halfOfDean = deanOwn * 0.5;
-  var halfOfSpouse = spouseAdjusted * 0.5;
+  var halfOfSpouse = spouseOwn * 0.5;
 
   // Dean's final benefit
   var deanFinal = deanOwn;
   var deanNote = '';
-  if(spouseAdjusted > 0 && halfOfSpouse > deanOwn) {
+  if(spouseOwn > 0 && halfOfSpouse > deanOwn) {
     deanFinal = halfOfSpouse;
-    deanNote = 'Dean gets spousal: $' + Math.round(halfOfSpouse).toLocaleString() + '/mo (50% of Densie’s $' + Math.round(spouseAdjusted).toLocaleString() + ' — higher than his own $' + Math.round(deanOwn).toLocaleString() + ')';
+    deanNote = 'Dean gets spousal: $' + Math.round(halfOfSpouse).toLocaleString() + '/mo (50% of Densie’s $' + Math.round(spouseOwn).toLocaleString() + ' — higher than his own $' + Math.round(deanOwn).toLocaleString() + ')';
   }
 
   // Spouse's final benefit
   var spouseFinal = 0;
   var spouseNote = '';
-  if(spouseAdjusted > 0) {
-    if(spouseAdjusted >= halfOfDean) {
-      spouseFinal = spouseAdjusted;
-      spouseNote = 'Densie uses her own: $' + Math.round(spouseAdjusted).toLocaleString() + '/mo';
+  if(spouseOwn > 0) {
+    if(spouseOwn >= halfOfDean) {
+      spouseFinal = spouseOwn;
+      spouseNote = 'Densie uses her own: $' + Math.round(spouseOwn).toLocaleString() + '/mo';
     } else {
       spouseFinal = halfOfDean;
-      spouseNote = 'Densie gets spousal: $' + Math.round(halfOfDean).toLocaleString() + '/mo (50% of Dean’s — higher than her own $' + Math.round(spouseAdjusted).toLocaleString() + ')';
+      spouseNote = 'Densie gets spousal: $' + Math.round(halfOfDean).toLocaleString() + '/mo (50% of Dean’s — higher than her own $' + Math.round(spouseOwn).toLocaleString() + ')';
     }
   } else {
-    // No spouse SS entered - use spousal only
     spouseFinal = halfOfDean;
-    spouseNote = 'Densie gets spousal benefit: $' + Math.round(halfOfDean).toLocaleString() + '/mo (50% of Dean’s)';
+    spouseNote = 'Densie gets spousal: $' + Math.round(halfOfDean).toLocaleString() + '/mo (50% of Dean’s)';
   }
 
   var totalHousehold = deanFinal + spouseFinal;
-
   var resultEl = document.getElementById('spouseSsResult');
   if(resultEl) resultEl.textContent = 'Total Household SS: $' + Math.round(totalHousehold).toLocaleString() + '/mo';
   var noteEl = document.getElementById('spouseSsNote');
   if(noteEl) noteEl.textContent = spouseNote;
   var deanNoteEl = document.getElementById('deanSsNote');
   if(deanNoteEl) deanNoteEl.textContent = deanNote;
-
   state.spouseSsMonthly = spouseFinal;
   state.deanSsFinal = deanFinal;
 }
