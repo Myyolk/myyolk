@@ -1460,10 +1460,11 @@
     <!-- ══ ACCOUNTS TAB ══ -->
     <div class="tab-panel" id="tab-accounts">
       <h1 class="page-title">Accounts &amp; Savings</h1>
-      <p class="page-subtitle">Enter your current balances and contribution details.</p>
+      <p class="page-subtitle">Enter current balances and contribution details.</p>
 
-            <div class="card" id="deanBalancesCard">
-        <div class="card-title"><span class="dot"></span> <span id="acct-bal-title">Your</span> Current Balances</div>
+      <!-- DEAN CARD -->
+      <div class="card" id="deanBalancesCard">
+        <div class="card-title"><span class="dot"></span> <span id="acct-bal-title">Your</span> Finances</div>
         <div class="form-grid">
           <div class="field"><label>Traditional 401(k) ($)</label><input type="number" id="bal401k" value="" placeholder="0" oninput="recalc()"></div>
           <div class="field"><label>Roth 401(k) ($)</label><input type="number" id="balRoth401" value="" placeholder="0" oninput="recalc()"></div>
@@ -1471,13 +1472,51 @@
           <div class="field"><label>Taxable Investments ($)</label><input type="number" id="balTaxable" value="" placeholder="0" oninput="recalc()"></div>
           <div class="field"><label>HSA ($)</label><input type="number" id="balHSA" value="" placeholder="0" oninput="recalc()"></div>
           <div class="field"><label>Cash / Savings ($)</label><input type="number" id="balCash" value="" placeholder="0" oninput="recalc()"></div>
-          <div class="field"><label>Savings Interest Rate (%/yr)</label><input type="number" id="savingsRate" value="4.5" placeholder="4.5" step="0.1" oninput="recalc()"><div class="hint">HYSA ~4-5%, checking ~0%. Does not use investment growth rate.</div></div>
+          <div class="field"><label>Savings Interest Rate (%/yr)</label><input type="number" id="savingsRate" value="4.5" step="0.1" oninput="recalc()"><div class="hint">HYSA ~4-5%, checking ~0%.</div></div>
           <div class="field"><label>ESPP Balance ($)</label><input type="number" id="balESPP" value="" placeholder="0" oninput="recalc()"></div>
+        </div>
+        <div style="border-top:1px solid var(--border);margin-top:1rem;padding-top:1rem">
+          <div style="font-size:0.85rem;font-weight:700;color:var(--forest);margin-bottom:0.75rem">Annual Contributions</div>
+          <div class="form-grid">
+            <div class="field"><label>401(k) Contribution %</label><input type="number" id="contrib401k" value="" placeholder="e.g. 10" oninput="recalc()"></div>
+            <div class="field"><label>Employer Match %</label><input type="number" id="empMatch" value="" placeholder="e.g. 5" oninput="recalc()"></div>
+            <div class="field"><label>Match Cap %</label><input type="number" id="matchCap" value="" placeholder="e.g. 6" oninput="recalc()"></div>
+            <div class="field"><label>Roth 401(k) Contribution %</label><input type="number" id="contribRoth401" value="" placeholder="e.g. 3" oninput="recalc()"></div>
+            <div class="field"><label>Roth IRA ($/yr)</label><input type="number" id="contribRothIRA" value="" placeholder="e.g. 7000" oninput="recalc()"></div>
+            <div class="field"><label>Taxable Investments ($/yr)</label><input type="number" id="contribTaxable" value="" placeholder="e.g. 5000" oninput="recalc()"></div>
+          </div>
         </div>
       </div>
 
+      <!-- DENSIE CARD -->
+      <div id="spouseAccountsCard" style="display:none">
+        <div class="card">
+          <div class="card-title"><span class="dot"></span> <span id="spouse-bal-title">Spouse</span> Finances</div>
+          <div class="form-grid">
+            <div class="field"><label>Traditional 401(k) ($)</label><input type="number" id="spouseBal401k" value="" placeholder="0" oninput="recalc()"></div>
+            <div class="field"><label>Roth 401(k) ($)</label><input type="number" id="spouseBalRoth401" value="" placeholder="0" oninput="recalc()"></div>
+            <div class="field"><label>Roth IRA ($)</label><input type="number" id="spouseBalRothIRA" value="" placeholder="0" oninput="recalc()"></div>
+            <div class="field"><label>Taxable Investments ($)</label><input type="number" id="spouseBalTaxable" value="" placeholder="0" oninput="recalc()"></div>
+            <div class="field"><label>HSA ($)</label><input type="number" id="spouseBalHSA" value="" placeholder="0" oninput="recalc()"></div>
+            <div class="field"><label>Cash / Savings ($)</label><input type="number" id="spouseBalCash" value="" placeholder="0" oninput="recalc()"></div>
+            <div class="field"><label>Savings Interest Rate (%/yr)</label><input type="number" id="spouseSavingsRate" value="4.5" step="0.1" oninput="recalc()"><div class="hint">HYSA ~4-5%, checking ~0%.</div></div>
+            <div class="field"><label>ESPP Balance ($)</label><input type="number" id="spouseBalESPP" value="" placeholder="0" oninput="recalc()"></div>
+          </div>
+          <div style="border-top:1px solid var(--border);margin-top:1rem;padding-top:1rem">
+            <div style="font-size:0.85rem;font-weight:700;color:var(--forest);margin-bottom:0.75rem">Annual Contributions</div>
+            <div class="form-grid">
+              <div class="field"><label>401(k) Contribution %</label><input type="number" id="spouseContrib401k" value="" placeholder="e.g. 10" oninput="recalc()"></div>
+              <div class="field"><label>Employer Match %</label><input type="number" id="spouseEmpMatch" value="" placeholder="e.g. 5" oninput="recalc()"></div>
+              <div class="field"><label>Match Cap %</label><input type="number" id="spouseMatchCap" value="" placeholder="e.g. 6" oninput="recalc()"></div>
+              <div class="field"><label>Roth 401(k) Contribution %</label><input type="number" id="spouseContribRoth401" value="" placeholder="e.g. 3" oninput="recalc()"></div>
+              <div class="field"><label>Roth IRA ($/yr)</label><input type="number" id="spouseContribRothIRA" value="" placeholder="e.g. 7000" oninput="recalc()"></div>
+              <div class="field"><label>Taxable Investments ($/yr)</label><input type="number" id="spouseContribTaxable" value="" placeholder="e.g. 5000" oninput="recalc()"></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-
+      <!-- PERSONAL PROPERTY -->
       <div class="card">
         <div class="card-title"><span class="dot"></span> Personal Property &amp; Other Assets</div>
         <div class="form-grid">
@@ -1490,48 +1529,11 @@
         </div>
       </div>
 
-      <!-- SPOUSE ACCOUNTS - hidden by default -->
-      <div id="spouseAccountsCard" style="display:none">
-
-        <div class="card">
-          <div class="card-title"><span class="dot"></span> <span id="spouse-bal-title">Spouse</span> Current Balances</div>
-          <div class="form-grid">
-            <div class="field"><label>Traditional 401(k) ($)</label><input type="number" id="spouseBal401k" value="" placeholder="0" oninput="recalc()"></div>
-            <div class="field"><label>Roth 401(k) ($)</label><input type="number" id="spouseBalRoth401" value="" placeholder="0" oninput="recalc()"></div>
-            <div class="field"><label>Roth IRA ($)</label><input type="number" id="spouseBalRothIRA" value="" placeholder="0" oninput="recalc()"></div>
-            <div class="field"><label>Taxable ($)</label><input type="number" id="spouseBalTaxable" value="" placeholder="0" oninput="recalc()"></div>
-            <div class="field"><label>HSA ($)</label><input type="number" id="spouseBalHSA" value="" placeholder="0" oninput="recalc()"></div>
-            <div class="field"><label>Cash / Savings ($)</label><input type="number" id="spouseBalCash" value="" placeholder="0" oninput="recalc()"></div>
-          <div class="field"><label>Savings Interest Rate (%/yr)</label><input type="number" id="spouseSavingsRate" value="4.5" placeholder="4.5" step="0.1" oninput="recalc()"><div class="hint">HYSA ~4-5%, checking ~0%.</div></div>
-          <div class="field"><label>ESPP Balance ($)</label><input type="number" id="spouseBalESPP" value="" placeholder="0" oninput="recalc()"></div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title"><span class="dot"></span> <span id="spouse-401k-title">Spouse</span> 401(k) Contributions</div>
-          <div class="form-grid">
-            <div class="field"><label>Contribution %</label><input type="number" id="spouseContrib401k" value="" placeholder="e.g. 10" step="0.1" oninput="recalc()"></div>
-            <div class="field"><label>Employer Match %</label><input type="number" id="spouseEmpMatch" value="" placeholder="e.g. 6" step="0.1" oninput="recalc()"></div>
-            <div class="field"><label>Roth 401(k) %</label><input type="number" id="spouseContribRoth401" value="" placeholder="e.g. 5" step="0.1" oninput="recalc()"></div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title"><span class="dot"></span> <span id="spouse-other-title">Spouse</span> Other Contributions</div>
-          <div class="form-grid">
-            <div class="field"><label>Roth IRA Annual ($)</label><input type="number" id="spouseContribRothIRA" value="" placeholder="e.g. 7000" oninput="recalc()"></div>
-            <div class="field"><label>Taxable Investing / year ($)</label><input type="number" id="spouseContribTaxable" value="" placeholder="e.g. 5000" oninput="recalc()"></div>
-          </div>
-        </div>
-
-        
-
-      </div>
-
       <div class="btn-row">
-        <button class="btn btn-secondary" onclick="showTab('income')">Back</button>
-        <button class="btn btn-primary" onclick="showTab('budget')">Next: Budget</button>
+        <button class="btn btn-secondary" onclick="showTab('income')">&#8592; Back</button>
+        <button class="btn btn-primary" onclick="showTab('ss')">Next: Social Security &#8594;</button>
       </div>
+
     </div>
 
     <div class="tab-panel" id="tab-ss" style="overflow-y:auto;max-height:calc(100vh - 120px)">
