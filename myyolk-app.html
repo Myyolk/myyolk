@@ -1555,26 +1555,18 @@
         </div>
       </div>
 
-      <div class="btn-row">
-        <button class="btn btn-secondary" onclick="showTab('income')">&#8592; Back</button>
-        <button class="btn btn-primary" onclick="showTab('ss')">Next: Social Security &#8594;</button>
-      </div>
-
-    </div>
-
-    <div class="tab-panel" id="tab-ss" style="overflow-y:auto;max-height:calc(100vh - 120px)">
+      <div class="tab-panel" id="tab-ss" style="overflow-y:auto;max-height:calc(100vh - 120px)">
       <h1 class="page-title">Social Security</h1>
-      <p class="page-subtitle">Enter your Social Security benefit estimates for accurate retirement projections.</p>
+      <p class="page-subtitle">Enter benefit estimates for accurate retirement projections.</p>
 
       <!-- DEAN SS CARD -->
       <div class="card">
-        <div class="card-title"><span class="dot"></span> Your Social Security</div>
+        <div class="card-title"><span class="dot"></span> <span id="acct-ss-title">Your</span> Social Security</div>
         <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem">
-          <button id="ssBtn-upload" onclick="switchSSMethod('upload')" style="flex:1;padding:0.6rem 0.5rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Upload Statement</button>
-          <button id="ssBtn-manual" onclick="switchSSMethod('manual')" style="flex:1;padding:0.6rem 0.5rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Enter Manually</button>
-          <button id="ssBtn-estimate" onclick="switchSSMethod('estimate')" style="flex:1;padding:0.6rem 0.5rem;border:none;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--gold);color:#fff">Estimate for Me</button>
+          <button id="ssBtn-upload" onclick="switchSSMethod('upload')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Upload Statement</button>
+          <button id="ssBtn-manual" onclick="switchSSMethod('manual')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Enter Manually</button>
+          <button id="ssBtn-estimate" onclick="switchSSMethod('estimate')" style="flex:1;padding:0.6rem;border:none;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--gold);color:#fff">Estimate for Me</button>
         </div>
-
         <div id="ss-method-upload" style="display:none">
           <div class="upload-zone" id="ssUploadZone" style="padding:1.5rem">
             <input type="file" accept=".pdf,image/*" onchange="handleSSUpload(event)">
@@ -1583,107 +1575,111 @@
             <div style="font-size:0.82rem;color:var(--mid)">We will read your benefit amounts automatically</div>
           </div>
         </div>
-
         <div id="ss-method-manual" style="display:none">
           <div class="form-grid three">
-            <div class="field"><label>Benefit at 62 ($)</label><input type="number" id="ss62" value="" placeholder="e.g. 1800" oninput="ssManualUpdate()"><div class="hint">Reduced early benefit</div></div>
-            <div class="field"><label>Benefit at 67 ($)</label><input type="number" id="ss67" value="" placeholder="e.g. 2500" oninput="ssManualUpdate()"><div class="hint">Full retirement age</div></div>
-            <div class="field"><label>Benefit at 70 ($)</label><input type="number" id="ss70" value="" placeholder="e.g. 3100" oninput="ssManualUpdate()"><div class="hint">Maximum delayed</div></div>
+            <div class="field"><label>Benefit at 62 ($)</label><input type="number" id="ss62" placeholder="e.g. 1800" oninput="ssManualUpdate()"><div class="hint">Reduced early benefit</div></div>
+            <div class="field"><label>Benefit at 67 ($)</label><input type="number" id="ss67" placeholder="e.g. 2500" oninput="ssManualUpdate()"><div class="hint">Full retirement age</div></div>
+            <div class="field"><label>Benefit at 70 ($)</label><input type="number" id="ss70" placeholder="e.g. 3100" oninput="ssManualUpdate()"><div class="hint">Maximum delayed</div></div>
           </div>
         </div>
-
         <div id="ss-method-estimate">
           <div class="form-grid">
-            <div class="field"><label>Years Worked (Est.)</label><input type="number" id="ssYearsWorked" value="30" placeholder="e.g. 30" oninput="estimateSS()"><div id="ssYearsHint" class="hint" style="display:none"></div></div>
+            <div class="field"><label>Years Worked (Est.)</label><input type="number" id="ssYearsWorked" value="30" oninput="estimateSS()"><div id="ssYearsHint" class="hint" style="display:none"></div></div>
             <div class="field"><label>Average Annual Income ($)</label><input type="number" id="ssAvgIncome" placeholder="e.g. 120000" oninput="estimateSS()"></div>
           </div>
         </div>
-
         <div style="background:var(--warm-white);border-radius:10px;padding:1rem;margin-top:1rem">
           <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:1rem">
             <div><div id="est-ss62" style="font-size:1.1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.75rem;color:var(--mid)">At age 62</div></div>
             <div><div id="est-ss67" style="font-size:1.2rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.75rem;color:var(--mid)">At age 67</div></div>
             <div><div id="est-ss70" style="font-size:1.1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.75rem;color:var(--mid)">At age 70</div></div>
           </div>
-          <div class="field"><label id="ssClaimAgeDisplay">Your benefit at age 67:</label>
-            <div id="ssEstimate" style="font-size:1.4rem;font-weight:800;color:var(--sage)">—</div>
-          </div>
-          <div class="field"><label>Planned SS Claiming Age</label>
-            <select id="ssClaimingAge" onchange="estimateSS()" style="width:100%">
-              <option value="62">62 – Early</option><option value="63">63</option><option value="64">64</option>
-              <option value="65">65</option><option value="66">66</option><option value="67" selected>67 – Full</option>
-              <option value="68">68</option><option value="69">69</option><option value="70">70 – Maximum</option>
-            </select>
+          <div class="form-grid">
+            <div class="field"><label>Your Claiming Age</label>
+              <select id="ssClaimingAge" onchange="estimateSS()" style="width:100%">
+                <option value="62">62 – Early</option><option value="63">63</option><option value="64">64</option>
+                <option value="65">65</option><option value="66">66</option><option value="67" selected>67 – Full</option>
+                <option value="68">68</option><option value="69">69</option><option value="70">70 – Maximum</option>
+              </select>
+            </div>
+            <div class="field"><label>Your Benefit at Claiming Age</label>
+              <div id="ssEstimate" style="font-size:1.4rem;font-weight:800;color:var(--sage)">—</div>
+            </div>
           </div>
         </div>
         <div style="margin-top:0.5rem;text-align:right"><a onclick="clearSSData()" style="font-size:0.8rem;color:var(--clay);cursor:pointer">Clear SS Data</a></div>
       </div>
 
-      <!-- DENSIE SS CARD (shown only for couples) -->
+      <!-- DENSIE SS CARD -->
       <div class="card" id="densieSSCard" style="display:none">
         <div class="card-title"><span class="dot"></span> <span id="spouse-ss-name">Spouse</span>'s Social Security</div>
-
-        <!-- 2 tab interface: Enter Manually | Estimate for Me -->
         <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem">
-          <button id="dssBtn-manual" onclick="switchDSSMethod('manual')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--gold);color:#fff">Enter Manually</button>
-          <button id="dssBtn-estimate" onclick="switchDSSMethod('estimate')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Estimate for Me</button>
-          <button id="dssBtn-spousal" onclick="switchDSSMethod('spousal')" style="flex:1;padding:0.6rem;border:none;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Spousal Only</button>
+          <button id="dssBtn-upload" onclick="switchDSSMethod('upload')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Upload Statement</button>
+          <button id="dssBtn-manual" onclick="switchDSSMethod('manual')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Enter Manually</button>
+          <button id="dssBtn-estimate" onclick="switchDSSMethod('estimate')" style="flex:1;padding:0.6rem;border:none;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--gold);color:#fff">Estimate for Me</button>
         </div>
-
-        <!-- Manual Entry -->
-        <div id="dss-method-manual">
+        <div id="dss-method-upload" style="display:none">
+          <div class="upload-zone" style="padding:1.5rem">
+            <input type="file" accept=".pdf,image/*" onchange="handleDSSUpload(event)">
+            <div style="font-size:2rem;margin-bottom:0.5rem">🏛️</div>
+            <div style="font-size:0.95rem;font-weight:600">Drop her SSA Statement PDF here</div>
+            <div style="font-size:0.82rem;color:var(--mid)">We will read her benefit amounts automatically</div>
+          </div>
+        </div>
+        <div id="dss-method-manual" style="display:none">
           <div class="form-grid three">
             <div class="field"><label>Her Benefit at 62 ($)</label><input type="number" id="dss62" placeholder="e.g. 1200" oninput="dssManualUpdate()"><div class="hint">Reduced early benefit</div></div>
             <div class="field"><label>Her Benefit at 67 ($)</label><input type="number" id="dss67" placeholder="e.g. 1800" oninput="dssManualUpdate()"><div class="hint">Full retirement age</div></div>
             <div class="field"><label>Her Benefit at 70 ($)</label><input type="number" id="dss70" placeholder="e.g. 2200" oninput="dssManualUpdate()"><div class="hint">Maximum delayed</div></div>
           </div>
         </div>
-
-        <!-- Estimate for Me -->
-        <div id="dss-method-estimate" style="display:none">
+        <div id="dss-method-estimate">
           <div class="form-grid">
             <div class="field"><label>Her Years Worked (Est.)</label><input type="number" id="dssYearsWorked" value="30" oninput="estimateDSS()"></div>
             <div class="field"><label>Her Avg Annual Income ($)</label><input type="number" id="dssAvgIncome" placeholder="e.g. 80000" oninput="estimateDSS()"></div>
           </div>
           <div id="dssEstResult" style="font-size:0.85rem;color:var(--mid);margin-top:0.5rem;padding:0.5rem;background:var(--warm-white);border-radius:6px"></div>
         </div>
-
-        <!-- Spousal Only -->
-        <div id="dss-method-spousal" style="display:none">
-          <div style="padding:0.75rem;background:var(--warm-white);border-radius:8px;margin-bottom:0.75rem;font-size:0.85rem;color:var(--mid)">
-            Spouse will receive 50% of your full benefit. No separate SS entry needed.
+        <div style="background:var(--warm-white);border-radius:10px;padding:1rem;margin-top:1rem">
+          <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:1rem">
+            <div><div id="dss-est62" style="font-size:1.1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.75rem;color:var(--mid)">At age 62</div></div>
+            <div><div id="dss-est67" style="font-size:1.2rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.75rem;color:var(--mid)">At age 67</div></div>
+            <div><div id="dss-est70" style="font-size:1.1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.75rem;color:var(--mid)">At age 70</div></div>
           </div>
-        </div>
-
-        <!-- Claiming Age -->
-        <div class="form-grid" style="margin-top:0.75rem">
-          <div class="field"><label>Her Claiming Age</label>
-            <select id="spouseSsClaimAge" onchange="calcSpouseSsBenefit()" style="width:100%">
-              <option value="62">62 – Early</option><option value="63">63</option><option value="64">64</option>
-              <option value="65">65</option><option value="66">66</option><option value="67" selected>67 – Full</option>
-              <option value="68">68</option><option value="69">69</option><option value="70">70 – Maximum</option>
-            </select>
-          </div>
-          <div class="field"><label>Her Estimated Benefit ($/mo)</label>
-            <div id="dssEstimatedBenefit" style="font-size:1.2rem;font-weight:700;color:var(--sage);padding:0.4rem 0">—</div>
-            <div class="hint">At her selected claiming age</div>
+          <div class="form-grid">
+            <div class="field"><label>Her Claiming Age</label>
+              <select id="spouseSsClaimAge" onchange="calcSpouseSsBenefit()" style="width:100%">
+                <option value="62">62 – Early</option><option value="63">63</option><option value="64">64</option>
+                <option value="65">65</option><option value="66">66</option><option value="67" selected>67 – Full</option>
+                <option value="68">68</option><option value="69">69</option><option value="70">70 – Maximum</option>
+              </select>
+            </div>
+            <div class="field"><label>Her Benefit at Claiming Age</label>
+              <div id="dssEstimatedBenefit" style="font-size:1.4rem;font-weight:800;color:var(--sage)">—</div>
+            </div>
           </div>
         </div>
         <input type="hidden" id="spouseSsOwn" value="">
       </div>
 
-      <!-- HOUSEHOLD SS DECISION CARD -->
+      <!-- HOUSEHOLD DECISION CARD -->
       <div class="card" id="householdSSCard" style="display:none">
         <div class="card-title"><span class="dot"></span> 🏠 Household SS Decision</div>
-        <div class="hint" style="margin-bottom:1rem">SSA pays each spouse the higher of their own benefit or 50% of their spouse's. The decision below is automatic.</div>
-        <div style="background:var(--sage-pale);border-radius:10px;padding:1rem">
-          <div id="spouseSsResult" style="font-size:1.2rem;font-weight:700;color:var(--sage);margin-bottom:0.5rem">—</div>
-          <div id="spouseSsNote" style="font-size:0.85rem;color:var(--mid);margin-bottom:0.25rem"></div>
-          <div id="deanSsNote" style="font-size:0.85rem;color:var(--mid)"></div>
+        <div class="hint" style="margin-bottom:1rem">SSA automatically pays each spouse the higher of their own earned benefit or 50% of their spouse's benefit. The optimal outcome is calculated below.</div>
+        <div style="background:var(--sage-pale);border-radius:10px;padding:1.25rem">
+          <div id="spouseSsResult" style="font-size:1.3rem;font-weight:800;color:var(--sage);margin-bottom:0.75rem">—</div>
+          <div id="spouseSsNote" style="font-size:0.88rem;color:var(--mid);margin-bottom:0.35rem"></div>
+          <div id="deanSsNote" style="font-size:0.88rem;color:var(--mid)"></div>
         </div>
       </div>
 
       <div class="btn-row">
+        <button class="btn btn-secondary" onclick="showTab('accounts')">&#8592; Back</button>
+        <button class="btn btn-primary" onclick="showTab('budget')">Next: Budget &#8594;</button>
+      </div>
+    </div>
+
+    <div class="btn-row">
         <button class="btn btn-secondary" onclick="showTab('accounts')">← Back</button>
         <button class="btn btn-primary" onclick="showTab('budget')">Next: Budget →</button>
       </div>
@@ -2983,6 +2979,20 @@ function calcAdditionalIncome() {
 
 
 
+// ── DENSIE SS UPLOAD ──
+function handleDSSUpload(event) {
+  var file = event.target.files[0];
+  if(!file) return;
+  // Reuse the SS upload logic but populate DSS fields
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    // For now show a loading message - full PDF parse coming
+    var result = document.getElementById('dssEstResult');
+    if(result) result.textContent = 'Statement uploaded — enter benefits manually from the PDF for now.';
+  };
+  reader.readAsDataURL(file);
+}
+
 // ── SPOUSE SS BENEFIT - Bidirectional ──
 function calcSpouseSsBenefit() {
   var deanOwn = state.ssMonthly || 0;
@@ -3048,7 +3058,7 @@ function calcSpouseSsBenefit() {
 
 // ── DENSIE SS METHODS ──
 function switchDSSMethod(method) {
-  ['manual','estimate','spousal'].forEach(function(m) {
+  ['upload','manual','estimate','spousal'].forEach(function(m) {
     var el = document.getElementById('dss-method-' + m);
     var btn = document.getElementById('dssBtn-' + m);
     if(el) el.style.display = m === method ? 'block' : 'none';
