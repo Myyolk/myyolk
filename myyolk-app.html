@@ -3019,16 +3019,16 @@ function calcSpouseSsBenefit() {
     spouseAdjusted = spouseOwn * adjFactor;
   }
 
-  // SSA rule: each person gets the higher of their own or 50% of spouse's
+  // SSA rule: each spouse gets the HIGHER of their own benefit OR 50% of the other's
   var halfOfDean = deanOwn * 0.5;
   var halfOfSpouse = spouseAdjusted * 0.5;
 
   // Dean's final benefit
-  var deanFinal = deanOwn; // Dean's own is already calculated
+  var deanFinal = deanOwn;
   var deanNote = '';
   if(spouseAdjusted > 0 && halfOfSpouse > deanOwn) {
     deanFinal = halfOfSpouse;
-    deanNote = 'Dean gets spousal benefit: $' + Math.round(halfOfSpouse).toLocaleString() + '/mo (50% of Densie’s — higher than his own $' + Math.round(deanOwn).toLocaleString() + ')';
+    deanNote = 'Dean gets spousal: $' + Math.round(halfOfSpouse).toLocaleString() + '/mo (50% of Densie’s $' + Math.round(spouseAdjusted).toLocaleString() + ' — higher than his own $' + Math.round(deanOwn).toLocaleString() + ')';
   }
 
   // Spouse's final benefit
@@ -3037,12 +3037,13 @@ function calcSpouseSsBenefit() {
   if(spouseAdjusted > 0) {
     if(spouseAdjusted >= halfOfDean) {
       spouseFinal = spouseAdjusted;
-      spouseNote = 'Densie uses her own benefit: $' + Math.round(spouseAdjusted).toLocaleString() + '/mo';
+      spouseNote = 'Densie uses her own: $' + Math.round(spouseAdjusted).toLocaleString() + '/mo';
     } else {
       spouseFinal = halfOfDean;
-      spouseNote = 'Densie gets spousal benefit: $' + Math.round(halfOfDean).toLocaleString() + '/mo (50% of Dean’s — higher than her own $' + Math.round(spouseAdjusted).toLocaleString() + ')';
+      spouseNote = 'Densie gets spousal: $' + Math.round(halfOfDean).toLocaleString() + '/mo (50% of Dean’s — higher than her own $' + Math.round(spouseAdjusted).toLocaleString() + ')';
     }
   } else {
+    // No spouse SS entered - use spousal only
     spouseFinal = halfOfDean;
     spouseNote = 'Densie gets spousal benefit: $' + Math.round(halfOfDean).toLocaleString() + '/mo (50% of Dean’s)';
   }
@@ -3060,8 +3061,6 @@ function calcSpouseSsBenefit() {
   state.deanSsFinal = deanFinal;
 }
 
-
-// ── DENSIE SS METHODS ──
 function switchDSSMethod(method) {
   ['upload','manual','estimate','spousal'].forEach(function(m) {
     var el = document.getElementById('dss-method-' + m);
