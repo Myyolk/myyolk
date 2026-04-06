@@ -3001,35 +3001,51 @@ function handleDSSUpload(event) {
 // ── SPOUSE SS BENEFIT - Bidirectional ──
 function calcSpouseSsBenefit() {
   var deanOwn = state.ssMonthly || 0;
-  // spouseSsOwn is already the benefit at her chosen claiming age — no further adjustment needed
   var spouseOwn = parseFloat(document.getElementById('spouseSsOwn')?.value) || 0;
 
-  // SSA rule: each person gets the higher of own or 50% of spouse's
+  // Apply claiming age adjustment for spouse
+  var spouseClaimAge = parseInt(document.getElementById('spouseSsClaimAge')?.value) || 67;
+  var spouseAdjusted = spouseOwn;
+  if(spouseOwn > 0) {
+    var monthsEarly = spouseClaimAge < 67 ? (67 - spouseClaimAge) * 12 : 0;
+    var adjFactor;
+    if(monthsEarly <= 0) {
+      adjFactor = spouseClaimAge > 67 ? (1 + (spouseClaimAge - 67) * 0.08) : 1;
+    } else if(monthsEarly <= 36) {
+      adjFactor = 1 - monthsEarly * (5/9) * 0.01;
+    } else {
+      adjFactor = 1 - (36 * (5/9) * 0.01 + (monthsEarly - 36) * (5/12) * 0.01);
+    }
+    spouseAdjusted = spouseOwn * adjFactor;
+  }
+
+  // SSA rule: each spouse gets the HIGHER of their own benefit OR 50% of the other's
   var halfOfDean = deanOwn * 0.5;
-  var halfOfSpouse = spouseOwn * 0.5;
+  var halfOfSpouse = spouseAdjusted * 0.5;
 
   // Dean's final benefit
   var deanFinal = deanOwn;
   var deanNote = '';
-  if(spouseOwn > 0 && halfOfSpouse > deanOwn) {
+  if(spouseAdjusted > 0 && halfOfSpouse > deanOwn) {
     deanFinal = halfOfSpouse;
-    deanNote = 'Dean gets spousal: $' + Math.round(halfOfSpouse).toLocaleString() + '/mo (50% of Densie’s $' + Math.round(spouseOwn).toLocaleString() + ' — higher than his own $' + Math.round(deanOwn).toLocaleString() + ')';
+    deanNote = 'Dean gets spousal: $' + Math.round(halfOfSpouse).toLocaleString() + '/mo (50% of Densie’s $' + Math.round(spouseAdjusted).toLocaleString() + ' — higher than his own $' + Math.round(deanOwn).toLocaleString() + ')';
   }
 
   // Spouse's final benefit
   var spouseFinal = 0;
   var spouseNote = '';
-  if(spouseOwn > 0) {
-    if(spouseOwn >= halfOfDean) {
-      spouseFinal = spouseOwn;
-      spouseNote = 'Densie uses her own: $' + Math.round(spouseOwn).toLocaleString() + '/mo';
+  if(spouseAdjusted > 0) {
+    if(spouseAdjusted >= halfOfDean) {
+      spouseFinal = spouseAdjusted;
+      spouseNote = 'Densie uses her own: $' + Math.round(spouseAdjusted).toLocaleString() + '/mo';
     } else {
       spouseFinal = halfOfDean;
-      spouseNote = 'Densie gets spousal: $' + Math.round(halfOfDean).toLocaleString() + '/mo (50% of Dean’s — higher than her own $' + Math.round(spouseOwn).toLocaleString() + ')';
+      spouseNote = 'Densie gets spousal: $' + Math.round(halfOfDean).toLocaleString() + '/mo (50% of Dean’s — higher than her own $' + Math.round(spouseAdjusted).toLocaleString() + ')';
     }
   } else {
+    // No spouse SS entered - use spousal only
     spouseFinal = halfOfDean;
-    spouseNote = 'Densie gets spousal: $' + Math.round(halfOfDean).toLocaleString() + '/mo (50% of Dean’s)';
+    spouseNote = 'Densie gets spousal benefit: $' + Math.round(halfOfDean).toLocaleString() + '/mo (50% of Dean’s)';
   }
 
   var totalHousehold = deanFinal + spouseFinal;
@@ -3064,8 +3080,33 @@ function dssManualUpdate() {
   var v62 = parseFloat(document.getElementById('dss62')?.value) || 0;
   var v67 = parseFloat(document.getElementById('dss67')?.value) || 0;
   var v70 = parseFloat(document.getElementById('dss70')?.value) || 0;
-  var benefit = age <= 62 ? v62 : age >= 70 ? v70 : age < 67 ? (v62 + (v67-v62)*((age-62)/5)) : (v67 + (v70-v67)*((age-67)/3));
-  document.getElementById('spouseSsOwn').value = Math.round(benefit) || '';
+
+  // Use whatever value is entered — if only one box filled, use that
+  var benefit = 0;
+  if(v62 && v67 && v70) {
+    // All three filled — interpolate
+    if(age <= 62) benefit = v62;
+    else if(age >= 70) benefit = v70;
+    else if(age < 67) benefit = v62 + (v67 - v62) * ((age - 62) / 5);
+    else benefit = v67 + (v70 - v67) * ((age - 67) / 3);
+  } else if(v67) {
+    // Only age-67 filled — apply SSA adjustment from 67 base
+    var monthsEarly = age < 67 ? (67 - age) * 12 : 0;
+    var adj = monthsEarly <= 0 ? (age > 67 ? 1 + (age - 67) * 0.08 : 1) :
+              monthsEarly <= 36 ? 1 - monthsEarly * (5/9) * 0.01 :
+              1 - (36 * (5/9) * 0.01 + (monthsEarly - 36) * (5/12) * 0.01);
+    benefit = v67 * adj;
+  } else if(v62) {
+    benefit = v62;
+  } else if(v70) {
+    benefit = v70;
+  }
+
+  benefit = Math.round(benefit);
+  var own = document.getElementById('spouseSsOwn');
+  if(own) own.value = benefit || '';
+  var disp = document.getElementById('dssEstimatedBenefit');
+  if(disp) disp.textContent = benefit > 0 ? '$' + benefit.toLocaleString() + '/mo' : '—';
   calcSpouseSsBenefit();
 }
 
