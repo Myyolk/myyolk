@@ -1585,16 +1585,36 @@
 
       <!-- DENSIE SS CARD (shown only for couples) -->
       <div class="card" id="densieSSCard" style="display:none">
-        <div class="card-title"><span class="dot"></span> <span id="spouse-ss-name">Spouse's Social Security</div>
-        <div class="form-grid">
-          <div class="field"><label>Her SS Estimate ($/mo at 67)</label><input type="number" id="spouseSsOwn" placeholder="e.g. 1200" oninput="calcSpouseSsBenefit()"><div class="hint">From her SSA statement or ssa.gov — leave blank if unknown</div></div>
-          <div class="field"><label>Her Claiming Age</label>
-            <select id="spouseSsClaimAge" onchange="calcSpouseSsBenefit()" style="width:100%">
-              <option value="62">62 – Early</option><option value="63">63</option><option value="64">64</option>
-              <option value="65">65</option><option value="66">66</option><option value="67" selected>67 – Full</option>
-              <option value="68">68</option><option value="69">69</option><option value="70">70 – Maximum</option>
-            </select>
+        <div class="card-title"><span class="dot"></span> Spouse's Social Security</div>
+        <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem">
+          <button id="dssBtn-manual" onclick="switchDSSMethod('manual')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--gold);color:#fff">Enter Manually</button>
+          <button id="dssBtn-estimate" onclick="switchDSSMethod('estimate')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Estimate for Me</button>
+          <button id="dssBtn-spousal" onclick="switchDSSMethod('spousal')" style="flex:1;padding:0.6rem;border:none;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Spousal Only</button>
+        </div>
+        <div id="dss-method-manual">
+          <div class="form-grid three">
+            <div class="field"><label>Benefit at 62 ($)</label><input type="number" id="dss62" placeholder="e.g. 1200" oninput="dssManualUpdate()"><div class="hint">Early benefit</div></div>
+            <div class="field"><label>Benefit at 67 ($)</label><input type="number" id="dss67" placeholder="e.g. 1800" oninput="dssManualUpdate()"><div class="hint">Full retirement</div></div>
+            <div class="field"><label>Benefit at 70 ($)</label><input type="number" id="dss70" placeholder="e.g. 2200" oninput="dssManualUpdate()"><div class="hint">Maximum</div></div>
           </div>
+        </div>
+        <div id="dss-method-estimate" style="display:none">
+          <div class="form-grid">
+            <div class="field"><label>Her Years Worked (Est.)</label><input type="number" id="dssYearsWorked" value="30" placeholder="e.g. 30" oninput="estimateDSS()"></div>
+            <div class="field"><label>Her Avg Annual Income ($)</label><input type="number" id="dssAvgIncome" placeholder="e.g. 80000" oninput="estimateDSS()"></div>
+          </div>
+          <div id="dssEstResult" style="font-size:0.85rem;color:var(--mid);margin-top:0.5rem;padding:0.5rem;background:var(--warm-white);border-radius:6px"></div>
+        </div>
+        <div id="dss-method-spousal" style="display:none">
+          <div style="padding:0.75rem;background:var(--warm-white);border-radius:8px;margin-bottom:0.75rem;font-size:0.85rem;color:var(--mid)">Spouse will receive 50% of your full benefit. No separate entry needed.</div>
+        </div>
+        <div class="field" style="margin-top:0.75rem">
+          <label>Her Claiming Age</label>
+          <select id="spouseSsClaimAge" onchange="calcSpouseSsBenefit()" style="width:100%">
+            <option value="62">62 – Early</option><option value="63">63</option><option value="64">64</option>
+            <option value="65">65</option><option value="66">66</option><option value="67" selected>67 – Full</option>
+            <option value="68">68</option><option value="69">69</option><option value="70">70 – Maximum</option>
+          </select>
         </div>
         <div style="background:var(--sage-pale);border-radius:8px;padding:0.75rem;margin-top:0.75rem">
           <div style="font-weight:700;color:var(--forest);font-size:0.85rem;margin-bottom:0.5rem">🏠 HOUSEHOLD SS DECISION</div>
@@ -1602,6 +1622,7 @@
           <div id="spouseSsNote" style="font-size:0.8rem;color:var(--mid);margin-top:4px"></div>
           <div id="deanSsNote" style="font-size:0.8rem;color:var(--mid);margin-top:2px"></div>
         </div>
+        <input type="hidden" id="spouseSsOwn" value="">
       </div>
 
       <div class="btn-row">
