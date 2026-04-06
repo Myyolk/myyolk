@@ -1525,24 +1525,7 @@
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-title"><span class="dot"></span> Growth Rate</div>
-        <div class="form-grid">
-          <div class="field">
-            <label>Expected Annual Return</label>
-            <select id="growthRate" onchange="recalc()" style="width:100%">
-              <option value="0.05">Conservative (5%)</option>
-              <option value="0.07" selected>Moderate (7%)</option>
-              <option value="0.09">Aggressive (9%)</option>
-              <option value="custom">Custom</option>
-            </select>
-          </div>
-          <div class="field" id="customRateField" style="display:none">
-            <label>Custom Rate (%)</label>
-            <input type="number" id="customRate" value="" placeholder="e.g. 8" step="0.1" oninput="recalc()">
-          </div>
-        </div>
-      </div>
+      
 
       <div class="card" id="ssCard">
         <div class="card-title"><span class="dot"></span> <span id="acct-ss-title">Your</span> Social Security</div>
@@ -1662,46 +1645,7 @@
           </div>
         </div>
 
-        <div class="card">
-          <div class="card-title"><span class="dot"></span> <span id="spouse-ss-title">Spouse</span>'s Social Security</div>
-          <div style="margin-bottom:1rem">
-            <label style="font-size:0.85rem;font-weight:600">Work history:</label>
-            <div style="display:flex;gap:1.5rem;margin-top:0.5rem;flex-wrap:wrap">
-              <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;cursor:pointer"><input type="radio" name="spouseSSType" id="spouseSSWorked" value="worked" checked onchange="toggleSpouseSSType()" style="accent-color:var(--sage)"> Has worked</label>
-              <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;cursor:pointer"><input type="radio" name="spouseSSType" id="spouseSSNeverWorked" value="neverworked" onchange="toggleSpouseSSType()" style="accent-color:var(--sage)"> Never worked</label>
-            </div>
-          </div>
-          <div id="spouseSSWorkedFields">
-            <div class="form-grid">
-              <div class="field"><label>Her SS Estimate ($/mo)</label><input type="number" id="spouseSsOwn" placeholder="e.g. 1200" oninput="calcSpouseSsBenefit()"><div class="hint">From her SSA statement or ssa.gov — leave blank if unknown</div></div>
-              <div class="field"><label>Her Claiming Age</label>
-                <select id="spouseSsClaimAge" onchange="calcSpouseSsBenefit()" style="width:100%">
-                  <option value="62">62 – Early</option><option value="63">63</option><option value="64">64</option>
-                  <option value="65">65</option><option value="66">66</option><option value="67" selected>67 – Full</option>
-                  <option value="68">68</option><option value="69">69</option><option value="70">70 – Maximum</option>
-                </select>
-              </div>
-              <div style="background:var(--sage-pale);border-radius:8px;padding:0.75rem;margin-top:0.5rem">
-                <div style="font-weight:700;color:var(--forest);font-size:0.85rem;margin-bottom:0.5rem">HOUSEHOLD SS DECISION</div>
-                <div id="spouseSsResult" style="font-size:1.1rem;font-weight:700;color:var(--sage)">—</div>
-                <div id="spouseSsNote" style="font-size:0.8rem;color:var(--mid);margin-top:4px"></div>
-                <div id="deanSsNote" style="font-size:0.8rem;color:var(--mid);margin-top:2px"></div>
-              </div>
-              <div class="field"><label>SS Claiming Age</label><select id="spouseSsAge" onchange="recalc()" style="width:100%"><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67" selected>67 - Full</option><option value="68">68</option><option value="69">69</option><option value="70">70</option></select></div>
-              <div class="field"><label>Years of SS Earnings</label><input type="number" id="spouseSsYears" value="30" min="1" max="50" oninput="recalc()"></div>
-            </div>
-          </div>
-          <div id="spouseSSNeverWorkedFields" style="display:none">
-            <div style="padding:1rem;background:var(--sage-pale);border-radius:8px;font-size:0.85rem;color:var(--forest);margin-bottom:1rem">
-              <strong>Spousal Benefit:</strong> <span id="spouseNeverWorkedMsg">Your spouse</span> is entitled to <strong>50% of your SS benefit</strong> at the age you claim.
-            </div>
-            <div style="padding:0.75rem;background:#fff;border:2px solid var(--gold);border-radius:8px;text-align:center">
-              <div style="font-size:0.78rem;font-weight:600;color:var(--mid);margin-bottom:4px" id="spouseSsEstimateLabel">Estimated Spousal Benefit</div>
-              <div style="font-size:1.8rem;font-weight:700;color:var(--sage)" id="spouseSsEstimate">-</div>
-              <div style="font-size:0.75rem;color:var(--mid)" id="spouseSsEstimateSub">50% of your SS benefit at your claiming age</div>
-            </div>
-          </div>
-        </div>
+        
 
       </div>
 
