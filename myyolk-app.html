@@ -2380,7 +2380,7 @@ function toggleCouple() {
   // Update About You section
   setTimeout(function(){ if(typeof updateAboutYouSection==='function') updateAboutYouSection(); }, 50);
   var isCouple = document.getElementById('planCouple')?.checked;
-  ['spouseProfileCard','spouseIncomeCard','spouseAccountsCard'].forEach(function(id) {
+  ['spouseProfileCard','spouseIncomeCard','spouseAccountsCard','densieSSCard'].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.style.display = isCouple ? 'block' : 'none';
   });
@@ -3288,7 +3288,13 @@ showTab = function(name) {
     setTimeout(calcReadiness, 100);
   }
   if(name === 'ss') {
-    setTimeout(estimateSS, 100);
+    setTimeout(function() {
+      var isCouple = document.getElementById('planCouple')?.checked;
+      var densieCard = document.getElementById('densieSSCard');
+      if(densieCard) densieCard.style.display = isCouple ? 'block' : 'none';
+      estimateSS();
+      if(isCouple && typeof calcSpouseSsBenefit === 'function') calcSpouseSsBenefit();
+    }, 100);
   }
 };
 
