@@ -1598,9 +1598,10 @@
         </div>
         <div style="background:var(--warm-white);border-radius:10px;padding:1rem;margin-top:1rem">
           <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:1rem">
-            <div><div id="est-ss62" style="font-size:1.1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.75rem;color:var(--mid)">At age 62</div></div>
-            <div><div id="est-ss67" style="font-size:1.2rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.75rem;color:var(--mid)">At age 67</div></div>
-            <div><div id="est-ss70" style="font-size:1.1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.75rem;color:var(--mid)">At age 70</div></div>
+            <div><div id="est-ss62" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 62</div></div>
+            <div><div id="est-ss65" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 65</div></div>
+            <div><div id="est-ss67" style="font-size:1.15rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 67 ★</div></div>
+            <div><div id="est-ss70" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 70</div></div>
           </div>
           <div class="form-grid">
             <div class="field"><label>Your Claiming Age</label>
@@ -1650,9 +1651,10 @@
         </div>
         <div style="background:var(--warm-white);border-radius:10px;padding:1rem;margin-top:1rem">
           <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:1rem">
-            <div><div id="dss-est62" style="font-size:1.1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.75rem;color:var(--mid)">At age 62</div></div>
-            <div><div id="dss-est67" style="font-size:1.2rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.75rem;color:var(--mid)">At age 67</div></div>
-            <div><div id="dss-est70" style="font-size:1.1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.75rem;color:var(--mid)">At age 70</div></div>
+            <div><div id="dss-est62" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 62</div></div>
+            <div><div id="dss-est65" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 65</div></div>
+            <div><div id="dss-est67" style="font-size:1.15rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 67 ★</div></div>
+            <div><div id="dss-est70" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 70</div></div>
           </div>
           <div class="form-grid">
             <div class="field"><label>Her Claiming Age</label>
@@ -2608,7 +2610,7 @@ function estimateSS() {
   }
   var avgIncome = parseFloat(document.getElementById('ssAvgIncome')?.value) || state.salary || 0;
   if (!avgIncome) {
-    ['est-ss62','est-ss67','est-ss70'].forEach(function(id){ fmtEl(id, '—'); });
+    ['est-ss62','est-ss65','est-ss67','est-ss70'].forEach(function(id){ fmtEl(id, '—'); });
     return;
   }
   var aime = (avgIncome * Math.min(yrs, 35)) / (35 * 12);
@@ -2642,6 +2644,7 @@ function estimateSS() {
   var claimAge = claimDropdown ? parseInt(claimDropdown.value) || 67 : 67;
 
   fmtEl('est-ss62', '$' + Math.round(benefitAtAge(62)).toLocaleString());
+  fmtEl('est-ss65', '$' + Math.round(benefitAtAge(65)).toLocaleString());
   fmtEl('est-ss67', '$' + Math.round(pia).toLocaleString());
   fmtEl('est-ss70', '$' + Math.round(benefitAtAge(70)).toLocaleString());
   
@@ -3092,32 +3095,22 @@ function estimateDSS() {
   if(aime <= 1115) pia = aime * 0.9;
   else if(aime <= 6721) pia = 1003.5 + (aime - 1115) * 0.32;
   else pia = 2978.42 + (aime - 6721) * 0.15;
-  // Show estimated benefits
-  var dss62El = document.getElementById('dss62');
-  var dss67El = document.getElementById('dss67');
-  var dss70El = document.getElementById('dss70');
-  if(dss62El) dss62El.placeholder = '$' + Math.round(pia * 0.70).toLocaleString();
-  if(dss67El) dss67El.placeholder = '$' + Math.round(pia).toLocaleString();
-  if(dss70El) dss70El.placeholder = '$' + Math.round(pia * 1.24).toLocaleString();
-  document.getElementById('spouseSsOwn').value = Math.round(pia) || '';
+  var age = parseInt(document.getElementById('spouseSsClaimAge')?.value) || 67;
+  var monthsEarly = age < 67 ? (67-age)*12 : 0;
+  var adj = monthsEarly <= 0 ? (age > 67 ? 1+(age-67)*0.08 : 1) : monthsEarly <= 36 ? 1-monthsEarly*(5/9)*0.01 : 1-(36*(5/9)*0.01+(monthsEarly-36)*(5/12)*0.01);
+  var benefit = Math.round(pia * adj);
+  // Update 4 age display boxes
+  var d62 = document.getElementById('dss-est62'); if(d62) d62.textContent = pia > 0 ? '$' + Math.round(pia*0.70).toLocaleString() : '—';
+  var d65 = document.getElementById('dss-est65'); if(d65) d65.textContent = pia > 0 ? '$' + Math.round(pia*0.868).toLocaleString() : '—';
+  var d67 = document.getElementById('dss-est67'); if(d67) d67.textContent = pia > 0 ? '$' + Math.round(pia).toLocaleString() : '—';
+  var d70 = document.getElementById('dss-est70'); if(d70) d70.textContent = pia > 0 ? '$' + Math.round(pia*1.24).toLocaleString() : '—';
+  var disp = document.getElementById('dssEstimatedBenefit'); if(disp) disp.textContent = benefit > 0 ? '$' + benefit.toLocaleString() + '/mo' : '—';
+  var result = document.getElementById('dssEstResult');
+  if(result) result.textContent = pia > 0 ? 'Est. at 67: $' + Math.round(pia).toLocaleString() + '/mo | At age ' + age + ': $' + benefit.toLocaleString() + '/mo' : '';
+  var own = document.getElementById('spouseSsOwn');
+  if(own) own.value = benefit || '';
   calcSpouseSsBenefit();
 }
-
-// ── FEEDBACK WIDGET ──
-var feedbackNotes = [];
-var currentTabName = 'Profile';
-
-var tabNames = {
-  'profile': 'My Profile',
-  'income': 'Income & Pay',
-  'accounts': 'Accounts & Savings',
-  'budget': 'Budget',
-  'projections': 'Projections',
-  'readiness': 'Readiness',
-  'whatif': 'What-If Scenarios',
-  'early': 'Early Retirement',
-  'summary': 'Summary'
-};
 
 function toggleFeedback() {
   var panel = document.getElementById('feedbackPanel');
