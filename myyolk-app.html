@@ -1488,7 +1488,7 @@
       <div id="spouseAccountsCard" style="display:none">
 
         <div class="card">
-          <div class="card-title"><span class="dot"></span> <span id="spouse-bal-title">Spouse's</span> Current Balances</div>
+          <div class="card-title"><span class="dot"></span> <span id="spouse-bal-title">Spouse</span>'s Current Balances</div>
           <div class="form-grid">
             <div class="field"><label>Traditional 401(k) ($)</label><input type="number" id="spouseBal401k" value="" placeholder="0" oninput="recalc()"></div>
             <div class="field"><label>Roth 401(k) ($)</label><input type="number" id="spouseBalRoth401" value="" placeholder="0" oninput="recalc()"></div>
@@ -1500,7 +1500,7 @@
         </div>
 
         <div class="card">
-          <div class="card-title"><span class="dot"></span> <span id="spouse-401k-title">Spouse's</span> 401(k) Contributions</div>
+          <div class="card-title"><span class="dot"></span> <span id="spouse-401k-title">Spouse</span>'s 401(k) Contributions</div>
           <div class="form-grid">
             <div class="field"><label>Contribution %</label><input type="number" id="spouseContrib401k" value="" placeholder="e.g. 10" step="0.1" oninput="recalc()"></div>
             <div class="field"><label>Employer Match %</label><input type="number" id="spouseEmpMatch" value="" placeholder="e.g. 6" step="0.1" oninput="recalc()"></div>
@@ -1509,7 +1509,7 @@
         </div>
 
         <div class="card">
-          <div class="card-title"><span class="dot"></span> <span id="spouse-other-title">Spouse's</span> Other Contributions</div>
+          <div class="card-title"><span class="dot"></span> <span id="spouse-other-title">Spouse</span>'s Other Contributions</div>
           <div class="form-grid">
             <div class="field"><label>Roth IRA Annual ($)</label><input type="number" id="spouseContribRothIRA" value="" placeholder="e.g. 7000" oninput="recalc()"></div>
             <div class="field"><label>Taxable Investing / year ($)</label><input type="number" id="spouseContribTaxable" value="" placeholder="e.g. 5000" oninput="recalc()"></div>
@@ -3785,12 +3785,12 @@ function updatePlanningFor() {
   var st = function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
   st('acct-bal-title',(cap1||'Your')+"'s");
   st('acct-other-title',(cap1||'Your')+"'s");
-  st('spouse-other-title',cap2||'Spouse');
+  st('spouse-other-title',(cap2||'Spouse')+"'s");
   st('acct-401k-title',(cap1||'Your')+"'s");
   st('acct-ss-title',(cap1||'Your')+"'s");
-  st('spouse-bal-title',cap2||'Spouse');
-  st('spouse-401k-title',cap2||'Spouse');
-  st('spouse-ss-title',cap2||'Spouse');
+  st('spouse-bal-title',(cap2||'Spouse')+"'s");
+  st('spouse-401k-title',(cap2||'Spouse')+"'s");
+  st('spouse-ss-title',(cap2||'Spouse')+"'s");
 }
 
 function updateGreeting() {
