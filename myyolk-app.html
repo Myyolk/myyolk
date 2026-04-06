@@ -1472,7 +1472,6 @@
           <div class="field"><label>Taxable Investments ($)</label><input type="number" id="balTaxable" value="" placeholder="0" oninput="recalc()"></div>
           <div class="field"><label>HSA ($)</label><input type="number" id="balHSA" value="" placeholder="0" oninput="recalc()"></div>
           <div class="field"><label>Cash / Savings ($)</label><input type="number" id="balCash" value="" placeholder="0" oninput="recalc()"></div>
-          <div class="field"><label>Savings Interest Rate (%/yr)</label><input type="number" id="savingsRate" value="4.5" step="0.1" oninput="recalc()"><div class="hint">HYSA ~4-5%, checking ~0%.</div></div>
           <div class="field"><label>ESPP Balance ($)</label><input type="number" id="balESPP" value="" placeholder="0" oninput="recalc()"></div>
         </div>
         <div style="border-top:1px solid var(--border);margin-top:1rem;padding-top:1rem">
@@ -1499,7 +1498,6 @@
             <div class="field"><label>Taxable Investments ($)</label><input type="number" id="spouseBalTaxable" value="" placeholder="0" oninput="recalc()"></div>
             <div class="field"><label>HSA ($)</label><input type="number" id="spouseBalHSA" value="" placeholder="0" oninput="recalc()"></div>
             <div class="field"><label>Cash / Savings ($)</label><input type="number" id="spouseBalCash" value="" placeholder="0" oninput="recalc()"></div>
-            <div class="field"><label>Savings Interest Rate (%/yr)</label><input type="number" id="spouseSavingsRate" value="4.5" step="0.1" oninput="recalc()"><div class="hint">HYSA ~4-5%, checking ~0%.</div></div>
             <div class="field"><label>ESPP Balance ($)</label><input type="number" id="spouseBalESPP" value="" placeholder="0" oninput="recalc()"></div>
           </div>
           <div style="border-top:1px solid var(--border);margin-top:1rem;padding-top:1rem">
@@ -1512,6 +1510,34 @@
               <div class="field"><label>Roth IRA ($/yr)</label><input type="number" id="spouseContribRothIRA" value="" placeholder="e.g. 7000" oninput="recalc()"></div>
               <div class="field"><label>Taxable Investments ($/yr)</label><input type="number" id="spouseContribTaxable" value="" placeholder="e.g. 5000" oninput="recalc()"></div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INVESTMENT ASSUMPTIONS CARD -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Investment Assumptions</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Expected Investment Growth Rate</label>
+            <select id="growthRate" onchange="recalc()" style="width:100%">
+              <option value="0.04">Conservative – 4%</option>
+              <option value="0.06">Moderate – 6%</option>
+              <option value="0.07" selected>Balanced – 7%</option>
+              <option value="0.08">Growth – 8%</option>
+              <option value="0.10">Aggressive – 10%</option>
+              <option value="custom">Custom</option>
+            </select>
+            <div class="hint">Applied to 401k, IRA, and taxable investments</div>
+          </div>
+          <div class="field" id="customRateRow" style="display:none">
+            <label>Custom Rate (%)</label>
+            <input type="number" id="customRate" placeholder="e.g. 7.5" step="0.1" oninput="recalc()">
+          </div>
+          <div class="field">
+            <label>Savings / Cash Interest Rate (%/yr)</label>
+            <input type="number" id="savingsRate" value="4.5" step="0.1" oninput="recalc()">
+            <div class="hint">HYSA ~4-5%, checking ~0%. Applied to cash balances only.</div>
           </div>
         </div>
       </div>
