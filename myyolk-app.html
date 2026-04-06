@@ -3001,10 +3001,8 @@ function handleDSSUpload(event) {
 // ── SPOUSE SS BENEFIT - Bidirectional ──
 function calcSpouseSsBenefit() {
   var deanOwn = state.ssMonthly || 0;
-  // spouseSsOwn already contains the benefit at her chosen claiming age - NO further adjustment
   var spouseOwn = parseFloat(document.getElementById('spouseSsOwn')?.value) || 0;
 
-  // SSA rule: each spouse gets the HIGHER of own benefit OR 50% of the other's
   var halfOfDean = deanOwn * 0.5;
   var halfOfSpouse = spouseOwn * 0.5;
 
@@ -3013,7 +3011,9 @@ function calcSpouseSsBenefit() {
   var deanNote = '';
   if(spouseOwn > 0 && halfOfSpouse > deanOwn) {
     deanFinal = halfOfSpouse;
-    deanNote = 'Dean gets spousal: $' + Math.round(halfOfSpouse).toLocaleString() + '/mo (50% of Densie’s $' + Math.round(spouseOwn).toLocaleString() + ' — higher than his own $' + Math.round(deanOwn).toLocaleString() + ')';
+    deanNote = 'Dean: $' + Math.round(halfOfSpouse).toLocaleString() + '/mo (spousal — 50% of Densie’s $' + Math.round(spouseOwn).toLocaleString() + ')';
+  } else if(deanOwn > 0) {
+    deanNote = 'Dean: $' + Math.round(deanOwn).toLocaleString() + '/mo (his own benefit)';
   }
 
   // Spouse's final benefit
@@ -3022,23 +3022,25 @@ function calcSpouseSsBenefit() {
   if(spouseOwn > 0) {
     if(spouseOwn >= halfOfDean) {
       spouseFinal = spouseOwn;
-      spouseNote = 'Densie uses her own: $' + Math.round(spouseOwn).toLocaleString() + '/mo';
+      spouseNote = 'Densie: $' + Math.round(spouseOwn).toLocaleString() + '/mo (her own benefit)';
     } else {
       spouseFinal = halfOfDean;
-      spouseNote = 'Densie gets spousal: $' + Math.round(halfOfDean).toLocaleString() + '/mo (50% of Dean’s — higher than her own $' + Math.round(spouseOwn).toLocaleString() + ')';
+      spouseNote = 'Densie: $' + Math.round(halfOfDean).toLocaleString() + '/mo (spousal — 50% of Dean’s $' + Math.round(deanOwn).toLocaleString() + ')';
     }
   } else {
     spouseFinal = halfOfDean;
-    spouseNote = 'Densie gets spousal: $' + Math.round(halfOfDean).toLocaleString() + '/mo (50% of Dean’s)';
+    spouseNote = 'Densie: $' + Math.round(halfOfDean).toLocaleString() + '/mo (spousal — 50% of Dean’s $' + Math.round(deanOwn).toLocaleString() + ')';
   }
 
   var totalHousehold = deanFinal + spouseFinal;
+
   var resultEl = document.getElementById('spouseSsResult');
   if(resultEl) resultEl.textContent = 'Total Household SS: $' + Math.round(totalHousehold).toLocaleString() + '/mo';
   var noteEl = document.getElementById('spouseSsNote');
   if(noteEl) noteEl.textContent = spouseNote;
   var deanNoteEl = document.getElementById('deanSsNote');
   if(deanNoteEl) deanNoteEl.textContent = deanNote;
+
   state.spouseSsMonthly = spouseFinal;
   state.deanSsFinal = deanFinal;
 }
