@@ -3837,6 +3837,27 @@ function showTab(name) {
   recalc();
 }
 
+// ── SLIDER INIT - force all lifestyle sliders to neutral (100) on load ──
+(function() {
+  var sliderDefaults = {
+    'sl-housing': 100, 'sl-transport': 100, 'sl-food': 100,
+    'sl-health': 100, 'sl-lifestyle': 100
+  };
+  Object.keys(sliderDefaults).forEach(function(id) {
+    var el = document.getElementById(id);
+    if(el) el.value = sliderDefaults[id];
+  });
+  // Update span displays
+  var spanDefaults = {
+    'adj-housing': '100%', 'adj-transport': '100%', 'adj-food': '100%',
+    'adj-health': '100%', 'adj-lifestyle': '100%'
+  };
+  Object.keys(spanDefaults).forEach(function(id) {
+    var el = document.getElementById(id);
+    if(el) el.textContent = spanDefaults[id];
+  });
+})();
+
 // ── AGE CALCULATOR ──
 function calcAgeFromDOB() {
   var dobEl = document.getElementById('dob');
