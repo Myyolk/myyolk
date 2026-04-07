@@ -3521,15 +3521,16 @@ function calcReadiness() {
   var annualPortfolioDraw = Math.max(annualExpenses - annualFixedIncome, 0);
   var retirementGrowthRate = growthRate * 0.5; // conservative in-retirement rate
   var yearsLast = 0;
-  if(portfolio > 0 && annualPortfolioDraw > 0) {
+  if(annualPortfolioDraw <= 0) {
+    yearsLast = 999; // income covers expenses
+  } else if(portfolio > 0 && annualPortfolioDraw > 0) {
     var remaining = portfolio;
     var maxYears = 150;
     while(remaining > 0 && yearsLast < maxYears) {
       remaining = remaining * (1 + retirementGrowthRate) - annualPortfolioDraw;
       yearsLast++;
     }
-  } else if(annualPortfolioDraw <= 0 && annualFixedIncome >= annualExpenses && annualExpenses > 0) {
-    yearsLast = 999; // SS and other income alone cover expenses
+    if(yearsLast >= maxYears) yearsLast = 999; // outlasts realistic lifespan // SS and other income alone cover expenses
   } else if(portfolio > 0) {
     yearsLast = 999; // no budget entered — portfolio grows
   }
