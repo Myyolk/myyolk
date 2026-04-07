@@ -3594,15 +3594,15 @@ function calcReadiness() {
   // Required monthly portfolio draw based on life expectancy
   var rdDrawEl = document.getElementById('rdMonthlyDraw');
   var rdDrawNote = document.getElementById('rdMonthlyDrawNote');
-  if(rdDrawEl && portfolioAtRetirement > 0) {
+  if(rdDrawEl && portfolio > 0) {
     var ssAndOther = ssIncome + additionalIncome;
     var monthsInRetirement = yearsInRetirement * 12;
     var monthlyRate = growthRate / 12;
     var requiredDraw = 0;
     if(monthlyRate > 0 && monthsInRetirement > 0) {
-      requiredDraw = portfolioAtRetirement * monthlyRate / (1 - Math.pow(1 + monthlyRate, -monthsInRetirement));
+      requiredDraw = portfolio * monthlyRate / (1 - Math.pow(1 + monthlyRate, -monthsInRetirement));
     } else if(monthsInRetirement > 0) {
-      requiredDraw = portfolioAtRetirement / monthsInRetirement;
+      requiredDraw = portfolio / monthsInRetirement;
     }
     requiredDraw = Math.round(requiredDraw);
     var totalAvailable = requiredDraw + ssAndOther;
