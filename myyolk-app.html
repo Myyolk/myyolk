@@ -2057,7 +2057,7 @@
           <div style="display:flex;justify-content:space-between"><span style="color:var(--mid)">Investable Portfolio</span><span id="bkPortfolio" style="font-weight:600">—</span></div>
           <div style="display:flex;justify-content:space-between"><span style="color:var(--mid)">Primary Home (est. 3%/yr growth)</span><span id="bkHome" style="font-weight:600">—</span></div>
           <div id="bkSecondRow" style="display:none;justify-content:space-between"><span style="color:var(--mid)">Second Home (est. 3%/yr growth)</span><span id="bkSecond" style="font-weight:600">—</span></div>
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--mid)">Vehicle &amp; Other Assets</span><span id="bkOther" style="font-weight:600">—</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--mid)">Other Assets</span><span id="bkOther" style="font-weight:600">—</span></div>
           <div style="height:1px;background:var(--border);margin:0.25rem 0"></div>
           <div style="display:flex;justify-content:space-between;font-weight:700;font-size:0.95rem"><span style="color:var(--forest)">Total Net Worth at Retirement</span><span id="bkTotal" style="color:var(--sage)">—</span></div>
         </div>
@@ -3270,7 +3270,7 @@ function calcProjections() {
   var netWorthLine = values.map(function(v, i) {
     var appreciatedHome = homeVal * Math.pow(1 + homeApprec, i);
     var appreciatedSecond = secondHomeVal * Math.pow(1 + homeApprec, i);
-    return Math.round(v + appreciatedHome + appreciatedSecond + (i === 0 ? vehicle + otherAssets : 0));
+    return Math.round(v + appreciatedHome + appreciatedSecond + (i === 0 ? otherAssets : 0));
   });
 
   // Update net worth at retirement stat
@@ -3281,7 +3281,7 @@ function calcProjections() {
   // Populate breakdown
   var appreciatedHome = Math.round(homeVal * Math.pow(1 + homeApprec, yearsToRetire));
   var appreciatedSecond = Math.round(secondHomeVal * Math.pow(1 + homeApprec, yearsToRetire));
-  var otherTotal = vehicle + otherAssets;
+  var otherTotal = otherAssets; // vehicles excluded — they depreciate
   function bkFmt(n) { return n >= 1000000 ? '$' + (n/1000000).toFixed(2) + 'M' : '$' + Math.round(n).toLocaleString(); }
   var bkP = document.getElementById('bkPortfolio'); if(bkP) bkP.textContent = bkFmt(finalValue);
   var bkH = document.getElementById('bkHome'); if(bkH) bkH.textContent = homeVal > 0 ? bkFmt(appreciatedHome) : '—';
@@ -4054,7 +4054,7 @@ function updateSnapshot() {
   var debtOther = parseFloat(document.getElementById('debtOther')?.value) || 0;
   var totalDebts = debtCredit + debtCar + debtStudent + debtOther;
 
-  var netWorth = totalNow + spouseTotal + balESPP + homeEquity + secondHomeEquity + vehicle + otherAssets - totalDebts;
+  var netWorth = totalNow + spouseTotal + balESPP + homeEquity + secondHomeEquity + otherAssets - totalDebts; // vehicles excluded
 
   var sbNetWorth = document.getElementById('sb-networth');
   if(sbNetWorth) sbNetWorth.textContent = netWorth > 0 ? fmt(netWorth) : '—';
