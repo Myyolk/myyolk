@@ -3621,8 +3621,7 @@ function calcReadiness() {
 
   var yearsLastEl = document.getElementById('rdYearsLast');
   if(yearsLastEl && totalIncome > 0) {
-    if(gap >= 0) {
-      if(yearsLast >= 999) {
+    if(yearsLast >= 999) {
       yearsLastEl.innerHTML = '<strong style="color:var(--sage)">✅ Your income covers all expenses — portfolio will continue growing</strong> (age ' + retAge + '+).';
     } else if(moneyLastsAge >= lifeExp) {
       yearsLastEl.innerHTML = '<strong style="color:var(--sage)">✅ Your money will last until age ' + moneyLastsAge + '</strong> — covers your full retirement to age ' + lifeExp + '.';
@@ -3630,7 +3629,6 @@ function calcReadiness() {
       var shortfall = lifeExp - moneyLastsAge;
       yearsLastEl.innerHTML = '<strong style="color:var(--clay)">⚠️ Your money runs out around age ' + moneyLastsAge + '</strong> — that leaves a ' + shortfall + '-year gap (age ' + moneyLastsAge + ' to ' + lifeExp + '). Consider saving more or adjusting your plan.';
     }
-  }
   }
 
   // Action items
