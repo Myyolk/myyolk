@@ -4259,7 +4259,7 @@ function updateBudgetAnalysis() {
   
   // Estimate retirement spending with adjustments (simplified average)
   var avgAdj = (adjHousing + adjTransport + adjFood + adjHealth + adjLifestyle) / 5;
-  var retireMonthly = monthly * avgAdj * Math.pow(1 + inflRate, yearsToRetire);
+  var retireMonthly = monthly * Math.pow(1 + inflRate, yearsToRetire); // lifestyle adjustments shown separately
   
   // Safe withdrawal income
   var portfolio = state.portfolioAtRetirement || 0;
