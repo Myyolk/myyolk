@@ -3514,25 +3514,26 @@ function calcReadiness() {
   // This is the TRUE gap because it includes ALL income sources
   var gap = totalIncome - inflatedBudget;
 
-  // Calculate how long money ACTUALLY lasts based on portfolio + all income sources
-  // Use PMT/annuity approach: how many years can portfolio sustain the shortfall?
-  var retirementDrawRate = growthRate * 0.5; // conservative in-retirement growth (50% of accumulation rate)
-  var monthlyShortfallFromPortfolio = Math.max(inflatedBudget - ssIncome - additionalIncome, 0);
-  var annualDrawFromPortfolio = monthlyShortfallFromPortfolio * 12;
+  // Calculate how long money ACTUALLY lasts
+  // Annual shortfall = what portfolio must cover after SS and other fixed income
+  var annualFixedIncome = (ssIncome + additionalIncome) * 12;
+  var annualExpenses = inflatedBudget > 0 ? inflatedBudget * 12 : 0;
+  var annualPortfolioDraw = Math.max(annualExpenses - annualFixedIncome, 0);
+  var retirementGrowthRate = growthRate * 0.5; // conservative in-retirement rate
   var yearsLast = 0;
-  if(portfolio > 0 && annualDrawFromPortfolio > 0) {
-    // Simulate year by year
+  if(portfolio > 0 && annualPortfolioDraw > 0) {
     var remaining = portfolio;
-    var maxYears = 150; // cap at 150 years to prevent infinite loops
+    var maxYears = 150;
     while(remaining > 0 && yearsLast < maxYears) {
-      remaining = remaining * (1 + retirementDrawRate) - annualDrawFromPortfolio;
+      remaining = remaining * (1 + retirementGrowthRate) - annualPortfolioDraw;
       yearsLast++;
     }
-  } else if(portfolio > 0 && annualDrawFromPortfolio <= 0) {
-    // Income covers all expenses - portfolio grows indefinitely
-    yearsLast = 999; // flag as "indefinite"
+  } else if(annualPortfolioDraw <= 0 && annualFixedIncome >= annualExpenses && annualExpenses > 0) {
+    yearsLast = 999; // SS and other income alone cover expenses
+  } else if(portfolio > 0) {
+    yearsLast = 999; // no budget entered — portfolio grows
   }
-  var moneyLastsAge = retAge + yearsLast;
+  var moneyLastsAge = yearsLast >= 999 ? lifeExp + 1 : retAge + yearsLast;
 
   // Readiness score - based on total income (incl. SS) vs inflated expenses
   var score = 0;
