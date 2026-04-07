@@ -2097,7 +2097,7 @@
     </div>
 
     <!-- ══ READINESS TAB ══ -->
-    <div class="tab-panel" id="tab-readiness">
+    <div class="tab-panel" id="tab-readiness" style="overflow-y:auto;max-height:calc(100vh - 120px)">
       <h1 class="page-title">Retirement Readiness</h1>
       <p class="page-subtitle">Are you on track? Here's your personalized readiness score.</p>
 
@@ -2172,13 +2172,8 @@
             <div id="gapExpenses" style="font-size:1.2rem;font-weight:700;color:var(--clay)">—</div>
           </div>
           <div id="gapCard" style="padding:1rem;border-radius:10px">
-            <div style="font-size:0.78rem;color:var(--mid);margin-bottom:4px">Monthly Income vs Expenses</div>
+            <div style="font-size:0.78rem;color:var(--mid);margin-bottom:4px">Monthly Gap</div>
             <div id="gapAmount" style="font-size:1.2rem;font-weight:700">—</div>
-          </div>
-          <div style="padding:1rem;border-radius:10px;background:var(--warm-white)">
-            <div style="font-size:0.78rem;color:var(--mid);margin-bottom:4px">Required Monthly Portfolio Draw</div>
-            <div id="rdMonthlyDraw" style="font-size:1.2rem;font-weight:700">—</div>
-            <div id="rdMonthlyDrawNote" style="font-size:0.72rem;color:var(--mid);margin-top:2px"></div>
           </div>
         </div>
         <div id="rdYearsLast" style="padding:1rem;background:var(--warm-white);border-radius:8px;font-size:0.9rem;color:var(--forest);text-align:center"></div>
@@ -3591,32 +3586,6 @@ function calcReadiness() {
     if(gapCard) gapCard.style.background = gap >= 0 ? 'var(--sage-pale)' : '#fff0f0';
   }
 
-  // Required monthly portfolio draw based on life expectancy
-  var rdDrawEl = document.getElementById('rdMonthlyDraw');
-  var rdDrawNote = document.getElementById('rdMonthlyDrawNote');
-  if(rdDrawEl && budgetTotal > 0 && portfolioAtRetirement > 0) {
-    var ssAndOther = ssIncome + additionalIncome;
-    var monthlyShortfall = Math.max(inflatedBudget - ssAndOther, 0);
-    var monthsInRetirement = yearsInRetirement * 12;
-    // Simple required draw: spread portfolio over retirement months
-    // Using present value of annuity formula for more accuracy
-    var monthlyRate = growthRate / 12;
-    var requiredDraw;
-    if(monthlyRate > 0 && monthsInRetirement > 0) {
-      // PMT formula: PV * r / (1 - (1+r)^-n)
-      requiredDraw = portfolioAtRetirement * monthlyRate / (1 - Math.pow(1 + monthlyRate, -monthsInRetirement));
-    } else if(monthsInRetirement > 0) {
-      requiredDraw = portfolioAtRetirement / monthsInRetirement;
-    } else {
-      requiredDraw = 0;
-    }
-    var totalAvailable = requiredDraw + ssAndOther;
-    var drawGap = totalAvailable - inflatedBudget;
-    rdDrawEl.textContent = fmt(Math.round(requiredDraw));
-    rdDrawEl.style.color = drawGap >= 0 ? 'var(--sage)' : 'var(--clay)';
-    if(rdDrawNote) rdDrawNote.textContent = 'To last until age ' + lifeExp + ' — ' + (drawGap >= 0 ? 'covers your needs ✓' : 'shortfall of ' + fmt(Math.abs(Math.round(drawGap))) + '/mo');
-  }
-
   var yearsLastEl = document.getElementById('rdYearsLast');
   if(yearsLastEl && totalIncome > 0) {
     if(gap >= 0) {
@@ -3836,7 +3805,7 @@ function showTab(name) {
   var btns = document.querySelectorAll('.nav-item');
   btns.forEach(function(b) {
     var oc = b.getAttribute('onclick') || '';
-    if (oc.indexOf(name) > -1) b.classList.add('active');
+    if (oc.indexOf("'" + name + "'") > -1) b.classList.add('active');
   });
   window.scrollTo(0,0);
   recalc();
