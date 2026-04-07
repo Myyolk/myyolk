@@ -3384,6 +3384,9 @@ showTab = function(name) {
   if(name === 'readiness') {
     setTimeout(calcReadiness, 100);
   }
+  if(name === 'projections') {
+    setTimeout(calcProjections, 100);
+  }
   if(name === 'ss') {
     setTimeout(function() {
       var isCouple = document.getElementById('planCouple')?.checked;
@@ -3437,6 +3440,11 @@ function calcReadiness() {
 
   // Monthly income at retirement
   var portfolioIncome = (portfolio * 0.04) / 12;
+  // Sync projNetWorth display with readiness portfolio value
+  var projNW = document.getElementById('projNetWorth');
+  if(projNW && portfolio > 0) {
+    projNW.textContent = portfolio >= 1000000 ? '$' + (portfolio/1000000).toFixed(2) + 'M' : '$' + Math.round(portfolio/1000) + 'K';
+  }
 
   // SS income - check all methods (Dean + Densie)
   var ssIncome = 0;
