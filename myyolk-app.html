@@ -3465,7 +3465,7 @@ function calcReadiness() {
   var balCashGrown = balCash * Math.pow(1 + savingsRate, yearsToRetire);
   var totalNow = bal401k + balRoth401 + balRothIRA + balTaxable + balHSA + balCash; // current net worth includes cash
 
-  var salary = parseFloat(document.getElementById('grossSalary')?.value) || 0;
+  var salary = parseFloat(document.getElementById('salary')?.value) || state.salary || 0;
   if(!salary) {
     var hourly = parseFloat(document.getElementById('hourlyRate')?.value) || 0;
     salary = hourly * (parseFloat(document.getElementById('hoursPerWeek')?.value) || 40) * 52;
