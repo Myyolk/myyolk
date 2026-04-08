@@ -3296,7 +3296,12 @@ function calcProjections() {
   var spouseContrib401kDollarFreqP = document.getElementById('spouseContrib401kDollarFreq')?.value || 'biweekly';
   var spouseContrib401kDollarPeriodsP = {biweekly:26, monthly:12, annual:1}[spouseContrib401kDollarFreqP] || 26;
   var spouseContrib401kDollarP = (parseFloat(document.getElementById('spouseContrib401kDollar')?.value) || 0) * spouseContrib401kDollarPeriodsP;
-  var spouseContribP = (parseFloat(document.getElementById('spouseContribRothIRA')?.value)||0) + (parseFloat(document.getElementById('spouseContribTaxable')?.value)||0);
+  var spouseSalaryP = state.spouseIncome || parseFloat(document.getElementById('spouseSalary')?.value) || 0;
+  var spouseContrib401kP = Math.min((parseFloat(document.getElementById('spouseContrib401k')?.value)||0)/100, 1);
+  var spouseRoth401kP = Math.min((parseFloat(document.getElementById('spouseContribRoth401')?.value)||0)/100, 1);
+  var spouseEmpMatchP = Math.min((parseFloat(document.getElementById('spouseEmpMatch')?.value)||0)/100, 1);
+  var spouseMatchCapP = Math.min((parseFloat(document.getElementById('spouseMatchCap')?.value)||spouseEmpMatchP*100)/100, spouseEmpMatchP);
+  var spouseContribP = (spouseSalaryP * spouseContrib401kP) + (spouseSalaryP * spouseRoth401kP) + (spouseSalaryP * spouseMatchCapP) + (parseFloat(document.getElementById('spouseContribRothIRA')?.value)||0) + (parseFloat(document.getElementById('spouseContribTaxable')?.value)||0);
   var contribRoth401P = Math.min((parseFloat(document.getElementById('contribRoth401')?.value)||0)/100, 1);
   var annualContrib = (salary * contrib401k) + (salary * contribRoth401P) + (salary * Math.min(empMatch, matchCap || empMatch)) + contribRothIRA + contribTaxable + contrib401kDollarP + spouseContribP + spouseContrib401kDollarP;
 
