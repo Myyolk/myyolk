@@ -2969,10 +2969,22 @@ function addIncomeRow() {
 
 function removeIncomeRow(btn) {
   var row = btn.closest('.additional-income-row');
-  if(row && document.querySelectorAll('.additional-income-row').length > 1) {
+  if(!row) return;
+  var allRows = document.querySelectorAll('.additional-income-row');
+  if(allRows.length > 1) {
     row.remove();
-    recalc();
+  } else {
+    // Only one row — clear values instead of removing
+    var amountEl = row.querySelector('.ai-amount');
+    if(amountEl) amountEl.value = '';
+    var freqEl = row.querySelector('.ai-freq');
+    if(freqEl) freqEl.value = 'monthly';
+    var ownerEl = row.querySelector('.ai-owner');
+    if(ownerEl) ownerEl.value = 'joint';
+    var typeEl = row.querySelector('.ai-type');
+    if(typeEl) typeEl.selectedIndex = 0;
   }
+  recalc();
 }
 
 function calcAdditionalIncome() {
