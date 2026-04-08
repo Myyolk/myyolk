@@ -1441,11 +1441,11 @@
             <div class="field" style="margin:0"><label>Monthly Amount ($)</label>
               <input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()">
             </div>
-            <div class="field" style="margin:0"><label>Whose?</label>
+            <div class="field ai-owner-col" style="margin:0;display:none"><label id="aiOwnerLabel">Whose?</label>
               <select class="ai-owner" onchange="recalc()" style="width:100%">
-                <option value="joint">Joint</option>
-                <option value="mine">Mine</option>
-                <option value="spouse">Spouse</option>
+                <option value="joint">Both / Joint</option>
+                <option value="mine">Dean's</option>
+                <option value="spouse">Densie's</option>
               </select>
             </div>
             <div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>
@@ -2467,6 +2467,16 @@ function updateAboutYouSection() {
 }
 
 function toggleCouple() {
+  var isCouple = document.getElementById('planCouple')?.checked;
+  // Show/hide Whose? columns in additional income rows
+  document.querySelectorAll('.ai-owner-col').forEach(function(el) {
+    el.style.display = isCouple ? 'block' : 'none';
+  });
+  // Update grid columns for all AI rows
+  document.querySelectorAll('.additional-income-row').forEach(function(row) {
+    row.style.gridTemplateColumns = isCouple ? '2fr 1.5fr 1fr 1fr 80px' : '2fr 1.5fr 1fr 80px';
+  });
+
   // Update About You section
   setTimeout(function(){ if(typeof updateAboutYouSection==='function') updateAboutYouSection(); }, 50);
   var isCouple = document.getElementById('planCouple')?.checked;
@@ -2935,11 +2945,12 @@ document.addEventListener('click', function(e) {
 
 // ── ADDITIONAL INCOME ──
 function addIncomeRow() {
+  var isCouple = document.getElementById('planCouple')?.checked;
   var container = document.getElementById('additionalIncomeRows');
   var row = document.createElement('div');
   row.className = 'additional-income-row';
-  row.style.cssText = 'display:grid;grid-template-columns:2fr 1.5fr 1fr 80px;gap:0.75rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)';
-  row.innerHTML = '<div class="field" style="margin:0"><label>Income Type</label><select class="ai-type" onchange="recalc()" style="width:100%"><option value="alimony">Alimony Received</option><option value="annuity">Annuity</option><option value="business">Business Income</option><option value="dividends">Dividends</option><option value="inheritance">Inheritance / One-Time</option><option value="royalties">Oil &amp; Gas Royalties</option><option value="other">Other</option><option value="parttime">Part-time / Consulting</option><option value="pension">Pension</option><option value="rental">Rental Income</option><option value="rmd">Required Min. Distribution (RMD)</option><option value="trust">Trust / Estate Income</option><option value="veterans">Veterans Benefits</option></select></div><div class="field" style="margin:0"><label>Monthly Amount ($)</label><input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()"></div><div class="field" style="margin:0"><label>Whose?</label><select class="ai-owner" onchange="recalc()" style="width:100%"><option value="joint">Joint</option><option value="mine">Mine</option><option value="spouse">Spouse</option></select></div><div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>';
+  row.style.cssText = isCouple ? 'display:grid;grid-template-columns:2fr 1.5fr 1fr 1fr 80px;gap:0.75rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)' : 'display:grid;grid-template-columns:2fr 1.5fr 1fr 80px;gap:0.75rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)';
+  row.innerHTML = '<div class="field" style="margin:0"><label>Income Type</label><select class="ai-type" onchange="recalc()" style="width:100%"><option value="alimony">Alimony Received</option><option value="annuity">Annuity</option><option value="business">Business Income</option><option value="dividends">Dividends</option><option value="inheritance">Inheritance / One-Time</option><option value="royalties">Oil &amp; Gas Royalties</option><option value="other">Other</option><option value="parttime">Part-time / Consulting</option><option value="pension">Pension</option><option value="rental">Rental Income</option><option value="rmd">Required Min. Distribution (RMD)</option><option value="trust">Trust / Estate Income</option><option value="veterans">Veterans Benefits</option></select></div><div class="field" style="margin:0"><label>Monthly Amount ($)</label><input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()"></div><div class="field ai-owner-col" style="margin:0;display:" + (isCouple?"block":"none") + ""><label>Whose?</label><select class="ai-owner" onchange="recalc()" style="width:100%"><option value="joint">Both / Joint</option><option value="mine">Dean's</option><option value="spouse">Densie's</option></select></div><div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>';
   container.appendChild(row);
 }
 
@@ -2970,7 +2981,7 @@ function addIncomeRow() {
   var row = document.createElement('div');
   row.className = 'additional-income-row';
   row.style.cssText = 'display:grid;grid-template-columns:2fr 1.5fr 1fr 80px;gap:0.75rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)';
-  row.innerHTML = '<div class="field" style="margin:0"><label>Income Type</label><select class="ai-type" onchange="recalc()" style="width:100%"><option value="alimony">Alimony Received</option><option value="annuity">Annuity</option><option value="business">Business Income</option><option value="dividends">Dividends</option><option value="inheritance">Inheritance / One-Time</option><option value="royalties">Oil &amp; Gas Royalties</option><option value="other">Other</option><option value="parttime">Part-time / Consulting</option><option value="pension">Pension</option><option value="rental">Rental Income</option><option value="rmd">Required Min. Distribution (RMD)</option><option value="trust">Trust / Estate Income</option><option value="veterans">Veterans Benefits</option></select></div><div class="field" style="margin:0"><label>Monthly Amount ($)</label><input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()"></div><div class="field" style="margin:0"><label>Whose?</label><select class="ai-owner" onchange="recalc()" style="width:100%"><option value="joint">Joint</option><option value="mine">Mine</option><option value="spouse">Spouse</option></select></div><div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>';
+  row.innerHTML = '<div class="field" style="margin:0"><label>Income Type</label><select class="ai-type" onchange="recalc()" style="width:100%"><option value="alimony">Alimony Received</option><option value="annuity">Annuity</option><option value="business">Business Income</option><option value="dividends">Dividends</option><option value="inheritance">Inheritance / One-Time</option><option value="royalties">Oil &amp; Gas Royalties</option><option value="other">Other</option><option value="parttime">Part-time / Consulting</option><option value="pension">Pension</option><option value="rental">Rental Income</option><option value="rmd">Required Min. Distribution (RMD)</option><option value="trust">Trust / Estate Income</option><option value="veterans">Veterans Benefits</option></select></div><div class="field" style="margin:0"><label>Monthly Amount ($)</label><input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()"></div><div class="field ai-owner-col" style="margin:0;display:" + (isCouple?"block":"none") + ""><label>Whose?</label><select class="ai-owner" onchange="recalc()" style="width:100%"><option value="joint">Both / Joint</option><option value="mine">Dean's</option><option value="spouse">Densie's</option></select></div><div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>';
   container.appendChild(row);
 }
 
@@ -3501,8 +3512,15 @@ function calcReadiness() {
 
   // Additional income
   var additionalIncome = 0;
+  var isCouple = document.getElementById('planCouple')?.checked;
   document.querySelectorAll('.additional-income-row').forEach(function(row) {
-    additionalIncome += parseFloat(row.querySelector('.ai-amount')?.value) || 0;
+    var amount = parseFloat(row.querySelector('.ai-amount')?.value) || 0;
+    var owner = row.querySelector('.ai-owner')?.value || 'joint';
+    // In single mode or joint - count full amount. In couple mode, split by owner
+    if(!isCouple || owner === 'joint' || owner === 'mine') {
+      additionalIncome += amount;
+    }
+    // spouse income tracked separately for Densie's readiness (future)
   });
 
   var totalIncome = portfolioIncome + ssIncome + additionalIncome;
