@@ -2959,6 +2959,12 @@ function addIncomeRow() {
   row.style.cssText = isCouple ? 'display:grid;grid-template-columns:2fr 1fr 0.8fr 1fr 1fr 80px;gap:0.75rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)' : 'display:grid;grid-template-columns:2fr 1fr 0.8fr 1fr 80px;gap:0.75rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)';
   row.innerHTML = '<div class="field" style="margin:0"><label>Income Type</label><select class="ai-type" onchange="recalc()" style="width:100%"><option value="alimony">Alimony Received</option><option value="annuity">Annuity</option><option value="business">Business Income</option><option value="dividends">Dividends</option><option value="inheritance">Inheritance / One-Time</option><option value="royalties">Oil &amp; Gas Royalties</option><option value="other">Other</option><option value="parttime">Part-time / Consulting</option><option value="pension">Pension</option><option value="rental">Rental Income</option><option value="rmd">Required Min. Distribution (RMD)</option><option value="trust">Trust / Estate Income</option><option value="veterans">Veterans Benefits</option></select></div><div class="field" style="margin:0"><label>Amount ($)</label><input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()"></div><div class="field" style="margin:0"><label>Frequency</label><select class="ai-freq" onchange="recalc()" style="width:100%"><option value="monthly">Monthly</option><option value="annual">Annual</option><option value="onetime">One-Time</option></select></div><div class="field ai-owner-col" style="margin:0;display:none"><label>Whose?</label><select class="ai-owner" onchange="recalc()" style="width:100%"><option value="joint">Both / Joint</option><option value="mine">Dean\'s</option><option value="spouse">Densie\'s</option></select></div><div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>';
   container.appendChild(row);
+  // Show Whose? column if in couple mode
+  if(isCouple) {
+    var ownerCol = row.querySelector('.ai-owner-col');
+    if(ownerCol) ownerCol.style.display = 'block';
+  }
+  recalc();
 }
 
 function removeIncomeRow(btn) {
@@ -2970,19 +2976,26 @@ function removeIncomeRow(btn) {
 }
 
 function calcAdditionalIncome() {
+  var isCouple = document.getElementById('planCouple')?.checked;
   var total = 0;
   document.querySelectorAll('.additional-income-row').forEach(function(row) {
     var amount = parseFloat(row.querySelector('.ai-amount')?.value) || 0;
-    total += amount;
+    var freq = row.querySelector('.ai-freq')?.value || 'monthly';
+    var owner = row.querySelector('.ai-owner')?.value || 'joint';
+    var monthly = freq === 'annual' ? amount / 12 : freq === 'onetime' ? 0 : amount;
+    // In couple mode: only count joint or mine (Dean's) for Dean's total
+    if(!isCouple || owner === 'joint' || owner === 'mine') {
+      total += monthly;
+    }
   });
   var el = document.getElementById('totalAdditionalIncome');
   if(el) el.textContent = '$' + Math.round(total).toLocaleString() + '/mo';
+  // Also update rdAdditionalIncome in readiness
+  var rdEl = document.getElementById('rdAdditionalIncome');
+  if(rdEl) rdEl.textContent = '$' + Math.round(total).toLocaleString() + '/mo';
   return total;
 }
 
-
-
-// ── ADDITIONAL INCOME ──
 function addIncomeRow() {
   var container = document.getElementById('additionalIncomeRows');
   var row = document.createElement('div');
@@ -4239,8 +4252,7 @@ function recalc() {
   updateSummary();
   if(typeof updateSnapshot==="function") updateSnapshot();
   if(typeof calcAdditionalIncome==="function") calcAdditionalIncome();
-  if(typeof calcReadiness==="function") calcReadiness();
-  if(typeof calcAdditionalIncome==="function") calcAdditionalIncome();
+  if(typeof calcReadiness==="function" && document.getElementById('tab-readiness')?.classList.contains('active')) calcReadiness();
 }
 
 // ── READINESS ──
