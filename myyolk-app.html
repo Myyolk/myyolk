@@ -1197,12 +1197,12 @@
           <div class="field">
             <label>Employment Type</label>
             <select id="incomeType" onchange="toggleIncomeType()">
-              <option value="salary">Salary</option>
-              <option value="hourly">Hourly</option>
-              <option value="selfemployed">Self-employed / 1099</option>
-              <option value="contract">Contract / Per Job</option>
               <option value="retired">Already Retired</option>
+              <option value="contract">Contract / Per Job</option>
+              <option value="hourly">Hourly</option>
               <option value="notworking">Not Currently Working</option>
+              <option value="salary">Salary</option>
+              <option value="selfemployed">Self-employed / 1099</option>
             </select>
           </div>
           <div class="field">
@@ -2939,7 +2939,7 @@ function addIncomeRow() {
   var row = document.createElement('div');
   row.className = 'additional-income-row';
   row.style.cssText = 'display:grid;grid-template-columns:2fr 1.5fr 1fr 80px;gap:0.75rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)';
-  row.innerHTML = '<div class="field" style="margin:0"><label>Income Type</label><select class="ai-type" onchange="recalc()" style="width:100%"><option value="rental">Rental Income</option><option value="dividends">Dividends</option><option value="royalties">Oil &amp; Gas Royalties</option><option value="pension">Pension</option><option value="parttime">Part-time / Consulting</option><option value="alimony">Alimony Received</option><option value="other">Other</option></select></div><div class="field" style="margin:0"><label>Monthly Amount ($)</label><input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()"></div><div class="field" style="margin:0"><label>Whose?</label><select class="ai-owner" onchange="recalc()" style="width:100%"><option value="joint">Joint</option><option value="mine">Mine</option><option value="spouse">Spouse</option></select></div><div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>';
+  row.innerHTML = '<div class="field" style="margin:0"><label>Income Type</label><select class="ai-type" onchange="recalc()" style="width:100%"><option value="alimony">Alimony Received</option><option value="annuity">Annuity</option><option value="business">Business Income</option><option value="dividends">Dividends</option><option value="inheritance">Inheritance / One-Time</option><option value="royalties">Oil &amp; Gas Royalties</option><option value="other">Other</option><option value="parttime">Part-time / Consulting</option><option value="pension">Pension</option><option value="rental">Rental Income</option><option value="rmd">Required Min. Distribution (RMD)</option><option value="trust">Trust / Estate Income</option><option value="veterans">Veterans Benefits</option></select></div><div class="field" style="margin:0"><label>Monthly Amount ($)</label><input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()"></div><div class="field" style="margin:0"><label>Whose?</label><select class="ai-owner" onchange="recalc()" style="width:100%"><option value="joint">Joint</option><option value="mine">Mine</option><option value="spouse">Spouse</option></select></div><div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>';
   container.appendChild(row);
 }
 
@@ -2970,7 +2970,7 @@ function addIncomeRow() {
   var row = document.createElement('div');
   row.className = 'additional-income-row';
   row.style.cssText = 'display:grid;grid-template-columns:2fr 1.5fr 1fr 80px;gap:0.75rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)';
-  row.innerHTML = '<div class="field" style="margin:0"><label>Income Type</label><select class="ai-type" onchange="recalc()" style="width:100%"><option value="rental">Rental Income</option><option value="dividends">Dividends</option><option value="royalties">Oil &amp; Gas Royalties</option><option value="pension">Pension</option><option value="parttime">Part-time / Consulting</option><option value="alimony">Alimony Received</option><option value="other">Other</option></select></div><div class="field" style="margin:0"><label>Monthly Amount ($)</label><input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()"></div><div class="field" style="margin:0"><label>Whose?</label><select class="ai-owner" onchange="recalc()" style="width:100%"><option value="joint">Joint</option><option value="mine">Mine</option><option value="spouse">Spouse</option></select></div><div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>';
+  row.innerHTML = '<div class="field" style="margin:0"><label>Income Type</label><select class="ai-type" onchange="recalc()" style="width:100%"><option value="alimony">Alimony Received</option><option value="annuity">Annuity</option><option value="business">Business Income</option><option value="dividends">Dividends</option><option value="inheritance">Inheritance / One-Time</option><option value="royalties">Oil &amp; Gas Royalties</option><option value="other">Other</option><option value="parttime">Part-time / Consulting</option><option value="pension">Pension</option><option value="rental">Rental Income</option><option value="rmd">Required Min. Distribution (RMD)</option><option value="trust">Trust / Estate Income</option><option value="veterans">Veterans Benefits</option></select></div><div class="field" style="margin:0"><label>Monthly Amount ($)</label><input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()"></div><div class="field" style="margin:0"><label>Whose?</label><select class="ai-owner" onchange="recalc()" style="width:100%"><option value="joint">Joint</option><option value="mine">Mine</option><option value="spouse">Spouse</option></select></div><div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>';
   container.appendChild(row);
 }
 
