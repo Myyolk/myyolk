@@ -3474,7 +3474,13 @@ function calcReadiness() {
   var empMatch = Math.min((parseFloat(document.getElementById('empMatch')?.value)||0)/100, (parseFloat(document.getElementById('matchCap')?.value)||100)/100);
   var contribRothIRA = parseFloat(document.getElementById('contribRothIRA')?.value) || 0;
   var contribTaxable = parseFloat(document.getElementById('contribTaxable')?.value) || 0;
-  var annualContrib = (salary * contrib401k) + (salary * empMatch) + contribRothIRA + contribTaxable;
+  var spouseContribRothIRA = parseFloat(document.getElementById('spouseContribRothIRA')?.value) || 0;
+  var spouseContribTaxable = parseFloat(document.getElementById('spouseContribTaxable')?.value) || 0;
+  var spouseSalary = state.spouseIncome || 0;
+  var spouseContrib401k = Math.min((parseFloat(document.getElementById('spouseContrib401k')?.value)||0)/100, 1);
+  var spouseMatch = Math.min((parseFloat(document.getElementById('spouseEmpMatch')?.value)||0)/100, (parseFloat(document.getElementById('spouseMatchCap')?.value)||100)/100);
+  var spouseAnnualContrib = (spouseSalary * spouseContrib401k) + (spouseSalary * spouseMatch) + spouseContribRothIRA + spouseContribTaxable;
+  var annualContrib = (salary * contrib401k) + (salary * empMatch) + contribRothIRA + contribTaxable + spouseAnnualContrib;
 
   var portfolio = totalNow;
   for(var i = 0; i < yearsToRetire; i++) {
