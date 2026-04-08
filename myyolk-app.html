@@ -1490,8 +1490,13 @@
           <div style="font-size:0.85rem;font-weight:700;color:var(--forest);margin-bottom:0.75rem">Annual Contributions</div>
           <div class="form-grid">
             <div class="field"><label>401(k) Contribution %</label><input type="number" id="contrib401k" value="" placeholder="e.g. 10" oninput="recalc()"></div>
-            <div class="field"><label>401(k) Additional $ Amount</label><input type="number" id="contrib401kDollar" placeholder="e.g. 200" oninput="recalc()"></div>
-            <div class="field"><label>Frequency</label><select id="contrib401kDollarFreq" onchange="recalc()"><option value="biweekly">Per Paycheck (26x/yr)</option><option value="monthly">Monthly</option><option value="annual">Annual</option></select></div>
+            <div class="field" style="grid-column:span 1">
+              <label>401(k) Additional $ &amp; Frequency</label>
+              <div style="display:flex;gap:0.5rem">
+                <input type="number" id="contrib401kDollar" placeholder="e.g. 200" oninput="recalc()" style="flex:1;min-width:0">
+                <select id="contrib401kDollarFreq" onchange="recalc()" style="width:130px;font-size:0.8rem"><option value="biweekly">Per Paycheck</option><option value="monthly">Monthly</option><option value="annual">Annual</option></select>
+              </div>
+            </div>
             <div class="field"><label>Employer Match %</label><input type="number" id="empMatch" value="" placeholder="e.g. 5" oninput="recalc()"></div>
             <div class="field"><label>Match Cap %</label><input type="number" id="matchCap" value="" placeholder="e.g. 6" oninput="recalc()"></div>
             <div class="field"><label>Roth 401(k) Contribution %</label><input type="number" id="contribRoth401" value="" placeholder="e.g. 3" oninput="recalc()"></div>
@@ -1519,8 +1524,13 @@
             <div style="font-size:0.85rem;font-weight:700;color:var(--forest);margin-bottom:0.75rem">Annual Contributions</div>
             <div class="form-grid">
               <div class="field"><label>401(k) Contribution %</label><input type="number" id="spouseContrib401k" value="" placeholder="e.g. 10" oninput="recalc()"></div>
-              <div class="field"><label>401(k) Additional $ Amount</label><input type="number" id="spouseContrib401kDollar" placeholder="e.g. 200" oninput="recalc()"></div>
-              <div class="field"><label>Frequency</label><select id="spouseContrib401kDollarFreq" onchange="recalc()"><option value="biweekly">Per Paycheck (26x/yr)</option><option value="monthly">Monthly</option><option value="annual">Annual</option></select></div>
+              <div class="field" style="grid-column:span 1">
+                <label>401(k) Additional $ &amp; Frequency</label>
+                <div style="display:flex;gap:0.5rem">
+                  <input type="number" id="spouseContrib401kDollar" placeholder="e.g. 200" oninput="recalc()" style="flex:1;min-width:0">
+                  <select id="spouseContrib401kDollarFreq" onchange="recalc()" style="width:130px;font-size:0.8rem"><option value="biweekly">Per Paycheck</option><option value="monthly">Monthly</option><option value="annual">Annual</option></select>
+                </div>
+              </div>
               <div class="field"><label>Employer Match %</label><input type="number" id="spouseEmpMatch" value="" placeholder="e.g. 5" oninput="recalc()"></div>
               <div class="field"><label>Match Cap %</label><input type="number" id="spouseMatchCap" value="" placeholder="e.g. 6" oninput="recalc()"></div>
               <div class="field"><label>Roth 401(k) Contribution %</label><input type="number" id="spouseContribRoth401" value="" placeholder="e.g. 3" oninput="recalc()"></div>
