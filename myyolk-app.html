@@ -3664,22 +3664,29 @@ function calcReadiness() {
   // Required monthly portfolio draw based on life expectancy
   var rdDrawEl = document.getElementById('rdMonthlyDraw');
   var rdDrawNote = document.getElementById('rdMonthlyDrawNote');
-  if(rdDrawEl && portfolio > 0) {
-    var ssAndOther = ssIncome + additionalIncome;
+  if(rdDrawEl && portfolio > 0 && budgetTotal > 0) {
+    // Required draw = what portfolio must cover after SS and other fixed income
+    var fixedMonthly = ssIncome + additionalIncome;
+    var monthlyShortfall = Math.max(inflatedBudget - fixedMonthly, 0);
     var monthsInRetirement = yearsInRetirement * 12;
     var monthlyRate = growthRate / 12;
-    var requiredDraw = 0;
-    if(monthlyRate > 0 && monthsInRetirement > 0) {
-      requiredDraw = portfolio * monthlyRate / (1 - Math.pow(1 + monthlyRate, -monthsInRetirement));
-    } else if(monthsInRetirement > 0) {
-      requiredDraw = portfolio / monthsInRetirement;
+    var requiredDraw = monthlyShortfall; // default: raw shortfall
+    if(monthlyRate > 0 && monthsInRetirement > 0 && monthlyShortfall > 0) {
+      // Can the portfolio sustain the shortfall? Use PMT to check
+      var maxDraw = portfolio * monthlyRate / (1 - Math.pow(1 + monthlyRate, -monthsInRetirement));
+      requiredDraw = Math.round(monthlyShortfall);
+      var canSustain = maxDraw >= monthlyShortfall;
+      rdDrawEl.textContent = fmt(requiredDraw);
+      rdDrawEl.style.color = canSustain ? 'var(--sage)' : 'var(--clay)';
+      if(rdDrawNote) rdDrawNote.textContent = 'Needed from portfolio after SS — ' + (canSustain ? 'portfolio can sustain this to age ' + lifeExp + ' ✓' : 'portfolio may run short before age ' + lifeExp);
+    } else if(monthlyShortfall === 0) {
+      rdDrawEl.textContent = '$0/mo';
+      rdDrawEl.style.color = 'var(--sage)';
+      if(rdDrawNote) rdDrawNote.textContent = 'SS and other income cover all expenses ✓';
     }
-    requiredDraw = Math.round(requiredDraw);
-    var totalAvailable = requiredDraw + ssAndOther;
-    var drawGap = budgetTotal > 0 ? totalAvailable - inflatedBudget : 0;
-    rdDrawEl.textContent = fmt(requiredDraw);
-    rdDrawEl.style.color = budgetTotal === 0 ? 'var(--sage)' : (drawGap >= 0 ? 'var(--sage)' : 'var(--clay)');
-    if(rdDrawNote) rdDrawNote.textContent = 'To last until age ' + lifeExp + (budgetTotal > 0 ? (' — ' + (drawGap >= 0 ? 'covers your needs ✓' : 'shortfall of ' + fmt(Math.abs(Math.round(drawGap))) + '/mo')) : '');
+  } else if(rdDrawEl && portfolio > 0) {
+    rdDrawEl.textContent = '—';
+    if(rdDrawNote) rdDrawNote.textContent = 'Enter your monthly budget to see this calculation';
   }
 
   var yearsLastEl = document.getElementById('rdYearsLast');
