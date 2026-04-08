@@ -3296,7 +3296,13 @@ function calcProjections() {
   var spouseContrib401kDollarFreqP = document.getElementById('spouseContrib401kDollarFreq')?.value || 'biweekly';
   var spouseContrib401kDollarPeriodsP = {biweekly:26, monthly:12, annual:1}[spouseContrib401kDollarFreqP] || 26;
   var spouseContrib401kDollarP = (parseFloat(document.getElementById('spouseContrib401kDollar')?.value) || 0) * spouseContrib401kDollarPeriodsP;
-  var spouseContribP = (parseFloat(document.getElementById('spouseContribRothIRA')?.value)||0) + (parseFloat(document.getElementById('spouseContribTaxable')?.value)||0);
+  var spouseSalaryP = state.spouseIncome || parseFloat(document.getElementById('spouseSalary')?.value) || 0;
+  var spouseContrib401kP = Math.min((parseFloat(document.getElementById('spouseContrib401k')?.value)||0)/100, 1);
+  var spouseEmpMatchP = Math.min((parseFloat(document.getElementById('spouseEmpMatch')?.value)||0)/100, 1);
+  var spouseMatchCapP = Math.min((parseFloat(document.getElementById('spouseMatchCap')?.value)||100)/100, spouseEmpMatchP);
+  var spouseRothIRAP = parseFloat(document.getElementById('spouseContribRothIRA')?.value)||0;
+  var spouseTaxableP = parseFloat(document.getElementById('spouseContribTaxable')?.value)||0;
+  var spouseContribP = (spouseSalaryP * spouseContrib401kP) + (spouseSalaryP * spouseMatchCapP) + spouseRothIRAP + spouseTaxableP;
   var annualContrib = (salary * contrib401k) + (salary * Math.min(empMatch, matchCap || empMatch)) + contribRothIRA + contribTaxable + contrib401kDollarP + spouseContribP + spouseContrib401kDollarP;
 
   var yearsToRetire = Math.max(retireAge - age, 0);
@@ -3499,7 +3505,7 @@ function calcReadiness() {
   var contribTaxable = parseFloat(document.getElementById('contribTaxable')?.value) || 0;
   var spouseContribRothIRA = parseFloat(document.getElementById('spouseContribRothIRA')?.value) || 0;
   var spouseContribTaxable = parseFloat(document.getElementById('spouseContribTaxable')?.value) || 0;
-  var spouseSalary = state.spouseIncome || 0;
+  var spouseSalary = state.spouseIncome || parseFloat(document.getElementById('spouseSalary')?.value) || 0;
   var spouseContrib401k = Math.min((parseFloat(document.getElementById('spouseContrib401k')?.value)||0)/100, 1);
   var spouseMatch = Math.min((parseFloat(document.getElementById('spouseEmpMatch')?.value)||0)/100, (parseFloat(document.getElementById('spouseMatchCap')?.value)||100)/100);
   var spouseAnnualContrib = (spouseSalary * spouseContrib401k) + (spouseSalary * spouseMatch) + spouseContribRothIRA + spouseContribTaxable;
