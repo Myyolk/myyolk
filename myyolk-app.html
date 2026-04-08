@@ -4184,9 +4184,18 @@ function recalc() {
   // Spouse income display
   var spouseFreq = document.getElementById('spousePayFreq')?.value || 'biweekly';
   var spousePeriods = {biweekly:26, semimonthly:24, monthly:12, weekly:52}[spouseFreq] || 26;
-  fmtEl('spouseTotalIncome', fmt(state.spouseIncome));
-  fmtEl('spouseMonthlyIncome', fmt(state.spouseIncome/12));
-  fmtEl('spousePaycheckIncome', fmt(state.spouseIncome/spousePeriods));
+  var densieAddIncome = 0;
+  document.querySelectorAll('.additional-income-row').forEach(function(row) {
+    var amount = parseFloat(row.querySelector('.ai-amount')?.value) || 0;
+    var freq = row.querySelector('.ai-freq')?.value || 'monthly';
+    var owner = row.querySelector('.ai-owner')?.value || 'joint';
+    var monthly = freq === 'annual' ? amount / 12 : freq === 'onetime' ? 0 : amount;
+    if(owner === 'spouse' || owner === 'joint') densieAddIncome += monthly;
+  });
+  var densieTotal = state.spouseIncome + (densieAddIncome * 12);
+  fmtEl('spouseTotalIncome', fmt(densieTotal));
+  fmtEl('spouseMonthlyIncome', fmt(densieTotal/12));
+  fmtEl('spousePaycheckIncome', fmt(densieTotal/spousePeriods));
 
   // Accounts
   var bal401k = getVal('bal401k');
