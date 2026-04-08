@@ -2985,6 +2985,28 @@ function removeIncomeRow(btn) {
     if(typeEl) typeEl.selectedIndex = 0;
   }
   recalc();
+  // Force income display update after row removal
+  setTimeout(function(){
+    var deanAddIncome2 = 0;
+    var isCouple2 = document.getElementById('planCouple')?.checked;
+    document.querySelectorAll('.additional-income-row').forEach(function(r2) {
+      var amt = parseFloat(r2.querySelector('.ai-amount')?.value) || 0;
+      var frq = r2.querySelector('.ai-freq')?.value || 'monthly';
+      var own = r2.querySelector('.ai-owner')?.value || 'joint';
+      var mo = frq === 'annual' ? amt/12 : frq === 'onetime' ? 0 : amt;
+      if(!isCouple2 || own === 'joint' || own === 'mine') deanAddIncome2 += mo;
+    });
+    var sal = (window.state?.income) || 0;
+    var total2 = sal + (deanAddIncome2 * 12);
+    var freq2 = document.getElementById('payFreq')?.value || 'biweekly';
+    var periods2 = {biweekly:26, semimonthly:24, monthly:12, weekly:52}[freq2] || 26;
+    var fmtEl2 = function(id, val){ var el = document.getElementById(id); if(el) el.textContent = val; };
+    var fmt2 = function(n){ return '$' + Math.round(n).toLocaleString(); };
+    fmtEl2('totalIncome', fmt2(total2));
+    fmtEl2('monthlyIncome', fmt2(total2/12));
+    fmtEl2('paycheckIncome', fmt2(total2/periods2));
+    if(typeof calcAdditionalIncome === 'function') calcAdditionalIncome();
+  }, 50);
 }
 
 function calcAdditionalIncome() {
