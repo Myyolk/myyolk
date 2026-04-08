@@ -4166,10 +4166,20 @@ function recalc() {
   // Pay frequency
   var freq = document.getElementById('payFreq')?.value || 'biweekly';
   var periods = {biweekly:26, semimonthly:24, monthly:12, weekly:52}[freq] || 26;
-  // YOUR income only (not combined with spouse)
-  fmtEl('totalIncome', fmt(state.income));
-  fmtEl('monthlyIncome', fmt(state.income/12));
-  fmtEl('paycheckIncome', fmt(state.income/periods));
+  // YOUR income + additional income tagged as mine or joint
+  var deanAddIncome = 0;
+  var isCouple = document.getElementById('planCouple')?.checked;
+  document.querySelectorAll('.additional-income-row').forEach(function(row) {
+    var amount = parseFloat(row.querySelector('.ai-amount')?.value) || 0;
+    var freq = row.querySelector('.ai-freq')?.value || 'monthly';
+    var owner = row.querySelector('.ai-owner')?.value || 'joint';
+    var monthly = freq === 'annual' ? amount / 12 : freq === 'onetime' ? 0 : amount;
+    if(!isCouple || owner === 'joint' || owner === 'mine') deanAddIncome += monthly;
+  });
+  var deanTotalAnnual = state.income + (deanAddIncome * 12);
+  fmtEl('totalIncome', fmt(deanTotalAnnual));
+  fmtEl('monthlyIncome', fmt(deanTotalAnnual/12));
+  fmtEl('paycheckIncome', fmt(deanTotalAnnual/periods));
   
   // Spouse income display
   var spouseFreq = document.getElementById('spousePayFreq')?.value || 'biweekly';
