@@ -1450,7 +1450,6 @@
             </div>
             <div class="field ai-owner-col" style="margin:0;display:none"><label id="aiOwnerLabel">Whose?</label>
               <select class="ai-owner" onchange="recalc()" style="width:100%">
-                <option value="joint">Both / Joint</option>
                 <option value="mine">Dean's</option>
                 <option value="spouse">Densie's</option>
               </select>
@@ -2983,7 +2982,7 @@ function removeIncomeRow(btn) {
     var typeEl = row.querySelector('.ai-type');
     if(amountEl) amountEl.value = '';
     if(freqEl) freqEl.value = 'monthly';
-    if(ownerEl) ownerEl.value = 'joint';
+    if(ownerEl) ownerEl.value = 'mine';
     if(typeEl) typeEl.selectedIndex = 0;
     // Recalc after DOM is updated
     setTimeout(function(){
@@ -2999,12 +2998,9 @@ function calcAdditionalIncome() {
   document.querySelectorAll('.additional-income-row').forEach(function(row) {
     var amount = parseFloat(row.querySelector('.ai-amount')?.value) || 0;
     var freq = row.querySelector('.ai-freq')?.value || 'monthly';
-    var owner = row.querySelector('.ai-owner')?.value || 'joint';
     var monthly = freq === 'annual' ? amount / 12 : freq === 'onetime' ? 0 : amount;
-    // In couple mode: only count joint or mine (Dean's) for Dean's total
-    if(!isCouple || owner === 'joint' || owner === 'mine') {
-      total += monthly;
-    }
+    // Count all additional income for household total
+    total += monthly;
   });
   var el = document.getElementById('totalAdditionalIncome');
   if(el) el.textContent = '$' + Math.round(total).toLocaleString() + '/mo';
@@ -3546,13 +3542,12 @@ function calcReadiness() {
   document.querySelectorAll('.additional-income-row').forEach(function(row) {
     var amount = parseFloat(row.querySelector('.ai-amount')?.value) || 0;
     var freq = row.querySelector('.ai-freq')?.value || 'monthly';
-    var owner = row.querySelector('.ai-owner')?.value || 'joint';
+    var owner = row.querySelector('.ai-owner')?.value || 'mine';
     // Convert to monthly
     var monthly = freq === 'annual' ? amount / 12 : freq === 'onetime' ? 0 : amount;
     // In single mode or joint/mine - count full amount. Spouse excluded from Dean's calc
-    if(!isCouple || owner === 'joint' || owner === 'mine') {
-      additionalIncome += monthly;
-    }
+    // Count ALL additional income for household retirement total
+    additionalIncome += monthly;
   });
   // Update rdAdditionalIncome display
   var rdAddEl = document.getElementById('rdAdditionalIncome');
@@ -4196,7 +4191,7 @@ function recalc() {
   document.querySelectorAll('.additional-income-row').forEach(function(row) {
     var amount = parseFloat(row.querySelector('.ai-amount')?.value) || 0;
     var freq = row.querySelector('.ai-freq')?.value || 'monthly';
-    var owner = row.querySelector('.ai-owner')?.value || 'joint';
+    var owner = row.querySelector('.ai-owner')?.value || 'mine';
     var monthly = freq === 'annual' ? amount / 12 : freq === 'onetime' ? 0 : amount;
     if(owner === 'spouse' || owner === 'joint') densieAddIncome += monthly;
   });
