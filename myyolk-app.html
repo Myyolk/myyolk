@@ -3297,7 +3297,8 @@ function calcProjections() {
   var spouseContrib401kDollarPeriodsP = {biweekly:26, monthly:12, annual:1}[spouseContrib401kDollarFreqP] || 26;
   var spouseContrib401kDollarP = (parseFloat(document.getElementById('spouseContrib401kDollar')?.value) || 0) * spouseContrib401kDollarPeriodsP;
   var spouseContribP = (parseFloat(document.getElementById('spouseContribRothIRA')?.value)||0) + (parseFloat(document.getElementById('spouseContribTaxable')?.value)||0);
-  var annualContrib = (salary * contrib401k) + (salary * Math.min(empMatch, matchCap || empMatch)) + contribRothIRA + contribTaxable + contrib401kDollarP + spouseContribP + spouseContrib401kDollarP;
+  var contribRoth401P = Math.min((parseFloat(document.getElementById('contribRoth401')?.value)||0)/100, 1);
+  var annualContrib = (salary * contrib401k) + (salary * contribRoth401P) + (salary * Math.min(empMatch, matchCap || empMatch)) + contribRothIRA + contribTaxable + contrib401kDollarP + spouseContribP + spouseContrib401kDollarP;
 
   var yearsToRetire = Math.max(retireAge - age, 0);
   var labels = [], values = [], contribLine = [];
@@ -3502,7 +3503,8 @@ function calcReadiness() {
   var spouseSalary = state.spouseIncome || 0;
   var spouseContrib401k = Math.min((parseFloat(document.getElementById('spouseContrib401k')?.value)||0)/100, 1);
   var spouseMatch = Math.min((parseFloat(document.getElementById('spouseEmpMatch')?.value)||0)/100, (parseFloat(document.getElementById('spouseMatchCap')?.value)||100)/100);
-  var spouseAnnualContrib = (spouseSalary * spouseContrib401k) + (spouseSalary * spouseMatch) + spouseContribRothIRA + spouseContribTaxable;
+  var spouseContribRoth401 = Math.min((parseFloat(document.getElementById('spouseContribRoth401')?.value)||0)/100, 1);
+  var spouseAnnualContrib = (spouseSalary * spouseContrib401k) + (spouseSalary * spouseContribRoth401) + (spouseSalary * spouseMatch) + spouseContribRothIRA + spouseContribTaxable;
   // Additional $ contributions
   var contrib401kDollarFreq = document.getElementById('contrib401kDollarFreq')?.value || 'biweekly';
   var contrib401kDollarPeriods = {biweekly:26, monthly:12, annual:1}[contrib401kDollarFreq] || 26;
@@ -3510,7 +3512,8 @@ function calcReadiness() {
   var spouseContrib401kDollarFreq = document.getElementById('spouseContrib401kDollarFreq')?.value || 'biweekly';
   var spouseContrib401kDollarPeriods = {biweekly:26, monthly:12, annual:1}[spouseContrib401kDollarFreq] || 26;
   var spouseContrib401kDollar = (parseFloat(document.getElementById('spouseContrib401kDollar')?.value) || 0) * spouseContrib401kDollarPeriods;
-  var annualContrib = (salary * contrib401k) + (salary * empMatch) + contribRothIRA + contribTaxable + contrib401kDollar + spouseAnnualContrib + spouseContrib401kDollar;
+  var contribRoth401 = Math.min((parseFloat(document.getElementById('contribRoth401')?.value)||0)/100, 1);
+  var annualContrib = (salary * contrib401k) + (salary * contribRoth401) + (salary * empMatch) + contribRothIRA + contribTaxable + contrib401kDollar + spouseAnnualContrib + spouseContrib401kDollar;
 
   var portfolio = totalNow;
   for(var i = 0; i < yearsToRetire; i++) {
