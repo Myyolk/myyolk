@@ -3775,7 +3775,7 @@ function calcReadiness() {
         if(depNote) depNote.textContent = 'SS covers all — portfolio keeps growing ✓';
       } else {
         var depBal = portfolio;
-        var depAge = retireAge;
+        var depAge = getVal('retAge', 65);
         var retGrowth = 0.05;
         var depleted = false;
         while(depAge < 120 && depBal > 0) {
