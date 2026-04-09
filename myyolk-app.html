@@ -815,6 +815,10 @@
       <div class="lang-option" onclick="setLanguage('es', event)">🇪🇸 Español</div>
     </div>
   </div>
+  <div style="display:flex;align-items:center;gap:0.5rem;position:absolute;top:1rem;right:5rem">
+    <span id="saveIndicator" style="font-size:0.75rem;color:#2d6a4f;opacity:0;transition:opacity 0.5s">💾 Saved</span>
+    <button onclick="clearSavedData()" title="Clear all saved data" style="font-size:0.75rem;background:none;border:1px solid #ddd;border-radius:6px;padding:3px 8px;cursor:pointer;color:#888">Clear Data</button>
+  </div>
 </header>
 
 <div class="app">
@@ -4665,6 +4669,101 @@ document.addEventListener('DOMContentLoaded', function() {
   if(typeof updatePlanningFor==='function') updatePlanningFor();
   if(typeof recalc==='function') recalc();
 });
+// ── AUTO SAVE / LOAD (localStorage) ──
+var SAVE_KEY = 'myyolk_v1';
+
+function saveToLocal() {
+  try {
+    var data = {};
+    document.querySelectorAll('input[id], select[id]').forEach(function(el) {
+      if(el.type === 'radio') { if(el.checked) data[el.id] = el.value; }
+      else if(el.type === 'checkbox') { data[el.id] = el.checked; }
+      else if(el.type !== 'file') { data[el.id] = el.value; }
+    });
+    document.querySelectorAll('[data-key]').forEach(function(el) {
+      if(el.value) data['bud__' + el.getAttribute('data-key')] = el.value;
+    });
+    var aiRows = [];
+    document.querySelectorAll('.additional-income-row').forEach(function(row) {
+      aiRows.push({
+        type: row.querySelector('.ai-type')?.value||'',
+        amount: row.querySelector('.ai-amount')?.value||'',
+        freq: row.querySelector('.ai-freq')?.value||'monthly',
+        owner: row.querySelector('.ai-owner')?.value||'mine'
+      });
+    });
+    data['__aiRows'] = JSON.stringify(aiRows);
+    localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+    var ind = document.getElementById('saveIndicator');
+    if(ind) { ind.style.opacity='1'; setTimeout(function(){ ind.style.opacity='0'; }, 1500); }
+  } catch(e) {}
+}
+
+function loadFromLocal() {
+  try {
+    var raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return;
+    var data = JSON.parse(raw);
+    Object.keys(data).forEach(function(key) {
+      if(key === '__aiRows') return;
+      if(key.startsWith('bud__')) {
+        var el = document.querySelector('[data-key="' + key.replace('bud__','') + '"]');
+        if(el) el.value = data[key];
+        return;
+      }
+      var el = document.getElementById(key);
+      if(!el || el.type === 'file') return;
+      if(el.type === 'radio') { if(el.value === data[key]) el.checked = true; }
+      else if(el.type === 'checkbox') { el.checked = data[key]; }
+      else { el.value = data[key]; }
+    });
+    if(data['__aiRows']) {
+      try {
+        var aiRows = JSON.parse(data['__aiRows']);
+        var container = document.getElementById('additionalIncomeRows');
+        if(container && aiRows.length > 0) {
+          container.innerHTML = '';
+          aiRows.forEach(function(rd, i) {
+            if(i > 0 && typeof addIncomeRow === 'function') addIncomeRow();
+            var rows = container.querySelectorAll('.additional-income-row');
+            var row = rows[rows.length-1];
+            if(row) {
+              if(row.querySelector('.ai-type')) row.querySelector('.ai-type').value = rd.type;
+              if(row.querySelector('.ai-amount')) row.querySelector('.ai-amount').value = rd.amount;
+              if(row.querySelector('.ai-freq')) row.querySelector('.ai-freq').value = rd.freq;
+              if(row.querySelector('.ai-owner')) row.querySelector('.ai-owner').value = rd.owner;
+            }
+          });
+        }
+      } catch(e) {}
+    }
+    var isCouple = document.getElementById('planCouple')?.checked;
+    if(isCouple && typeof toggleCouple === 'function') toggleCouple();
+    if(typeof recalc === 'function') recalc();
+    console.log('MyYolk: data restored from localStorage');
+  } catch(e) { console.warn('Load failed:', e); }
+}
+
+function clearSavedData() {
+  if(confirm('Clear all saved data and start fresh?')) {
+    localStorage.removeItem(SAVE_KEY);
+    location.reload();
+  }
+}
+
+// Hook into recalc to auto-save
+(function() {
+  var _orig = recalc;
+  recalc = function() {
+    _orig.apply(this, arguments);
+    saveToLocal();
+  };
+})();
+
+// Auto-load on page ready
+setTimeout(loadFromLocal, 500);
+// ── END AUTO SAVE / LOAD ──
+
 </script>
 
   <!-- FEEDBACK WIDGET -->
