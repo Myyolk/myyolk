@@ -1952,7 +1952,7 @@
           </div>
           <div class="adj-row">
             <label>🚗 Transport</label>
-            <input type="range" min="50" max="150" value="100" step="5" oninput="var sp=this.nextElementSibling; if(sp) sp.textContent=this.value+'%'; if(typeof updateBudgetAnalysis==='function') updateBudgetAnalysis(); recalc();" id="sl-transport">
+            <input type="range" min="20" max="120" value="100" step="5" oninput="var sp=this.nextElementSibling; if(sp) sp.textContent=this.value+'%'; if(typeof updateBudgetAnalysis==='function') updateBudgetAnalysis(); recalc();" id="sl-transport">
             <span class="adj-val" id="adj-transport">100%</span>
           </div>
           <div class="adj-row">
@@ -1962,12 +1962,12 @@
           </div>
           <div class="adj-row">
             <label>🏥 Healthcare</label>
-            <input type="range" min="50" max="150" value="100" step="10" oninput="var sp=this.nextElementSibling; if(sp) sp.textContent=this.value+'%'; if(typeof updateBudgetAnalysis==='function') updateBudgetAnalysis(); recalc();" id="sl-health">
+            <input type="range" min="100" max="300" value="100" step="10" oninput="var sp=this.nextElementSibling; if(sp) sp.textContent=this.value+'%'; if(typeof updateBudgetAnalysis==='function') updateBudgetAnalysis(); recalc();" id="sl-health">
             <span class="adj-val" id="adj-health">100%</span>
           </div>
           <div class="adj-row">
             <label>🎭 Lifestyle</label>
-            <input type="range" min="50" max="150" value="100" step="5" oninput="var sp=this.nextElementSibling; if(sp) sp.textContent=this.value+'%'; if(typeof updateBudgetAnalysis==='function') updateBudgetAnalysis(); recalc();" id="sl-lifestyle">
+            <input type="range" min="50" max="200" value="100" step="5" oninput="var sp=this.nextElementSibling; if(sp) sp.textContent=this.value+'%'; if(typeof updateBudgetAnalysis==='function') updateBudgetAnalysis(); recalc();" id="sl-lifestyle">
             <span class="adj-val" id="adj-lifestyle">100%</span>
           </div>
           <div class="adj-row">
@@ -3969,7 +3969,11 @@ function showTab(name) {
   };
   Object.keys(sliderDefaults).forEach(function(id) {
     var el = document.getElementById(id);
-    if(el) el.value = sliderDefaults[id];
+    if(el) {
+      el.value = sliderDefaults[id];
+      el.min = 50;
+      el.max = 150;
+    }
   });
   // Update span displays
   var spanDefaults = {
@@ -4382,6 +4386,11 @@ function updateBudgetAnalysis() {
   var yearsToRetire = Math.max(0, retireAge - currentAge);
   
   // Get lifestyle adjustment sliders
+  var adjHousing = (parseFloat(document.getElementById('sl-housing')?.value) || 100) / 100;
+  var adjTransport = (parseFloat(document.getElementById('sl-transport')?.value) || 100) / 100;
+  var adjFood = (parseFloat(document.getElementById('sl-food')?.value) || 100) / 100;
+  var adjHealth = (parseFloat(document.getElementById('sl-health')?.value) || 100) / 100;
+  var adjLifestyle = (parseFloat(document.getElementById('sl-lifestyle')?.value) || 100) / 100;
   var inflRate = (parseFloat(document.getElementById('sl-infl')?.value) || 3) / 100;
   
   // Estimate retirement spending with adjustments (simplified average)
