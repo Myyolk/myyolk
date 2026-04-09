@@ -3475,6 +3475,12 @@ showTab = function(name) {
 
 // ── READINESS SCORE ──
 function calcReadiness() {
+  // Run projections silently first to get accurate portfolioAtRetirement
+  if(typeof calcProjections === 'function' && !state._inReadiness) {
+    state._inReadiness = true;
+    calcProjections();
+    state._inReadiness = false;
+  }
   var age = parseInt(document.getElementById('age')?.value) || 0;
   var retAge = parseInt(document.getElementById('retAge')?.value) || 65;
   var lifeExp = parseInt(document.getElementById('lifeExp')?.value) || 85;
