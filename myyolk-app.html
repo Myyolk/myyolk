@@ -4390,8 +4390,13 @@ function updateBudgetAnalysis() {
   var inflRate = (parseFloat(document.getElementById('sl-infl')?.value) || 3) / 100;
   
   // Estimate retirement spending with adjustments (simplified average)
+  var adjHousing = (parseFloat(document.getElementById('sl-housing')?.value) || 100) / 100;
+  var adjTransport = (parseFloat(document.getElementById('sl-transport')?.value) || 100) / 100;
+  var adjFood = (parseFloat(document.getElementById('sl-food')?.value) || 100) / 100;
+  var adjHealth = (parseFloat(document.getElementById('sl-health')?.value) || 100) / 100;
+  var adjLifestyle = (parseFloat(document.getElementById('sl-lifestyle')?.value) || 100) / 100;
   var avgAdj = (adjHousing + adjTransport + adjFood + adjHealth + adjLifestyle) / 5;
-  var retireMonthly = monthly * Math.pow(1 + inflRate, yearsToRetire); // lifestyle adjustments shown separately
+  var retireMonthly = monthly * Math.pow(1 + inflRate, yearsToRetire) * avgAdj; // lifestyle adjustments shown separately
   
   // Safe withdrawal income
   var portfolio = state.portfolioAtRetirement || 0;
