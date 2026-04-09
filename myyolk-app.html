@@ -3320,6 +3320,8 @@ function calcProjections() {
 
   var finalValue = values[values.length - 1];
   var monthlyIncome = Math.round((finalValue * 0.04) / 12);
+  // Store in state so readiness uses same portfolio value
+  state.portfolioAtRetirement = finalValue;
 
   // Update summary stats
   var el = document.getElementById('projFinalValue');
@@ -3520,14 +3522,16 @@ function calcReadiness() {
   var contribRoth401 = Math.min((parseFloat(document.getElementById('contribRoth401')?.value)||0)/100, 1);
   var annualContrib = (salary * contrib401k) + (salary * contribRoth401) + (salary * empMatch) + contribRothIRA + contribTaxable + contrib401kDollar + spouseAnnualContrib + spouseContrib401kDollar;
 
-  // Use projected portfolio from calcProjections if available, else calculate
+  // Use projected portfolio from calcProjections, fallback to own calculation
   var portfolio = state.portfolioAtRetirement || 0;
-  if(!portfolio) {
+  if(!portfolio || portfolio === state._rdOwnPortfolio) {
     portfolio = totalNow;
     for(var i = 0; i < yearsToRetire; i++) {
       portfolio = (portfolio + annualContrib) * (1 + growthRate);
     }
   }
+  state.portfolioAtRetirement = portfolio;
+  state._rdOwnPortfolio = portfolio;
 
   // Monthly income at retirement
   var withdrawalRate = (parseFloat(document.getElementById('withdrawalRate')?.value) || 4) / 100;
