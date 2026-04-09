@@ -2069,6 +2069,10 @@
           <div class="proj-stat-label">Est. Monthly Drawdown (4% rule)</div>
         </div>
         <div class="proj-stat">
+          <div class="proj-stat-value" id="projSSIncome" style="color:var(--sage)">—</div>
+          <div class="proj-stat-label">SS Income at Retirement</div>
+        </div>
+        <div class="proj-stat">
           <div class="proj-stat-value" id="projYearsToRetire">—</div>
           <div class="proj-stat-label">Years Until Retirement</div>
         </div>
@@ -3328,6 +3332,18 @@ function calcProjections() {
   if(el) el.textContent = '$' + (finalValue >= 1000000 ? (finalValue/1000000).toFixed(2) + 'M' : (finalValue/1000).toFixed(0) + 'K');
   var mi = document.getElementById('projMonthlyIncome');
   if(mi) mi.textContent = '$' + monthlyIncome.toLocaleString() + '/mo';
+  // SS income at retirement
+  var ssAtRetirement = (state.ssMonthly || 0) + (state.spouseSsMonthly || 0);
+  var projSS = document.getElementById('projSSIncome');
+  if(projSS) {
+    if(ssAtRetirement > 0) {
+      projSS.textContent = '$' + Math.round(ssAtRetirement).toLocaleString() + '/mo';
+      var isCouple = document.getElementById('planCouple')?.checked;
+      projSS.nextElementSibling.textContent = isCouple ? 'SS Income (Dean + Densie)' : 'SS Income at Retirement';
+    } else {
+      projSS.textContent = '—';
+    }
+  }
   var yr = document.getElementById('projYearsToRetire');
   if(yr) yr.textContent = yearsToRetire + ' years';
 
