@@ -1578,7 +1578,7 @@
           <div class="field"><label>Mortgage Balance ($)</label><input type="number" id="mortgageBalance" value="" placeholder="0" oninput="recalc()"></div>
           <div class="field"><label>Second Home Value ($)</label><input type="number" id="secondHomeValue" value="" placeholder="0" oninput="recalc()"></div>
           <div class="field"><label>Second Home Mortgage ($)</label><input type="number" id="secondHomeMortgage" value="" placeholder="0" oninput="recalc()"></div>
-          <div class="field"><label>Vehicle Value ($)</label><input type="number" id="vehicleValue" value="" placeholder="0" oninput="recalc()"></div>
+          <div class="field"><label>Vehicle Value ($)</label><input type="number" id="vehicleValue" value="" placeholder="0" oninput="recalc()"><div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.25rem">⚠️ Vehicles depreciate and are excluded from retirement projections</div></div>
           <div class="field"><label>Other Assets ($)</label><input type="number" id="otherAssets" value="" placeholder="0" oninput="recalc()"></div>
         </div>
       </div>
@@ -1649,7 +1649,7 @@
 
       <!-- DENSIE SS CARD -->
       <div class="card" id="densieSSCard" style="display:none">
-        <div class="card-title"><span class="dot"></span> <span id="spouse-ss-name">Spouse</span>'s Social Security</div>
+        <div class="card-title"><span class="dot"></span> <span id="spouse-ss-name">Densie</span>'s Social Security</div>
         <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem">
           <button id="dssBtn-upload" onclick="switchDSSMethod('upload')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Upload Statement</button>
           <button id="dssBtn-manual" onclick="switchDSSMethod('manual')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Enter Manually</button>
