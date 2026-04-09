@@ -4704,18 +4704,34 @@ function loadFromLocal() {
     var raw = localStorage.getItem(SAVE_KEY);
     if(!raw) return;
     var data = JSON.parse(raw);
+    // Step 1: Restore radio buttons and selects first
     Object.keys(data).forEach(function(key) {
-      if(key === '__aiRows') return;
-      if(key.startsWith('bud__')) {
-        var el = document.querySelector('[data-key="' + key.replace('bud__','') + '"]');
-        if(el) el.value = data[key];
-        return;
-      }
+      if(key === '__aiRows' || key.startsWith('bud__')) return;
       var el = document.getElementById(key);
       if(!el || el.type === 'file') return;
       if(el.type === 'radio') { if(el.value === data[key]) el.checked = true; }
       else if(el.type === 'checkbox') { el.checked = data[key]; }
-      else { el.value = data[key]; }
+      else if(el.tagName === 'SELECT') { el.value = data[key]; }
+    });
+    // Step 2: Trigger UI toggles so all sections are visible
+    var isCouple = document.getElementById('planCouple')?.checked;
+    if(isCouple && typeof toggleCouple === 'function') toggleCouple();
+    var incType = document.getElementById('incomeType')?.value;
+    if(typeof toggleIncome === 'function') toggleIncome();
+    var spouseIncType = document.getElementById('spouseIncomeType')?.value;
+    if(typeof toggleSpouseIncome === 'function') toggleSpouseIncome();
+    // Step 3: Restore all text/number fields
+    Object.keys(data).forEach(function(key) {
+      if(key === '__aiRows' || key.startsWith('bud__')) return;
+      var el = document.getElementById(key);
+      if(!el || el.type === 'file' || el.type === 'radio' || el.type === 'checkbox' || el.tagName === 'SELECT') return;
+      el.value = data[key];
+    });
+    // Step 4: Restore budget fields
+    Object.keys(data).forEach(function(key) {
+      if(!key.startsWith('bud__')) return;
+      var el = document.querySelector('[data-key="' + key.replace('bud__','') + '"]');
+      if(el) el.value = data[key];
     });
     if(data['__aiRows']) {
       try {
