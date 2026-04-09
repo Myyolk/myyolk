@@ -3536,12 +3536,12 @@ function calcReadiness() {
       portfolio = (portfolio + annualContrib) * (1 + growthRate);
     }
   }
-  state.portfolioAtRetirement = portfolio;
-  state._rdOwnPortfolio = portfolio;
+  // state.portfolioAtRetirement set by calcProjections
 
-  // Monthly income at retirement
+  // Monthly income at retirement — use projections portfolio if available
   var withdrawalRate = (parseFloat(document.getElementById('withdrawalRate')?.value) || 4) / 100;
-  var portfolioIncome = (portfolio * withdrawalRate) / 12;
+  var portfolioFinal = state.portfolioAtRetirement || portfolio;
+  var portfolioIncome = (portfolioFinal * withdrawalRate) / 12;
   // Sync projNetWorth display with readiness portfolio value
   var projNW = document.getElementById('projNetWorth');
   if(projNW && portfolio > 0) {
