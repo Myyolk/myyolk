@@ -2216,6 +2216,11 @@
             <div id="rdMonthlyDraw" style="font-size:1.2rem;font-weight:700">—</div>
             <div id="rdMonthlyDrawNote" style="font-size:0.72rem;color:var(--mid);margin-top:2px"></div>
           </div>
+          <div style="background:var(--surface);border-radius:10px;padding:1rem;min-width:160px">
+            <div style="font-size:0.72rem;color:var(--mid);margin-bottom:4px">Money Runs Out At Age</div>
+            <div id="rdDepletionAge" style="font-size:1.2rem;font-weight:700">—</div>
+            <div id="rdDepletionNote" style="font-size:0.72rem;color:var(--mid);margin-top:2px">Based on withdrawal rate</div>
+          </div>
         </div>
         <div id="rdYearsLast" style="padding:1rem;background:var(--warm-white);border-radius:8px;font-size:0.9rem;color:var(--forest);text-align:center"></div>
       </div>
@@ -3760,6 +3765,35 @@ function calcReadiness() {
       rdDrawEl.textContent = fmt(requiredDraw);
       rdDrawEl.style.color = canSustain ? 'var(--sage)' : 'var(--clay)';
       if(rdDrawNote) rdDrawNote.textContent = 'Needed from portfolio after SS — ' + (canSustain ? 'portfolio can sustain this to age ' + lifeExp + ' ✓' : 'portfolio may run short before age ' + lifeExp);
+    // Calculate actual depletion age independent of life expectancy
+    var depEl = document.getElementById('rdDepletionAge');
+    var depNote = document.getElementById('rdDepletionNote');
+    if(depEl) {
+      if(monthlyShortfall <= 0) {
+        depEl.textContent = '100+';
+        depEl.style.color = 'var(--sage)';
+        if(depNote) depNote.textContent = 'SS covers all — portfolio keeps growing ✓';
+      } else {
+        var depBal = portfolio;
+        var depAge = retireAge;
+        var retGrowth = 0.05;
+        var depleted = false;
+        while(depAge < 120 && depBal > 0) {
+          depBal = (depBal - (monthlyShortfall * 12)) * (1 + retGrowth);
+          depAge++;
+          if(depBal <= 0) { depleted = true; break; }
+        }
+        if(!depleted) {
+          depEl.textContent = '100+';
+          depEl.style.color = 'var(--sage)';
+          if(depNote) depNote.textContent = 'Portfolio outlasts age 100 ✓';
+        } else {
+          depEl.textContent = 'Age ' + depAge;
+          depEl.style.color = depAge >= 90 ? 'var(--sage)' : depAge >= 80 ? '#e67e22' : 'var(--clay)';
+          if(depNote) depNote.textContent = depAge >= 90 ? 'Well funded ✓' : depAge >= 80 ? 'Consider saving a bit more' : 'Consider increasing savings';
+        }
+      }
+    }
     } else if(monthlyShortfall === 0) {
       rdDrawEl.textContent = '$0/mo';
       rdDrawEl.style.color = 'var(--sage)';
