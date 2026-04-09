@@ -2593,7 +2593,9 @@ function toggleIncomeType() {
   var t = document.getElementById('incomeType')?.value;
   var sCard = document.getElementById('salaryCard');
   var hCard = document.getElementById('hourlyCard');
-  if (sCard) sCard.style.display = t === 'salary' ? '' : 'none';
+  // Always show salary card unless explicitly hourly
+  // Never hide both — retired/other still shows salary section
+  if (sCard) sCard.style.display = t === 'hourly' ? 'none' : '';
   if (hCard) hCard.style.display = t === 'hourly' ? '' : 'none';
   recalc();
 }
