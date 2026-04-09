@@ -3520,13 +3520,18 @@ function calcReadiness() {
   var contribRoth401 = Math.min((parseFloat(document.getElementById('contribRoth401')?.value)||0)/100, 1);
   var annualContrib = (salary * contrib401k) + (salary * contribRoth401) + (salary * empMatch) + contribRothIRA + contribTaxable + contrib401kDollar + spouseAnnualContrib + spouseContrib401kDollar;
 
-  var portfolio = totalNow;
-  for(var i = 0; i < yearsToRetire; i++) {
-    portfolio = (portfolio + annualContrib) * (1 + growthRate);
+  // Use projected portfolio from calcProjections if available, else calculate
+  var portfolio = state.portfolioAtRetirement || 0;
+  if(!portfolio) {
+    portfolio = totalNow;
+    for(var i = 0; i < yearsToRetire; i++) {
+      portfolio = (portfolio + annualContrib) * (1 + growthRate);
+    }
   }
 
   // Monthly income at retirement
-  var portfolioIncome = (portfolio * 0.04) / 12;
+  var withdrawalRate = (parseFloat(document.getElementById('withdrawalRate')?.value) || 4) / 100;
+  var portfolioIncome = (portfolio * withdrawalRate) / 12;
   // Sync projNetWorth display with readiness portfolio value
   var projNW = document.getElementById('projNetWorth');
   if(projNW && portfolio > 0) {
