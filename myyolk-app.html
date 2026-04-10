@@ -4880,8 +4880,12 @@ function calcChildBenefit() {
 
   if(yearsOfBenefit <= 0) {
     if(yearsEl) yearsEl.textContent = 'None';
-    if(noteEl) noteEl.textContent = 'Your youngest child will be ' + Math.round(ageOfYoungestAtRetire) + ' at retirement — benefits end at 18.';
+    if(noteEl) noteEl.textContent = 'Your youngest child will be ' + Math.round(ageOfYoungestAtRetire) + ' at retirement — no benefit (ends at 18).';
+    if(perChildEl) { perChildEl.textContent = '$0/mo'; perChildEl.style.color = 'var(--clay)'; }
+    if(totalEl) { totalEl.textContent = '$0/mo'; totalEl.style.color = 'var(--clay)'; }
     state.childSsMonthly = 0;
+    var hhNoteZero = document.getElementById('childSsHHNote');
+    if(hhNoteZero) { hhNoteZero.style.display = 'none'; hhNoteZero.textContent = ''; }
   } else {
     if(yearsEl) yearsEl.textContent = Math.round(yearsOfBenefit) + ' yrs';
     if(noteEl) noteEl.textContent = 'Your youngest will be ~' + Math.round(ageOfYoungestAtRetire) + ' at retirement. Benefits last until age 18 (' + Math.round(yearsOfBenefit) + ' years). ' + (numChildren * perChildMax > availableForChildren ? 'Note: Family Maximum Benefit applies — total capped at $' + Math.round(availableForChildren).toLocaleString() + '/mo.' : '');
