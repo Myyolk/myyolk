@@ -3163,7 +3163,7 @@ function calcSpouseSsBenefit() {
   var childSsDisplay = state.childSsMonthly || 0;
   var totalHouseholdWithChild = totalHousehold + childSsDisplay;
   var resultEl = document.getElementById('spouseSsResult');
-  if(resultEl) resultEl.textContent = 'Total Household SS: $' + Math.round(totalHousehold).toLocaleString() + '/mo';
+  if(resultEl) resultEl.textContent = 'Total Household SS: $' + Math.round(totalHouseholdWithChild).toLocaleString() + '/mo';
   var noteEl = document.getElementById('spouseSsNote');
   if(noteEl) noteEl.textContent = spouseNote;
   var deanNoteEl = document.getElementById('deanSsNote');
@@ -4968,7 +4968,7 @@ function calcChildBenefit() {
   var hhNote = document.getElementById('childSsHHNote');
   if(hhNote && initialTotal > 0) {
     hhNote.style.display = 'block';
-    hhNote.textContent = '+ Child benefit: ' + fmt(initialTotal) + '/mo initially (steps down as children turn 18)';
+    hhNote.textContent = 'Children: +' + fmt(initialTotal) + '/mo (steps down as each child turns 18)';
   } else if(hhNote) {
     hhNote.style.display = 'none';
     hhNote.textContent = '';
