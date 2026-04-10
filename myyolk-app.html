@@ -3825,26 +3825,70 @@ function calcReadiness() {
     }
   }
 
-  // Depletion age card — uses state.yearsLast for consistency
-    var retireAgeForDep = parseInt(document.getElementById('retAge')?.value) || 65;
-    var yearsLastForDep = (state.yearsLast !== undefined) ? state.yearsLast : -1;
+  // Depletion age card — always shows exact age by simulating forward
+  (function() {
+    var retAgeD = parseInt(document.getElementById('retAge')?.value) || 65;
+    var yl = (state.yearsLast !== undefined) ? state.yearsLast : -1;
     var depEl = document.getElementById('rdDepletionAge');
     var depNote = document.getElementById('rdDepletionNote');
-    if(depEl) {
-      if(yearsLastForDep >= 999) {
-        depEl.textContent = '100+';
-        depEl.style.color = 'var(--sage)';
-        if(depNote) depNote.textContent = 'Portfolio outlasts age 100 ✓';
-      } else if(yearsLastForDep > 0) {
-        var depAge = retireAgeForDep + yearsLastForDep;
-        depEl.textContent = 'Age ' + depAge;
-        depEl.style.color = depAge >= 90 ? 'var(--sage)' : depAge >= 80 ? '#e67e22' : 'var(--clay)';
-        if(depNote) depNote.textContent = depAge >= 90 ? 'Well funded ✓' : depAge >= 80 ? 'Consider saving a bit more' : 'Consider increasing savings or delaying retirement';
-      } else {
-        depEl.textContent = '—';
-        if(depNote) depNote.textContent = 'Enter your budget to calculate';
-      }
+    if(!depEl) return;
+    if(budgetTotal === 0) {
+      depEl.textContent = '—';
+      if(depNote) depNote.textContent = 'Enter your budget to calculate';
+      return;
     }
+    var exactAge;
+    if(yl >= 999 || yl < 0) {
+      // Income covers expenses — portfolio keeps growing
+      // Simulate forward at conservative 5% growth to find when 4% rule would run out
+      // This gives a meaningful "if you stopped working today at retireAge" number
+      var bal = portfolioFinal || portfolio || 0;
+      var maxAge = 120;
+      var age = retAgeD;
+      var inflatedExpenses = inflatedBudget || 0;
+      var ssInc = (state.ssMonthly || 0) + (state.spouseSsMonthly || 0);
+      var annualDraw = Math.max(0, (inflatedExpenses - ssInc) * 12);
+      if(annualDraw <= 0) {
+        // SS covers everything — portfolio just grows
+        exactAge = 120;
+      } else {
+        var simBal = bal;
+        var depleted = false;
+        while(age < maxAge && simBal > 0) {
+          simBal = simBal * (1 + 0.05) - annualDraw;
+          age++;
+          if(simBal <= 0) { depleted = true; break; }
+        }
+        exactAge = depleted ? age : 120;
+      }
+    } else if(yl > 0) {
+      exactAge = retAgeD + yl;
+    } else {
+      exactAge = retAgeD;
+    }
+    // Display
+    if(exactAge >= 120) {
+      depEl.textContent = '120+';
+      depEl.style.color = 'var(--sage)';
+      if(depNote) depNote.textContent = 'Exceptional — portfolio outlasts age 120 ✓';
+    } else if(exactAge >= 100) {
+      depEl.textContent = 'Age ' + exactAge;
+      depEl.style.color = 'var(--sage)';
+      if(depNote) depNote.textContent = 'Excellent — well funded ✓';
+    } else if(exactAge >= 90) {
+      depEl.textContent = 'Age ' + exactAge;
+      depEl.style.color = 'var(--sage)';
+      if(depNote) depNote.textContent = 'Well funded ✓';
+    } else if(exactAge >= 80) {
+      depEl.textContent = 'Age ' + exactAge;
+      depEl.style.color = '#e67e22';
+      if(depNote) depNote.textContent = 'Consider saving a bit more';
+    } else {
+      depEl.textContent = 'Age ' + exactAge;
+      depEl.style.color = 'var(--clay)';
+      if(depNote) depNote.textContent = 'Consider increasing savings or delaying retirement';
+    }
+  })();
 
   // Action items
   var actions = [];
