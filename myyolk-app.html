@@ -1705,17 +1705,7 @@
       </div>
 
       <!-- HOUSEHOLD DECISION CARD -->
-      <div class="card" id="householdSSCard" style="display:none">
-        <div class="card-title"><span class="dot"></span> 🏠 Household SS Decision</div>
-        <div class="hint" style="margin-bottom:1rem">SSA automatically pays each spouse the higher of their own earned benefit or 50% of their spouse's benefit. The optimal outcome is calculated below.</div>
-        <div style="background:var(--sage-pale);border-radius:10px;padding:1.25rem">
-          <div id="spouseSsResult" style="font-size:1.3rem;font-weight:800;color:var(--sage);margin-bottom:0.75rem">—</div>
-          <div id="spouseSsNote" style="font-size:0.88rem;color:var(--mid);margin-bottom:0.35rem"></div>
-          <div id="deanSsNote" style="font-size:0.88rem;color:var(--mid)"></div>
-        </div>
-      </div>
-
-      <!-- Dependent Child Benefits -->
+            <!-- Dependent Child Benefits -->
       <div class="card" style="margin-top:1.5rem">
         <div class="card-title">👶 Dependent Child Benefits</div>
         <p style="font-size:0.88rem;color:var(--mid);margin-bottom:1rem">Children under 18 (or under 19 if in high school) may receive up to 50% of your PIA, subject to the Family Maximum Benefit.</p>
@@ -1758,6 +1748,19 @@
             </div>
             <div id="childBenefitNote" style="font-size:0.82rem;color:var(--mid);margin-top:0.75rem;text-align:center"></div>
           </div>
+        </div>
+      </div>
+
+
+
+      <div class="card" id="householdSSCard" style="display:none">
+        <div class="card-title"><span class="dot"></span> 🏠 Household SS Decision</div>
+        <div class="hint" style="margin-bottom:1rem">SSA automatically pays each spouse the higher of their own earned benefit or 50% of their spouse's benefit. The optimal outcome is calculated below.</div>
+        <div style="background:var(--sage-pale);border-radius:10px;padding:1.25rem">
+          <div id="spouseSsResult" style="font-size:1.3rem;font-weight:800;color:var(--sage);margin-bottom:0.75rem">—</div>
+          <div id="spouseSsNote" style="font-size:0.88rem;color:var(--mid);margin-bottom:0.35rem"></div>
+          <div id="deanSsNote" style="font-size:0.88rem;color:var(--mid)"></div>
+          <div id="childSsHHNote" style="font-size:0.88rem;color:var(--sage);margin-top:0.35rem;display:none"></div>
         </div>
       </div>
 
@@ -2268,7 +2271,8 @@
             <div id="rdDepletionNote" style="font-size:0.72rem;color:var(--mid);margin-top:2px">Based on withdrawal rate</div>
           </div>
         </div>
-        <div id="rdYearsLast" style="padding:1rem;background:var(--warm-white);border-radius:8px;font-size:0.9rem;color:var(--forest);text-align:center"></div>
+        <div id="rdChildSsNote" style="display:none;background:#fff8e1;border:1px solid #f0a500;border-radius:8px;padding:0.6rem 0.75rem;font-size:0.82rem;color:#856404;margin-bottom:0.5rem"></div>
+      <div id="rdYearsLast" style="padding:1rem;background:var(--warm-white);border-radius:8px;font-size:0.9rem;color:var(--forest);text-align:center"></div>
       </div>
 
       <!-- ACTION ITEMS -->
@@ -3713,16 +3717,30 @@ function calcReadiness() {
   // Annual shortfall = what portfolio must cover after SS and other fixed income
   var annualFixedIncome = (ssIncome + additionalIncome) * 12;
   var annualExpenses = inflatedBudget > 0 ? inflatedBudget * 12 : 0;
+  // Child SS duration at retirement
+  var childSsYearsLeft = 0;
+  if(state.childSsMonthly > 0) {
+    var youngestAge2 = parseInt(document.getElementById('youngestChildAge')?.value) || 0;
+    var currentAge2 = parseInt(document.getElementById('age')?.value) || 56;
+    var retireAge2 = parseInt(document.getElementById('retAge')?.value) || 65;
+    var ageAtRetire2 = youngestAge2 + Math.max(0, retireAge2 - currentAge2);
+    childSsYearsLeft = Math.max(0, 18 - ageAtRetire2);
+  }
   var annualPortfolioDraw = Math.max(annualExpenses - annualFixedIncome, 0);
   var retirementGrowthRate = growthRate * 0.5; // conservative in-retirement rate
   var yearsLast = 0;
   if(annualPortfolioDraw <= 0) {
     yearsLast = 999; // income covers expenses
-  } else if(portfolio > 0 && annualPortfolioDraw > 0) {
+  } else if(portfolio > 0) {
     var remaining = portfolio;
     var maxYears = 150;
+    var annualChildSs2 = (state.childSsMonthly || 0) * 12;
     while(remaining > 0 && yearsLast < maxYears) {
-      remaining = remaining * (1 + retirementGrowthRate) - annualPortfolioDraw;
+      var yearDraw = annualPortfolioDraw;
+      if(annualChildSs2 > 0 && yearsLast >= childSsYearsLeft) {
+        yearDraw = annualPortfolioDraw + annualChildSs2;
+      }
+      remaining = remaining * (1 + retirementGrowthRate) - yearDraw;
       yearsLast++;
     }
     if(yearsLast >= maxYears) yearsLast = 999; // outlasts realistic lifespan
@@ -3861,6 +3879,16 @@ function calcReadiness() {
     if(rdDrawNote) rdDrawNote.textContent = 'Enter your monthly budget to see this calculation';
   }
 
+  // Child SS ending note
+  var childEndNoteEl = document.getElementById('rdChildSsNote');
+  if(childEndNoteEl) {
+    if(state.childSsMonthly > 0 && childSsYearsLeft > 0) {
+      childEndNoteEl.style.display = 'block';
+      childEndNoteEl.textContent = '\u26a0\ufe0f Child benefit of $' + Math.round(state.childSsMonthly).toLocaleString() + '/mo ends in ' + Math.round(childSsYearsLeft) + ' year' + (childSsYearsLeft !== 1 ? 's' : '') + ' (when youngest turns 18). Portfolio draw will increase after that.';
+    } else {
+      childEndNoteEl.style.display = 'none';
+    }
+  }
   var yearsLastEl = document.getElementById('rdYearsLast');
   if(yearsLastEl && totalIncome > 0) {
     if(yearsLast >= 999) {
@@ -4914,6 +4942,11 @@ function calcChildBenefit() {
     if(yearsEl) yearsEl.textContent = Math.round(yearsOfBenefit) + ' yrs';
     if(noteEl) noteEl.textContent = 'Your youngest will be ~' + Math.round(ageOfYoungestAtRetire) + ' at retirement. Benefits last until age 18 (' + Math.round(yearsOfBenefit) + ' years). ' + (numChildren * perChildMax > availableForChildren ? 'Note: Family Maximum Benefit applies — total capped at $' + Math.round(availableForChildren).toLocaleString() + '/mo.' : '');
     state.childSsMonthly = totalChildBenefit;
+    var hhNote = document.getElementById('childSsHHNote');
+    if(hhNote) {
+      hhNote.style.display = 'block';
+      hhNote.textContent = '+ Child benefit: $' + Math.round(totalChildBenefit).toLocaleString() + '/mo (ends in ' + Math.round(yearsOfBenefit) + ' yr' + (yearsOfBenefit !== 1 ? 's' : '') + ' when youngest turns 18)';
+    }
   }
   recalc();
 }
