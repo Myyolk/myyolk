@@ -4879,6 +4879,9 @@ function calcChildBenefit() {
   if(section) section.style.display = hasChild ? 'block' : 'none';
   if(!hasChild) {
     state.childSsMonthly = 0;
+    var hhNoteOff = document.getElementById('childSsHHNote');
+    if(hhNoteOff) { hhNoteOff.style.display = 'none'; hhNoteOff.textContent = ''; }
+    recalc();
     return;
   }
 
@@ -5041,6 +5044,10 @@ function loadFromLocal() {
     }
     var isCouple = document.getElementById('planCouple')?.checked;
     if(isCouple && typeof toggleCouple === 'function') toggleCouple();
+    // Re-run child benefit calc if checkbox was saved as checked
+    if(document.getElementById('hasChildBenefit')?.checked && typeof calcChildBenefit === 'function') {
+      calcChildBenefit();
+    }
     if(typeof recalc === 'function') recalc();
     console.log('MyYolk: data restored from localStorage');
   } catch(e) { console.warn('Load failed:', e); }
