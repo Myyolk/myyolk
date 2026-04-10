@@ -3686,6 +3686,9 @@ function calcReadiness() {
 
   // Readiness score - based on total income (incl. SS) vs inflated expenses
   // Readiness score — weighted across 3 factors
+  var scoreRetireAge = parseInt(document.getElementById('retAge')?.value) || 65;
+  var scoreLifeExp = parseInt(document.getElementById('lifeExp')?.value) || 85;
+
   // Factor 1 (40%): Income coverage — monthly income vs inflated expenses
   var scoreCoverage = 0;
   if(inflatedBudget > 0 && totalIncome > 0) {
@@ -3697,7 +3700,7 @@ function calcReadiness() {
   // Factor 2 (40%): Portfolio longevity — how far past life expectancy does money last
   var scoreLongevity = 0;
   if(inflatedBudget > 0) {
-    var depletionAge = retireAge + (yearsLast >= 999 ? 80 : yearsLast);
+    var depletionAge = scoreRetireAge + (yearsLast >= 999 ? 80 : yearsLast);
     if(yearsLast >= 999 || depletionAge >= 110) {
       scoreLongevity = 100;
     } else if(depletionAge >= 100) {
@@ -3707,7 +3710,7 @@ function calcReadiness() {
     } else if(depletionAge >= 80) {
       scoreLongevity = 70;
     } else {
-      scoreLongevity = Math.max(0, Math.round((depletionAge - retireAge) / (lifeExp - retireAge) * 60));
+      scoreLongevity = Math.max(0, Math.round((depletionAge - scoreRetireAge) / (scoreLifeExp - scoreRetireAge) * 60));
     }
   } else if(portfolio > 0) {
     scoreLongevity = 70;
