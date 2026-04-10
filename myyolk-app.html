@@ -3789,6 +3789,7 @@ function calcReadiness() {
   }
 
   // Depletion age card — uses same yearsLast simulation for consistency
+    var retireAgeForDep = parseInt(document.getElementById('retAge')?.value) || 65;
     var depEl = document.getElementById('rdDepletionAge');
     var depNote = document.getElementById('rdDepletionNote');
     if(depEl) {
@@ -3797,7 +3798,7 @@ function calcReadiness() {
         depEl.style.color = 'var(--sage)';
         if(depNote) depNote.textContent = 'Portfolio outlasts age 100 ✓';
       } else if(yearsLast > 0) {
-        var depAge = retireAge + yearsLast;
+        var depAge = retireAgeForDep + yearsLast;
         depEl.textContent = 'Age ' + depAge;
         depEl.style.color = depAge >= 90 ? 'var(--sage)' : depAge >= 80 ? '#e67e22' : 'var(--clay)';
         if(depNote) depNote.textContent = depAge >= 90 ? 'Well funded ✓' : depAge >= 80 ? 'Consider saving a bit more' : 'Consider increasing savings or delaying retirement';
