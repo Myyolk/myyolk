@@ -1715,6 +1715,52 @@
         </div>
       </div>
 
+      <!-- Dependent Child Benefits -->
+      <div class="card" style="margin-top:1.5rem">
+        <div class="card-title">👶 Dependent Child Benefits</div>
+        <p style="font-size:0.88rem;color:var(--mid);margin-bottom:1rem">Children under 18 (or under 19 if in high school) may receive up to 50% of your PIA, subject to the Family Maximum Benefit.</p>
+        <div class="field-row">
+          <label style="display:flex;align-items:center;gap:0.5rem;font-weight:600;cursor:pointer">
+            <input type="checkbox" id="hasChildBenefit" onchange="calcChildBenefit()"> I have qualifying dependent children
+          </label>
+        </div>
+        <div id="childBenefitSection" style="display:none;margin-top:1rem">
+          <div class="field-row" style="gap:1rem">
+            <div class="field">
+              <label>Number of Qualifying Children</label>
+              <select id="numChildren" onchange="calcChildBenefit()">
+                <option value="1">1 child</option>
+                <option value="2">2 children</option>
+                <option value="3">3 children</option>
+                <option value="4">4 children</option>
+                <option value="5">5 children</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Youngest Child's Current Age</label>
+              <input type="number" id="youngestChildAge" min="0" max="17" value="10" placeholder="e.g. 10" oninput="calcChildBenefit()">
+            </div>
+          </div>
+          <div style="background:var(--warm-white);border-radius:10px;padding:1rem;margin-top:0.75rem">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;text-align:center">
+              <div>
+                <div style="font-size:0.75rem;color:var(--mid);text-transform:uppercase;letter-spacing:0.05em">Per Child / Month</div>
+                <div id="childBenefitPerChild" style="font-size:1.3rem;font-weight:700;color:var(--forest)">—</div>
+              </div>
+              <div>
+                <div style="font-size:0.75rem;color:var(--mid);text-transform:uppercase;letter-spacing:0.05em">Total Family / Month</div>
+                <div id="childBenefitTotal" style="font-size:1.3rem;font-weight:700;color:var(--sage)">—</div>
+              </div>
+              <div>
+                <div style="font-size:0.75rem;color:var(--mid);text-transform:uppercase;letter-spacing:0.05em">Benefit Duration</div>
+                <div id="childBenefitYears" style="font-size:1.3rem;font-weight:700;color:var(--forest)">—</div>
+              </div>
+            </div>
+            <div id="childBenefitNote" style="font-size:0.82rem;color:var(--mid);margin-top:0.75rem;text-align:center"></div>
+          </div>
+        </div>
+      </div>
+
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="showTab('accounts')">&#8592; Back</button>
         <button class="btn btn-primary" onclick="showTab('budget')">Next: Budget &#8594;</button>
@@ -3639,7 +3685,8 @@ function calcReadiness() {
   var rdAddEl = document.getElementById('rdAdditionalIncome');
   if(rdAddEl) rdAddEl.textContent = '$' + Math.round(additionalIncome).toLocaleString() + '/mo';
 
-  var totalIncome = portfolioIncome + ssIncome + additionalIncome;
+  var childSsIncome = state.childSsMonthly || 0;
+  var totalIncome = portfolioIncome + ssIncome + additionalIncome + childSsIncome;
 
   // Monthly expenses - use budget tab's analysis which includes lifestyle adjustments
   var budgetTotal = 0;
@@ -3767,7 +3814,8 @@ function calcReadiness() {
   // Update income breakdown
   var el;
   el = document.getElementById('rdPortfolioIncome'); if(el) el.textContent = fmt(portfolioIncome);
-  el = document.getElementById('rdSSIncome'); if(el) el.textContent = ssIncome > 0 ? fmt(ssIncome) : 'Not entered';
+  var displaySsIncome = ssIncome + (state.childSsMonthly || 0);
+  el = document.getElementById('rdSSIncome'); if(el) el.textContent = displaySsIncome > 0 ? fmt(displaySsIncome) + (state.childSsMonthly > 0 ? ' (incl. child)' : '') : 'Not entered';
   el = document.getElementById('rdAdditionalIncome'); if(el) el.textContent = additionalIncome > 0 ? fmt(additionalIncome) : '$0/mo';
   el = document.getElementById('rdTotalIncome'); if(el) el.textContent = fmt(totalIncome);
   el = document.getElementById('rdCurrentBudget'); if(el) el.textContent = budgetTotal > 0 ? fmt(budgetTotal) : 'Not entered';
@@ -4793,6 +4841,84 @@ document.addEventListener('DOMContentLoaded', function() {
   if(typeof updatePlanningFor==='function') updatePlanningFor();
   if(typeof recalc==='function') recalc();
 });
+// ── CHILD SS BENEFIT CALCULATOR ──
+function calcChildBenefit() {
+  var hasChild = document.getElementById('hasChildBenefit')?.checked;
+  var section = document.getElementById('childBenefitSection');
+  if(section) section.style.display = hasChild ? 'block' : 'none';
+  if(!hasChild) {
+    state.childSsMonthly = 0;
+    return;
+  }
+
+  var numChildren = parseInt(document.getElementById('numChildren')?.value) || 1;
+  var youngestAge = parseInt(document.getElementById('youngestChildAge')?.value) || 10;
+  var retireAge = parseInt(document.getElementById('retAge')?.value) || 65;
+  var currentAge = parseInt(document.getElementById('age')?.value) || 56;
+
+  // PIA is the age-67 full benefit — child benefit is always based on PIA not claiming age
+  var pia = state.ssMonthly || 0;
+  // Reverse-engineer PIA from claiming age benefit if claiming early/late
+  var claimAge = parseInt(document.getElementById('ssClaimingAge')?.value) || 67;
+  if(claimAge !== 67 && state.ssMonthly > 0) {
+    // Get PIA from the dss67 field if available
+    var pia67 = parseFloat(document.getElementById('dss67')?.value) || 0;
+    if(pia67 > 0) pia = pia67;
+    // Otherwise estimate PIA from claiming age adjustment
+    else if(claimAge < 67) {
+      var monthsEarly = (67 - claimAge) * 12;
+      var reduction = monthsEarly <= 36 ? monthsEarly * (5/9) * 0.01 : 36 * (5/9) * 0.01 + (monthsEarly - 36) * (5/12) * 0.01;
+      pia = state.ssMonthly / (1 - reduction);
+    } else {
+      pia = state.ssMonthly / (1 + (claimAge - 67) * 0.08);
+    }
+  }
+
+  if(pia <= 0) {
+    document.getElementById('childBenefitNote').textContent = 'Enter your SS information above to calculate child benefits.';
+    return;
+  }
+
+  // Family Maximum Benefit (FMB) — 2024 bend points
+  var fmb = 0;
+  if(pia <= 1337) fmb = pia * 1.5;
+  else if(pia <= 1927) fmb = 1337 * 1.5 + (pia - 1337) * 2.72;
+  else if(pia <= 2507) fmb = 1337 * 1.5 + 590 * 2.72 + (pia - 1927) * 1.34;
+  else fmb = 1337 * 1.5 + 590 * 2.72 + 580 * 1.34 + (pia - 2507) * 1.75;
+  // FMB is the max the WHOLE family gets (including worker's own benefit)
+  var availableForChildren = Math.max(0, fmb - state.ssMonthly);
+  var perChildMax = pia * 0.5;
+  var totalChildBenefit = Math.min(numChildren * perChildMax, availableForChildren);
+  var perChild = numChildren > 0 ? totalChildBenefit / numChildren : 0;
+
+  // Duration — until youngest turns 18 (or 19 if in HS)
+  var yearsUntilRetire = Math.max(0, retireAge - currentAge);
+  var ageOfYoungestAtRetire = youngestAge + yearsUntilRetire;
+  var yearsOfBenefit = Math.max(0, 18 - ageOfYoungestAtRetire);
+
+  // Update displays
+  var fmt = function(n){ return '$' + Math.round(n).toLocaleString(); };
+  var perChildEl = document.getElementById('childBenefitPerChild');
+  var totalEl = document.getElementById('childBenefitTotal');
+  var yearsEl = document.getElementById('childBenefitYears');
+  var noteEl = document.getElementById('childBenefitNote');
+
+  if(perChildEl) perChildEl.textContent = fmt(perChild) + '/mo';
+  if(totalEl) totalEl.textContent = fmt(totalChildBenefit) + '/mo';
+
+  if(yearsOfBenefit <= 0) {
+    if(yearsEl) yearsEl.textContent = 'None';
+    if(noteEl) noteEl.textContent = 'Your youngest child will be ' + Math.round(ageOfYoungestAtRetire) + ' at retirement — benefits end at 18.';
+    state.childSsMonthly = 0;
+  } else {
+    if(yearsEl) yearsEl.textContent = Math.round(yearsOfBenefit) + ' yrs';
+    if(noteEl) noteEl.textContent = 'Your youngest will be ~' + Math.round(ageOfYoungestAtRetire) + ' at retirement. Benefits last until age 18 (' + Math.round(yearsOfBenefit) + ' years). ' + (numChildren * perChildMax > availableForChildren ? 'Note: Family Maximum Benefit applies — total capped at $' + Math.round(availableForChildren).toLocaleString() + '/mo.' : '');
+    state.childSsMonthly = totalChildBenefit;
+  }
+  recalc();
+}
+// ── END CHILD SS ──
+
 // ── AUTO SAVE / LOAD (localStorage) ──
 var SAVE_KEY = 'myyolk_v1';
 
