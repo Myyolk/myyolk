@@ -3824,7 +3824,8 @@ function calcReadiness() {
   // Only suggest delaying if portfolio is genuinely at risk (depletion before age 90)
   if(gap < 0) {
     var depBal2 = portfolio;
-    var depAge2 = retireAge;
+    var retireAge2 = parseInt(document.getElementById('retAge')?.value) || 65;
+    var depAge2 = retireAge2;
     var depleted2 = false;
     while(depAge2 < 120 && depBal2 > 0) {
       depBal2 = (depBal2 - (monthlyShortfall * 12)) * (1 + retirementGrowthRate);
