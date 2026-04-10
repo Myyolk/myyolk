@@ -3678,7 +3678,8 @@ function calcReadiness() {
       remaining = remaining * (1 + retirementGrowthRate) - annualPortfolioDraw;
       yearsLast++;
     }
-    if(yearsLast >= maxYears) yearsLast = 999; // outlasts realistic lifespan // SS and other income alone cover expenses
+    if(yearsLast >= maxYears) yearsLast = 999; // outlasts realistic lifespan
+  state.yearsLast = yearsLast; // store for depletion card // SS and other income alone cover expenses
   } else if(portfolio > 0) {
     yearsLast = 999; // no budget entered — portfolio grows
   }
@@ -3824,17 +3825,18 @@ function calcReadiness() {
     }
   }
 
-  // Depletion age card — uses same yearsLast simulation for consistency
+  // Depletion age card — uses state.yearsLast for consistency
     var retireAgeForDep = parseInt(document.getElementById('retAge')?.value) || 65;
+    var yearsLastForDep = (state.yearsLast !== undefined) ? state.yearsLast : -1;
     var depEl = document.getElementById('rdDepletionAge');
     var depNote = document.getElementById('rdDepletionNote');
     if(depEl) {
-      if(yearsLast >= 999) {
+      if(yearsLastForDep >= 999) {
         depEl.textContent = '100+';
         depEl.style.color = 'var(--sage)';
         if(depNote) depNote.textContent = 'Portfolio outlasts age 100 ✓';
-      } else if(yearsLast > 0) {
-        var depAge = retireAgeForDep + yearsLast;
+      } else if(yearsLastForDep > 0) {
+        var depAge = retireAgeForDep + yearsLastForDep;
         depEl.textContent = 'Age ' + depAge;
         depEl.style.color = depAge >= 90 ? 'var(--sage)' : depAge >= 80 ? '#e67e22' : 'var(--clay)';
         if(depNote) depNote.textContent = depAge >= 90 ? 'Well funded ✓' : depAge >= 80 ? 'Consider saving a bit more' : 'Consider increasing savings or delaying retirement';
