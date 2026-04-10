@@ -2211,6 +2211,7 @@
           <div class="field">
             <label>Social Security (your est.)</label>
             <div id="rdSSIncome" style="font-size:1.1rem;font-weight:700;color:var(--sage);padding:0.5rem 0">—</div>
+            <div id="rdChildStepdown" style="display:none;margin-top:0.25rem"></div>
           </div>
           <div class="field">
             <label>Additional Income Sources</label>
@@ -3877,15 +3878,45 @@ function calcReadiness() {
     if(rdDrawNote) rdDrawNote.textContent = 'Enter your monthly budget to see this calculation';
   }
 
-  // Child SS ending note
+  // Child SS step-down notes in readiness
   var childEndNoteEl = document.getElementById('rdChildSsNote');
-  if(childEndNoteEl) {
-    if(state.childSsMonthly > 0 && childSsYearsLeft > 0) {
-      childEndNoteEl.style.display = 'block';
-      childEndNoteEl.textContent = '\u26a0\ufe0f Child benefit of $' + Math.round(state.childSsMonthly).toLocaleString() + '/mo ends in ' + Math.round(childSsYearsLeft) + ' year' + (childSsYearsLeft !== 1 ? 's' : '') + ' (when youngest turns 18). Portfolio draw will increase after that.';
-    } else {
-      childEndNoteEl.style.display = 'none';
+  var childStepdownEl = document.getElementById('rdChildStepdown');
+  var retireAgeRd = parseInt(document.getElementById('retAge')?.value) || 65;
+  var currentAgeRd = parseInt(document.getElementById('age')?.value) || 56;
+  var yearsToRetireRd = Math.max(0, retireAgeRd - currentAgeRd);
+
+  if(state.childSsMonthly > 0 && state.childSsSchedule && state.childSsSchedule.length > 0) {
+    // Build per-child dropoff notes
+    var numChildrenRd = parseInt(document.getElementById('numChildren')?.value) || 1;
+    var perChildAmt = Math.round(state.childSsMonthly / (state.childSsSchedule[0]?.count || 1));
+    var dropoffNotes = [];
+    for(var ci = 1; ci <= numChildrenRd; ci++) {
+      var childAgeEl = document.getElementById('childAge' + ci);
+      var childAgeNow = parseInt(childAgeEl?.value);
+      if(isNaN(childAgeNow)) continue;
+      var childAgeAtRetire = childAgeNow + yearsToRetireRd;
+      var yearsUntilDrop = Math.max(0, 18 - childAgeAtRetire);
+      if(yearsUntilDrop > 0) {
+        var dropAtAge = retireAgeRd + yearsUntilDrop;
+        dropoffNotes.push('<div style="display:flex;justify-content:space-between;padding:2px 0;font-size:0.78rem;color:var(--mid)">' +
+          '<span>Child ' + ci + ' turns 18 in <strong>' + yearsUntilDrop + ' yr' + (yearsUntilDrop !== 1 ? 's' : '') + '</strong> (age ' + dropAtAge + ')</span>' +
+          '<span style="color:var(--clay)">-$' + perChildAmt.toLocaleString() + '/mo</span></div>');
+      }
     }
+    var ssAfterChildren = Math.round((state.ssMonthly || 0) + (state.spouseSsMonthly || 0));
+    dropoffNotes.push('<div style="font-size:0.78rem;color:var(--mid);margin-top:3px;padding-top:3px;border-top:1px solid #e8e0d0">After all children age out: <strong>$' + ssAfterChildren.toLocaleString() + '/mo</strong></div>');
+
+    if(childStepdownEl) {
+      childStepdownEl.style.display = 'block';
+      childStepdownEl.innerHTML = dropoffNotes.join('');
+    }
+    if(childEndNoteEl) {
+      childEndNoteEl.style.display = 'block';
+      childEndNoteEl.textContent = '\u26a0\ufe0f Child benefits will reduce portfolio draw as shown above. Portfolio draw will increase as each child ages out.';
+    }
+  } else {
+    if(childStepdownEl) { childStepdownEl.style.display = 'none'; childStepdownEl.innerHTML = ''; }
+    if(childEndNoteEl) { childEndNoteEl.style.display = 'none'; }
   }
   var yearsLastEl = document.getElementById('rdYearsLast');
   if(yearsLastEl && totalIncome > 0) {
