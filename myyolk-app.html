@@ -3776,15 +3776,15 @@ function calcReadiness() {
       } else {
         var depBal = portfolio;
         var depAge = getVal('retAge', 65);
-        var retGrowth = 0.05;
+        var retGrowth = 0.035; // conservative 3.5% in retirement
         var depleted = false;
-        while(depAge < 120 && depBal > 0) {
+        while(depAge < 110 && depBal > 0) {
           depBal = (depBal - (monthlyShortfall * 12)) * (1 + retGrowth);
           depAge++;
           if(depBal <= 0) { depleted = true; break; }
         }
         if(!depleted) {
-          depEl.textContent = '100+';
+          depEl.textContent = 'Age 110+';
           depEl.style.color = 'var(--sage)';
           if(depNote) depNote.textContent = 'Portfolio outlasts age 100 ✓';
         } else {
