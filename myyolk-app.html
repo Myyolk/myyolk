@@ -3764,7 +3764,7 @@ function calcReadiness() {
       var canSustain = maxDraw >= monthlyShortfall;
       rdDrawEl.textContent = fmt(requiredDraw);
       rdDrawEl.style.color = canSustain ? 'var(--sage)' : 'var(--clay)';
-      if(rdDrawNote) rdDrawNote.textContent = 'Needed from portfolio after SS — ' + (canSustain ? 'portfolio can sustain this to age ' + lifeExp + ' ✓' : 'portfolio may run short before age ' + lifeExp);
+      if(rdDrawNote) rdDrawNote.textContent = 'Needed from portfolio after SS — see depletion age below';
     // Calculate actual depletion age independent of life expectancy
     var depEl = document.getElementById('rdDepletionAge');
     var depNote = document.getElementById('rdDepletionNote');
@@ -3821,7 +3821,20 @@ function calcReadiness() {
   if(annualContrib < salary * 0.15) actions.push({ icon: '📈', text: 'Increase your contribution rate to at least 15% of income', impact: 'High' });
   if(ssIncome === 0) actions.push({ icon: '🏛️', text: 'Enter your Social Security estimate on the Accounts tab', impact: 'Required' });
   if(budgetTotal === 0) actions.push({ icon: '📋', text: 'Complete your Budget tab for a more accurate readiness score', impact: 'Required' });
-  if(gap < 0) actions.push({ icon: '⏳', text: 'Consider delaying retirement by 1-2 years to significantly boost your portfolio', impact: 'High' });
+  // Only suggest delaying if portfolio is genuinely at risk (depletion before age 90)
+  if(gap < 0) {
+    var depBal2 = portfolio;
+    var depAge2 = retireAge;
+    var depleted2 = false;
+    while(depAge2 < 120 && depBal2 > 0) {
+      depBal2 = (depBal2 - (monthlyShortfall * 12)) * (1 + retirementGrowthRate);
+      depAge2++;
+      if(depBal2 <= 0) { depleted2 = true; break; }
+    }
+    if(depleted2 && depAge2 < 90) {
+      actions.push({ icon: '⏳', text: 'Consider delaying retirement by 1-2 years to significantly boost your portfolio', impact: 'High' });
+    }
+  }
   if(gap < 0) actions.push({ icon: '💰', text: 'Add additional income streams (rental, consulting, dividends) to close the gap', impact: 'Medium' });
   if(portfolio < 500000) actions.push({ icon: '🚀', text: 'Consider maxing out your 401k ($23,500/yr) and Roth IRA ($7,000/yr)', impact: 'High' });
 
