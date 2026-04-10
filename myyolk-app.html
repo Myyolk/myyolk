@@ -3163,7 +3163,7 @@ function calcSpouseSsBenefit() {
   var childSsDisplay = state.childSsMonthly || 0;
   var totalHouseholdWithChild = totalHousehold + childSsDisplay;
   var resultEl = document.getElementById('spouseSsResult');
-  if(resultEl) resultEl.textContent = 'Total Household SS: $' + Math.round(totalHouseholdWithChild).toLocaleString() + '/mo';
+  if(resultEl) resultEl.textContent = 'Total Household SS: $' + Math.round(totalHousehold).toLocaleString() + '/mo';
   var noteEl = document.getElementById('spouseSsNote');
   if(noteEl) noteEl.textContent = spouseNote;
   var deanNoteEl = document.getElementById('deanSsNote');
