@@ -3685,15 +3685,48 @@ function calcReadiness() {
   var moneyLastsAge = yearsLast >= 999 ? lifeExp + 1 : retAge + yearsLast;
 
   // Readiness score - based on total income (incl. SS) vs inflated expenses
-  var score = 0;
+  // Readiness score — weighted across 3 factors
+  // Factor 1 (40%): Income coverage — monthly income vs inflated expenses
+  var scoreCoverage = 0;
   if(inflatedBudget > 0 && totalIncome > 0) {
-    score = Math.min(Math.round((totalIncome / inflatedBudget) * 100), 100);
+    scoreCoverage = Math.min(Math.round((totalIncome / inflatedBudget) * 100), 100);
   } else if(portfolio > 0) {
-    score = 70; // Has savings but no budget entered
+    scoreCoverage = 70;
   }
-  if(yearsLast < yearsInRetirement) {
-    score = Math.min(score, Math.round((yearsLast / yearsInRetirement) * 100));
+
+  // Factor 2 (40%): Portfolio longevity — how far past life expectancy does money last
+  var scoreLongevity = 0;
+  if(inflatedBudget > 0) {
+    var depletionAge = retireAge + (yearsLast >= 999 ? 80 : yearsLast);
+    if(yearsLast >= 999 || depletionAge >= 110) {
+      scoreLongevity = 100;
+    } else if(depletionAge >= 100) {
+      scoreLongevity = 95;
+    } else if(depletionAge >= 90) {
+      scoreLongevity = 85;
+    } else if(depletionAge >= 80) {
+      scoreLongevity = 70;
+    } else {
+      scoreLongevity = Math.max(0, Math.round((depletionAge - retireAge) / (lifeExp - retireAge) * 60));
+    }
+  } else if(portfolio > 0) {
+    scoreLongevity = 70;
   }
+
+  // Factor 3 (20%): Savings rate — current contributions vs 15% target
+  var totalSalary = (state.salary || 0) + (state.spouseIncome || 0);
+  var scoreSavings = 0;
+  if(totalSalary > 0) {
+    var annualContribTotal = annualContrib + spouseAnnualContrib;
+    var savingsRate = annualContribTotal / totalSalary;
+    scoreSavings = Math.min(Math.round((savingsRate / 0.15) * 100), 100);
+  } else {
+    scoreSavings = 70; // no salary entered — neutral
+  }
+
+  // Weighted total
+  var score = Math.round((scoreCoverage * 0.40) + (scoreLongevity * 0.40) + (scoreSavings * 0.20));
+  score = Math.min(Math.max(score, 0), 100);
 
   // Update score circle
   var arc = document.getElementById('readinessArc');
