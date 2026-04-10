@@ -1663,21 +1663,21 @@
           <div class="upload-zone" style="padding:1.5rem">
             <input type="file" accept=".pdf,image/*" onchange="handleDSSUpload(event)">
             <div style="font-size:2rem;margin-bottom:0.5rem">🏛️</div>
-            <div style="font-size:0.95rem;font-weight:600">Drop her SSA Statement PDF here</div>
-            <div style="font-size:0.82rem;color:var(--mid)">We will read her benefit amounts automatically</div>
+            <div style="font-size:0.95rem;font-weight:600">Drop their SSA Statement PDF here</div>
+            <div style="font-size:0.82rem;color:var(--mid)">We will read their benefit amounts automatically</div>
           </div>
         </div>
         <div id="dss-method-manual" style="display:none">
           <div class="form-grid three">
-            <div class="field"><label>Her Benefit at 62 ($)</label><input type="number" id="dss62" placeholder="e.g. 1200" oninput="dssManualUpdate()"><div class="hint">Reduced early benefit</div></div>
-            <div class="field"><label>Her Benefit at 67 ($)</label><input type="number" id="dss67" placeholder="e.g. 1800" oninput="dssManualUpdate()"><div class="hint">Full retirement age</div></div>
-            <div class="field"><label>Her Benefit at 70 ($)</label><input type="number" id="dss70" placeholder="e.g. 2200" oninput="dssManualUpdate()"><div class="hint">Maximum delayed</div></div>
+            <div class="field"><label>Benefit at 62 ($)</label><input type="number" id="dss62" placeholder="e.g. 1200" oninput="dssManualUpdate()"><div class="hint">Reduced early benefit</div></div>
+            <div class="field"><label>Benefit at 67 ($)</label><input type="number" id="dss67" placeholder="e.g. 1800" oninput="dssManualUpdate()"><div class="hint">Full retirement age</div></div>
+            <div class="field"><label>Benefit at 70 ($)</label><input type="number" id="dss70" placeholder="e.g. 2200" oninput="dssManualUpdate()"><div class="hint">Maximum delayed</div></div>
           </div>
         </div>
         <div id="dss-method-estimate">
           <div class="form-grid">
-            <div class="field"><label>Her Years Worked (Est.)</label><input type="number" id="dssYearsWorked" value="30" oninput="estimateDSS()"></div>
-            <div class="field"><label>Her Avg Annual Income ($)</label><input type="number" id="dssAvgIncome" placeholder="e.g. 80000" oninput="estimateDSS()"></div>
+            <div class="field"><label>Years Worked (Est.)</label><input type="number" id="dssYearsWorked" value="30" oninput="estimateDSS()"></div>
+            <div class="field"><label>Avg Annual Income ($)</label><input type="number" id="dssAvgIncome" placeholder="e.g. 80000" oninput="estimateDSS()"></div>
           </div>
           <div id="dssEstResult" style="font-size:0.85rem;color:var(--mid);margin-top:0.5rem;padding:0.5rem;background:var(--warm-white);border-radius:6px"></div>
         </div>
@@ -1689,14 +1689,14 @@
             <div><div id="dss-est70" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 70</div></div>
           </div>
           <div class="form-grid">
-            <div class="field"><label>Her Claiming Age</label>
+            <div class="field"><label>Claiming Age</label>
               <select id="spouseSsClaimAge" onchange="var m=document.getElementById('dss-method-estimate'); if(m&&m.style.display==='none') dssManualUpdate(); else estimateDSS();" style="width:100%">
                 <option value="62">62 – Early</option><option value="63">63</option><option value="64">64</option>
                 <option value="65">65</option><option value="66">66</option><option value="67" selected>67 – Full</option>
                 <option value="68">68</option><option value="69">69</option><option value="70">70 – Maximum</option>
               </select>
             </div>
-            <div class="field"><label>Her Benefit at Claiming Age</label>
+            <div class="field"><label>Benefit at Claiming Age</label>
               <div id="dssEstimatedBenefit" style="font-size:1.4rem;font-weight:800;color:var(--sage)">—</div>
             </div>
           </div>
@@ -3101,7 +3101,7 @@ function calcSpouseSsBenefit() {
   if(spouseOwn > 0) {
     if(spouseOwn >= halfOfDean) {
       spouseFinal = spouseOwn;
-      spouseNote = 'Densie: $' + Math.round(spouseOwn).toLocaleString() + '/mo (her own benefit)';
+      spouseNote = 'Densie: $' + Math.round(spouseOwn).toLocaleString() + '/mo (their own benefit)';
     } else {
       spouseFinal = halfOfDean;
       spouseNote = 'Densie: $' + Math.round(halfOfDean).toLocaleString() + '/mo (spousal — 50% of Dean’s $' + Math.round(deanOwn).toLocaleString() + ')';
