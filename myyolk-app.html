@@ -4419,7 +4419,6 @@ function updateSnapshot() {
 }
 
 function recalc() {
-  saveData();
   // Income
   var incomeType = document.getElementById('incomeType')?.value || 'salary';
   var sal = getVal('salary');
@@ -4802,70 +4801,9 @@ function updateSummary() {
 
 
 
-// ── AUTO SAVE / LOAD ──
-var SAVE_KEY = 'myyolk_data_v1';
-
-function saveData() {
-  try {
-    var inputs = document.querySelectorAll('input, select, textarea');
-    var data = {};
-    inputs.forEach(function(el) {
-      if (el.id && el.type !== 'file') {
-        data[el.id] = el.type === 'checkbox' ? el.checked : el.value;
-      }
-    });
-    localStorage.setItem(SAVE_KEY, JSON.stringify(data));
-  } catch(e) {}
-}
-
-function loadData() {
-  try {
-    var saved = localStorage.getItem(SAVE_KEY);
-    if (!saved) return;
-    var data = JSON.parse(saved);
-    Object.keys(data).forEach(function(id) {
-      var el = document.getElementById(id);
-      if (!el) return;
-      if (el.type === 'checkbox') el.checked = data[id];
-      else el.value = data[id];
-    });
-    // Trigger recalcs after loading
-    if (typeof updateGreeting === 'function') updateGreeting();
-    if (typeof toggleCouple === 'function') toggleCouple();
-    if (typeof toggleIncomeType === 'function') toggleIncomeType();
-    if (typeof recalc === 'function') recalc();
-    console.log('MyYolk: data loaded from local storage');
-  } catch(e) {}
-}
-
-function clearData() {
-  if (confirm('Clear all saved data? This cannot be undone.')) {
-    localStorage.removeItem(SAVE_KEY);
-    location.reload();
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 document.addEventListener('DOMContentLoaded', function() {
   var b=document.getElementById('calcAgeBtn'); if(b) b.addEventListener('click',calcAgeFromDOB);
   var sb=document.getElementById('calcSpouseAgeBtn'); if(sb) sb.addEventListener('click',calcSpouseAge);
-  loadData();
   if(typeof showTab==='function') showTab('profile');
   if(typeof toggleIncomeType==='function') toggleIncomeType();
   if(typeof toggleCouple==='function') toggleCouple();
@@ -4990,6 +4928,12 @@ function saveToLocal() {
 
 function loadFromLocal() {
   try {
+    // Migrate from old key if needed
+    var oldData = localStorage.getItem('myyolk_data_v1');
+    if(oldData && !localStorage.getItem(SAVE_KEY)) {
+      localStorage.setItem(SAVE_KEY, oldData);
+    }
+    if(oldData) localStorage.removeItem('myyolk_data_v1');
     var raw = localStorage.getItem(SAVE_KEY);
     if(!raw) return;
     var data = JSON.parse(raw);
@@ -5056,6 +5000,7 @@ function loadFromLocal() {
 function clearSavedData() {
   if(confirm('Clear all saved data and start fresh?')) {
     localStorage.removeItem(SAVE_KEY);
+    localStorage.removeItem('myyolk_data_v1');
     location.reload();
   }
 }
