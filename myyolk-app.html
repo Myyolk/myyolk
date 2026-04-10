@@ -4866,8 +4866,7 @@ function calcChildBenefit() {
     state.childSsSchedule = [];
     var hhNoteOff = document.getElementById('childSsHHNote');
     if(hhNoteOff) { hhNoteOff.style.display = 'none'; hhNoteOff.textContent = ''; }
-    if(typeof ssManualUpdate === 'function') ssManualUpdate();
-    else if(typeof estimateSS === 'function') estimateSS();
+    if(typeof calcSpouseSsBenefit === 'function') calcSpouseSsBenefit();
     recalc();
     return;
   }
@@ -4976,8 +4975,7 @@ function calcChildBenefit() {
     hhNote.textContent = '';
   }
   // Refresh household SS total now that state.childSsMonthly is set
-  if(typeof ssManualUpdate === 'function') ssManualUpdate();
-  else if(typeof estimateSS === 'function') estimateSS();
+  if(typeof calcSpouseSsBenefit === 'function') calcSpouseSsBenefit();
   recalc();
 }
 // ── END CHILD SS ──
