@@ -2859,7 +2859,9 @@ function ssManualUpdate() {
   }
   fmtEl('ssEstimate', fmt(state.ssMonthly) + '/mo');
   updateSummaryRow();
-  recalc();
+  // Don't call recalc() here - it would call estimateSS() and overwrite our values
+  // Instead call calcSpouseSsBenefit directly to update household SS
+  if(typeof calcSpouseSsBenefit === 'function') calcSpouseSsBenefit();
 }
 
 function updateSummaryRow() {
@@ -4632,7 +4634,10 @@ function recalc() {
   updatePlanningFor();
   // Use estimateSS() to calculate SS - avoids duplicate logic
   var ssMethod = document.querySelector('.ss-method-btn.active')?.id || 'ssBtn-estimate';
-  if(ssMethod === 'ssBtn-estimate' && state.salary) {
+  var hasManualSS = (parseFloat(document.getElementById('ss62')?.value)||0) > 0 ||
+                    (parseFloat(document.getElementById('ss67')?.value)||0) > 0;
+  if(hasManualSS) ssMethod = 'ssBtn-manual';
+  if(ssMethod === 'ssBtn-estimate' && state.salary && !hasManualSS) {
     estimateSS();
   } else if(ssMethod === 'ssBtn-manual') {
     ssManualUpdate();
