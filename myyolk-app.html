@@ -5342,7 +5342,17 @@ function loadFromLocal() {
     if(document.getElementById('hasChildBenefit')?.checked && typeof calcChildBenefit === 'function') {
       calcChildBenefit();
     }
+    // If manual SS values exist, apply them before recalc so they aren't overwritten
+    var hasSS62 = (parseFloat(document.getElementById('ss62')?.value)||0) > 0;
+    var hasSS67 = (parseFloat(document.getElementById('ss67')?.value)||0) > 0;
+    if((hasSS62 || hasSS67) && typeof ssManualUpdate === 'function') {
+      ssManualUpdate();
+    }
     if(typeof recalc === 'function') recalc();
+    // Call ssManualUpdate again after recalc to ensure values are correct
+    if((hasSS62 || hasSS67) && typeof ssManualUpdate === 'function') {
+      ssManualUpdate();
+    }
     console.log('MyYolk: data restored from localStorage');
   } catch(e) { console.warn('Load failed:', e); }
 }
