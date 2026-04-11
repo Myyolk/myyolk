@@ -2844,7 +2844,7 @@ function ssManualUpdate() {
   var val62 = getVal('ss62', 0);
   var val67 = getVal('ss67', 0);
   var val70 = getVal('ss70', 0);
-  var ssAge = getVal('ssAge', 67);
+  var ssAge = parseInt(document.getElementById('ssClaimingAge')?.value) || getVal('ssClaimingAge', 67) || 67;
   // Interpolate between SS values based on claiming age
   if (ssAge <= 62) state.ssMonthly = val62;
   else if (ssAge >= 70) state.ssMonthly = val70;
