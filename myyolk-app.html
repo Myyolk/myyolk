@@ -2759,6 +2759,10 @@ function toggleSpouseSSType() {
 
 // ── SS ESTIMATE ──
 function estimateSS() {
+  // Never run if manual SS values have been entered
+  var hasSS62 = (parseFloat(document.getElementById('ss62')?.value)||0) > 0;
+  var hasSS67 = (parseFloat(document.getElementById('ss67')?.value)||0) > 0;
+  if(hasSS62 || hasSS67) { ssManualUpdate(); return; }
   var yrs = getVal('ssYearsWorked', 30);
   var hintEl = document.getElementById('ssYearsHint');
   if (hintEl) {
@@ -3615,7 +3619,7 @@ showTab = function(name) {
       var isCouple = document.getElementById('planCouple')?.checked;
       var densieCard = document.getElementById('densieSSCard');
       if(densieCard) densieCard.style.display = isCouple ? 'block' : 'none';
-      estimateSS();
+      if(!((parseFloat(document.getElementById('ss62')?.value)||0) > 0 || (parseFloat(document.getElementById('ss67')?.value)||0) > 0)) estimateSS();
       if(isCouple && typeof calcSpouseSsBenefit === 'function') calcSpouseSsBenefit();
     }, 100);
   }
