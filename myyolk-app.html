@@ -5342,14 +5342,22 @@ function loadFromLocal() {
     if(document.getElementById('hasChildBenefit')?.checked && typeof calcChildBenefit === 'function') {
       calcChildBenefit();
     }
-    // If manual SS values exist, apply them before recalc so they aren't overwritten
+    // If manual SS values exist, activate manual tab and apply them
     var hasSS62 = (parseFloat(document.getElementById('ss62')?.value)||0) > 0;
     var hasSS67 = (parseFloat(document.getElementById('ss67')?.value)||0) > 0;
-    if((hasSS62 || hasSS67) && typeof ssManualUpdate === 'function') {
-      ssManualUpdate();
+    if(hasSS62 || hasSS67) {
+      // Activate manual SS method so fields are treated as manual
+      document.querySelectorAll('.ss-method-btn').forEach(function(b){ b.classList.remove('active'); b.style.background=''; b.style.color=''; });
+      var manBtn = document.getElementById('ssBtn-manual');
+      if(manBtn) { manBtn.classList.add('active'); manBtn.style.background='var(--amber)'; manBtn.style.color='#fff'; }
+      var manSection = document.getElementById('ss-method-manual');
+      if(manSection) manSection.style.display = 'block';
+      var estSection = document.getElementById('ss-method-estimate');
+      if(estSection) estSection.style.display = 'none';
+      if(typeof ssManualUpdate === 'function') ssManualUpdate();
     }
     if(typeof recalc === 'function') recalc();
-    // Call ssManualUpdate again after recalc to ensure values are correct
+    // After recalc, re-apply manual values to ensure they weren't overwritten
     if((hasSS62 || hasSS67) && typeof ssManualUpdate === 'function') {
       ssManualUpdate();
     }
