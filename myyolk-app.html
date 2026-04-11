@@ -2857,10 +2857,24 @@ function ssManualUpdate() {
     var frac2 = (ssAge - 67) / (70 - 67);
     state.ssMonthly = val67 + (val70 - val67) * frac2;
   }
+  // Update the 4 display boxes with manually entered values
+  // Age 65 is interpolated between 62 and 67
+  var at65 = val62 + (val67 - val62) * ((65-62)/(67-62));
+  fmtEl('est-ss62', '$' + Math.round(val62).toLocaleString());
+  fmtEl('est-ss65', '$' + Math.round(at65).toLocaleString());
+  fmtEl('est-ss67', '$' + Math.round(val67).toLocaleString());
+  fmtEl('est-ss70', '$' + Math.round(val70).toLocaleString());
+
+  // Update "Your Benefit at Claiming Age" display
+  var claimDisplay = document.getElementById('ssClaimBenefit') ||
+                     document.getElementById('ssClaimingBenefit') ||
+                     document.querySelector('[id*="claimBenefit"]');
+  var claimDispEl = document.getElementById('projSSclaim') ||
+                    document.querySelector('.ss-claim-result') ||
+                    document.getElementById('ssBenefitAtClaim');
   fmtEl('ssEstimate', fmt(state.ssMonthly) + '/mo');
   updateSummaryRow();
-  // Don't call recalc() here - it would call estimateSS() and overwrite our values
-  // Instead call calcSpouseSsBenefit directly to update household SS
+  // Update household SS
   if(typeof calcSpouseSsBenefit === 'function') calcSpouseSsBenefit();
 }
 
