@@ -2286,63 +2286,119 @@
 
     <div class="tab-panel" id="tab-whatif">
       <h1 class="page-title">What-If Scenarios</h1>
-      <p class="page-subtitle">Explore how different choices affect your retirement outcome.</p>
+      <p class="page-subtitle">See how small changes today create big differences at retirement.</p>
 
-      <div class="form-grid" style="margin-bottom:1.5rem">
-        <div class="card" style="margin-bottom:0">
-          <div class="card-title"><span class="dot"></span> Adjust the Scenario</div>
-          <div class="field" style="margin-bottom:1rem">
-            <label>Alternate Retirement Age</label>
-            <input type="number" id="wi-retAge" placeholder="e.g. 62" oninput="calcWhatIf()">
-          </div>
-          <div class="field" style="margin-bottom:1rem">
-            <label>Alternate Growth Rate (%)</label>
-            <input type="number" id="wi-ror" placeholder="e.g. 7" step="0.1" oninput="calcWhatIf()">
-          </div>
-          <div class="field" style="margin-bottom:1rem">
-            <label>Extra Annual Savings ($)</label>
-            <input type="number" id="wi-extraSavings" placeholder="e.g. 5000" oninput="calcWhatIf()">
-          </div>
-          <div class="field">
-            <label>Annual Spending in Retirement ($)</label>
-            <input type="number" id="wi-spending" placeholder="e.g. 80000" oninput="calcWhatIf()">
-          </div>
-        </div>
-
-        <div class="card" style="margin-bottom:0">
-          <div class="card-title"><span class="dot"></span> What-If Results</div>
-          <div style="margin-bottom:1rem">
-            <div style="font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:4px">Projected Portfolio</div>
-            <div style="font-size:1.8rem;font-weight:700;color:var(--sage)" id="wi-portfolio">$—</div>
-          </div>
-          <div style="margin-bottom:1rem">
-            <div style="font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:4px">Safe Withdrawal (4%)</div>
-            <div style="font-size:1.4rem;font-weight:700" id="wi-withdrawal">$—</div>
-          </div>
-          <div style="margin-bottom:1rem">
-            <div style="font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:4px">Readiness Ratio</div>
-            <div style="font-size:1.4rem;font-weight:700;color:var(--clay)" id="wi-ratio">—</div>
-          </div>
-          <div>
-            <div style="font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid);margin-bottom:4px">Assessment</div>
-            <div style="font-weight:600" id="wi-assess">—</div>
-          </div>
+      <!-- Quick Preset Buttons -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <div class="card-title"><span class="dot"></span> ⚡ Quick Scenarios</div>
+        <p style="font-size:0.85rem;color:var(--mid);margin-bottom:0.75rem">Click any scenario to instantly see the impact vs your current plan.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
+          <button class="wi-preset-btn" onclick="applyWiPreset('retire2')" style="background:var(--sage-pale);border:1px solid var(--sage);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;cursor:pointer;font-weight:600;color:var(--forest)">⏳ Work 2 More Years</button>
+          <button class="wi-preset-btn" onclick="applyWiPreset('retire5')" style="background:var(--sage-pale);border:1px solid var(--sage);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;cursor:pointer;font-weight:600;color:var(--forest)">⏳ Work 5 More Years</button>
+          <button class="wi-preset-btn" onclick="applyWiPreset('ss70')" style="background:#fff8e1;border:1px solid var(--gold);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;cursor:pointer;font-weight:600;color:#856404">💰 Claim SS at 70</button>
+          <button class="wi-preset-btn" onclick="applyWiPreset('save500')" style="background:var(--sage-pale);border:1px solid var(--sage);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;cursor:pointer;font-weight:600;color:var(--forest)">📈 Save $500 More/mo</button>
+          <button class="wi-preset-btn" onclick="applyWiPreset('spend20')" style="background:var(--sage-pale);border:1px solid var(--sage);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;cursor:pointer;font-weight:600;color:var(--forest)">✂️ Spend 20% Less</button>
+          <button class="wi-preset-btn" onclick="applyWiPreset('parttime')" style="background:#f0f4ff;border:1px solid #7c9fd4;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;cursor:pointer;font-weight:600;color:#1e3a5f)">💼 Part-Time 5 Years</button>
+          <button class="wi-preset-btn" onclick="applyWiPreset('windfall')" style="background:#fff8e1;border:1px solid var(--gold);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;cursor:pointer;font-weight:600;color:#856404">🎁 $100K Windfall</button>
+          <button onclick="resetWiScenario()" style="background:#f5f5f5;border:1px solid #ddd;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;cursor:pointer;color:#888">↺ Reset</button>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-title"><span class="dot"></span> Quick Comparisons</div>
-        <div class="scenario-grid" id="scenarioCards"></div>
+      <!-- Side by side: Adjust + Results -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+        <!-- Left: Inputs -->
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title"><span class="dot"></span> 🎛️ Adjust the Scenario</div>
+          <div class="field">
+            <label>Alternate Retirement Age</label>
+            <input type="number" id="wi-retAge" placeholder="e.g. 64" min="50" max="80" oninput="calcWhatIf()">
+            <div class="hint" id="wi-retAge-hint"></div>
+          </div>
+          <div class="field">
+            <label>Alternate Growth Rate (%)</label>
+            <input type="number" id="wi-ror" placeholder="e.g. 7" min="1" max="15" step="0.5" oninput="calcWhatIf()">
+            <div class="hint" id="wi-ror-hint"></div>
+          </div>
+          <div class="field">
+            <label>Extra Monthly Savings ($)</label>
+            <input type="number" id="wi-extraSavings" placeholder="e.g. 500" min="0" oninput="calcWhatIf()">
+            <div class="hint">Added to your current contributions</div>
+          </div>
+          <div class="field">
+            <label>Monthly Spending in Retirement ($)</label>
+            <input type="number" id="wi-spending" placeholder="e.g. 6000" min="0" oninput="calcWhatIf()">
+            <div class="hint">Overrides your budget tab amount</div>
+          </div>
+          <div class="field">
+            <label>Part-Time Income in Early Retirement ($)</label>
+            <input type="number" id="wi-parttime" placeholder="e.g. 2000" min="0" oninput="calcWhatIf()">
+            <div class="hint" id="wi-parttime-hint">Monthly income for first 5 years of retirement</div>
+          </div>
+          <div class="field">
+            <label>One-Time Windfall ($)</label>
+            <input type="number" id="wi-windfall" placeholder="e.g. 100000" min="0" oninput="calcWhatIf()">
+            <div class="hint">Inheritance, home sale, bonus added at retirement</div>
+          </div>
+        </div>
+
+        <!-- Right: Results -->
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title"><span class="dot"></span> 📊 What-If Results</div>
+          <!-- Summary sentence -->
+          <div id="wi-summary" style="font-size:0.95rem;font-weight:600;color:var(--forest);background:var(--sage-pale);border-radius:8px;padding:0.75rem;margin-bottom:1rem;min-height:2.5rem">Adjust the scenario to see results.</div>
+
+          <!-- Comparison grid -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1rem">
+            <div style="text-align:center">
+              <div style="font-size:0.7rem;color:var(--mid);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:2px">Current Plan</div>
+              <div style="font-size:0.7rem;color:var(--mid);margin-bottom:6px">Portfolio</div>
+              <div id="wi-cur-portfolio" style="font-size:1.1rem;font-weight:700;color:var(--gold)">—</div>
+              <div style="font-size:0.7rem;color:var(--mid);margin:6px 0 2px">Monthly Draw</div>
+              <div id="wi-cur-draw" style="font-size:1rem;font-weight:600;color:var(--forest)">—</div>
+              <div style="font-size:0.7rem;color:var(--mid);margin:6px 0 2px">Money Lasts</div>
+              <div id="wi-cur-lasts" style="font-size:1rem;font-weight:600;color:var(--forest)">—</div>
+            </div>
+            <div style="text-align:center;background:var(--sage-pale);border-radius:8px;padding:0.5rem">
+              <div style="font-size:0.7rem;color:var(--sage);text-transform:uppercase;letter-spacing:0.05em;font-weight:700;margin-bottom:2px">What-If Plan</div>
+              <div style="font-size:0.7rem;color:var(--mid);margin-bottom:6px">Portfolio</div>
+              <div id="wi-new-portfolio" style="font-size:1.1rem;font-weight:700;color:var(--gold)">—</div>
+              <div style="font-size:0.7rem;color:var(--mid);margin:6px 0 2px">Monthly Draw</div>
+              <div id="wi-new-draw" style="font-size:1rem;font-weight:600;color:var(--forest)">—</div>
+              <div style="font-size:0.7rem;color:var(--mid);margin:6px 0 2px">Money Lasts</div>
+              <div id="wi-new-lasts" style="font-size:1rem;font-weight:600;color:var(--forest)">—</div>
+            </div>
+          </div>
+
+          <!-- Delta row -->
+          <div style="background:#f5f5f5;border-radius:8px;padding:0.75rem;margin-bottom:0.75rem">
+            <div style="font-size:0.75rem;font-weight:700;color:var(--mid);margin-bottom:0.4rem">DIFFERENCE vs CURRENT PLAN</div>
+            <div style="display:flex;justify-content:space-between;font-size:0.85rem">
+              <span>Portfolio:</span><span id="wi-delta-portfolio" style="font-weight:700">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-top:3px">
+              <span>Monthly Draw:</span><span id="wi-delta-draw" style="font-weight:700">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-top:3px">
+              <span>Years Longer:</span><span id="wi-delta-lasts" style="font-weight:700">—</span>
+            </div>
+          </div>
+
+          <div id="wi-assessment" style="font-size:0.82rem;color:var(--mid);text-align:center"></div>
+        </div>
+      </div>
+
+      <!-- Shareable summary -->
+      <div id="wi-shareCard" class="card" style="display:none;margin-bottom:1.5rem;background:var(--forest);color:#fff">
+        <div id="wi-shareText" style="font-size:1rem;font-weight:600;text-align:center;line-height:1.6"></div>
       </div>
 
       <div class="btn-row">
-        <button class="btn btn-secondary" onclick="showTab('readiness')">← Back</button>
-        <button class="btn btn-primary" onclick="showTab('early')">Next: Early Retirement →</button>
+        <button class="btn btn-secondary" onclick="showTab('readiness')">&#8592; Back</button>
+        <button class="btn btn-primary" onclick="showTab('early')">Next: Early Retirement &#8594;</button>
       </div>
     </div>
 
-    <!-- ══ EARLY RETIREMENT TAB ══ -->
-    <div class="tab-panel" id="tab-early">
+    id="tab-early">
       <h1 class="page-title">Early Retirement & Layoff</h1>
       <p class="page-subtitle">What if income stopped earlier than planned? Model the impact.</p>
 
@@ -4631,6 +4687,186 @@ function updateWithdrawalRate(slider) {
 
 // ── WHAT IF ──
 function updateWhatIf() {}
+
+function applyWiPreset(preset) {
+  resetWiScenario();
+  var retAge = parseInt(document.getElementById('retAge')?.value) || 65;
+  var spending = 0;
+  var budM = document.querySelectorAll('.bud-m');
+  budM.forEach(function(el){ spending += parseFloat(el.value)||0; });
+
+  if(preset === 'retire2') { document.getElementById('wi-retAge').value = retAge + 2; }
+  else if(preset === 'retire5') { document.getElementById('wi-retAge').value = retAge + 5; }
+  else if(preset === 'ss70') { document.getElementById('wi-retAge').value = 70; }
+  else if(preset === 'save500') { document.getElementById('wi-extraSavings').value = 500; }
+  else if(preset === 'spend20') { document.getElementById('wi-spending').value = Math.round(spending * 0.8); }
+  else if(preset === 'parttime') { document.getElementById('wi-parttime').value = 2000; }
+  else if(preset === 'windfall') { document.getElementById('wi-windfall').value = 100000; }
+  calcWhatIf();
+}
+
+function resetWiScenario() {
+  ['wi-retAge','wi-ror','wi-extraSavings','wi-spending','wi-parttime','wi-windfall'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+  calcWhatIf();
+}
+
+function calcWhatIf() {
+  var currentAge = parseInt(document.getElementById('age')?.value) || 56;
+  var baseRetAge = parseInt(document.getElementById('retAge')?.value) || 65;
+  var wiRetAge = parseInt(document.getElementById('wi-retAge')?.value) || baseRetAge;
+  var baseRor = 0.07;
+  var growthEl = document.getElementById('growthRate');
+  if(growthEl) {
+    if(growthEl.value === 'custom') baseRor = (parseFloat(document.getElementById('customRate')?.value)||7)/100;
+    else baseRor = parseFloat(growthEl.value)||0.07;
+  }
+  var wiRor = document.getElementById('wi-ror')?.value ? (parseFloat(document.getElementById('wi-ror').value)||7)/100 : baseRor;
+  var extraSavingsMo = parseFloat(document.getElementById('wi-extraSavings')?.value)||0;
+  var parttime = parseFloat(document.getElementById('wi-parttime')?.value)||0;
+  var windfall = parseFloat(document.getElementById('wi-windfall')?.value)||0;
+
+  // Get base spending
+  var baseSpending = 0;
+  document.querySelectorAll('.bud-m').forEach(function(el){ baseSpending += parseFloat(el.value)||0; });
+  var wiSpending = parseFloat(document.getElementById('wi-spending')?.value)||baseSpending;
+
+  // Current portfolio
+  var bal = 0;
+  ['bal401k','balRoth401','balRothIRA','balTaxable','balHSA','balCash'].forEach(function(id){
+    bal += parseFloat(document.getElementById(id)?.value)||0;
+  });
+  if(document.getElementById('planCouple')?.checked) {
+    ['spouseBal401k','spouseBalRoth401','spouseBalRothIRA','spouseBalTaxable','spouseBalHSA'].forEach(function(id){
+      bal += parseFloat(document.getElementById(id)?.value)||0;
+    });
+  }
+
+  // Current annual contributions
+  var salary = parseFloat(document.getElementById('salary')?.value)||0;
+  var contrib = (parseFloat(document.getElementById('contrib401k')?.value)||0)/100;
+  var match = (parseFloat(document.getElementById('empMatch')?.value)||0)/100;
+  var matchCap = (parseFloat(document.getElementById('matchCap')?.value)||100)/100;
+  var baseAnnualContrib = salary * (contrib + Math.min(contrib, matchCap) * match);
+  if(document.getElementById('planCouple')?.checked) {
+    var spSal = parseFloat(document.getElementById('spouseSalary')?.value)||0;
+    var spContrib = (parseFloat(document.getElementById('spouseContrib401k')?.value)||0)/100;
+    baseAnnualContrib += spSal * spContrib;
+  }
+
+  // SS income
+  var ssIncome = (state.ssMonthly||0) + (state.spouseSsMonthly||0) + (state.childSsMonthly||0);
+
+  // ── CURRENT PLAN ──
+  var curYears = Math.max(0, baseRetAge - currentAge);
+  var curPortfolio = bal;
+  for(var i = 0; i < curYears; i++) curPortfolio = (curPortfolio + baseAnnualContrib) * (1 + baseRor);
+  var curDraw = (curPortfolio * 0.04) / 12;
+  var curLasts = simDepletionAge(curPortfolio, baseSpending, ssIncome, baseRetAge, baseRor * 0.5);
+
+  // ── WHAT-IF PLAN ──
+  var wiYears = Math.max(0, wiRetAge - currentAge);
+  var wiAnnualContrib = baseAnnualContrib + (extraSavingsMo * 12);
+  var wiPortfolio = bal;
+  for(var j = 0; j < wiYears; j++) wiPortfolio = (wiPortfolio + wiAnnualContrib) * (1 + wiRor);
+  wiPortfolio += windfall;
+  // Part-time income reduces draw for first 5 years
+  var wiSpendingAdj = wiSpending || baseSpending;
+  var wiDraw = (wiPortfolio * 0.04) / 12;
+  var wiLasts = simDepletionAgeWithParttime(wiPortfolio, wiSpendingAdj, ssIncome + parttime, wiRetAge, wiRor * 0.5, parttime, 5);
+
+  // ── FORMAT + DISPLAY ──
+  var fmt = function(n) {
+    if(n >= 1000000) return '$' + (n/1000000).toFixed(2) + 'M';
+    if(n >= 1000) return '$' + Math.round(n/1000) + 'K';
+    return '$' + Math.round(n).toLocaleString();
+  };
+  var fmtMo = function(n) { return '$' + Math.round(n).toLocaleString() + '/mo'; };
+
+  var el = function(id) { return document.getElementById(id); };
+  if(el('wi-cur-portfolio')) el('wi-cur-portfolio').textContent = fmt(curPortfolio);
+  if(el('wi-cur-draw')) el('wi-cur-draw').textContent = fmtMo(curDraw);
+  if(el('wi-cur-lasts')) { el('wi-cur-lasts').textContent = curLasts >= 120 ? 'Age 120+' : 'Age ' + curLasts; el('wi-cur-lasts').style.color = curLasts >= 90 ? 'var(--sage)' : curLasts >= 80 ? '#e67e22' : 'var(--clay)'; }
+  if(el('wi-new-portfolio')) el('wi-new-portfolio').textContent = fmt(wiPortfolio);
+  if(el('wi-new-draw')) el('wi-new-draw').textContent = fmtMo(wiDraw);
+  if(el('wi-new-lasts')) { el('wi-new-lasts').textContent = wiLasts >= 120 ? 'Age 120+' : 'Age ' + wiLasts; el('wi-new-lasts').style.color = wiLasts >= 90 ? 'var(--sage)' : wiLasts >= 80 ? '#e67e22' : 'var(--clay)'; }
+
+  // Deltas
+  var deltaPortfolio = wiPortfolio - curPortfolio;
+  var deltaDraw = wiDraw - curDraw;
+  var deltaLasts = (wiLasts >= 120 ? 120 : wiLasts) - (curLasts >= 120 ? 120 : curLasts);
+  var fmtDelta = function(n, isMo) {
+    var prefix = n >= 0 ? '+' : '';
+    return prefix + (isMo ? fmtMo(n) : fmt(Math.abs(n)) * (n < 0 ? -1 : 1));
+  };
+  if(el('wi-delta-portfolio')) {
+    var dp = deltaPortfolio >= 0 ? '+' + fmt(deltaPortfolio) : '-' + fmt(Math.abs(deltaPortfolio));
+    el('wi-delta-portfolio').textContent = dp;
+    el('wi-delta-portfolio').style.color = deltaPortfolio >= 0 ? 'var(--sage)' : 'var(--clay)';
+  }
+  if(el('wi-delta-draw')) {
+    var dd = (deltaDraw >= 0 ? '+' : '') + fmtMo(deltaDraw);
+    el('wi-delta-draw').textContent = dd;
+    el('wi-delta-draw').style.color = deltaDraw >= 0 ? 'var(--sage)' : 'var(--clay)';
+  }
+  if(el('wi-delta-lasts')) {
+    el('wi-delta-lasts').textContent = deltaLasts >= 0 ? '+' + deltaLasts + ' yrs' : deltaLasts + ' yrs';
+    el('wi-delta-lasts').style.color = deltaLasts >= 0 ? 'var(--sage)' : 'var(--clay)';
+  }
+
+  // Summary sentence
+  var hasChanges = document.getElementById('wi-retAge')?.value || document.getElementById('wi-ror')?.value ||
+    document.getElementById('wi-extraSavings')?.value || document.getElementById('wi-spending')?.value ||
+    document.getElementById('wi-parttime')?.value || document.getElementById('wi-windfall')?.value;
+
+  if(hasChanges && el('wi-summary')) {
+    var parts = [];
+    if(wiRetAge !== baseRetAge) parts.push('retiring at ' + wiRetAge + ' instead of ' + baseRetAge);
+    if(extraSavingsMo > 0) parts.push('saving $' + extraSavingsMo.toLocaleString() + '/mo more');
+    if(wiSpending < baseSpending && document.getElementById('wi-spending')?.value) parts.push('spending $' + Math.round(baseSpending - wiSpending).toLocaleString() + '/mo less');
+    if(parttime > 0) parts.push('earning $' + parttime.toLocaleString() + '/mo part-time for 5 years');
+    if(windfall > 0) parts.push('a $' + windfall.toLocaleString() + ' windfall');
+    var scenario = parts.length > 0 ? 'By ' + parts.join(', ') + ', ' : '';
+    var outcome = deltaPortfolio >= 0
+      ? 'you gain ' + fmt(deltaPortfolio) + ' and your money lasts ' + (deltaLasts > 0 ? deltaLasts + ' years longer' : 'just as long') + '.'
+      : 'your portfolio decreases by ' + fmt(Math.abs(deltaPortfolio)) + '.';
+    el('wi-summary').textContent = scenario + outcome;
+    // Show share card
+    if(el('wi-shareCard')) { el('wi-shareCard').style.display = 'block'; }
+    if(el('wi-shareText')) el('wi-shareText').textContent = scenario + outcome;
+  } else if(el('wi-summary')) {
+    el('wi-summary').textContent = 'Adjust the scenario to see results.';
+    if(el('wi-shareCard')) el('wi-shareCard').style.display = 'none';
+  }
+
+  // Hints
+  if(el('wi-retAge-hint')) el('wi-retAge-hint').textContent = wiRetAge !== baseRetAge ? (wiRetAge > baseRetAge ? '↑ ' + (wiRetAge - baseRetAge) + ' more years of contributions' : '↓ ' + (baseRetAge - wiRetAge) + ' fewer years of contributions') : '';
+  if(el('wi-ror-hint')) el('wi-ror-hint').textContent = document.getElementById('wi-ror')?.value ? 'vs your current ' + (baseRor*100).toFixed(1) + '% rate' : '';
+}
+
+function simDepletionAge(portfolio, monthlyExpenses, monthlyIncome, retireAge, growthRate) {
+  var draw = Math.max(0, (monthlyExpenses - monthlyIncome) * 12);
+  if(draw <= 0) return 120;
+  var bal = portfolio;
+  var age = retireAge;
+  while(bal > 0 && age < 120) { bal = bal * (1 + growthRate) - draw; age++; }
+  return age;
+}
+
+function simDepletionAgeWithParttime(portfolio, monthlyExpenses, monthlyIncome, retireAge, growthRate, parttimeIncome, parttimeYears) {
+  var bal = portfolio;
+  var age = retireAge;
+  while(bal > 0 && age < 120) {
+    var yr = age - retireAge;
+    var income = monthlyIncome + (yr < parttimeYears ? parttimeIncome : 0);
+    var draw = Math.max(0, (monthlyExpenses - income) * 12);
+    bal = bal * (1 + growthRate) - draw;
+    age++;
+  }
+  return age;
+}
 
 // ── EARLY RETIREMENT ──
 function updateEarly() {}
