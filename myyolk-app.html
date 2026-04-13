@@ -1621,6 +1621,12 @@
             <div class="field"><label>Benefit at 67 ($)</label><input type="number" id="ss67" placeholder="e.g. 2500" oninput="ssManualUpdate()"><div class="hint">Full retirement age</div></div>
             <div class="field"><label>Benefit at 70 ($)</label><input type="number" id="ss70" placeholder="e.g. 3100" oninput="ssManualUpdate()"><div class="hint">Maximum delayed</div></div>
           </div>
+          <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:1rem;margin-top:0.5rem">
+            <div><div id="dest-ss62" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 62</div></div>
+            <div><div id="dest-ss65" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 65</div></div>
+            <div><div id="dest-ss67" style="font-size:1.15rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 67 ★</div></div>
+            <div><div id="dest-ss70" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 70</div></div>
+          </div>
         </div>
         <div id="ss-method-estimate">
           <div class="form-grid">
@@ -1672,13 +1678,7 @@
           <div class="form-grid three">
             <div class="field"><label>Benefit at 62 ($)</label><input type="number" id="dss62" placeholder="e.g. 1200" oninput="dssManualUpdate()"><div class="hint">Reduced early benefit</div></div>
             <div class="field"><label>Benefit at 67 ($)</label><input type="number" id="dss67" placeholder="e.g. 1800" oninput="dssManualUpdate()"><div class="hint">Full retirement age</div></div>
-            <div class="field"><label>Benefit at 70 ($)</label><input type="number" id="dss70" placeholder="e.g. 2200" oninput="dssManualUpdate()"><div class="hint">Maximum delayed</div>
-            <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:1rem">
-              <div><div id="dest-ss62" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 62</div></div>
-              <div><div id="dest-ss65" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 65</div></div>
-              <div><div id="dest-ss67" style="font-size:1.1rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 67 ★</div></div>
-              <div><div id="dest-ss70" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 70</div></div>
-            </div></div>
+            <div class="field"><label>Benefit at 70 ($)</label><input type="number" id="dss70" placeholder="e.g. 2200" oninput="dssManualUpdate()"><div class="hint">Maximum delayed</div></div>
           </div>
         </div>
         <div id="dss-method-estimate">
