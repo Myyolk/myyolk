@@ -1656,7 +1656,28 @@
       <!-- DENSIE SS CARD -->
       <div class="card" id="densieSSCard" style="display:none">
         <div class="card-title"><span class="dot"></span> <span id="spouse-ss-name">Densie's Social Security</div>
-        <div style="font-size:0.7rem;color:var(--mid)">Age 70</div></div>
+        <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem">
+          <button id="dssBtn-upload" onclick="switchDSSMethod('upload')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Upload Statement</button>
+          <button id="dssBtn-manual" onclick="switchDSSMethod('manual')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Enter Manually</button>
+          <button id="dssBtn-estimate" onclick="switchDSSMethod('estimate')" style="flex:1;padding:0.6rem;border:none;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--gold);color:#fff">Estimate for Me</button>
+        </div>
+        <div id="dss-method-upload" style="display:none">
+          <div class="upload-zone" style="padding:1.5rem">
+            <input type="file" accept=".pdf,image/*" onchange="handleDSSUpload(event)">
+            <div style="font-size:2rem;margin-bottom:0.5rem">🏛️</div>
+            <div style="font-size:0.95rem;font-weight:600">Drop their SSA Statement PDF here</div>
+            <div style="font-size:0.82rem;color:var(--mid)">We will read their benefit amounts automatically</div>
+          </div>
+        </div>
+        <div id="dss-method-manual" style="display:none">
+          <div class="form-grid three">
+            <div class="field"><label>Benefit at 62 ($)</label><input type="number" id="dss62" placeholder="e.g. 1200" oninput="dssManualUpdate()"><div class="hint">Reduced early benefit</div></div>
+            <div class="field"><label>Benefit at 67 ($)</label><input type="number" id="dss67" placeholder="e.g. 1800" oninput="dssManualUpdate()"><div class="hint">Full retirement age</div></div>
+            <div class="field"><label>Benefit at 70 ($)</label><input type="number" id="dss70" placeholder="e.g. 2200" oninput="dssManualUpdate()"><div class="hint">Maximum delayed</div></div>
+          </div>
+          <div style="flex:1;min-width:0"><div id="dest-ss67" style="font-size:1.1rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.68rem;color:var(--mid)">Age 67 ★</div></div><div style="flex:1;min-width:0"><div id="dest-ss70" style="font-size:0.95rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.68rem;color:var(--mid)">Age 70</div></div></div></div>
+            <div style="min-width:0;flex:1"><div id="dest-ss67" style="font-size:1.1rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.7rem;color:var(--mid)">Age 67 ★</div></div>
+            <div style="min-width:0;flex:1"><div id="dest-ss70" style="font-size:0.95rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.7rem;color:var(--mid)">Age 70</div></div>
           </div>
 
         </div>
