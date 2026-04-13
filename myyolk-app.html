@@ -1672,7 +1672,13 @@
           <div class="form-grid three">
             <div class="field"><label>Benefit at 62 ($)</label><input type="number" id="dss62" placeholder="e.g. 1200" oninput="dssManualUpdate()"><div class="hint">Reduced early benefit</div></div>
             <div class="field"><label>Benefit at 67 ($)</label><input type="number" id="dss67" placeholder="e.g. 1800" oninput="dssManualUpdate()"><div class="hint">Full retirement age</div></div>
-            <div class="field"><label>Benefit at 70 ($)</label><input type="number" id="dss70" placeholder="e.g. 2200" oninput="dssManualUpdate()"><div class="hint">Maximum delayed</div></div>
+            <div class="field"><label>Benefit at 70 ($)</label><input type="number" id="dss70" placeholder="e.g. 2200" oninput="dssManualUpdate()"><div class="hint">Maximum delayed</div>
+            <div style="display:flex;justify-content:space-around;text-align:center;margin-top:0.75rem;padding:0.75rem;background:var(--warm-white);border-radius:8px">
+              <div><div id="dest-ss62" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 62</div></div>
+              <div><div id="dest-ss65" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 65</div></div>
+              <div><div id="dest-ss67" style="font-size:1.1rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 67 ★</div></div>
+              <div><div id="dest-ss70" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 70</div></div>
+            </div></div>
           </div>
         </div>
         <div id="dss-method-estimate">
@@ -3296,10 +3302,21 @@ function dssManualUpdate() {
   if(own) own.value = benefit || '';
   var disp = document.getElementById('dssEstimatedBenefit');
   if(disp) disp.textContent = benefit > 0 ? '$' + benefit.toLocaleString() + '/mo' : '—';
+  // Update display boxes with manually entered values
+  if(v62 > 0) fmtEl('dest-ss62', '$' + Math.round(v62).toLocaleString());
+  if(v67 > 0) {
+    fmtEl('dest-ss67', '$' + Math.round(v67).toLocaleString());
+    if(v62 > 0) fmtEl('dest-ss65', '$' + Math.round(v62 + (v67-v62)*((65-62)/5)).toLocaleString());
+  }
+  if(v70 > 0) fmtEl('dest-ss70', '$' + Math.round(v70).toLocaleString());
+  state.spouseSsManual = benefit;
   calcSpouseSsBenefit();
 }
 
 function estimateDSS() {
+  var hasDSS62 = (parseFloat(document.getElementById('dss62')?.value)||0) > 0;
+  var hasDSS67 = (parseFloat(document.getElementById('dss67')?.value)||0) > 0;
+  if(hasDSS62 || hasDSS67) { dssManualUpdate(); return; }
   var yrs = parseFloat(document.getElementById('dssYearsWorked')?.value) || 30;
   var avgIncome = parseFloat(document.getElementById('dssAvgIncome')?.value) || 0;
   if(!avgIncome) return;
@@ -5361,10 +5378,14 @@ function loadFromLocal() {
       if(typeof ssManualUpdate === 'function') ssManualUpdate();
     }
     if(typeof recalc === 'function') recalc();
-    // After recalc, re-apply manual values to ensure they weren't overwritten
-    if((hasSS62 || hasSS67) && typeof ssManualUpdate === 'function') {
-      ssManualUpdate();
-    }
+    // Call ssManualUpdate again after recalc
+    var hasSS62b = (parseFloat(document.getElementById('ss62')?.value)||0) > 0;
+    var hasSS67b = (parseFloat(document.getElementById('ss67')?.value)||0) > 0;
+    if((hasSS62b || hasSS67b) && typeof ssManualUpdate === 'function') ssManualUpdate();
+    // Spouse manual SS
+    var hasDSS62 = (parseFloat(document.getElementById('dss62')?.value)||0) > 0;
+    var hasDSS67 = (parseFloat(document.getElementById('dss67')?.value)||0) > 0;
+    if((hasDSS62 || hasDSS67) && typeof dssManualUpdate === 'function') dssManualUpdate();
     console.log('MyYolk: data restored from localStorage');
   } catch(e) { console.warn('Load failed:', e); }
 }
