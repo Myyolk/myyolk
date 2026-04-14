@@ -1480,7 +1480,7 @@
 
       <!-- DEAN CARD -->
       <div class="card" id="deanBalancesCard">
-        <div class="card-title"><span class="dot"></span> <span id="acct-bal-title">Your</span> Finances</div>
+        <div class="card-title"><span class="dot"></span> <span id="acct-bal-title">Your Finances</span></div>
         <div class="form-grid">
           <div class="field"><label>Traditional 401(k) ($)</label><input type="number" id="bal401k" value="" placeholder="0" oninput="recalc()"></div>
           <div class="field"><label>Roth 401(k) ($)</label><input type="number" id="balRoth401" value="" placeholder="0" oninput="recalc()"></div>
@@ -1514,7 +1514,7 @@
       <!-- DENSIE CARD -->
       <div id="spouseAccountsCard" style="display:none">
         <div class="card">
-          <div class="card-title"><span class="dot"></span> <span id="spouse-bal-title">Spouse</span> Finances</div>
+          <div class="card-title"><span class="dot"></span> <span id="spouse-bal-title">Spouse Finances</span></div>
           <div class="form-grid">
             <div class="field"><label>Traditional 401(k) ($)</label><input type="number" id="spouseBal401k" value="" placeholder="0" oninput="recalc()"></div>
             <div class="field"><label>Roth 401(k) ($)</label><input type="number" id="spouseBalRoth401" value="" placeholder="0" oninput="recalc()"></div>
@@ -4385,12 +4385,12 @@ function updatePlanningFor() {
   var st = function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
   var name1 = cap1 ? cap1+"'s" : 'Your';
   var name2 = cap2 ? cap2+"'s" : 'Spouse';
-  st('acct-bal-title', name1);
+  st('acct-bal-title', name1 + ' Finances');
   st('acct-other-title', name1);
   st('spouse-other-title', name2);
   st('acct-401k-title', name1);
   st('acct-ss-title', name1);
-  st('spouse-bal-title', name2);
+  st('spouse-bal-title', name2 + ' Finances');
   st('spouse-401k-title', name2);
   st('spouse-ss-title', name2);
 }
