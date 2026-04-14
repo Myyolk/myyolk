@@ -1620,13 +1620,22 @@
       <!-- PERSONAL PROPERTY -->
       <div class="card">
         <div class="card-title"><span class="dot"></span> Personal Property &amp; Other Assets</div>
-        <div class="form-grid">
-          <div class="field"><label>Primary Home Value ($)</label><input type="number" id="homeValue" value="" placeholder="0" oninput="recalc()"></div>
-          <div class="field"><label>Mortgage Balance ($)</label><input type="number" id="mortgageBalance" value="" placeholder="0" oninput="recalc()"></div>
-          <div class="field"><label>Second Home Value ($)</label><input type="number" id="secondHomeValue" value="" placeholder="0" oninput="recalc()"></div>
-          <div class="field"><label>Second Home Mortgage ($)</label><input type="number" id="secondHomeMortgage" value="" placeholder="0" oninput="recalc()"></div>
-          <div class="field"><label>Vehicle Value ($)</label><input type="number" id="vehicleValue" value="" placeholder="0" oninput="recalc()"><div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.25rem">⚠️ Vehicles depreciate and are excluded from retirement projections</div></div>
-          <div class="field"><label>Other Assets ($)</label><input type="number" id="otherAssets" value="" placeholder="0" oninput="recalc()"></div>
+        
+        <!-- DYNAMIC PROPERTY ROWS -->
+        <div id="propertyRows">
+          <!-- First property row added by JS -->
+        </div>
+        <button onclick="addPropertyRow()" style="background:var(--sage-pale);color:var(--forest);border:1px solid var(--sage);border-radius:8px;padding:0.5rem 1rem;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;margin-top:0.5rem">+ Add Property</button>
+        <div style="margin-top:0.75rem;padding:0.75rem;background:var(--warm-white);border-radius:8px;font-size:0.8rem;color:var(--mid)">
+          Mortgage payments will automatically appear in your Budget tab. Enter payoff year to drop mortgage from future calculations.
+        </div>
+
+        <div style="border-top:1px solid var(--border);margin-top:1.25rem;padding-top:1.25rem">
+          <div style="font-weight:600;font-size:0.85rem;color:var(--forest);margin-bottom:0.75rem">Other Assets</div>
+          <div class="form-grid">
+            <div class="field"><label>Vehicle Value ($)</label><input type="number" id="vehicleValue" value="" placeholder="0" oninput="recalc()"><div class="hint">⚠️ Vehicles depreciate — excluded from retirement projections</div></div>
+            <div class="field"><label>Other Assets ($)</label><input type="number" id="otherAssets" value="" placeholder="0" oninput="recalc()"></div>
+          </div>
         </div>
       </div>
 
@@ -2180,13 +2189,12 @@
         <div style="font-weight:700;color:var(--forest);margin-bottom:0.75rem">How we calculate your net worth at retirement:</div>
         <div style="display:flex;flex-direction:column;gap:0.4rem">
           <div style="display:flex;justify-content:space-between"><span style="color:var(--mid)">Investable Portfolio</span><span id="bkPortfolio" style="font-weight:600">—</span></div>
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--mid)">Primary Home (est. <span id="homeAppLabelPrimary">3</span>%/yr growth)</span><span id="bkHome" style="font-weight:600">—</span></div>
-          <div id="bkSecondRow" style="display:none;justify-content:space-between"><span style="color:var(--mid)">Second Home (est. <span id="homeAppLabelSecond">3</span>%/yr growth)</span><span id="bkSecond" style="font-weight:600">—</span></div>
+          <div id="bkPropertiesRows"></div>
           <div style="display:flex;justify-content:space-between"><span style="color:var(--mid)">Other Assets</span><span id="bkOther" style="font-weight:600">—</span></div>
           <div style="height:1px;background:var(--border);margin:0.25rem 0"></div>
           <div style="display:flex;justify-content:space-between;font-weight:700;font-size:0.95rem"><span style="color:var(--forest)">Total Net Worth at Retirement</span><span id="bkTotal" style="color:var(--sage)">—</span></div>
         </div>
-        <div style="margin-top:0.75rem;font-size:0.78rem;color:var(--mid)">* Home appreciation is estimated at <span id="homeAppLabelNote">3</span>%/year. Actual values may vary.</div>
+        <div style="margin-top:0.75rem;font-size:0.78rem;color:var(--mid)">* Appreciation rates set per property in Accounts &amp; Savings.</div>
       </div>
 
       <div class="card">
@@ -3562,33 +3570,48 @@ function calcProjections() {
   var canvas = document.getElementById('projChart');
   if(!canvas) return;
   if(projChartInstance) projChartInstance.destroy();
-  // Calculate home appreciation for net worth line
-  var homeVal = parseFloat(document.getElementById('homeValue')?.value) || 0;
-  var homeApprec = (parseFloat(document.getElementById("homeApprecRate")?.value) || 3) / 100;
-  var secondHomeVal = parseFloat(document.getElementById('secondHomeValue')?.value) || 0;
-  var vehicle = parseFloat(document.getElementById('vehicleValue')?.value) || 0;
+  // Calculate property appreciation for net worth line using dynamic property rows
   var otherAssets = parseFloat(document.getElementById('otherAssets')?.value) || 0;
+  var propRows = document.querySelectorAll('.property-row');
+  var defaultApprec = (parseFloat(document.getElementById('homeApprecRate')?.value) || 3) / 100;
+  
+  // Build property data array
+  var propData = [];
+  propRows.forEach(function(row) {
+    var val = parseFloat(row.querySelector('.prop-value')?.value) || 0;
+    var apprec = (parseFloat(row.querySelector('.prop-apprec')?.value) || (defaultApprec * 100)) / 100;
+    var type = row.querySelector('.prop-type')?.value || 'primary';
+    var payoff = parseInt(row.querySelector('.prop-payoff')?.value) || 0;
+    if(val > 0) propData.push({val: val, apprec: apprec, type: type, payoff: payoff});
+  });
+  
   var netWorthLine = values.map(function(v, i) {
-    var appreciatedHome = homeVal * Math.pow(1 + homeApprec, i);
-    var appreciatedSecond = secondHomeVal * Math.pow(1 + homeApprec, i);
-    return Math.round(v + appreciatedHome + appreciatedSecond + (i === 0 ? otherAssets : 0));
+    var propTotal = propData.reduce(function(sum, p) {
+      return sum + p.val * Math.pow(1 + p.apprec, i);
+    }, 0);
+    return Math.round(v + propTotal + (i === 0 ? otherAssets : 0));
   });
 
   // Update net worth at retirement stat
   var nwEl = document.getElementById('projNetWorth');
   var finalNW = netWorthLine[netWorthLine.length - 1];
-  if(nwEl) nwEl.textContent = finalNW >= 1000000 ? '$' + (finalNW/1000000).toFixed(2) + 'M' : '$' + (finalNW/1000).toFixed(0) + 'K';
-
-  // Populate breakdown
-  var appreciatedHome = Math.round(homeVal * Math.pow(1 + homeApprec, yearsToRetire));
-  var appreciatedSecond = Math.round(secondHomeVal * Math.pow(1 + homeApprec, yearsToRetire));
-  var otherTotal = otherAssets; // vehicles excluded — they depreciate
   function bkFmt(n) { return n >= 1000000 ? '$' + (n/1000000).toFixed(2) + 'M' : '$' + Math.round(n).toLocaleString(); }
+  if(nwEl) nwEl.textContent = bkFmt(finalNW);
+
+  // Populate breakdown - dynamic property rows
   var bkP = document.getElementById('bkPortfolio'); if(bkP) bkP.textContent = bkFmt(finalValue);
-  var bkH = document.getElementById('bkHome'); if(bkH) bkH.textContent = homeVal > 0 ? bkFmt(appreciatedHome) : '—';
-  var bkSR = document.getElementById('bkSecondRow'); if(bkSR) bkSR.style.display = secondHomeVal > 0 ? 'flex' : 'none';
-  var bkS = document.getElementById('bkSecond'); if(bkS) bkS.textContent = secondHomeVal > 0 ? bkFmt(appreciatedSecond) : '—';
-  var bkO = document.getElementById('bkOther'); if(bkO) bkO.textContent = otherTotal > 0 ? bkFmt(otherTotal) : '—';
+  var bkPropRows = document.getElementById('bkPropertiesRows');
+  if(bkPropRows) {
+    var typeLabels = {primary:'Primary Home', rental:'Rental Property', vacation:'Vacation Home', investment:'Investment Property'};
+    bkPropRows.innerHTML = propData.map(function(p) {
+      var appreciated = Math.round(p.val * Math.pow(1 + p.apprec, yearsToRetire));
+      var appPct = (p.apprec * 100).toFixed(1);
+      return '<div style="display:flex;justify-content:space-between"><span style="color:var(--mid)">' + 
+        (typeLabels[p.type]||p.type) + ' (est. ' + appPct + '%/yr)</span>' +
+        '<span style="font-weight:600">' + bkFmt(appreciated) + '</span></div>';
+    }).join('');
+  }
+  var bkO = document.getElementById('bkOther'); if(bkO) bkO.textContent = otherAssets > 0 ? bkFmt(otherAssets) : '—';
   var bkT = document.getElementById('bkTotal'); if(bkT) bkT.textContent = bkFmt(finalNW);
 
   projChartInstance = new Chart(canvas, {
@@ -5343,6 +5366,127 @@ function calcChildBenefit() {
   if(typeof calcSpouseSsBenefit === 'function') calcSpouseSsBenefit();
   recalc();
 }
+
+// ── DYNAMIC PROPERTY ROWS ──
+var _propertyRows = [];
+
+function addPropertyRow(data) {
+  var container = document.getElementById('propertyRows');
+  if(!container) return;
+  var idx = container.querySelectorAll('.property-row').length;
+  var row = document.createElement('div');
+  row.className = 'property-row';
+  row.style.cssText = 'border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:0.75rem;background:var(--warm-white)';
+  
+  var isFirst = idx === 0;
+  var defaultType = isFirst ? 'primary' : 'rental';
+  var d = data || {};
+  
+  row.innerHTML = 
+    '<div style="display:grid;grid-template-columns:1.5fr 1fr 1fr 0.8fr 0.8fr 40px;gap:0.5rem;align-items:end">' +
+      '<div class="field" style="margin:0"><label>Property Type</label>' +
+        '<select class="prop-type" onchange="syncBudgetMortgages();recalc();" style="width:100%">' +
+          '<option value="primary"' + ((!d.type||d.type==="primary")?" selected":"") + '>Primary Home</option>' +
+          '<option value="rental"' + (d.type==="rental"?" selected":"") + '>Rental Property</option>' +
+          '<option value="vacation"' + (d.type==="vacation"?" selected":"") + '>Vacation Home</option>' +
+          '<option value="investment"' + (d.type==="investment"?" selected":"") + '>Investment Property</option>' +
+        '</select></div>' +
+      '<div class="field" style="margin:0"><label>Current Value ($)</label>' +
+        '<input type="number" class="prop-value" placeholder="e.g. 525000" value="' + (d.value||'') + '" oninput="recalc()"></div>' +
+      '<div class="field" style="margin:0"><label>Mortgage Balance ($)</label>' +
+        '<input type="number" class="prop-mortgage" placeholder="0" value="' + (d.mortgage||'') + '" oninput="syncBudgetMortgages();recalc()"></div>' +
+      '<div class="field" style="margin:0"><label>Payoff Year</label>' +
+        '<input type="number" class="prop-payoff" placeholder="e.g. 2031" value="' + (d.payoff||'') + '" oninput="syncBudgetMortgages();recalc()"></div>' +
+      '<div class="field" style="margin:0"><label>Apprec. %</label>' +
+        '<input type="number" class="prop-apprec" placeholder="3" value="' + (d.apprec||'') + '" step="0.1" oninput="recalc()"></div>' +
+      '<div style="padding-bottom:2px"><button onclick="removePropertyRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:8px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>' +
+    '</div>' +
+    '<div style="margin-top:0.5rem"><div class="field" style="margin:0"><label>Monthly Payment (P&I) ($)</label>' +
+      '<input type="number" class="prop-payment" placeholder="e.g. 2100" value="' + (d.payment||'') + '" oninput="syncBudgetMortgages();recalc()" style="max-width:200px"></div></div>';
+  
+  container.appendChild(row);
+  syncBudgetMortgages();
+  recalc();
+}
+
+function removePropertyRow(btn) {
+  var row = btn.closest('.property-row');
+  var container = document.getElementById('propertyRows');
+  if(row && container.querySelectorAll('.property-row').length > 1) {
+    row.remove();
+    syncBudgetMortgages();
+    recalc();
+  }
+}
+
+function syncBudgetMortgages() {
+  var container = document.getElementById('budgetMortgageRows');
+  if(!container) return;
+  var rows = document.querySelectorAll('.property-row');
+  var currentYear = new Date().getFullYear();
+  
+  if(rows.length === 0) {
+    container.innerHTML = '<div style="font-size:0.8rem;color:var(--mid);font-style:italic;padding:4px 0 8px">Add properties in Accounts & Savings to populate mortgage payments here.</div>';
+    return;
+  }
+  
+  var html = '';
+  rows.forEach(function(row, i) {
+    var type = row.querySelector('.prop-type')?.value || 'primary';
+    var mortgage = parseFloat(row.querySelector('.prop-mortgage')?.value) || 0;
+    var payment = parseFloat(row.querySelector('.prop-payment')?.value) || 0;
+    var payoff = parseInt(row.querySelector('.prop-payoff')?.value) || 0;
+    var typeLabels = {primary:'Primary Home', rental:'Rental Property', vacation:'Vacation Home', investment:'Investment Property'};
+    var label = typeLabels[type] || 'Property';
+    
+    if(mortgage <= 0 && payment <= 0) return; // skip if no mortgage
+    
+    var isPaidOff = payoff > 0 && payoff <= currentYear;
+    var payoffNote = payoff > 0 ? ' · Payoff: ' + payoff : '';
+    
+    html += '<div class="budget-row" style="' + (isPaidOff ? 'opacity:0.5' : '') + '">' +
+      '<label>' + label + ' Mortgage' + payoffNote + (isPaidOff ? ' ✓ Paid Off' : '') + '</label>' +
+      '<input type="number" class="bud-m prop-budget-payment-' + i + '" data-key="propMortgage' + i + '" ' +
+        'placeholder="0" value="' + (isPaidOff ? '0' : payment) + '" ' +
+        'oninput="calcBudget(this)" ' + (isPaidOff ? 'disabled' : '') + '>' +
+      '<input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">' +
+      '</div>';
+  });
+  
+  if(!html) html = '<div style="font-size:0.8rem;color:var(--mid);font-style:italic;padding:4px 0 8px">No mortgages entered.</div>';
+  container.innerHTML = html;
+  
+  // Trigger budget recalc
+  if(typeof calcBudget === 'function') {
+    document.querySelectorAll('.bud-m').forEach(function(el){ calcBudget(el); });
+  }
+}
+
+function getPropertyData() {
+  var rows = document.querySelectorAll('.property-row');
+  var data = [];
+  rows.forEach(function(row) {
+    data.push({
+      type: row.querySelector('.prop-type')?.value || 'primary',
+      value: row.querySelector('.prop-value')?.value || '',
+      mortgage: row.querySelector('.prop-mortgage')?.value || '',
+      payoff: row.querySelector('.prop-payoff')?.value || '',
+      apprec: row.querySelector('.prop-apprec')?.value || '',
+      payment: row.querySelector('.prop-payment')?.value || '',
+    });
+  });
+  return data;
+}
+
+// Init property rows on load
+(function initProperties() {
+  var container = document.getElementById('propertyRows');
+  if(container && container.querySelectorAll('.property-row').length === 0) {
+    addPropertyRow({type:'primary', value:'', mortgage:'', payoff:'', apprec:'', payment:''});
+  }
+})();
+// ── END DYNAMIC PROPERTY ROWS ──
+
 // ── END CHILD SS ──
 
 // ── AUTO SAVE / LOAD (localStorage) ──
@@ -5359,6 +5503,19 @@ function saveToLocal() {
     document.querySelectorAll('[data-key]').forEach(function(el) {
       if(el.value) data['bud__' + el.getAttribute('data-key')] = el.value;
     });
+    // Save property rows
+    var propRows = [];
+    document.querySelectorAll('.property-row').forEach(function(row) {
+      propRows.push({
+        type: row.querySelector('.prop-type')?.value||'primary',
+        value: row.querySelector('.prop-value')?.value||'',
+        mortgage: row.querySelector('.prop-mortgage')?.value||'',
+        payoff: row.querySelector('.prop-payoff')?.value||'',
+        apprec: row.querySelector('.prop-apprec')?.value||'',
+        payment: row.querySelector('.prop-payment')?.value||'',
+      });
+    });
+    data['__propRows'] = JSON.stringify(propRows);
     var aiRows = [];
     document.querySelectorAll('.additional-income-row').forEach(function(row) {
       aiRows.push({
@@ -5420,6 +5577,17 @@ function loadFromLocal() {
       var el = document.querySelector('[data-key="' + key.replace('bud__','') + '"]');
       if(el) el.value = data[key];
     });
+    // Restore property rows
+    if(data['__propRows']) {
+      try {
+        var propRows = JSON.parse(data['__propRows']);
+        var propContainer = document.getElementById('propertyRows');
+        if(propContainer && propRows.length > 0) {
+          propContainer.innerHTML = '';
+          propRows.forEach(function(rd) { addPropertyRow(rd); });
+        }
+      } catch(e) {}
+    }
     if(data['__aiRows']) {
       try {
         var aiRows = JSON.parse(data['__aiRows']);
