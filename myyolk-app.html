@@ -4079,9 +4079,9 @@ function calcReadiness() {
     }
     // Display
     if(exactAge >= 120) {
-      depEl.textContent = '120+';
+      depEl.textContent = 'Never';
       depEl.style.color = 'var(--sage)';
-      if(depNote) depNote.textContent = 'Exceptional — portfolio outlasts age 120 ✓';
+      if(depNote) depNote.textContent = 'Exceptional — your income covers expenses indefinitely ✓';
     } else if(exactAge >= 100) {
       depEl.textContent = 'Age ' + exactAge;
       depEl.style.color = 'var(--sage)';
