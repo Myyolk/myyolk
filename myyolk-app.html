@@ -2429,6 +2429,24 @@
         <div id="wi-shareText" style="font-size:1rem;font-weight:600;text-align:center;line-height:1.6"></div>
       </div>
 
+
+      <!-- LIFE EVENTS -->
+      <div class="card" style="margin-top:1.5rem">
+        <div class="card-title"><span class="dot"></span> 🎯 Life Events</div>
+        <p style="font-size:0.88rem;color:var(--mid);margin-bottom:1.25rem">Model one-time or multi-year events that will impact your finances — weddings, inheritance, medical costs, career changes, and more. Each event adjusts your retirement projection automatically.</p>
+
+        <div id="lifeEventRows">
+          <!-- populated by JS -->
+        </div>
+
+        <button onclick="addLifeEvent()" style="background:var(--sage-pale);color:var(--forest);border:1px solid var(--sage);border-radius:8px;padding:0.5rem 1rem;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;margin-top:0.25rem">+ Add Life Event</button>
+
+        <div id="lifeEventImpact" style="margin-top:1rem;padding:0.75rem;background:var(--warm-white);border-radius:8px;font-size:0.85rem;color:var(--forest);display:none">
+          <strong>Portfolio impact from life events:</strong> <span id="lifeEventTotal" style="color:var(--clay);font-weight:700">$0</span>
+          <div style="font-size:0.78rem;color:var(--mid);margin-top:4px">Negative = money out · Positive = windfall in. These are applied as lump sums in the projection year they occur.</div>
+        </div>
+      </div>
+
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="showTab('readiness')">&#8592; Back</button>
         <button class="btn btn-primary" onclick="showTab('early')">Next: Early Retirement &#8594;</button>
@@ -5475,6 +5493,90 @@ function getPropertyData() {
 })();
 // ── END DYNAMIC PROPERTY ROWS ──
 
+
+// ── LIFE EVENTS ──
+function addLifeEvent(data) {
+  var container = document.getElementById('lifeEventRows');
+  if(!container) return;
+  var d = data || {};
+  var row = document.createElement('div');
+  row.className = 'life-event-row';
+  row.style.cssText = 'border:1px solid var(--border);border-radius:10px;padding:0.85rem;margin-bottom:0.75rem;background:var(--warm-white)';
+
+  row.innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.65rem">' +
+      '<div class="field" style="margin:0;flex:1;max-width:240px"><label>Event Type</label>' +
+        '<select class="le-type" onchange="calcLifeEventImpact();recalc();" style="width:100%">' +
+          '<option value="wedding"' + (d.type==="wedding"?" selected":"") + '>💍 Wedding</option>' +
+          '<option value="child_wedding"' + (d.type==="child_wedding"?" selected":"") + '>💒 Child's Wedding</option>' +
+          '<option value="newbaby"' + (d.type==="newbaby"?" selected":"") + '>👶 New Baby / Adoption</option>' +
+          '<option value="inheritance"' + (d.type==="inheritance"?" selected":"") + '>🏦 Inheritance / Windfall</option>' +
+          '<option value="death"' + (d.type==="death"?" selected":"") + '>🕊️ Death in Family / Funeral</option>' +
+          '<option value="divorce"' + (d.type==="divorce"?" selected":"") + '>⚖️ Divorce Settlement</option>' +
+          '<option value="eldercare"' + (d.type==="eldercare"?" selected":"") + '>🏥 Elder Care / Parent</option>' +
+          '<option value="medical"' + (d.type==="medical"?" selected":"") + '>💊 Major Medical Expense</option>' +
+          '<option value="renovation"' + (d.type==="renovation"?" selected":"") + '>🔨 Home Renovation</option>' +
+          '<option value="business"' + (d.type==="business"?" selected":"") + '>🚀 Start a Business</option>' +
+          '<option value="college"' + (d.type==="college"?" selected":"") + '>🎓 College Tuition</option>' +
+          '<option value="layoff"' + (d.type==="layoff"?" selected":"") + '>📋 Job Loss / Layoff</option>' +
+          '<option value="severance"' + (d.type==="severance"?" selected":"") + '>💼 Severance / Buyout</option>' +
+          '<option value="travel"' + (d.type==="travel"?" selected":"") + '>✈️ Major Travel / Sabbatical</option>' +
+          '<option value="other"' + (d.type==="other"?" selected":"") + '>📌 Other</option>' +
+        '</select></div>' +
+      '<button onclick="removeLifeEvent(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:5px 10px;cursor:pointer;font-size:0.82rem;margin-left:auto">✕ Remove</button>' +
+    '</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.65rem">' +
+      '<div class="field" style="margin:0"><label>Your Age</label>' +
+        '<input type="number" class="le-age" placeholder="e.g. 58" value="' + (d.age||'') + '" oninput="calcLifeEventImpact();recalc()"></div>' +
+      '<div class="field" style="margin:0"><label>Amount ($)</label>' +
+        '<input type="number" class="le-amount" placeholder="e.g. 30000" value="' + (d.amount||'') + '" oninput="calcLifeEventImpact();recalc()"></div>' +
+      '<div class="field" style="margin:0"><label>Type</label>' +
+        '<select class="le-direction" onchange="calcLifeEventImpact();recalc();" style="width:100%">' +
+          '<option value="expense"' + (!d.direction||d.direction==="expense"?" selected":"") + '>💸 Expense</option>' +
+          '<option value="income"' + (d.direction==="income"?" selected":"") + '>💰 Income / Gain</option>' +
+        '</select></div>' +
+      '<div class="field" style="margin:0"><label>Duration (yrs)</label>' +
+        '<input type="number" class="le-years" placeholder="1" value="' + (d.years||'1') + '" min="1" oninput="calcLifeEventImpact();recalc()">' +
+        '<div class="hint">1 = one-time</div></div>' +
+    '</div>';
+
+  container.appendChild(row);
+  calcLifeEventImpact();
+}
+
+function removeLifeEvent(btn) {
+  var row = btn.closest('.life-event-row');
+  if(row) { row.remove(); calcLifeEventImpact(); recalc(); }
+}
+
+function calcLifeEventImpact() {
+  var rows = document.querySelectorAll('.life-event-row');
+  var total = 0;
+  rows.forEach(function(row) {
+    var amount = parseFloat(row.querySelector('.le-amount')?.value) || 0;
+    var years = parseFloat(row.querySelector('.le-years')?.value) || 1;
+    var dir = row.querySelector('.le-direction')?.value || 'expense';
+    var impact = amount * years;
+    total += dir === 'expense' ? -impact : impact;
+  });
+  var el = document.getElementById('lifeEventTotal');
+  var panel = document.getElementById('lifeEventImpact');
+  if(el) {
+    el.textContent = (total >= 0 ? '+' : '') + '$' + Math.abs(Math.round(total)).toLocaleString();
+    el.style.color = total >= 0 ? 'var(--sage)' : 'var(--clay)';
+  }
+  if(panel) panel.style.display = rows.length > 0 ? 'block' : 'none';
+  return total;
+}
+
+function getLifeEventImpact() {
+  return calcLifeEventImpact();
+}
+
+// Save/load life events
+// (integrated into existing save/load via __leRows key)
+// ── END LIFE EVENTS ──
+
 // ── END CHILD SS ──
 
 // ── AUTO SAVE / LOAD (localStorage) ──
@@ -5514,6 +5616,18 @@ function saveToLocal() {
       });
     });
     data['__aiRows'] = JSON.stringify(aiRows);
+    // Save life event rows
+    var leRows = [];
+    document.querySelectorAll('.life-event-row').forEach(function(row) {
+      leRows.push({
+        type: row.querySelector('.le-type')?.value||'other',
+        age: row.querySelector('.le-age')?.value||'',
+        amount: row.querySelector('.le-amount')?.value||'',
+        direction: row.querySelector('.le-direction')?.value||'expense',
+        years: row.querySelector('.le-years')?.value||'1',
+      });
+    });
+    data['__leRows'] = JSON.stringify(leRows);
     // Save individual child ages
     for(var ci = 1; ci <= 5; ci++) {
       var cel = document.getElementById('childAge' + ci);
@@ -5573,6 +5687,17 @@ function loadFromLocal() {
         if(propContainer && propRows.length > 0) {
           propContainer.innerHTML = '';
           propRows.forEach(function(rd) { addPropertyRow(rd); });
+        }
+      } catch(e) {}
+    }
+    // Restore life event rows
+    if(data['__leRows']) {
+      try {
+        var leRows = JSON.parse(data['__leRows']);
+        var leContainer = document.getElementById('lifeEventRows');
+        if(leContainer && leRows.length > 0) {
+          leContainer.innerHTML = '';
+          leRows.forEach(function(rd) { addLifeEvent(rd); });
         }
       } catch(e) {}
     }
