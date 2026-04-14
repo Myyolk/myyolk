@@ -5220,7 +5220,7 @@ function updateSummary() {
   // Insights
   var insights = [];
   if (netWorth > 0) insights.push('💛 Your current net worth is <strong>' + fmt(netWorth) + '</strong>.');
-  if (homeEquity > 0 && totalAssets > 0 && homeEquity/totalAssets > 0.5) insights.push('🏠 Over 50% of your net worth is in home equity. Consider diversifying as you approach retirement.');
+  if (totalHomeEquity > 0 && totalAssets > 0 && totalHomeEquity/totalAssets > 0.5) insights.push('🏠 Over 50% of your net worth is in home equity. Consider diversifying as you approach retirement.');
   var stateEl = el('stateRes');
   if (stateEl && ['PA','FL','TX','NV','WA','AK','SD','TN','WY'].includes(stateEl.value)) {
     insights.push('🎉 <strong>' + (stateEl.options[stateEl.selectedIndex]?.text || stateEl.value) + '</strong> has favorable retirement income tax treatment - this could save you thousands per year.');
