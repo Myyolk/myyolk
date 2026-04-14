@@ -1604,6 +1604,16 @@
             <input type="number" id="savingsRate" value="4.5" step="0.1" oninput="recalc()">
             <div class="hint">HYSA ~4-5%, checking ~0%. Applied to cash balances only.</div>
           </div>
+          <div class="field">
+            <label>Home Appreciation Rate (%/yr)</label>
+            <input type="number" id="homeApprecRate" value="3" step="0.1" oninput="recalc()">
+            <div class="hint">Applied to primary and second home values in projections. National avg ~3-4%.</div>
+          </div>
+          <div class="field">
+            <label>Inflation Rate (%/yr)</label>
+            <input type="number" id="inflationRate" value="3" step="0.1" oninput="recalc()">
+            <div class="hint">Used to adjust future expenses. Historical avg ~3%. Higher = more conservative.</div>
+          </div>
         </div>
       </div>
 
@@ -3545,7 +3555,7 @@ function calcProjections() {
   if(projChartInstance) projChartInstance.destroy();
   // Calculate home appreciation for net worth line
   var homeVal = parseFloat(document.getElementById('homeValue')?.value) || 0;
-  var homeApprec = 0.03; // 3% annual appreciation
+  var homeApprec = (parseFloat(document.getElementById("homeApprecRate")?.value) || 3) / 100;
   var secondHomeVal = parseFloat(document.getElementById('secondHomeValue')?.value) || 0;
   var vehicle = parseFloat(document.getElementById('vehicleValue')?.value) || 0;
   var otherAssets = parseFloat(document.getElementById('otherAssets')?.value) || 0;
@@ -3855,7 +3865,8 @@ function calcReadiness() {
     inflatedBudget = parseFloat(retireMonthlyEl.textContent.replace(/[^0-9.]/g,'')) || 0;
   }
   if(!inflatedBudget && budgetTotal > 0) {
-    inflatedBudget = budgetTotal * Math.pow(1.03, yearsToRetire);
+    var _inflRate = (parseFloat(document.getElementById("inflationRate")?.value) || 3) / 100;
+    inflatedBudget = budgetTotal * Math.pow(1 + _inflRate, yearsToRetire);
   }
 
   // Gap = total income (portfolio + SS + additional) minus inflation-adjusted expenses
@@ -4999,7 +5010,7 @@ function updateBudgetAnalysis() {
   var adjFood = (parseFloat(document.getElementById('sl-food')?.value) || 100) / 100;
   var adjHealth = (parseFloat(document.getElementById('sl-health')?.value) || 100) / 100;
   var adjLifestyle = (parseFloat(document.getElementById('sl-lifestyle')?.value) || 100) / 100;
-  var inflRate = (parseFloat(document.getElementById('sl-infl')?.value) || 3) / 100;
+  var inflRate = (parseFloat(document.getElementById('inflationRate')?.value) || parseFloat(document.getElementById('sl-infl')?.value) || 3) / 100;
   
   // Estimate retirement spending with adjustments (simplified average)
   var adjHousing = (parseFloat(document.getElementById('sl-housing')?.value) || 100) / 100;
@@ -5543,7 +5554,9 @@ var _appReady = false;
     // Social Security - Densie
     dss62: "1200", dss67: "1850", dss70: "2400", dssClaimAge: "67",
     // Investment assumptions
-    growthRate: "0.07", savingsRate: "4.5",
+    growthRate: "0.07", savingsRate: "4.5", homeApprecRate: "3", inflationRate: "3",
+    // Property
+    homeValue: "525000", mortgageBalance: "180000", secondHomeValue: "300000", secondHomeMortgage: "120000",
     // Budget
     "bud__rent": "2100",
     "bud__electric": "180", "bud__gasHeat": "120", "bud__water": "60",
