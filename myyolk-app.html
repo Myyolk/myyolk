@@ -3525,11 +3525,30 @@ function calcProjections() {
   var portfolio = totalBalance;
   var totalContributed = totalBalance;
 
+  // Build life event lookup by age
+  var lifeEventsByAge = {};
+  document.querySelectorAll('.life-event-row').forEach(function(row) {
+    var leAge = parseInt(row.querySelector('.le-age')?.value) || 0;
+    var leAmount = parseFloat(row.querySelector('.le-amount')?.value) || 0;
+    var leDir = row.querySelector('.le-direction')?.value || 'expense';
+    var leYears = parseInt(row.querySelector('.le-years')?.value) || 1;
+    if(leAge > 0 && leAmount > 0) {
+      for(var ly = 0; ly < leYears; ly++) {
+        var targetAge = leAge + ly;
+        if(!lifeEventsByAge[targetAge]) lifeEventsByAge[targetAge] = 0;
+        lifeEventsByAge[targetAge] += leDir === 'income' ? leAmount : -leAmount;
+      }
+    }
+  });
+
   for(var i = 0; i <= yearsToRetire; i++) {
-    labels.push(age + i);
+    var currentYrAge = age + i;
+    labels.push(currentYrAge);
     values.push(Math.round(portfolio));
     contribLine.push(Math.round(totalContributed));
-    portfolio = (portfolio + annualContrib) * (1 + growthRate);
+    // Apply any life events at this age
+    var lifeEventImpact = lifeEventsByAge[currentYrAge] || 0;
+    portfolio = (portfolio + annualContrib + lifeEventImpact) * (1 + growthRate);
     totalContributed += annualContrib;
   }
 
