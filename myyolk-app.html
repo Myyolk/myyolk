@@ -5396,21 +5396,20 @@ function clearSavedData() {
 }
 
 // Hook into recalc to auto-save
-var _loadingData = false;
+var _appReady = false;
 (function() {
   var _orig = recalc;
   recalc = function() {
     _orig.apply(this, arguments);
-    if(!_loadingData) saveToLocal();
+    if(_appReady) saveToLocal();
   };
 })();
 
-// Auto-load on page ready
+// Auto-load on page ready - wait for everything to settle
 setTimeout(function() {
-  _loadingData = true;
   loadFromLocal();
-  setTimeout(function(){ _loadingData = false; }, 200);
-}, 500);
+  setTimeout(function(){ _appReady = true; }, 800);
+}, 600);
 // ── END AUTO SAVE / LOAD ──
 
 </script>
