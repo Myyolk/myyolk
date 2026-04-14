@@ -3485,7 +3485,18 @@ function calcProjections() {
   var spouseMatchCapP = Math.min((parseFloat(document.getElementById('spouseMatchCap')?.value)||spouseEmpMatchP*100)/100, spouseEmpMatchP);
   var spouseContribP = (spouseSalaryP * spouseContrib401kP) + (spouseSalaryP * spouseRoth401kP) + (spouseSalaryP * spouseMatchCapP) + (parseFloat(document.getElementById('spouseContribRothIRA')?.value)||0) + (parseFloat(document.getElementById('spouseContribTaxable')?.value)||0);
   var contribRoth401P = Math.min((parseFloat(document.getElementById('contribRoth401')?.value)||0)/100, 1);
-  var annualContrib = (salary * contrib401k) + (salary * contribRoth401P) + (salary * Math.min(empMatch, matchCap || empMatch)) + contribRothIRA + contribTaxable + contrib401kDollarP + spouseContribP + spouseContrib401kDollarP;
+  // Add bonus 401k contributions
+  var _b401k = document.getElementById('bonus401k')?.checked ? (parseFloat(document.getElementById('bonus')?.value)||0) : 0;
+  var _bRet401k = document.getElementById('bonusRetention401k')?.checked ? (parseFloat(document.getElementById('bonusRetention')?.value)||0) : 0;
+  var _bSign401k = document.getElementById('bonusSignOn401k')?.checked ? (parseFloat(document.getElementById('bonusSignOn')?.value)||0) : 0;
+  var _bPS401k = document.getElementById('bonusProfitShare401k')?.checked ? (parseFloat(document.getElementById('bonusProfitShare')?.value)||0) : 0;
+  var _bRSU401k = document.getElementById('bonusRSU401k')?.checked ? (parseFloat(document.getElementById('bonusRSU')?.value)||0) : 0;
+  var bonusContrib401k = _b401k + _bRet401k + _bSign401k + _bPS401k + _bRSU401k;
+  // Spouse bonus 401k
+  var _sb401k = document.getElementById('spouseBonus401k')?.checked ? (parseFloat(document.getElementById('spouseBonus')?.value)||0) : 0;
+  var _sbPS401k = document.getElementById('spouseBonusProfitShare401k')?.checked ? (parseFloat(document.getElementById('spouseBonusProfitShare')?.value)||0) : 0;
+  var spouseBonusContrib401k = _sb401k + _sbPS401k;
+  var annualContrib = (salary * contrib401k) + (salary * contribRoth401P) + (salary * Math.min(empMatch, matchCap || empMatch)) + contribRothIRA + contribTaxable + contrib401kDollarP + spouseContribP + spouseContrib401kDollarP + bonusContrib401k + spouseBonusContrib401k;
 
   var yearsToRetire = Math.max(retireAge - age, 0);
   var labels = [], values = [], contribLine = [];
