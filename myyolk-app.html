@@ -911,11 +911,11 @@
         <div class="form-grid" style="margin-bottom:1rem">
           <div class="field">
             <label>First Name</label>
-            <input type="text" id="firstName" placeholder="e.g. Alex" oninput="updateGreeting();updatePlanningFor();"></div><div class="field"><label>Last Name</label><input type="text" id="lastName" placeholder="e.g. Smith">
+            <input type="text" id="firstName" placeholder="e.g. Alex" oninput="updateGreeting();updatePlanningFor();saveToLocal();"></div><div class="field"><label>Last Name</label><input type="text" id="lastName" placeholder="e.g. Smith" oninput="saveToLocal();">
           </div>
           <div class="field">
             <label>Date of Birth</label>
-            <input type="date" id="dob">
+            <input type="date" id="dob" oninput="saveToLocal();">
             <button id="calcAgeBtn" style="margin-top:8px;padding:8px 16px;background:var(--sage);color:#fff;border:none;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;">Calculate Age</button>
             <div class="hint" id="ageDisplay">Enter your birthday then click Calculate Age</div>
           </div>
@@ -1057,7 +1057,7 @@
         <div class="form-grid three">
           <div class="field">
             <label>Spouse First Name</label>
-            <input type="text" id="spouseFirstName" placeholder="First name" oninput="updateGreeting();updatePlanningFor();">
+            <input type="text" id="spouseFirstName" placeholder="First name" oninput="updateGreeting();updatePlanningFor();saveToLocal();">
           </div>
           <div class="field">
             <label>Spouse Last Name</label>
@@ -5396,16 +5396,21 @@ function clearSavedData() {
 }
 
 // Hook into recalc to auto-save
+var _loadingData = false;
 (function() {
   var _orig = recalc;
   recalc = function() {
     _orig.apply(this, arguments);
-    saveToLocal();
+    if(!_loadingData) saveToLocal();
   };
 })();
 
 // Auto-load on page ready
-setTimeout(loadFromLocal, 500);
+setTimeout(function() {
+  _loadingData = true;
+  loadFromLocal();
+  setTimeout(function(){ _loadingData = false; }, 200);
+}, 500);
 // ── END AUTO SAVE / LOAD ──
 
 </script>
