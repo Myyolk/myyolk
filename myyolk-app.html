@@ -5129,31 +5129,41 @@ function updateBudgetAnalysis() {
 function updateSummary() {
   var el = function(id) { return document.getElementById(id); };
   
-  var bal401k = getVal('bal401k');
-  var balRoth = getVal('balRoth401') + getVal('balRothIRA') + getVal('balTaxable') + getVal('balHSA') + getVal('balESPP');
-  var balCash = getVal('balCash');
-  var retAccounts = bal401k + balRoth;
-  
+  // Run projections first to ensure portfolio is up to date
+  if(typeof calcProjections === 'function') calcProjections();
+
   var isCouple = document.getElementById('planCouple')?.checked;
+  
+  // All retirement account balances
+  var retAccounts = getVal('bal401k') + getVal('balRoth401') + getVal('balRothIRA') + 
+    getVal('balTaxable') + getVal('balHSA') + getVal('balESPP') +
+    getVal('balRolloverIRA') + getVal('balTradIRA') + getVal('balDeferredComp') + getVal('balAnnuity');
+  
+  var balCash = getVal('balCash');
+
   if (isCouple) {
-    retAccounts += getVal('spouseBal401k') + getVal('spouseBalRoth401') + getVal('spouseBalRothIRA') + getVal('spouseBalTaxable') + getVal('spouseBalHSA');
+    retAccounts += getVal('spouseBal401k') + getVal('spouseBalRoth401') + getVal('spouseBalRothIRA') + 
+      getVal('spouseBalTaxable') + getVal('spouseBalHSA') + getVal('spouseBalESPP') +
+      getVal('spouseBalRolloverIRA') + getVal('spouseBalTradIRA') + getVal('spouseBalDeferredComp') + getVal('spouseBalAnnuity');
     balCash += getVal('spouseBalCash');
   }
 
-  var homeValue = getVal('homeValue');
-  var homeMortgage = getVal('homeMortgage');
-  var homeEquity = Math.max(0, homeValue - homeMortgage);
+  // Dynamic property equity from property rows
+  var totalHomeEquity = 0;
+  var totalMortgages = 0;
+  document.querySelectorAll('.property-row').forEach(function(row) {
+    var val = parseFloat(row.querySelector('.prop-value')?.value) || 0;
+    var mort = parseFloat(row.querySelector('.prop-mortgage')?.value) || 0;
+    totalHomeEquity += Math.max(0, val - mort);
+    totalMortgages += mort;
+  });
 
-  var invPropEquity = 0;
-  for (var i = 1; i <= propCount; i++) {
-    invPropEquity += Math.max(0, getVal('propValue_'+i) - getVal('propMortgage_'+i));
-  }
+  var assetVehicles = getVal('vehicleValue') || 0;
+  var otherAssets = getVal('otherAssets') || 0;
+  var personalProp = assetVehicles + otherAssets;
 
-  var assetVehicles = getVal('assetVehicles');
-  var personalProp = assetVehicles + getVal('assetJewelry') + getVal('assetCollectibles') + getVal('assetBusiness') + getVal('assetOther');
-
-  var totalAssets = retAccounts + balCash + homeEquity + invPropEquity + personalProp;
-  var totalLiabilities = homeMortgage + getVal('mortgage2Balance') + getVal('creditCardBalance');
+  var totalAssets = retAccounts + balCash + totalHomeEquity + personalProp;
+  var totalLiabilities = totalMortgages + getVal('creditCardBalance');
   var netWorth = totalAssets - totalLiabilities;
 
   if (el('sumTotalAssets')) el('sumTotalAssets').textContent = fmt(totalAssets);
@@ -5161,13 +5171,19 @@ function updateSummary() {
   if (el('sumNetWorth')) el('sumNetWorth').textContent = fmt(netWorth);
   if (el('sumRetAccounts')) el('sumRetAccounts').textContent = fmt(retAccounts);
   if (el('sumCash')) el('sumCash').textContent = fmt(balCash);
-  if (el('sumHomeEquity')) el('sumHomeEquity').textContent = fmt(homeEquity);
-  if (el('sumInvProps')) el('sumInvProps').textContent = fmt(invPropEquity);
+  if (el('sumHomeEquity')) el('sumHomeEquity').textContent = fmt(totalHomeEquity);
+  if (el('sumInvProps')) el('sumInvProps').textContent = fmt(0); // included in homeEquity now
   if (el('sumVehicles')) el('sumVehicles').textContent = fmt(assetVehicles);
-  if (el('sumPersonalProp')) el('sumPersonalProp').textContent = fmt(personalProp - assetVehicles);
-  if (el('sumPortfolio')) el('sumPortfolio').textContent = fmt(state.portfolioAtRetirement || 0);
-  if (el('sumMonthlyIncome')) el('sumMonthlyIncome').textContent = fmt((state.portfolioAtRetirement || 0)*0.04/12);
-  if (el('sumSS')) el('sumSS').textContent = fmt(state.ssMonthly || 0);
+  if (el('sumPersonalProp')) el('sumPersonalProp').textContent = fmt(otherAssets);
+  
+  // Use single source of truth for portfolio
+  var portAtRet = state.portfolioAtRetirement || 0;
+  if (el('sumPortfolio')) el('sumPortfolio').textContent = fmt(portAtRet);
+  if (el('sumMonthlyIncome')) el('sumMonthlyIncome').textContent = fmt(portAtRet * 0.04 / 12);
+  
+  // Household SS total
+  var householdSS = (state.ssMonthly || 0) + (state.spouseSsMonthly || 0) + (state.childSsMonthly || 0);
+  if (el('sumSS')) el('sumSS').textContent = fmt(householdSS);
 
   // Milestones
   var milestones = [];
@@ -5180,8 +5196,16 @@ function updateSummary() {
     milestones.push({ year: currentYear + (65-currentAge), label: '🏥 Medicare eligible at age 65' });
     milestones.push({ year: currentYear + (67-currentAge), label: '💰 Full Social Security retirement age 67' });
   }
-  var mortPayoff = getVal('homeMortgagePayoffYear');
-  if (mortPayoff > 0) milestones.push({ year: mortPayoff, label: '🏠 Mortgage paid off - frees up $' + Math.round(getVal('homeMortgagePayment')).toLocaleString() + '/mo' });
+  // Dynamic property payoff milestones
+  document.querySelectorAll('.property-row').forEach(function(row) {
+    var payoff = parseInt(row.querySelector('.prop-payoff')?.value) || 0;
+    var payment = parseFloat(row.querySelector('.prop-payment')?.value) || 0;
+    var type = row.querySelector('.prop-type')?.value || 'primary';
+    var typeLabels = {primary:'Home', rental:'Rental', vacation:'Vacation Home', investment:'Investment Property'};
+    if(payoff > 0 && payment > 0) {
+      milestones.push({ year: payoff, label: '🏠 ' + (typeLabels[type]||'Property') + ' mortgage paid off - frees up $' + Math.round(payment).toLocaleString() + '/mo' });
+    }
+  });
   
   milestones = milestones.filter(function(m) { return m.year >= currentYear; });
   milestones.sort(function(a,b) { return a.year - b.year; });
@@ -5608,12 +5632,18 @@ function calcEarly() {
   var balTaxable = parseFloat(document.getElementById('balTaxable')?.value) || 0;
   var balCash = parseFloat(document.getElementById('balCash')?.value) || 0;
   var balHSA = parseFloat(document.getElementById('balHSA')?.value) || 0;
-  var totalNow = bal401k + balRoth + balRothIRA + balTaxable + balCash + balHSA;
+  var totalNow = bal401k + balRoth + balRothIRA + balTaxable + balCash + balHSA +
+    (parseFloat(document.getElementById('balRolloverIRA')?.value)||0) +
+    (parseFloat(document.getElementById('balTradIRA')?.value)||0) +
+    (parseFloat(document.getElementById('balDeferredComp')?.value)||0) +
+    (parseFloat(document.getElementById('balAnnuity')?.value)||0) +
+    (parseFloat(document.getElementById('balESPP')?.value)||0);
 
-  // Add spouse balances
-  totalNow += (parseFloat(document.getElementById('spouseBal401k')?.value)||0) +
-              (parseFloat(document.getElementById('spouseBalRoth401')?.value)||0) +
-              (parseFloat(document.getElementById('spouseBalRothIRA')?.value)||0);
+  // Add all balances including new fields
+  var allBalFields = ['spouseBal401k','spouseBalRoth401','spouseBalRothIRA','spouseBalTaxable',
+    'spouseBalCash','spouseBalHSA','spouseBalRolloverIRA','spouseBalTradIRA','spouseBalAnnuity',
+    'balRolloverIRA','balTradIRA','balDeferredComp','balAnnuity','balESPP','spouseBalESPP'];
+  allBalFields.forEach(function(id){ totalNow += parseFloat(document.getElementById(id)?.value)||0; });
 
   // Get annual contributions (same logic as main recalc)
   var salary = parseFloat(document.getElementById('salary')?.value) || 0;
