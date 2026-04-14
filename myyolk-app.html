@@ -3777,14 +3777,17 @@ function calcReadiness() {
   // Additional income
   var additionalIncome = 0;
   var isCouple = document.getElementById('planCouple')?.checked;
+  var _retAge = parseFloat(document.getElementById('retAge')?.value) || 62;
   document.querySelectorAll('.additional-income-row').forEach(function(row) {
     var amount = parseFloat(row.querySelector('.ai-amount')?.value) || 0;
     var freq = row.querySelector('.ai-freq')?.value || 'monthly';
-    var owner = row.querySelector('.ai-owner')?.value || 'mine';
-    // Convert to monthly
+    var startAge = parseFloat(row.querySelector('.ai-start')?.value) || 0;
+    var endAge = parseFloat(row.querySelector('.ai-end')?.value) || 999;
+    // Skip if not active at retirement age
+    if(startAge > _retAge || endAge < _retAge) return;
+    // Convert to monthly (one-time = 0 for recurring calc)
     var monthly = freq === 'annual' ? amount / 12 : freq === 'onetime' ? 0 : amount;
-    // In single mode or joint/mine - count full amount. Spouse excluded from Dean's calc
-    // Count ALL additional income for household retirement total
+    // Count as household income - owner field tracks attribution not double-counting
     additionalIncome += monthly;
   });
   // Update rdAdditionalIncome display
