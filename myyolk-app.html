@@ -4608,6 +4608,8 @@ function updateSnapshot() {
 }
 
 function recalc() {
+  // Always run projections first so state.portfolioAtRetirement is accurate
+  if(typeof calcProjections === 'function') calcProjections();
   // Income
   var incomeType = document.getElementById('incomeType')?.value || 'salary';
   var sal = getVal('salary');
