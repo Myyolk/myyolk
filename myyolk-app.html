@@ -3720,7 +3720,19 @@ function calcReadiness() {
   var spouseContrib401kDollarPeriods = {biweekly:26, monthly:12, annual:1}[spouseContrib401kDollarFreq] || 26;
   var spouseContrib401kDollar = (parseFloat(document.getElementById('spouseContrib401kDollar')?.value) || 0) * spouseContrib401kDollarPeriods;
   var contribRoth401 = Math.min((parseFloat(document.getElementById('contribRoth401')?.value)||0)/100, 1);
-  var annualContrib = (salary * contrib401k) + (salary * contribRoth401) + (salary * empMatch) + contribRothIRA + contribTaxable + contrib401kDollar + spouseAnnualContrib + spouseContrib401kDollar;
+  // Add bonus amounts to 401k contributions if checked
+  var bonus401kAmt = document.getElementById('bonus401k')?.checked ? (parseFloat(document.getElementById('bonus')?.value)||0) : 0;
+  var bonusRetention401kAmt = document.getElementById('bonusRetention401k')?.checked ? (parseFloat(document.getElementById('bonusRetention')?.value)||0) : 0;
+  var bonusSignOn401kAmt = document.getElementById('bonusSignOn401k')?.checked ? (parseFloat(document.getElementById('bonusSignOn')?.value)||0) : 0;
+  var bonusProfitShare401kAmt = document.getElementById('bonusProfitShare401k')?.checked ? (parseFloat(document.getElementById('bonusProfitShare')?.value)||0) : 0;
+  var bonusRSU401kAmt = document.getElementById('bonusRSU401k')?.checked ? (parseFloat(document.getElementById('bonusRSU')?.value)||0) : 0;
+  var totalBonus401k = bonus401kAmt + bonusRetention401kAmt + bonusSignOn401kAmt + bonusProfitShare401kAmt + bonusRSU401kAmt;
+  // Spouse bonus 401k
+  var spouseBonus401kAmt = document.getElementById('spouseBonus401k')?.checked ? (parseFloat(document.getElementById('spouseBonus')?.value)||0) : 0;
+  var spouseProfitShare401kAmt = document.getElementById('spouseBonusProfitShare401k')?.checked ? (parseFloat(document.getElementById('spouseBonusProfitShare')?.value)||0) : 0;
+  var totalSpouseBonus401k = spouseBonus401kAmt + spouseProfitShare401kAmt;
+
+  var annualContrib = (salary * contrib401k) + (salary * contribRoth401) + (salary * empMatch) + contribRothIRA + contribTaxable + contrib401kDollar + totalBonus401k + spouseAnnualContrib + spouseContrib401kDollar + totalSpouseBonus401k;
 
   // Use projected portfolio from calcProjections, fallback to own calculation
   var portfolio = state.portfolioAtRetirement || 0;
