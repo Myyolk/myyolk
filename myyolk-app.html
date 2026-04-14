@@ -1424,47 +1424,51 @@
         <div class="card-title"><span class="dot"></span> Additional Income Sources</div>
         <p style="font-size:0.85rem;color:#666;margin-bottom:1rem">Other income streams that will continue into retirement.</p>
         <div id="additionalIncomeRows">
-          <div class="additional-income-row" style="display:grid;grid-template-columns:2fr 1fr 0.9fr 0.6fr 0.6fr 80px;gap:0.75rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)">
-            <div class="field" style="margin:0"><label>Income Type</label>
-              <select class="ai-type" onchange="recalc()" style="width:100%">
-                <option value="alimony">Alimony Received</option>
-                <option value="annuity">Annuity</option>
-                <option value="business">Business Income</option>
-                <option value="dividends">Dividends</option>
-                <option value="inheritance">Inheritance / One-Time</option>
-                <option value="royalties">Oil &amp; Gas Royalties</option>
-                <option value="other">Other</option>
-                <option value="parttime">Part-time / Consulting</option>
-                <option value="pension">Pension</option>
-                <option value="rental">Rental Income</option>
-                <option value="rmd">Required Min. Distribution (RMD)</option>
-                <option value="trust">Trust / Estate Income</option>
-                <option value="veterans">Veterans Benefits</option>
-              </select>
+          <div class="additional-income-row" style="margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)">
+            <div style="display:grid;grid-template-columns:2fr 1fr 1fr 60px;gap:0.75rem;align-items:end;margin-bottom:0.5rem">
+              <div class="field" style="margin:0"><label>Income Type</label>
+                <select class="ai-type" onchange="recalc()" style="width:100%">
+                  <option value="alimony">Alimony Received</option>
+                  <option value="annuity">Annuity</option>
+                  <option value="business">Business Income</option>
+                  <option value="dividends">Dividends</option>
+                  <option value="inheritance">Inheritance / One-Time</option>
+                  <option value="royalties">Oil &amp; Gas Royalties</option>
+                  <option value="other">Other</option>
+                  <option value="parttime">Part-time / Consulting</option>
+                  <option value="pension">Pension</option>
+                  <option value="rental">Rental Income</option>
+                  <option value="rmd">Required Min. Distribution (RMD)</option>
+                  <option value="trust">Trust / Estate Income</option>
+                  <option value="veterans">Veterans Benefits</option>
+                </select>
+              </div>
+              <div class="field" style="margin:0"><label>Amount ($)</label>
+                <input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()">
+              </div>
+              <div class="field" style="margin:0"><label>Frequency</label>
+                <select class="ai-freq" onchange="recalc()" style="width:100%">
+                  <option value="monthly">Monthly</option>
+                  <option value="annual">Annual</option>
+                  <option value="onetime">One-Time</option>
+                </select>
+              </div>
+              <div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>
             </div>
-            <div class="field" style="margin:0"><label>Amount ($)</label>
-              <input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;align-items:end">
+              <div class="field" style="margin:0"><label>Start Age</label>
+                <input type="number" class="ai-start" placeholder="e.g. 62" oninput="recalc()" style="width:100%">
+              </div>
+              <div class="field" style="margin:0"><label>End Age <span style="font-size:0.75rem;color:var(--mid)">(blank = forever)</span></label>
+                <input type="number" class="ai-end" placeholder="∞" oninput="recalc()" style="width:100%">
+              </div>
+              <div class="field ai-owner-col" style="margin:0;display:none"><label id="aiOwnerLabel">Whose?</label>
+                <select class="ai-owner" onchange="recalc()" style="width:100%">
+                  <option value="mine">Dean's</option>
+                  <option value="spouse">Densie's</option>
+                </select>
+              </div>
             </div>
-            <div class="field" style="margin:0"><label>Frequency</label>
-              <select class="ai-freq" onchange="recalc()" style="width:100%">
-                <option value="monthly">Monthly</option>
-                <option value="annual">Annual</option>
-                <option value="onetime">One-Time</option>
-              </select>
-            </div>
-            <div class="field" style="margin:0"><label>Start Age</label>
-              <input type="number" class="ai-start" placeholder="e.g. 62" oninput="recalc()" style="width:100%">
-            </div>
-            <div class="field" style="margin:0"><label>End Age</label>
-              <input type="number" class="ai-end" placeholder="∞" oninput="recalc()" style="width:100%">
-            </div>
-            <div class="field ai-owner-col" style="margin:0;display:none"><label id="aiOwnerLabel">Whose?</label>
-              <select class="ai-owner" onchange="recalc()" style="width:100%">
-                <option value="mine">Dean's</option>
-                <option value="spouse">Densie's</option>
-              </select>
-            </div>
-            <div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>
           </div>
         </div>
         <button onclick="addIncomeRow()" style="background:var(--sage-pale);color:var(--forest);border:1px solid var(--sage);border-radius:8px;padding:0.5rem 1rem;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;margin-top:0.25rem">+ Add Income Source</button>
@@ -3130,7 +3134,7 @@ function addIncomeRow() {
   var row = document.createElement('div');
   row.className = 'additional-income-row';
   row.style.cssText = isCouple ? 'display:grid;grid-template-columns:2fr 1fr 0.9fr 0.6fr 0.6fr 1.2fr 80px;gap:0.75rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)' : 'display:grid;grid-template-columns:2fr 1fr 0.9fr 0.6fr 0.6fr 80px;gap:0.75rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)';
-  row.innerHTML = '<div class="field" style="margin:0"><label>Income Type</label><select class="ai-type" onchange="recalc()" style="width:100%"><option value="alimony">Alimony Received</option><option value="annuity">Annuity</option><option value="business">Business Income</option><option value="dividends">Dividends</option><option value="inheritance">Inheritance / One-Time</option><option value="royalties">Oil &amp; Gas Royalties</option><option value="other">Other</option><option value="parttime">Part-time / Consulting</option><option value="pension">Pension</option><option value="rental">Rental Income</option><option value="rmd">Required Min. Distribution (RMD)</option><option value="trust">Trust / Estate Income</option><option value="veterans">Veterans Benefits</option></select></div><div class="field" style="margin:0"><label>Amount ($)</label><input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()"></div><div class="field" style="margin:0"><label>Frequency</label><select class="ai-freq" onchange="recalc()" style="width:100%"><option value="monthly">Monthly</option><option value="annual">Annual</option><option value="onetime">One-Time</option></select></div><div class="field" style="margin:0"><label>Start Age</label><input type="number" class="ai-start" placeholder="e.g. 62" oninput="recalc()" style="width:100%"></div><div class="field" style="margin:0"><label>End Age</label><input type="number" class="ai-end" placeholder="∞" oninput="recalc()" style="width:100%"></div><div class="field ai-owner-col" style="margin:0;display:none"><label>Whose?</label><select class="ai-owner" onchange="recalc()" style="width:100%"><option value="joint">Both / Joint</option><option value="mine">Dean\'s</option><option value="spouse">Densie\'s</option></select></div><div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>';
+  row.innerHTML = '<div style="display:grid;grid-template-columns:2fr 1fr 1fr 60px;gap:0.75rem;align-items:end;margin-bottom:0.5rem"><div class="field" style="margin:0"><label>Income Type</label><select class="ai-type" onchange="recalc()" style="width:100%"><option value="alimony">Alimony Received</option><option value="annuity">Annuity</option><option value="business">Business Income</option><option value="dividends">Dividends</option><option value="inheritance">Inheritance / One-Time</option><option value="royalties">Oil &amp; Gas Royalties</option><option value="other">Other</option><option value="parttime">Part-time / Consulting</option><option value="pension">Pension</option><option value="rental">Rental Income</option><option value="rmd">Required Min. Distribution (RMD)</option><option value="trust">Trust / Estate Income</option><option value="veterans">Veterans Benefits</option></select></div><div class="field" style="margin:0"><label>Amount ($)</label><input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()"></div><div class="field" style="margin:0"><label>Frequency</label><select class="ai-freq" onchange="recalc()" style="width:100%"><option value="monthly">Monthly</option><option value="annual">Annual</option><option value="onetime">One-Time</option></select></div><div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;align-items:end"><div class="field" style="margin:0"><label>Start Age</label><input type="number" class="ai-start" placeholder="e.g. 62" oninput="recalc()" style="width:100%"></div><div class="field" style="margin:0"><label>End Age <span style="font-size:0.75rem;color:var(--mid)">(blank = forever)</span></label><input type="number" class="ai-end" placeholder="∞" oninput="recalc()" style="width:100%"></div><div class="field ai-owner-col" style="margin:0;display:none"><label>Whose?</label><select class="ai-owner" onchange="recalc()" style="width:100%"><option value="joint">Both / Joint</option><option value="mine">Dean\'s</option><option value="spouse">Densie\'s</option></select></div></div>';
   container.appendChild(row);
   // Show Whose? column if in couple mode
   if(isCouple) {
