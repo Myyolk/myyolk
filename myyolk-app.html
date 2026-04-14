@@ -1908,27 +1908,11 @@
 
         <div class="budget-category">
           <div class="budget-cat-header">💳 Debt Payments</div>
-          <div class="budget-row">
-            <label>1st Mortgage <span style="font-size:0.75rem;color:#888;font-weight:400">(P&amp;I only)</span></label>
-            <input type="number" class="bud-m" data-key="debtMortgage" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
-          </div>
-          <div class="budget-row" id="mortgagePayoffRow">
-            <label style="font-size:0.78rem;color:var(--sage)">↳ Payoff Date</label>
-            <input type="month" id="mortgagePayoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
-            <div style="font-size:0.75rem;color:#888;padding-top:4px" id="mortgagePayoffNote"></div>
+          <div id="budgetMortgageRows">
+            <div style="font-size:0.8rem;color:var(--mid);font-style:italic;padding:4px 0 8px">Add properties in Accounts &amp; Savings to populate mortgage payments here.</div>
           </div>
           <div style="font-size:0.75rem;color:#888;font-style:italic;padding:2px 0 6px">
             💡 If your payment includes escrow (taxes &amp; insurance), check the boxes below and leave Property Taxes &amp; Home Insurance at $0
-          </div>
-          <div class="budget-row">
-            <label>2nd Mortgage / HELOC <span style="font-size:0.75rem;color:#888;font-weight:400">(P&amp;I only)</span></label>
-            <input type="number" class="bud-m" data-key="debtMortgage2" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
-          </div>
-          <div class="budget-row">
-            <label style="font-size:0.78rem;color:var(--sage)">↳ 2nd Mortgage Payoff</label>
-            <input type="month" id="mortgage2Payoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
           </div>
 
           <div class="budget-row">
