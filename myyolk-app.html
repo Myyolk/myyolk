@@ -5367,26 +5367,30 @@ function addPropertyRow(data) {
   var d = data || {};
   
   row.innerHTML = 
-    '<div style="display:grid;grid-template-columns:1.5fr 1fr 1fr 0.8fr 0.8fr 40px;gap:0.5rem;align-items:end">' +
-      '<div class="field" style="margin:0"><label>Property Type</label>' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">' +
+      '<div class="field" style="margin:0;flex:1;max-width:220px"><label>Property Type</label>' +
         '<select class="prop-type" onchange="syncBudgetMortgages();recalc();" style="width:100%">' +
           '<option value="primary"' + ((!d.type||d.type==="primary")?" selected":"") + '>Primary Home</option>' +
           '<option value="rental"' + (d.type==="rental"?" selected":"") + '>Rental Property</option>' +
           '<option value="vacation"' + (d.type==="vacation"?" selected":"") + '>Vacation Home</option>' +
           '<option value="investment"' + (d.type==="investment"?" selected":"") + '>Investment Property</option>' +
         '</select></div>' +
+      '<button onclick="removePropertyRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:6px 12px;cursor:pointer;font-size:0.85rem;margin-left:auto">✕ Remove</button>' +
+    '</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:0.75rem">' +
       '<div class="field" style="margin:0"><label>Current Value ($)</label>' +
         '<input type="number" class="prop-value" placeholder="e.g. 525000" value="' + (d.value||'') + '" oninput="recalc()"></div>' +
       '<div class="field" style="margin:0"><label>Mortgage Balance ($)</label>' +
         '<input type="number" class="prop-mortgage" placeholder="0" value="' + (d.mortgage||'') + '" oninput="syncBudgetMortgages();recalc()"></div>' +
-      '<div class="field" style="margin:0"><label>Payoff Year</label>' +
-        '<input type="number" class="prop-payoff" placeholder="e.g. 2031" value="' + (d.payoff||'') + '" oninput="syncBudgetMortgages();recalc()"></div>' +
-      '<div class="field" style="margin:0"><label>Apprec. %</label>' +
-        '<input type="number" class="prop-apprec" placeholder="3" value="' + (d.apprec||'') + '" step="0.1" oninput="recalc()"></div>' +
-      '<div style="padding-bottom:2px"><button onclick="removePropertyRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:8px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>' +
+      '<div class="field" style="margin:0"><label>Monthly Payment (P&I) ($)</label>' +
+        '<input type="number" class="prop-payment" placeholder="e.g. 2100" value="' + (d.payment||'') + '" oninput="syncBudgetMortgages();recalc()"></div>' +
     '</div>' +
-    '<div style="margin-top:0.5rem"><div class="field" style="margin:0"><label>Monthly Payment (P&I) ($)</label>' +
-      '<input type="number" class="prop-payment" placeholder="e.g. 2100" value="' + (d.payment||'') + '" oninput="syncBudgetMortgages();recalc()" style="max-width:200px"></div></div>';
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">' +
+      '<div class="field" style="margin:0"><label>Mortgage Payoff Year</label>' +
+        '<input type="number" class="prop-payoff" placeholder="e.g. 2031" value="' + (d.payoff||'') + '" oninput="syncBudgetMortgages();recalc()"></div>' +
+      '<div class="field" style="margin:0"><label>Appreciation Rate (%/yr)</label>' +
+        '<input type="number" class="prop-apprec" placeholder="3" value="' + (d.apprec||'') + '" step="0.1" oninput="recalc()"><div class="hint">Leave blank to use default rate above</div></div>' +
+    '</div>';
   
   container.appendChild(row);
   syncBudgetMortgages();
