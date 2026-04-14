@@ -2180,13 +2180,13 @@
         <div style="font-weight:700;color:var(--forest);margin-bottom:0.75rem">How we calculate your net worth at retirement:</div>
         <div style="display:flex;flex-direction:column;gap:0.4rem">
           <div style="display:flex;justify-content:space-between"><span style="color:var(--mid)">Investable Portfolio</span><span id="bkPortfolio" style="font-weight:600">—</span></div>
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--mid)">Primary Home (est. 3%/yr growth)</span><span id="bkHome" style="font-weight:600">—</span></div>
-          <div id="bkSecondRow" style="display:none;justify-content:space-between"><span style="color:var(--mid)">Second Home (est. 3%/yr growth)</span><span id="bkSecond" style="font-weight:600">—</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--mid)">Primary Home (est. <span id="homeAppLabelPrimary">3</span>%/yr growth)</span><span id="bkHome" style="font-weight:600">—</span></div>
+          <div id="bkSecondRow" style="display:none;justify-content:space-between"><span style="color:var(--mid)">Second Home (est. <span id="homeAppLabelSecond">3</span>%/yr growth)</span><span id="bkSecond" style="font-weight:600">—</span></div>
           <div style="display:flex;justify-content:space-between"><span style="color:var(--mid)">Other Assets</span><span id="bkOther" style="font-weight:600">—</span></div>
           <div style="height:1px;background:var(--border);margin:0.25rem 0"></div>
           <div style="display:flex;justify-content:space-between;font-weight:700;font-size:0.95rem"><span style="color:var(--forest)">Total Net Worth at Retirement</span><span id="bkTotal" style="color:var(--sage)">—</span></div>
         </div>
-        <div style="margin-top:0.75rem;font-size:0.78rem;color:var(--mid)">* Home appreciation is estimated at 3%/year. Actual values may vary.</div>
+        <div style="margin-top:0.75rem;font-size:0.78rem;color:var(--mid)">* Home appreciation is estimated at <span id="homeAppLabelNote">3</span>%/year. Actual values may vary.</div>
       </div>
 
       <div class="card">
@@ -2278,7 +2278,7 @@
             <div id="rdCurrentBudget" style="font-size:1.1rem;font-weight:700;color:var(--clay);padding:0.5rem 0">—</div>
           </div>
           <div class="field">
-            <label>Inflation Adjusted (3%/yr)</label>
+            <label>Inflation Adjusted (<span id="rdInflLabelPct">3</span>%/yr)</label>
             <div id="rdInflatedBudget" style="font-size:1.1rem;font-weight:700;color:var(--clay);padding:0.5rem 0">—</div>
             <div class="hint">Today's budget × inflation × lifestyle adjustments (set in Budget tab sliders)</div>
           </div>
@@ -3528,6 +3528,15 @@ function calcProjections() {
   var monthlyIncome = Math.round((finalValue * 0.04) / 12);
   // Store in state so readiness uses same portfolio value
   state.portfolioAtRetirement = finalValue;
+
+  // Update dynamic rate labels
+  var _appRate = parseFloat(document.getElementById('homeApprecRate')?.value) || 3;
+  var _inflRateDisplay = parseFloat(document.getElementById('inflationRate')?.value) || 3;
+  ['homeAppLabelPrimary','homeAppLabelSecond','homeAppLabelNote'].forEach(function(id) {
+    var el = document.getElementById(id); if(el) el.textContent = _appRate;
+  });
+  var rdInflEl = document.getElementById('rdInflLabelPct'); if(rdInflEl) rdInflEl.textContent = _inflRateDisplay;
+  var baInflEl = document.getElementById('ba-inflRate'); if(baInflEl) baInflEl.textContent = _inflRateDisplay + '%';
 
   // Update summary stats
   var el = document.getElementById('projFinalValue');
