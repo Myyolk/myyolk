@@ -5562,7 +5562,7 @@ function calcLifeEventImpact() {
   var el = document.getElementById('lifeEventTotal');
   var panel = document.getElementById('lifeEventImpact');
   if(el) {
-    el.textContent = (total >= 0 ? '+' : '') + '$' + Math.abs(Math.round(total)).toLocaleString();
+    el.textContent = (total >= 0 ? '+$' : '-$') + Math.abs(Math.round(total)).toLocaleString();
     el.style.color = total >= 0 ? 'var(--sage)' : 'var(--clay)';
   }
   if(panel) panel.style.display = rows.length > 0 ? 'block' : 'none';
