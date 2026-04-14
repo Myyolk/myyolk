@@ -4532,12 +4532,9 @@ function updateSnapshot() {
   var _sbSpouseRSU401k2 = document.getElementById('spouseBonusRSU401k')?.checked ? (parseFloat(document.getElementById('spouseBonusRSU')?.value)||0) : 0;
   var annualContrib = (salary * contrib401k) + (salary * empMatch) + contribRothIRA + contribTaxable + _sb401k2 + _sbRet401k2 + _sbSign401k2 + _sbPS401k2 + _sbRSU401k2 + _sbSpouseB401k2 + _sbSpousePS401k2 + _sbSpouseRet401k2 + _sbSpouseSign401k2 + _sbSpouseRSU401k2;
 
-  // Project to retirement
-  var yearsToRetire = Math.max(retAge - age, 0);
-  var portfolio = totalNow;
-  for(var i = 0; i < yearsToRetire; i++) {
-    portfolio = (portfolio + annualContrib) * (1 + growthRate);
-  }
+  // Use calcProjections as single source of truth
+  if(typeof calcProjections === 'function') calcProjections();
+  var portfolio = state.portfolioAtRetirement || totalNow;
 
   // Safe withdrawal (4% rule / 12 months)
   var monthlyWithdrawal = (portfolio * 0.04) / 12;
