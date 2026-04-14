@@ -4299,34 +4299,43 @@ function generatePDF() {
       function pageHeader(pageNum) {
         // Amber header bar
         doc.setFillColor(amber[0],amber[1],amber[2]);
-        doc.rect(0, 0, W, 38, 'F');
-        // Logo - egg ellipse
+        doc.rect(0, 0, W, 42, 'F');
+
+        // ── EGG LOGO (matching website exactly) ──
+        var ex = margin + 8;   // egg center x
+        var ey = 21;           // egg center y
+        var erx = 7; var ery = 9; // egg radii
+        // Egg shell
         doc.setFillColor(255,253,240);
         doc.setDrawColor(232,201,106);
-        doc.setLineWidth(0.4);
-        doc.ellipse(margin+6, 16, 6, 7.5, 'FD');
-        // Yolk circle
+        doc.setLineWidth(0.5);
+        doc.ellipse(ex, ey, erx, ery, 'FD');
+        // Yolk circle - offset right like website (cx=29 out of 52 = ~56% across)
         doc.setFillColor(240,165,0);
-        doc.circle(margin+7.5, 19, 3.5, 'F');
-        // My text
-        doc.setFont('times','bold'); doc.setFontSize(20);
+        doc.circle(ex + 2.5, ey + 4, 4.5, 'F');
+
+        // ── WORDMARK ──
+        var tx = margin + 20; // text start x
+        doc.setFont('times','bold'); doc.setFontSize(22);
         doc.setTextColor(forest[0],forest[1],forest[2]);
-        doc.text('My', margin+15, 21);
-        // Yolk text
+        doc.text('My', tx, 24);
         var myW = doc.getTextWidth('My');
         doc.setTextColor(255,253,240);
-        doc.text('Yolk', margin+15+myW, 21);
-        // TM
-        doc.setFontSize(7); doc.setTextColor(255,253,240);
-        doc.text('TM', margin+15+myW+doc.getTextWidth('Yolk')+0.5, 16.5);
-        // Retirement Planning
-        doc.setFont('times','normal'); doc.setFontSize(6.5);
+        doc.text('Yolk', tx + myW, 24);
+        // TM as small superscript
+        var yolkW = doc.getTextWidth('Yolk');
+        doc.setFontSize(6); doc.setTextColor(255,253,240);
+        doc.text('™', tx + myW + yolkW + 0.5, 19);
+
+        // RETIREMENT PLANNING - slightly larger and bolder
+        doc.setFont('times','bold'); doc.setFontSize(7.5);
         doc.setTextColor(forest[0],forest[1],forest[2]);
-        doc.text('RETIREMENT PLANNING', margin+15, 27);
+        doc.text('RETIREMENT PLANNING', tx, 31);
+
         // Page number right
         doc.setFont('times','normal'); doc.setFontSize(8);
         doc.setTextColor(forest[0],forest[1],forest[2]);
-        doc.text('Page ' + pageNum + ' of 2', W-margin, 27, {align:'right'});
+        doc.text('Page ' + pageNum + ' of 2', W-margin, 31, {align:'right'});
       }
       function pageFooter() {
         doc.setFillColor(amber[0],amber[1],amber[2]);
@@ -4349,7 +4358,7 @@ function generatePDF() {
       var retAge = document.getElementById('retAge')?.value || '—';
       var lifeExp = document.getElementById('lifeExp')?.value || '90';
       var stateEl = document.getElementById('stateRes');
-      var stateName = stateEl?.options[stateEl.selectedIndex]?.text || '—';
+      var stateName = (stateEl?.options[stateEl?.selectedIndex]?.text || '—').split('(')[0].trim();
       var sbPortfolio = document.getElementById('sb-portfolio')?.textContent || '—';
       var sbAtRet = document.getElementById('sb-at-ret')?.textContent || '—';
       var rdPortfolio = document.getElementById('rdPortfolioIncome')?.textContent || '—';
@@ -4357,7 +4366,7 @@ function generatePDF() {
       var rdAdditional = document.getElementById('rdAdditionalIncome')?.textContent || '—';
       var rdTotal = document.getElementById('rdTotalIncome')?.textContent || '—';
       var rdExpenses = document.getElementById('rdInflatedBudget')?.textContent || '—';
-      var rdScore = document.getElementById('rdScore')?.textContent || '—';
+      var rdScore = document.getElementById('readinessScore')?.textContent || document.getElementById('rdScore')?.textContent || '—';
       var rdMoneyLasts = document.getElementById('rdMoneyLasts')?.textContent || '—';
       var projNetWorth = document.getElementById('projNetWorth')?.textContent || '—';
       var sumAssets = document.getElementById('sumTotalAssets')?.textContent || '—';
