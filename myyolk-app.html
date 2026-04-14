@@ -567,6 +567,20 @@
   .tag-orange { background: #fef3e8; color: var(--clay); }
   .tag-gray { background: #f0ede8; color: var(--mid); }
 
+  /* Additional income row layout */
+  .additional-income-row {
+    display: grid;
+    grid-template-columns: 3fr 1.2fr 1fr 0.7fr 0.7fr 44px;
+    gap: 0.5rem;
+    align-items: end;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .additional-income-row.has-owner {
+    grid-template-columns: 3fr 1.2fr 1fr 0.7fr 0.7fr 1fr 44px;
+  }
+
   /* Remove number input spinners */
   input[type=number]::-webkit-inner-spin-button,
   input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
@@ -1424,7 +1438,7 @@
         <div class="card-title"><span class="dot"></span> Additional Income Sources</div>
         <p style="font-size:0.85rem;color:#666;margin-bottom:1rem">Other income streams that will continue into retirement.</p>
         <div id="additionalIncomeRows">
-          <div class="additional-income-row" style="display:grid;grid-template-columns:3fr 1.2fr 1fr 0.7fr 0.7fr 1fr 44px;gap:0.5rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)">
+          <div class="additional-income-row">
             <div class="field" style="margin:0"><label>Income Type</label>
               <select class="ai-type" onchange="recalc()" style="width:100%">
                 <option value="alimony">Alimony Received</option>
@@ -3129,12 +3143,13 @@ function addIncomeRow() {
   var container = document.getElementById('additionalIncomeRows');
   var row = document.createElement('div');
   row.className = 'additional-income-row';
-  row.style.cssText = isCouple ? 'display:grid;grid-template-columns:3fr 1.2fr 1fr 0.7fr 0.7fr 1fr 44px;gap:0.5rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)' : 'display:grid;grid-template-columns:3fr 1.2fr 1fr 0.7fr 0.7fr 44px;gap:0.5rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)';
+  // grid handled by CSS class
   row.innerHTML = '<div class="field" style="margin:0"><label>Income Type</label><select class="ai-type" onchange="recalc()" style="width:100%"><option value="alimony">Alimony Received</option><option value="annuity">Annuity</option><option value="business">Business Income</option><option value="dividends">Dividends</option><option value="inheritance">Inheritance / One-Time</option><option value="royalties">Oil &amp; Gas Royalties</option><option value="other">Other</option><option value="parttime">Part-time / Consulting</option><option value="pension">Pension</option><option value="rental">Rental Income</option><option value="rmd">RMD</option><option value="trust">Trust / Estate</option><option value="veterans">Veterans Benefits</option></select></div><div class="field" style="margin:0"><label>Amount ($)</label><input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()"></div><div class="field" style="margin:0"><label>Frequency</label><select class="ai-freq" onchange="recalc()" style="width:100%"><option value="monthly">Monthly</option><option value="annual">Annual</option><option value="onetime">One-Time</option></select></div><div class="field" style="margin:0"><label>Start</label><input type="number" class="ai-start" placeholder="62" oninput="recalc()" style="width:100%"></div><div class="field" style="margin:0"><label>End</label><input type="number" class="ai-end" placeholder="∞" oninput="recalc()" style="width:100%"></div><div class="field ai-owner-col" style="margin:0;display:none"><label>Whose?</label><select class="ai-owner" onchange="recalc()" style="width:100%"><option value="joint">Both / Joint</option><option value="mine">Dean\'s</option><option value="spouse">Densie\'s</option></select></div><div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:6px 8px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>';
   container.appendChild(row);
   // Show Whose? column if in couple mode
   if(isCouple) {
-    var ownerCol = row.querySelector('.ai-owner-col');
+    if(isCouple) row.classList.add('has-owner');
+  var ownerCol = row.querySelector('.ai-owner-col');
     if(ownerCol) ownerCol.style.display = 'block';
   }
   recalc();
