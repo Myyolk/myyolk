@@ -1424,7 +1424,7 @@
         <div class="card-title"><span class="dot"></span> Additional Income Sources</div>
         <p style="font-size:0.85rem;color:#666;margin-bottom:1rem">Other income streams that will continue into retirement.</p>
         <div id="additionalIncomeRows">
-          <div class="additional-income-row" style="display:grid;grid-template-columns:2fr 1fr 0.9fr 80px;gap:0.75rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)">
+          <div class="additional-income-row" style="display:grid;grid-template-columns:2fr 1fr 0.9fr 0.6fr 0.6fr 80px;gap:0.75rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)">
             <div class="field" style="margin:0"><label>Income Type</label>
               <select class="ai-type" onchange="recalc()" style="width:100%">
                 <option value="alimony">Alimony Received</option>
@@ -1452,6 +1452,12 @@
                 <option value="onetime">One-Time</option>
               </select>
             </div>
+            <div class="field" style="margin:0"><label>Start Age</label>
+              <input type="number" class="ai-start" placeholder="e.g. 62" oninput="recalc()" style="width:100%">
+            </div>
+            <div class="field" style="margin:0"><label>End Age</label>
+              <input type="number" class="ai-end" placeholder="∞" oninput="recalc()" style="width:100%">
+            </div>
             <div class="field ai-owner-col" style="margin:0;display:none"><label id="aiOwnerLabel">Whose?</label>
               <select class="ai-owner" onchange="recalc()" style="width:100%">
                 <option value="mine">Dean's</option>
@@ -1464,6 +1470,9 @@
         <button onclick="addIncomeRow()" style="background:var(--sage-pale);color:var(--forest);border:1px solid var(--sage);border-radius:8px;padding:0.5rem 1rem;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;margin-top:0.25rem">+ Add Income Source</button>
         <div style="margin-top:1rem;padding:0.75rem;background:var(--warm-white);border-radius:8px;font-size:0.85rem;color:var(--forest)">
           <strong>Total Additional Income:</strong> <span id="totalAdditionalIncome" style="color:var(--sage);font-weight:700">$0/mo</span>
+          <div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border);font-size:0.8rem;color:var(--mid);line-height:1.6">
+            <strong style="color:var(--forest)">How this is used:</strong> These income sources feed directly into your <strong>Projections</strong> (reduces portfolio withdrawals needed), <strong>Readiness Score</strong> (counted as retirement income), and <strong>What-If Scenarios</strong>. Start/End Age controls when each source is active — leave End Age blank for income that lasts forever. One-Time amounts are excluded from monthly totals.
+          </div>
         </div>
       </div>
 
@@ -3120,8 +3129,8 @@ function addIncomeRow() {
   var container = document.getElementById('additionalIncomeRows');
   var row = document.createElement('div');
   row.className = 'additional-income-row';
-  row.style.cssText = isCouple ? 'display:grid;grid-template-columns:2fr 1fr 0.9fr 1.2fr 80px;gap:0.75rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)' : 'display:grid;grid-template-columns:2fr 1fr 0.9fr 80px;gap:0.75rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)';
-  row.innerHTML = '<div class="field" style="margin:0"><label>Income Type</label><select class="ai-type" onchange="recalc()" style="width:100%"><option value="alimony">Alimony Received</option><option value="annuity">Annuity</option><option value="business">Business Income</option><option value="dividends">Dividends</option><option value="inheritance">Inheritance / One-Time</option><option value="royalties">Oil &amp; Gas Royalties</option><option value="other">Other</option><option value="parttime">Part-time / Consulting</option><option value="pension">Pension</option><option value="rental">Rental Income</option><option value="rmd">Required Min. Distribution (RMD)</option><option value="trust">Trust / Estate Income</option><option value="veterans">Veterans Benefits</option></select></div><div class="field" style="margin:0"><label>Amount ($)</label><input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()"></div><div class="field" style="margin:0"><label>Frequency</label><select class="ai-freq" onchange="recalc()" style="width:100%"><option value="monthly">Monthly</option><option value="annual">Annual</option><option value="onetime">One-Time</option></select></div><div class="field ai-owner-col" style="margin:0;display:none"><label>Whose?</label><select class="ai-owner" onchange="recalc()" style="width:100%"><option value="joint">Both / Joint</option><option value="mine">Dean\'s</option><option value="spouse">Densie\'s</option></select></div><div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>';
+  row.style.cssText = isCouple ? 'display:grid;grid-template-columns:2fr 1fr 0.9fr 0.6fr 0.6fr 1.2fr 80px;gap:0.75rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)' : 'display:grid;grid-template-columns:2fr 1fr 0.9fr 0.6fr 0.6fr 80px;gap:0.75rem;align-items:end;margin-bottom:0.75rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border)';
+  row.innerHTML = '<div class="field" style="margin:0"><label>Income Type</label><select class="ai-type" onchange="recalc()" style="width:100%"><option value="alimony">Alimony Received</option><option value="annuity">Annuity</option><option value="business">Business Income</option><option value="dividends">Dividends</option><option value="inheritance">Inheritance / One-Time</option><option value="royalties">Oil &amp; Gas Royalties</option><option value="other">Other</option><option value="parttime">Part-time / Consulting</option><option value="pension">Pension</option><option value="rental">Rental Income</option><option value="rmd">Required Min. Distribution (RMD)</option><option value="trust">Trust / Estate Income</option><option value="veterans">Veterans Benefits</option></select></div><div class="field" style="margin:0"><label>Amount ($)</label><input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()"></div><div class="field" style="margin:0"><label>Frequency</label><select class="ai-freq" onchange="recalc()" style="width:100%"><option value="monthly">Monthly</option><option value="annual">Annual</option><option value="onetime">One-Time</option></select></div><div class="field" style="margin:0"><label>Start Age</label><input type="number" class="ai-start" placeholder="e.g. 62" oninput="recalc()" style="width:100%"></div><div class="field" style="margin:0"><label>End Age</label><input type="number" class="ai-end" placeholder="∞" oninput="recalc()" style="width:100%"></div><div class="field ai-owner-col" style="margin:0;display:none"><label>Whose?</label><select class="ai-owner" onchange="recalc()" style="width:100%"><option value="joint">Both / Joint</option><option value="mine">Dean\'s</option><option value="spouse">Densie\'s</option></select></div><div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>';
   container.appendChild(row);
   // Show Whose? column if in couple mode
   if(isCouple) {
@@ -3159,12 +3168,16 @@ function removeIncomeRow(btn) {
 
 function calcAdditionalIncome() {
   var isCouple = document.getElementById('planCouple')?.checked;
+  var retAge = parseFloat(document.getElementById('retAge')?.value) || 62;
   var total = 0;
   document.querySelectorAll('.additional-income-row').forEach(function(row) {
     var amount = parseFloat(row.querySelector('.ai-amount')?.value) || 0;
     var freq = row.querySelector('.ai-freq')?.value || 'monthly';
+    var startAge = parseFloat(row.querySelector('.ai-start')?.value) || 0;
+    var endAge = parseFloat(row.querySelector('.ai-end')?.value) || 999;
+    // Check if active at retirement age
+    if(startAge > retAge || endAge < retAge) { return; }
     var monthly = freq === 'annual' ? amount / 12 : freq === 'onetime' ? 0 : amount;
-    // Count all additional income for household total
     total += monthly;
   });
   var el = document.getElementById('totalAdditionalIncome');
