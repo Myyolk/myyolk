@@ -4513,7 +4513,15 @@ function updateSnapshot() {
   );
   var contribRothIRA = parseFloat(document.getElementById('contribRothIRA')?.value) || 0;
   var contribTaxable = parseFloat(document.getElementById('contribTaxable')?.value) || 0;
-  var annualContrib = (salary * contrib401k) + (salary * empMatch) + contribRothIRA + contribTaxable;
+  // Add bonus 401k contributions to sidebar calc
+  var _sb401k2 = document.getElementById('bonus401k')?.checked ? (parseFloat(document.getElementById('bonus')?.value)||0) : 0;
+  var _sbRet401k2 = document.getElementById('bonusRetention401k')?.checked ? (parseFloat(document.getElementById('bonusRetention')?.value)||0) : 0;
+  var _sbSign401k2 = document.getElementById('bonusSignOn401k')?.checked ? (parseFloat(document.getElementById('bonusSignOn')?.value)||0) : 0;
+  var _sbPS401k2 = document.getElementById('bonusProfitShare401k')?.checked ? (parseFloat(document.getElementById('bonusProfitShare')?.value)||0) : 0;
+  var _sbRSU401k2 = document.getElementById('bonusRSU401k')?.checked ? (parseFloat(document.getElementById('bonusRSU')?.value)||0) : 0;
+  var _sbSpouseB401k2 = document.getElementById('spouseBonus401k')?.checked ? (parseFloat(document.getElementById('spouseBonus')?.value)||0) : 0;
+  var _sbSpousePS401k2 = document.getElementById('spouseBonusProfitShare401k')?.checked ? (parseFloat(document.getElementById('spouseBonusProfitShare')?.value)||0) : 0;
+  var annualContrib = (salary * contrib401k) + (salary * empMatch) + contribRothIRA + contribTaxable + _sb401k2 + _sbRet401k2 + _sbSign401k2 + _sbPS401k2 + _sbRSU401k2 + _sbSpouseB401k2 + _sbSpousePS401k2;
 
   // Project to retirement
   var yearsToRetire = Math.max(retAge - age, 0);
