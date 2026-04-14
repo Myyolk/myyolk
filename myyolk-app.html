@@ -5416,6 +5416,12 @@ function loadFromLocal() {
     var hasDSS67 = (parseFloat(document.getElementById('dss67')?.value)||0) > 0;
     if((hasDSS62 || hasDSS67) && typeof dssManualUpdate === 'function') dssManualUpdate();
     console.log('MyYolk: data restored from localStorage');
+    // Strip old inline styles from income rows so CSS class takes over
+    document.querySelectorAll('.additional-income-row').forEach(function(row) {
+      row.style.cssText = '';
+      var isCouple = document.getElementById('planCouple')?.checked;
+      if(isCouple) row.classList.add('has-owner');
+    });
   } catch(e) { console.warn('Load failed:', e); }
 }
 
