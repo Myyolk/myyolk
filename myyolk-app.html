@@ -815,7 +815,7 @@
       <div class="lang-option" onclick="setLanguage('es', event)">🇪🇸 Español</div>
     </div>
   </div>
-  <div style="display:flex;align-items:center;gap:0.5rem;position:absolute;top:1rem;right:5rem">
+  <div style="display:flex;align-items:center;gap:0.5rem;position:absolute;top:1rem;right:10rem">
     <span id="saveIndicator" style="font-size:0.75rem;color:#2d6a4f;opacity:0;transition:opacity 0.5s">💾 Saved</span>
     <button onclick="clearSavedData()" title="Clear all saved data" style="font-size:0.75rem;background:none;border:1px solid #ddd;border-radius:6px;padding:3px 8px;cursor:pointer;color:#888">Clear Data</button>
   </div>
@@ -1675,18 +1675,7 @@
             <div class="field"><label>Benefit at 67 ($)</label><input type="number" id="dss67" placeholder="e.g. 1800" oninput="dssManualUpdate()"><div class="hint">Full retirement age</div></div>
             <div class="field"><label>Benefit at 70 ($)</label><input type="number" id="dss70" placeholder="e.g. 2200" oninput="dssManualUpdate()"><div class="hint">Maximum delayed</div></div>
           </div>
-          <div style="flex:1;min-width:0"><div id="dest-ss67" style="font-size:1.1rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.68rem;color:var(--mid)">Age 67 ★</div></div><div style="flex:1;min-width:0"><div id="dest-ss70" style="font-size:0.95rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.68rem;color:var(--mid)">Age 70</div></div></div></div>
-            <div style="min-width:0;flex:1"><div id="dest-ss67" style="font-size:1.1rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.7rem;color:var(--mid)">Age 67 ★</div></div>
-            <div style="min-width:0;flex:1"><div id="dest-ss70" style="font-size:0.95rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.7rem;color:var(--mid)">Age 70</div></div>
-          </div>
-
         </div>
-<div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:1rem">
-            <div><div id="dest-ss62" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 62</div></div>
-            <div><div id="dest-ss65" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 65</div></div>
-            <div><div id="dest-ss67" style="font-size:1.15rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 67 ★</div></div>
-            <div><div id="dest-ss70" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 70</div>
-
         <div id="dss-method-estimate">
           <div class="form-grid">
             <div class="field"><label>Years Worked (Est.)</label><input type="number" id="dssYearsWorked" value="30" oninput="estimateDSS()"></div>
@@ -1695,7 +1684,11 @@
           <div id="dssEstResult" style="font-size:0.85rem;color:var(--mid);margin-top:0.5rem;padding:0.5rem;background:var(--warm-white);border-radius:6px"></div>
         </div>
         <div style="background:var(--warm-white);border-radius:10px;padding:1rem;margin-top:1rem">
-          <div style="font-size:0.72rem;color:var(--mid)">Age 70</div></div>
+          <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:1rem">
+            <div><div id="dest-ss62" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 62</div></div>
+            <div><div id="dest-ss65" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 65</div></div>
+            <div><div id="dest-ss67" style="font-size:1.15rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 67 ★</div></div>
+            <div><div id="dest-ss70" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 70</div></div>
           </div>
           <div class="form-grid">
             <div class="field"><label>Claiming Age</label>
@@ -4390,14 +4383,16 @@ function updatePlanningFor() {
     sbNameEl.innerHTML = '<span style="' + green + '">My</span>' + yolk;
   }
   var st = function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
-  st('acct-bal-title',(cap1||'Your')+"'s");
-  st('acct-other-title',(cap1||'Your')+"'s");
-  st('spouse-other-title',(cap2||'Spouse')+"'s");
-  st('acct-401k-title',(cap1||'Your')+"'s");
-  st('acct-ss-title',(cap1||'Your')+"'s");
-  st('spouse-bal-title',(cap2||'Spouse')+"'s");
-  st('spouse-401k-title',(cap2||'Spouse')+"'s");
-  st('spouse-ss-title',(cap2||'Spouse')+"'s");
+  var name1 = cap1 ? cap1+"'s" : 'Your';
+  var name2 = cap2 ? cap2+"'s" : 'Spouse';
+  st('acct-bal-title', name1);
+  st('acct-other-title', name1);
+  st('spouse-other-title', name2);
+  st('acct-401k-title', name1);
+  st('acct-ss-title', name1);
+  st('spouse-bal-title', name2);
+  st('spouse-401k-title', name2);
+  st('spouse-ss-title', name2);
 }
 
 function updateGreeting() {
