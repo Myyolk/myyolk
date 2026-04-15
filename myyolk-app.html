@@ -1064,6 +1064,30 @@
   </div>
 </header>
 
+<!-- PASSWORD RESET MODAL -->
+<div id="resetModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:20px;overflow:hidden;width:100%;max-width:420px;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.25)">
+    <div style="background:#C8860A;padding:1.5rem 2rem 1.25rem;text-align:center">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 52" width="180" height="42" style="display:inline-block">
+        <defs><clipPath id="egg-clip-r"><ellipse cx="26" cy="28" rx="20" ry="24"/></clipPath></defs>
+        <ellipse cx="26" cy="28" rx="20" ry="24" fill="#fffdf0" stroke="#e8c96a" stroke-width="2"/>
+        <circle cx="29" cy="34" r="11" fill="#F0A500" clip-path="url(#egg-clip-r)"/>
+        <text x="54" y="31" font-family="Georgia,serif" font-size="26" font-weight="700" fill="#2D4A35">My</text>
+        <text x="90" y="31" font-family="Georgia,serif" font-size="26" font-weight="700" fill="#fffdf0">Yolk<tspan font-size="11" font-weight="400" baseline-shift="super">&#8482;</tspan></text>
+      </svg>
+      <div style="font-size:0.85rem;color:rgba(255,255,255,0.9);margin-top:6px">Set your new password</div>
+    </div>
+    <div style="padding:1.75rem 2rem 2rem">
+      <div id="resetError" style="display:none;background:#fff0f0;color:#c0392b;border-radius:8px;padding:0.75rem;margin-bottom:1rem;font-size:0.85rem"></div>
+      <form onsubmit="submitNewPassword();return false;" style="display:flex;flex-direction:column;gap:0.75rem">
+        <input id="newPassword" type="password" placeholder="New password" autocomplete="new-password" style="padding:0.75rem 1rem;border:1.5px solid #e2ddd8;border-radius:10px;font-size:0.95rem;font-family:DM Sans,sans-serif;outline:none">
+        <input id="newPasswordConfirm" type="password" placeholder="Confirm new password" autocomplete="new-password" style="padding:0.75rem 1rem;border:1.5px solid #e2ddd8;border-radius:10px;font-size:0.95rem;font-family:DM Sans,sans-serif;outline:none">
+        <button type="submit" style="padding:0.85rem;background:#C8860A;color:#fff;border:none;border-radius:10px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer">Set New Password</button>
+      </form>
+    </div>
+  </div>
+</div>
+
 <!-- AUTH MODAL -->
 <div id="authModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center">
   <div style="background:#fff;border-radius:20px;overflow:hidden;width:100%;max-width:420px;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.25)">
@@ -6304,10 +6328,37 @@ var _sb = null;
 var _sbUser = null;
 var _authMode = 'signin';
 
+async function submitNewPassword() {
+  var pw = document.getElementById('newPassword')?.value;
+  var pw2 = document.getElementById('newPasswordConfirm')?.value;
+  var errEl = document.getElementById('resetError');
+  if(!pw || pw.length < 6) { if(errEl) { errEl.textContent='Password must be at least 6 characters.'; errEl.style.display='block'; } return; }
+  if(pw !== pw2) { if(errEl) { errEl.textContent='Passwords do not match.'; errEl.style.display='block'; } return; }
+  if(!_sb) return;
+  var result = await _sb.auth.updateUser({ password: pw });
+  if(result.error) {
+    if(errEl) { errEl.textContent = result.error.message; errEl.style.display='block'; }
+  } else {
+    document.getElementById('resetModal').style.display = 'none';
+    // Sign out and reload clean so they sign in fresh
+    await _sb.auth.signOut();
+    localStorage.removeItem(SAVE_KEY);
+    localStorage.removeItem('myyolk_device');
+    alert('Password updated! Please sign in with your new password.');
+    location.reload();
+  }
+}
+
 function initSupabase() {
   if(typeof supabase === 'undefined') { setTimeout(initSupabase, 500); return; }
   _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  // Check if arriving via password reset link
   _sb.auth.onAuthStateChange(function(event, session) {
+    if(event === 'PASSWORD_RECOVERY') {
+      var modal = document.getElementById('resetModal');
+      if(modal) modal.style.display = 'flex';
+      return;
+    }
     _sbUser = session ? session.user : null;
     updateAuthUI();
     if(_sbUser) {
