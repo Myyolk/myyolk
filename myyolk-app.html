@@ -1998,7 +1998,7 @@
           <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:1rem">
             <div><div id="est-ss62" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 62</div></div>
             <div><div id="est-ss65" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 65</div></div>
-            <div><div id="est-ss67" style="font-size:1.15rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 67 ★</div></div>
+            <div><div id="est-ss67" style="font-size:1.15rem;font-weight:700;color:#C8860A">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 67 ★</div></div>
             <div><div id="est-ss70" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 70</div></div>
           </div>
           <div class="form-grid">
@@ -2051,7 +2051,7 @@
           <div style="display:flex;justify-content:space-around;text-align:center;margin-bottom:1rem">
             <div><div id="dest-ss62" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 62</div></div>
             <div><div id="dest-ss65" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 65</div></div>
-            <div><div id="dest-ss67" style="font-size:1.15rem;font-weight:700;color:var(--gold)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 67 ★</div></div>
+            <div><div id="dest-ss67" style="font-size:1.15rem;font-weight:700;color:#C8860A">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 67 ★</div></div>
             <div><div id="dest-ss70" style="font-size:1rem;font-weight:700;color:var(--forest)">—</div><div style="font-size:0.72rem;color:var(--mid)">Age 70</div></div>
           </div>
           <div class="form-grid">
@@ -2701,7 +2701,7 @@
             <div style="text-align:center">
               <div style="font-size:0.7rem;color:var(--mid);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:2px">Current Plan</div>
               <div style="font-size:0.7rem;color:var(--mid);margin-bottom:6px">Portfolio</div>
-              <div id="wi-cur-portfolio" style="font-size:1.1rem;font-weight:700;color:var(--gold)">—</div>
+              <div id="wi-cur-portfolio" style="font-size:1.1rem;font-weight:700;color:#C8860A">—</div>
               <div style="font-size:0.7rem;color:var(--mid);margin:6px 0 2px">Monthly Draw</div>
               <div id="wi-cur-draw" style="font-size:1rem;font-weight:600;color:var(--forest)">—</div>
               <div style="font-size:0.7rem;color:var(--mid);margin:6px 0 2px">Money Lasts</div>
@@ -2710,7 +2710,7 @@
             <div style="text-align:center;background:var(--sage-pale);border-radius:8px;padding:0.5rem">
               <div style="font-size:0.7rem;color:var(--sage);text-transform:uppercase;letter-spacing:0.05em;font-weight:700;margin-bottom:2px">What-If Plan</div>
               <div style="font-size:0.7rem;color:var(--mid);margin-bottom:6px">Portfolio</div>
-              <div id="wi-new-portfolio" style="font-size:1.1rem;font-weight:700;color:var(--gold)">—</div>
+              <div id="wi-new-portfolio" style="font-size:1.1rem;font-weight:700;color:#C8860A">—</div>
               <div style="font-size:0.7rem;color:var(--mid);margin:6px 0 2px">Monthly Draw</div>
               <div id="wi-new-draw" style="font-size:1rem;font-weight:600;color:var(--forest)">—</div>
               <div style="font-size:0.7rem;color:var(--mid);margin:6px 0 2px">Money Lasts</div>
@@ -4065,7 +4065,11 @@ showTab = function(name) {
       var isCouple = document.getElementById('planCouple')?.checked;
       var densieCard = document.getElementById('densieSSCard');
       if(densieCard) densieCard.style.display = isCouple ? 'block' : 'none';
-      if(!((parseFloat(document.getElementById('ss62')?.value)||0) > 0 || (parseFloat(document.getElementById('ss67')?.value)||0) > 0)) estimateSS();
+      var hasSS = (parseFloat(document.getElementById('ss62')?.value)||0) > 0 || (parseFloat(document.getElementById('ss67')?.value)||0) > 0;
+      var hasDSS = (parseFloat(document.getElementById('dss62')?.value)||0) > 0 || (parseFloat(document.getElementById('dss67')?.value)||0) > 0;
+      if(hasSS && typeof ssManualUpdate === 'function') ssManualUpdate();
+      else if(!hasSS) estimateSS();
+      if(isCouple && hasDSS && typeof dssManualUpdate === 'function') dssManualUpdate();
       if(isCouple && typeof calcSpouseSsBenefit === 'function') calcSpouseSsBenefit();
     }, 100);
   }
