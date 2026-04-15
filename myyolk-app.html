@@ -4297,67 +4297,56 @@ function generatePDF() {
         return yy + 6.5;
       }
       function pageHeader(pageNum) {
-        // Amber header bar
+        // Amber header bar - 40mm tall
         doc.setFillColor(amber[0],amber[1],amber[2]);
-        doc.rect(0, 0, W, 38, 'F');
+        doc.rect(0, 0, W, 40, 'F');
 
-        // ── EGG LOGO - pixel-perfect match to SVG viewBox 0 0 250 52 ──
-        // SVG is 250x52px. Scale to ~42mm tall header. Scale factor = 38/52 = 0.73
-        // But keep logo small: use scale 0.28 (so 250*0.28 = 70mm wide)
-        var sc = 0.28;
-        var ox = margin;    // x offset in mm
-        var oy = 0;         // y offset in mm
+        // ── EGG LOGO - scaled from SVG viewBox 0 0 250 52
+        // Scale: header is 40mm, SVG is 52px tall → sc = 40/52 * 0.45 = 0.346
+        // But offset vertically to center: oy pushes down so logo sits mid-bar
+        var sc = 0.32;
+        var ox = margin;
+        var oy = 4; // push down 4mm to vertically center in 40mm bar
 
-        // Egg: SVG cx=26,cy=28,rx=20,ry=24 -> PDF: cx=26*sc+ox, cy=28*sc+oy
-        var ecx = ox + 26*sc;
-        var ecy = oy + 28*sc;
-        var erx = 20*sc;
-        var ery = 24*sc;
+        // Egg shell: SVG cx=26,cy=28,rx=20,ry=24
         doc.setFillColor(255,253,240);
         doc.setDrawColor(232,201,106);
         doc.setLineWidth(0.4);
-        doc.ellipse(ecx, ecy, erx, ery, 'FD');
+        doc.ellipse(ox+26*sc, oy+28*sc, 20*sc, 24*sc, 'FD');
 
         // Yolk: SVG cx=29,cy=34,r=11
-        var ycx = ox + 29*sc;
-        var ycy = oy + 34*sc;
-        var yr  = 11*sc;
         doc.setFillColor(240,165,0);
-        doc.circle(ycx, ycy, yr, 'F');
+        doc.circle(ox+29*sc, oy+34*sc, 11*sc, 'F');
 
-        // "My": SVG x=54,y=31, font-size=26 -> scale
+        // Wordmark - font size proportional
+        var fs = 20; // pt - fixed, clean
         var tx = ox + 54*sc;
         var ty = oy + 31*sc;
-        // Font size: SVG 26px -> scale to mm. 26*sc pts roughly
-        var fs = Math.round(26*sc*3.5); // ~20pt
         doc.setFont('times','bold'); doc.setFontSize(fs);
         doc.setTextColor(forest[0],forest[1],forest[2]);
         doc.text('My', tx, ty);
         var myW = doc.getTextWidth('My');
-
-        // "Yolk": SVG x=90,y=31
-        var tx2 = ox + 90*sc;
         doc.setTextColor(255,253,240);
-        doc.text('Yolk', tx2, ty);
+        doc.text('Yolk', tx + myW, ty);
         var yolkW = doc.getTextWidth('Yolk');
 
-        // TM superscript
-        doc.setFontSize(Math.round(fs*0.42));
-        doc.text('™', tx2 + yolkW + 0.3, ty - Math.round(fs*0.25));
+        // TM - small, right after Yolk, raised
+        doc.setFontSize(6);
+        doc.setTextColor(255,253,240);
+        doc.text('™', tx + myW + yolkW + 0.5, ty - 4);
 
-        // "RETIREMENT PLANNING": SVG x=54,y=46,font-size=9
-        var rty = oy + 46*sc;
-        var rfs = Math.round(9*sc*3.5); // ~7pt
-        doc.setFont('times','normal'); doc.setFontSize(rfs);
+        // RETIREMENT PLANNING under wordmark
+        var rty = oy + 44*sc;
+        doc.setFont('times','normal'); doc.setFontSize(6.5);
         doc.setTextColor(forest[0],forest[1],forest[2]);
-        doc.setCharSpace(1.2);
+        doc.setCharSpace(1.5);
         doc.text('RETIREMENT PLANNING', tx, rty);
         doc.setCharSpace(0);
 
-        // Page number - right aligned, vertically centered in header
+        // Page number right, vertically centered
         doc.setFont('times','normal'); doc.setFontSize(8);
         doc.setTextColor(forest[0],forest[1],forest[2]);
-        doc.text('Page ' + pageNum + ' of 2', W-margin, 19, {align:'right'});
+        doc.text('Page ' + pageNum + ' of 2', W-margin, 20, {align:'right'});
       }
       function pageFooter() {
         doc.setFillColor(amber[0],amber[1],amber[2]);
@@ -4389,7 +4378,10 @@ function generatePDF() {
       var rdTotal = document.getElementById('rdTotalIncome')?.textContent || '—';
       var rdExpenses = document.getElementById('rdInflatedBudget')?.textContent || '—';
       var rdScore = document.getElementById('readinessScore')?.textContent || document.getElementById('rdScore')?.textContent || '—';
-      var rdMoneyLasts = document.getElementById('rdYearsLast')?.textContent || '—';
+      // Get money runs out text and clean it up
+      var rdMoneyLastsRaw = document.getElementById('rdYearsLast')?.textContent || '';
+      // Strip emoji and clean whitespace
+      var rdMoneyLasts = rdMoneyLastsRaw.replace(/[^\x00-\x7F]/g, '').replace(/\s+/g,' ').trim() || '—';
       var projNetWorth = document.getElementById('projNetWorth')?.textContent || '—';
       var sumAssets = document.getElementById('sumTotalAssets')?.textContent || '—';
       var sumLiab = document.getElementById('sumTotalLiabilities')?.textContent || '—';
@@ -4482,7 +4474,15 @@ function generatePDF() {
       var gapNum = parseFloat((rdGap||'0').replace(/[^0-9.-]/g,''));
       var isNeg = rdGap.includes('-') || rdGap.includes('Short');
       y = row('Monthly Surplus / (Shortfall)', rdGap, y, true, isNeg ? clay : forest);
-      y = row('Money Lasts Until', rdMoneyLasts, y, false, forest);
+      // Money runs out - wrap long text
+      if(rdMoneyLasts && rdMoneyLasts !== '—' && rdMoneyLasts.length > 2) {
+        doc.setFont('times','normal'); doc.setFontSize(8.5); doc.setTextColor(mid[0],mid[1],mid[2]);
+        doc.text('Money Runs Out:', margin, y);
+        doc.setTextColor(forest[0],forest[1],forest[2]);
+        var mlLines = doc.splitTextToSize(rdMoneyLasts.substring(0,180), W-margin*2-4);
+        doc.text(mlLines, margin+2, y+5.5);
+        y += mlLines.length * 5 + 8;
+      }
       y += 4;
 
       // ── SOCIAL SECURITY ──
