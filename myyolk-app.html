@@ -802,6 +802,136 @@
   }
   #pdfBtn:hover { background: #1a2e1f; transform: translateY(-2px); }
 
+
+  /* ══════════════════════════════════
+     MOBILE RESPONSIVE — 768px and below
+  ══════════════════════════════════ */
+  @media (max-width: 768px) {
+
+    /* Header */
+    header {
+      padding: 0 1rem;
+      height: 56px;
+      position: sticky;
+      top: 0;
+    }
+    .logo svg { width: 160px; height: 38px; }
+    .header-badge { display: none; }
+    #langSelector { display: none; }
+    #authUserDisplay { display: none !important; }
+    #authBtn {
+      font-size: 0.75rem !important;
+      padding: 4px 10px !important;
+    }
+    /* Hide clear data button on mobile */
+    header > div:nth-child(3) { display: none; }
+
+    /* Layout — stack sidebar below, hide it by default */
+    .app {
+      grid-template-columns: 1fr !important;
+      min-height: calc(100vh - 56px);
+    }
+
+    /* Sidebar becomes bottom nav */
+    .sidebar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: auto !important;
+      height: auto !important;
+      width: 100% !important;
+      overflow-x: auto;
+      overflow-y: hidden;
+      display: flex !important;
+      flex-direction: row !important;
+      padding: 0.4rem 0.5rem !important;
+      gap: 0 !important;
+      border-right: none !important;
+      border-top: 1px solid var(--border);
+      z-index: 50;
+      background: var(--warm-white);
+    }
+    .sidebar-label { display: none; }
+    .sidebar-divider { display: none; }
+    .quick-stat { display: none; }
+    .nav-item {
+      flex-shrink: 0;
+      flex-direction: column !important;
+      gap: 2px !important;
+      padding: 0.3rem 0.6rem !important;
+      font-size: 0.62rem !important;
+      min-width: 52px;
+      text-align: center;
+      border-radius: 8px !important;
+    }
+    .nav-item .icon { font-size: 1.2rem; width: auto; }
+
+    /* Main content */
+    main {
+      padding: 1.25rem 1rem 5rem !important;
+      overflow-y: auto;
+    }
+
+    /* Cards */
+    .card { padding: 1.25rem 1rem; margin-bottom: 1rem; }
+    .page-title { font-size: 1.5rem; }
+    .page-subtitle { font-size: 0.85rem; margin-bottom: 1.25rem; }
+
+    /* Form grids — all single column on mobile */
+    .form-grid { grid-template-columns: 1fr !important; }
+    .form-grid.three { grid-template-columns: 1fr !important; }
+    .field-full { grid-column: 1 !important; }
+
+    /* Results grid */
+    .results-grid { grid-template-columns: 1fr 1fr !important; }
+
+    /* Budget rows */
+    .budget-row {
+      grid-template-columns: 1fr 100px !important;
+    }
+    .budget-row input:last-child { display: none; } /* hide annual col */
+    .budget-col-headers span:last-child { display: none; }
+    .budget-total { grid-template-columns: 1fr 100px !important; }
+
+    /* Scenario grid */
+    .scenario-grid { grid-template-columns: 1fr !important; }
+
+    /* Buttons */
+    .btn-row { flex-direction: column; }
+    .btn-row .btn { width: 100%; justify-content: center; }
+
+    /* Auth modal */
+    #authModal > div {
+      margin: 0.5rem !important;
+      max-width: 100% !important;
+    }
+
+    /* PDF/Feedback buttons */
+    #pdfBtn {
+      bottom: 4.5rem !important;
+      right: 0.75rem !important;
+      font-size: 0.75rem !important;
+      padding: 8px 12px !important;
+    }
+    #feedbackBtn {
+      bottom: 4.5rem !important;
+      left: 0.75rem !important;
+      font-size: 0.75rem !important;
+      padding: 8px 12px !important;
+    }
+
+    /* Live snapshot in sidebar — hide on mobile */
+    .sidebar > div:not(.nav-item):not(.sidebar-label) { display: none; }
+
+    /* Table scroll */
+    .table-wrap { overflow-x: auto; }
+  }
+
+  @media (max-width: 480px) {
+    .results-grid { grid-template-columns: 1fr !important; }
+    .nav-item { min-width: 46px; font-size: 0.58rem !important; }
+  }
   </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
