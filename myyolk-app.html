@@ -4499,8 +4499,8 @@ function generatePDF() {
       y = hdr('INVESTMENT ASSUMPTIONS', y);
       y = row('Expected Growth Rate', growthRate, y);
       y = row('Inflation Rate', inflRate + '%/yr', y);
-      var homeAppRate = document.getElementById('homeApprecRate')?.value || '3';
-      y = row('Home Appreciation Rate', homeAppRate + '%/yr', y);
+      var yearsToRet = (parseInt(retAge)||62) - (parseInt(age)||56);
+      y = row('Years Until Retirement', yearsToRet + ' years', y);
       y += 2;
 
       // ── RECOMMENDED ACTIONS ──
