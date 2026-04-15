@@ -930,25 +930,54 @@
     #pdfBtn { display: none !important; }
     #feedbackBtn { display: none !important; }
 
-    /* Budget table — hide annual column on mobile */
-    .budget-col-headers { grid-template-columns: 1fr 110px !important; }
-    .budget-row { grid-template-columns: 1fr 110px !important; }
-    .budget-total { grid-template-columns: 1fr 110px !important; }
-    .budget-col-headers span:last-child { display: none !important; }
-    .budget-row input:last-child { display: none !important; }
-    .budget-total span:last-child { display: none !important; }
+    /* General overflow prevention */
+    body, main, .card, .tab-panel, .app { overflow-x: hidden !important; max-width: 100vw; }
+    * { box-sizing: border-box; }
 
-    /* Readiness — fix any overflow */
+    /* Budget table — 2 col, hide annual */
+    .budget-col-headers { grid-template-columns: 1fr 100px !important; }
+    .budget-row { grid-template-columns: 1fr 100px !important; }
+    .budget-total { grid-template-columns: 1fr 100px !important; }
+    .budget-col-headers span:last-child { display: none !important; }
+    .budget-row > input:last-child { display: none !important; }
+
+    /* Additional income rows — stack on mobile */
+    .additional-income-row { 
+      grid-template-columns: 1fr 1fr !important;
+      gap: 0.5rem !important;
+    }
+    .additional-income-row .ai-start,
+    .additional-income-row .ai-end,
+    .additional-income-row .ai-owner-col { display: none !important; }
+
+    /* Life event rows */
+    .life-event-row { 
+      grid-template-columns: 1fr 1fr !important;
+      flex-wrap: wrap !important;
+    }
+
+    /* Property rows */
+    .property-row .form-grid { grid-template-columns: 1fr !important; }
+
+    /* Results grid */
+    .results-grid { grid-template-columns: 1fr 1fr !important; gap: 0.5rem !important; }
+    .result-value { font-size: 1.2rem !important; }
+
+    /* Readiness */
     .meter-labels { font-size: 0.65rem; }
     #rdActions > div { font-size: 0.82rem; }
 
-    /* General overflow fix */
-    main, .card, .tab-panel { overflow-x: hidden; }
-    .results-grid { grid-template-columns: 1fr 1fr !important; gap: 0.75rem; }
+    /* Any inline repeat(3) grids */
+    [style*="repeat(3"] { grid-template-columns: 1fr 1fr !important; }
+    [style*="repeat(4"] { grid-template-columns: 1fr 1fr !important; }
 
-    /* Fix any inline style grids */
-    [style*="grid-template-columns: repeat(3"] { grid-template-columns: 1fr 1fr !important; }
-    [style*="grid-template-columns:repeat(3"] { grid-template-columns: 1fr 1fr !important; }
+    /* Sliders */
+    .adj-row { flex-wrap: wrap; }
+    .adj-row input[type=range] { width: 100% !important; }
+
+    /* Tables */
+    table { font-size: 0.75rem !important; }
+    th, td { padding: 0.4rem 0.5rem !important; }
 
     /* Live snapshot in sidebar — hide on mobile */
     .sidebar > div:not(.nav-item):not(.sidebar-label) { display: none; }
