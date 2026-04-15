@@ -859,17 +859,24 @@
       scrollbar-width: none;
     }
     .sidebar::-webkit-scrollbar { display: none; }
-    /* Fade on right edge to hint at scrollability */
+    /* Right fade + partial peek to show scrollability */
     .sidebar::after {
-      content: '';
+      content: '›';
       position: fixed;
-      bottom: 0;
+      bottom: 8px;
       right: 0;
-      width: 40px;
-      height: 65px;
-      background: linear-gradient(to left, var(--warm-white) 40%, transparent);
+      width: 28px;
+      height: 50px;
+      background: linear-gradient(to left, var(--warm-white) 50%, transparent);
       pointer-events: none;
       z-index: 51;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 4px;
+      font-size: 1rem;
+      color: var(--sage);
+      font-weight: 700;
     }
     .sidebar-label { display: none; }
     .sidebar-divider { display: none; }
@@ -982,7 +989,16 @@
     #projChart { max-width: 100% !important; }
 
     /* Life event rows - override inline style */
-    .life-event-row { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 0.5rem !important; }
+    .life-event-row { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 0.5rem !important; overflow: hidden !important; }
+    .life-event-row > * { min-width: 0 !important; }
+
+    /* What-If scenario cards */
+    #wi-resultsCard .scenario-grid,
+    #wi-currentCard, #wi-newCard { width: 100% !important; }
+
+    /* Projections table — scrollable */
+    .proj-table-wrap, #projTableWrap { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
+    .proj-summary { grid-template-columns: 1fr 1fr !important; }
 
     /* Property rows in accounts */
     .property-row { overflow: hidden !important; }
@@ -6508,11 +6524,25 @@ window.addEventListener('load', function() {
     });
   }
   fixMobileGrids();
-  // Re-run when tabs switch
+  // Re-run when tabs switch + auto-center active nav item
   var _origST = showTab;
   showTab = function(name) {
     _origST(name);
     setTimeout(fixMobileGrids, 50);
+    // Auto-center active tab in bottom nav on mobile
+    if(window.innerWidth <= 768) {
+      setTimeout(function() {
+        var sidebar = document.querySelector('.sidebar');
+        var activeBtn = sidebar ? sidebar.querySelector('.nav-item.active') : null;
+        if(sidebar && activeBtn) {
+          var btnLeft = activeBtn.offsetLeft;
+          var btnWidth = activeBtn.offsetWidth;
+          var sidebarWidth = sidebar.offsetWidth;
+          var scrollTo = btnLeft - (sidebarWidth / 2) + (btnWidth / 2);
+          sidebar.scrollTo({ left: scrollTo, behavior: 'smooth' });
+        }
+      }, 100);
+    }
   };
 
   // Hide floating buttons on mobile
