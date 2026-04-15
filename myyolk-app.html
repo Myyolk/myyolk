@@ -4306,7 +4306,7 @@ function generatePDF() {
         // But offset vertically to center: oy pushes down so logo sits mid-bar
         var sc = 0.32;
         var ox = margin;
-        var oy = 4; // push down 4mm to vertically center in 40mm bar
+        var oy = 14; // push down 14mm to vertically center in 40mm bar
 
         // Egg shell: SVG cx=26,cy=28,rx=20,ry=24
         doc.setFillColor(255,253,240);
@@ -4334,7 +4334,7 @@ function generatePDF() {
         var tmSize = Math.round(fs * 0.38);
         doc.setFontSize(tmSize);
         doc.setTextColor(255,253,240);
-        doc.text('™', tx + myW + yolkW + 0.3, ty - fs * 0.28);
+        doc.text('™', tx + myW + yolkW + 0.3, ty - fs * 0.08);
 
         // RETIREMENT PLANNING under wordmark
         var rty = oy + 44*sc;
