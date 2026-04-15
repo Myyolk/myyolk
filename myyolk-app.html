@@ -6418,7 +6418,12 @@ async function signOut() {
   if(!_sb) return;
   await _sb.auth.signOut();
   _sbUser = null;
+  // Clear local data on sign out — data is safe in Supabase cloud
+  localStorage.removeItem(SAVE_KEY);
+  localStorage.removeItem('myyolk_device');
   updateAuthUI();
+  // Reload to show clean blank app
+  location.reload();
 }
 
 async function cloudSave() {
