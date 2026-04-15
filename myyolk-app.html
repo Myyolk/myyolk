@@ -934,8 +934,9 @@
     .budget-row {
       grid-template-columns: 1fr 100px !important;
     }
-    .budget-row input:last-child { display: none; } /* hide annual col */
-    .budget-col-headers span:last-child { display: none; }
+    /* annual column visible on mobile */
+    .budget-row input:last-child { display: block !important; }
+    .budget-col-headers span:last-child { display: block !important; }
     .budget-total { grid-template-columns: 1fr 100px !important; }
 
     /* Scenario grid */
