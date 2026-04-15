@@ -859,24 +859,17 @@
       scrollbar-width: none;
     }
     .sidebar::-webkit-scrollbar { display: none; }
-    /* Right fade + partial peek to show scrollability */
+    /* Right fade — strong gradient to show more content exists */
     .sidebar::after {
-      content: '›';
+      content: '';
       position: fixed;
-      bottom: 8px;
+      bottom: 0;
       right: 0;
-      width: 28px;
-      height: 50px;
-      background: linear-gradient(to left, var(--warm-white) 50%, transparent);
+      width: 50px;
+      height: 70px;
+      background: linear-gradient(to left, rgba(255,249,244,1) 30%, transparent);
       pointer-events: none;
       z-index: 51;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      padding-right: 4px;
-      font-size: 1rem;
-      color: var(--sage);
-      font-weight: 700;
     }
     .sidebar-label { display: none; }
     .sidebar-divider { display: none; }
@@ -885,13 +878,17 @@
       flex-shrink: 0;
       flex-direction: column !important;
       gap: 2px !important;
-      padding: 0.3rem 0.6rem !important;
-      font-size: 0.62rem !important;
-      min-width: 52px;
+      padding: 0.35rem 0.5rem !important;
+      font-size: 0.6rem !important;
+      min-width: 60px;
+      max-width: 60px;
       text-align: center;
       border-radius: 8px !important;
+      white-space: nowrap;
+      overflow: hidden;
     }
-    .nav-item .icon { font-size: 1.2rem; width: auto; }
+    .nav-item .icon { font-size: 1.3rem; width: auto; display: block; margin: 0 auto 1px; }
+    .nav-item.active { background: var(--sage) !important; color: #fff !important; }
 
     /* Main content */
     main {
@@ -6529,7 +6526,23 @@ window.addEventListener('load', function() {
   showTab = function(name) {
     _origST(name);
     setTimeout(fixMobileGrids, 50);
-    // Auto-center active tab in bottom nav on mobile
+    // Add nav arrow on mobile
+  if(window.innerWidth <= 768 && !document.getElementById('navArrow')) {
+    var arrow = document.createElement('div');
+    arrow.id = 'navArrow';
+    arrow.innerHTML = '&#8250;';
+    arrow.style.cssText = 'position:fixed;bottom:10px;right:6px;width:24px;height:48px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900;color:#C8860A;z-index:200;pointer-events:none;font-family:DM Sans,sans-serif;text-shadow:0 0 6px rgba(255,249,244,0.9)';
+    document.body.appendChild(arrow);
+    // Fade out after user first swipes
+    var sidebar = document.querySelector('.sidebar');
+    if(sidebar) {
+      sidebar.addEventListener('scroll', function() {
+        if(arrow) { arrow.style.transition='opacity 0.5s'; arrow.style.opacity='0'; setTimeout(function(){ arrow.remove(); }, 500); }
+      }, { once: true });
+    }
+  }
+
+  // Auto-center active tab in bottom nav on mobile
     if(window.innerWidth <= 768) {
       setTimeout(function() {
         var sidebar = document.querySelector('.sidebar');
