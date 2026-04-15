@@ -1949,8 +1949,8 @@
       <div class="card">
         <div class="card-title"><span class="dot"></span> <span id="acct-ss-title">Your</span> Social Security</div>
         <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem">
-          <button id="ssBtn-upload" onclick="switchSSMethod('upload')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Upload Statement</button>
-          <button id="ssBtn-manual" onclick="switchSSMethod('manual')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Enter Manually</button>
+          <button id="ssBtn-upload" onclick="switchSSMethod('upload')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid #ddd;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:#f0ebe3;color:#555">Upload Statement</button>
+          <button id="ssBtn-manual" onclick="switchSSMethod('manual')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid #ddd;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:#f0ebe3;color:#555">Enter Manually</button>
           <button id="ssBtn-estimate" onclick="switchSSMethod('estimate')" style="flex:1;padding:0.6rem;border:none;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:#C8860A;color:#fff">Estimate for Me</button>
         </div>
         <div id="ss-method-upload" style="display:none">
@@ -2003,8 +2003,8 @@
       <div class="card" id="densieSSCard" style="display:none">
         <div class="card-title"><span class="dot"></span> <span id="spouse-ss-name">Densie's Social Security</div>
         <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem">
-          <button id="dssBtn-upload" onclick="switchDSSMethod('upload')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Upload Statement</button>
-          <button id="dssBtn-manual" onclick="switchDSSMethod('manual')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Enter Manually</button>
+          <button id="dssBtn-upload" onclick="switchDSSMethod('upload')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid #ddd;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:#f0ebe3;color:#555">Upload Statement</button>
+          <button id="dssBtn-manual" onclick="switchDSSMethod('manual')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid #ddd;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:#f0ebe3;color:#555">Enter Manually</button>
           <button id="dssBtn-estimate" onclick="switchDSSMethod('estimate')" style="flex:1;padding:0.6rem;border:none;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:#C8860A;color:#fff">Estimate for Me</button>
         </div>
         <div id="dss-method-upload" style="display:none">
@@ -3186,8 +3186,8 @@ function switchSSMethod(method) {
     var btn = document.getElementById('ssBtn-' + m);
     if (panel) panel.style.display = m === method ? 'block' : 'none';
     if (btn) {
-      btn.style.background = m === method ? 'var(--sage)' : 'var(--warm-white)';
-      btn.style.color = m === method ? '#fff' : 'var(--mid)';
+      btn.style.background = m === method ? '#C8860A' : '#f0ebe3';
+      btn.style.color = m === method ? '#fff' : '#555';
       btn.style.color = m === method ? '#fff' : 'var(--mid)';
     }
   });
