@@ -6183,10 +6183,19 @@ async function cloudSave() {
   if(!_sb || !_sbUser) { saveToLocal(); return; }
   try {
     var data = collectAllData();
-    await _sb.from('user_data').upsert({ user_id: _sbUser.id, data: data }, { onConflict: 'user_id' });
+    // Check if row exists first
+    var existing = await _sb.from('user_data').select('id').eq('user_id', _sbUser.id);
+    var result;
+    if(existing.data && existing.data.length > 0) {
+      result = await _sb.from('user_data').update({ data: data, updated_at: new Date().toISOString() }).eq('user_id', _sbUser.id);
+    } else {
+      result = await _sb.from('user_data').insert({ user_id: _sbUser.id, data: data });
+    }
+    if(result.error) { console.warn('Cloud save error:', result.error); saveToLocal(); return; }
     var ind = document.getElementById('saveIndicator');
     if(ind) { ind.textContent = '☁️ Saved'; ind.style.opacity = '1'; setTimeout(function(){ ind.style.opacity='0'; }, 2000); }
   } catch(e) {
+    console.warn('cloudSave exception:', e);
     saveToLocal();
   }
 }
