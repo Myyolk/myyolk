@@ -805,6 +805,7 @@
   </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -833,7 +834,36 @@
     <span id="saveIndicator" style="font-size:0.75rem;color:#2d6a4f;opacity:0;transition:opacity 0.5s">💾 Saved</span>
     <button onclick="clearSavedData()" title="Clear all saved data" style="font-size:0.75rem;background:none;border:1px solid #ddd;border-radius:6px;padding:3px 8px;cursor:pointer;color:#888">Clear Data</button>
   </div>
+  <div style="display:flex;align-items:center;gap:0.5rem;position:absolute;top:0.9rem;right:1rem">
+    <span id="authUserDisplay" style="font-size:0.75rem;color:#fff;opacity:0.85;display:none"></span>
+    <button id="authBtn" onclick="toggleAuthModal()" style="font-size:0.8rem;font-weight:600;background:none;border:1.5px solid rgba(255,255,255,0.6);border-radius:8px;padding:5px 14px;cursor:pointer;color:#fff;font-family:DM Sans,sans-serif">Sign In</button>
+  </div>
 </header>
+
+<!-- AUTH MODAL -->
+<div id="authModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:20px;padding:2.5rem;width:100%;max-width:420px;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <div style="font-size:2rem;margin-bottom:0.5rem">🥚</div>
+      <div style="font-family:DM Serif Display,serif;font-size:1.6rem;color:#2D4A35;font-weight:700">MyYolk</div>
+      <div style="font-size:0.85rem;color:#888;margin-top:4px">Save your plan. Access anywhere.</div>
+    </div>
+    <div style="display:flex;gap:0;margin-bottom:1.5rem;background:#f5f5f5;border-radius:10px;padding:3px">
+      <button id="tabSignIn" onclick="switchAuthTab('signin')" style="flex:1;padding:8px;border:none;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;background:#C8860A;color:#fff">Sign In</button>
+      <button id="tabSignUp" onclick="switchAuthTab('signup')" style="flex:1;padding:8px;border:none;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;background:none;color:#888">Sign Up</button>
+    </div>
+    <div id="authError" style="display:none;background:#fff0f0;color:#c0392b;border-radius:8px;padding:0.75rem;margin-bottom:1rem;font-size:0.85rem"></div>
+    <div style="display:flex;flex-direction:column;gap:0.75rem">
+      <input id="authEmail" type="email" placeholder="Email address" style="padding:0.75rem 1rem;border:1.5px solid #e2ddd8;border-radius:10px;font-size:0.95rem;font-family:DM Sans,sans-serif;outline:none">
+      <input id="authPassword" type="password" placeholder="Password" style="padding:0.75rem 1rem;border:1.5px solid #e2ddd8;border-radius:10px;font-size:0.95rem;font-family:DM Sans,sans-serif;outline:none">
+      <button id="authSubmitBtn" onclick="submitAuth()" style="padding:0.85rem;background:#C8860A;color:#fff;border:none;border-radius:10px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer">Sign In</button>
+      <div id="authSignupNote" style="display:none;font-size:0.78rem;color:#888;text-align:center">By signing up you agree to our terms. Your data is encrypted and private.</div>
+    </div>
+    <div style="text-align:center;margin-top:1rem">
+      <button onclick="toggleAuthModal()" style="background:none;border:none;color:#aaa;font-size:0.82rem;cursor:pointer;font-family:DM Sans,sans-serif">Cancel</button>
+    </div>
+  </div>
+</div>
 
 <div class="app">
 
@@ -6029,9 +6059,200 @@ function calcEarly() {
 // ── END CHILD SS ──
 
 // ── AUTO SAVE / LOAD (localStorage) ──
+// ── SUPABASE ──
+var SUPABASE_URL = 'https://lcecdqihjdpmsmiwabkk.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_uDYHE8ktzY4WCQl3JvyC9Q_UUnoDvZO';
+var _sb = null;
+var _sbUser = null;
+var _authMode = 'signin';
+
+function initSupabase() {
+  if(typeof supabase === 'undefined') { setTimeout(initSupabase, 500); return; }
+  _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  _sb.auth.onAuthStateChange(function(event, session) {
+    _sbUser = session ? session.user : null;
+    updateAuthUI();
+    if(_sbUser) {
+      cloudLoad();
+    }
+  });
+  _sb.auth.getSession().then(function(r) {
+    if(r.data && r.data.session) {
+      _sbUser = r.data.session.user;
+      updateAuthUI();
+    }
+  });
+}
+
+function updateAuthUI() {
+  var btn = document.getElementById('authBtn');
+  var display = document.getElementById('authUserDisplay');
+  if(_sbUser) {
+    var email = _sbUser.email || '';
+    var name = email.split('@')[0];
+    if(btn) { btn.textContent = 'Sign Out'; btn.onclick = signOut; }
+    if(display) { display.textContent = '👤 ' + name; display.style.display = 'inline'; }
+  } else {
+    if(btn) { btn.textContent = 'Sign In'; btn.onclick = toggleAuthModal; }
+    if(display) { display.style.display = 'none'; }
+  }
+}
+
+function toggleAuthModal() {
+  var modal = document.getElementById('authModal');
+  if(!modal) return;
+  var isOpen = modal.style.display === 'flex';
+  modal.style.display = isOpen ? 'none' : 'flex';
+  if(!isOpen) {
+    document.getElementById('authEmail').focus();
+    clearAuthError();
+  }
+}
+
+function switchAuthTab(mode) {
+  _authMode = mode;
+  var siBtn = document.getElementById('tabSignIn');
+  var suBtn = document.getElementById('tabSignUp');
+  var submitBtn = document.getElementById('authSubmitBtn');
+  var note = document.getElementById('authSignupNote');
+  var on = '#C8860A'; var off = 'none';
+  if(mode === 'signin') {
+    siBtn.style.background = on; siBtn.style.color = '#fff';
+    suBtn.style.background = off; suBtn.style.color = '#888';
+    submitBtn.textContent = 'Sign In';
+    note.style.display = 'none';
+  } else {
+    suBtn.style.background = on; suBtn.style.color = '#fff';
+    siBtn.style.background = off; siBtn.style.color = '#888';
+    submitBtn.textContent = 'Create Account';
+    note.style.display = 'block';
+  }
+  clearAuthError();
+}
+
+function clearAuthError() {
+  var e = document.getElementById('authError');
+  if(e) { e.style.display = 'none'; e.textContent = ''; }
+}
+
+function showAuthError(msg) {
+  var e = document.getElementById('authError');
+  if(e) { e.textContent = msg; e.style.display = 'block'; }
+}
+
+async function submitAuth() {
+  var email = document.getElementById('authEmail').value.trim();
+  var password = document.getElementById('authPassword').value;
+  var btn = document.getElementById('authSubmitBtn');
+  if(!email || !password) { showAuthError('Please enter your email and password.'); return; }
+  if(password.length < 6) { showAuthError('Password must be at least 6 characters.'); return; }
+  btn.textContent = '...'; btn.disabled = true;
+  clearAuthError();
+  try {
+    var result;
+    if(_authMode === 'signup') {
+      result = await _sb.auth.signUp({ email: email, password: password });
+    } else {
+      result = await _sb.auth.signInWithPassword({ email: email, password: password });
+    }
+    if(result.error) {
+      showAuthError(result.error.message);
+    } else if(_authMode === 'signup' && !result.data.session) {
+      showAuthError('Check your email to confirm your account, then sign in.');
+    } else {
+      toggleAuthModal();
+    }
+  } catch(e) {
+    showAuthError('Something went wrong. Please try again.');
+  }
+  btn.disabled = false;
+  btn.textContent = _authMode === 'signup' ? 'Create Account' : 'Sign In';
+}
+
+async function signOut() {
+  if(!_sb) return;
+  await _sb.auth.signOut();
+  _sbUser = null;
+  updateAuthUI();
+}
+
+async function cloudSave() {
+  if(!_sb || !_sbUser) { saveToLocal(); return; }
+  try {
+    var data = collectAllData();
+    await _sb.from('user_data').upsert({ user_id: _sbUser.id, data: data }, { onConflict: 'user_id' });
+    var ind = document.getElementById('saveIndicator');
+    if(ind) { ind.textContent = '☁️ Saved'; ind.style.opacity = '1'; setTimeout(function(){ ind.style.opacity='0'; }, 2000); }
+  } catch(e) {
+    saveToLocal();
+  }
+}
+
+async function cloudLoad() {
+  if(!_sb || !_sbUser) return;
+  try {
+    var result = await _sb.from('user_data').select('data').eq('user_id', _sbUser.id).single();
+    if(result.data && result.data.data) {
+      var stored = JSON.stringify(result.data.data);
+      localStorage.setItem(SAVE_KEY, stored);
+      loadFromLocal();
+    }
+  } catch(e) {}
+}
+
+function collectAllData() {
+  var data = {};
+  document.querySelectorAll('input[id], select[id]').forEach(function(el) {
+    if(el.type === 'radio') { if(el.checked) data[el.id] = el.value; }
+    else if(el.type === 'checkbox') { data[el.id] = el.checked; }
+    else if(el.type !== 'file') { data[el.id] = el.value; }
+  });
+  document.querySelectorAll('[data-key]').forEach(function(el) {
+    if(el.value) data['bud__' + el.getAttribute('data-key')] = el.value;
+  });
+  var propRows = [];
+  document.querySelectorAll('.property-row').forEach(function(row) {
+    propRows.push({
+      type: row.querySelector('.prop-type')?.value||'primary',
+      value: row.querySelector('.prop-value')?.value||'',
+      mortgage: row.querySelector('.prop-mortgage')?.value||'',
+      payoff: row.querySelector('.prop-payoff')?.value||'',
+      apprec: row.querySelector('.prop-apprec')?.value||'',
+      payment: row.querySelector('.prop-payment')?.value||''
+    });
+  });
+  data['__propRows'] = JSON.stringify(propRows);
+  var aiRows = [];
+  document.querySelectorAll('.additional-income-row').forEach(function(row) {
+    aiRows.push({
+      type: row.querySelector('.ai-type')?.value||'',
+      amount: row.querySelector('.ai-amount')?.value||'',
+      freq: row.querySelector('.ai-freq')?.value||'monthly',
+      owner: row.querySelector('.ai-owner')?.value||'mine'
+    });
+  });
+  data['__aiRows'] = JSON.stringify(aiRows);
+  var leRows = [];
+  document.querySelectorAll('.life-event-row').forEach(function(row) {
+    leRows.push({
+      type: row.querySelector('.le-type')?.value||'other',
+      age: row.querySelector('.le-age')?.value||'',
+      amount: row.querySelector('.le-amount')?.value||'',
+      direction: row.querySelector('.le-direction')?.value||'expense',
+      years: row.querySelector('.le-years')?.value||'1'
+    });
+  });
+  data['__leRows'] = JSON.stringify(leRows);
+  return data;
+}
+
+// Override saveToLocal to also cloud save when logged in
 var SAVE_KEY = 'myyolk_v1';
-// saveData is an alias for saveToLocal — called by some inputs
+// saveData is an alias
 function saveData() { saveToLocal(); }
+
+// Init Supabase on load
+window.addEventListener('load', function() { setTimeout(initSupabase, 300); });
 
 function saveToLocal() {
   try {
@@ -6230,7 +6451,10 @@ var _appReady = false;
   var _orig = recalc;
   recalc = function() {
     _orig.apply(this, arguments);
-    if(_appReady) saveToLocal();
+    if(_appReady) {
+      saveToLocal();
+      if(typeof cloudSave === 'function') cloudSave();
+    }
     // Keep Summary tab live if open
     if(_appReady && document.getElementById("tab-summary")?.classList.contains("active")) {
       if(typeof updateSummary === "function") updateSummary();
