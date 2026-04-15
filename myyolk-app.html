@@ -4382,7 +4382,7 @@ function generatePDF() {
       // Get money runs out text and clean it up
       var rdMoneyLastsRaw = document.getElementById('rdYearsLast')?.textContent || '';
       // Strip emoji and clean whitespace
-      var rdMoneyLasts = rdMoneyLastsRaw.replace(/[^\x00-\x7F]/g, '').replace(/\s+/g,' ').trim() || '—';
+      var rdMoneyLasts = rdMoneyLastsRaw.replace(/[^\u0020-\u007E]/g, '').replace(/  +/g,' ').trim() || '—';
       var projNetWorth = document.getElementById('projNetWorth')?.textContent || '—';
       var sumAssets = document.getElementById('sumTotalAssets')?.textContent || '—';
       var sumLiab = document.getElementById('sumTotalLiabilities')?.textContent || '—';
@@ -4601,7 +4601,7 @@ function generatePDF() {
           var labelEl = m.querySelector('span:last-child');
           if(yearEl && labelEl) {
             // Strip emojis - jsPDF cant render them
-            var labelText = labelEl.textContent.replace(/[^ -]/g, '').replace(/\s+/g,' ').trim();
+            var labelText = labelEl.textContent.replace(/[^\u0020-\u007E]/g, '').replace(/  +/g,' ').trim();
             doc.setFont('times','bold'); doc.setFontSize(9); doc.setTextColor(amber[0],amber[1],amber[2]);
             doc.text(yearEl.textContent, margin, y);
             doc.setFont('times','normal'); doc.setTextColor(forest[0],forest[1],forest[2]);
