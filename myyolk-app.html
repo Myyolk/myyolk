@@ -3737,8 +3737,12 @@ showTab = function(name) {
   if(name === 'readiness') {
     setTimeout(calcReadiness, 100);
   }
-  if(name === 'projections') {
-    setTimeout(calcProjections, 100);
+  if(name === 'summary') {
+    setTimeout(function() {
+      if(typeof calcProjections === 'function') calcProjections();
+      if(typeof calcReadiness === 'function') calcReadiness();
+      if(typeof updateSummary === 'function') updateSummary();
+    }, 300);
   }
   if(name === 'ss') {
     setTimeout(function() {
@@ -4029,6 +4033,7 @@ function calcReadiness() {
 
   var scoreEl = document.getElementById('readinessScore');
   if(scoreEl) scoreEl.textContent = score + '%';
+  state.readinessScore = score;
 
   var verdictEl = document.getElementById('readinessVerdict');
   var subtitleEl = document.getElementById('readinessSubtitle');
@@ -5456,6 +5461,19 @@ function updateSummary() {
   var householdSS = (state.ssMonthly || 0) + (state.spouseSsMonthly || 0) + (state.childSsMonthly || 0);
   if (el('sumSS')) el('sumSS').textContent = fmt(householdSS);
 
+  // Readiness score — read directly from state (set by calcReadiness)
+  var scoreNum = state.readinessScore || 0;
+  var sumRdEl = el('sumReadiness');
+  if (sumRdEl) {
+    if (scoreNum > 0) {
+      sumRdEl.textContent = scoreNum + '%';
+      sumRdEl.style.color = scoreNum >= 80 ? '#2D4A35' : scoreNum >= 60 ? '#e67e22' : '#d45f00';
+    } else {
+      sumRdEl.textContent = '—';
+      sumRdEl.style.color = '';
+    }
+  }
+
   // Milestones
   var milestones = [];
   var currentAge = getVal('age');
@@ -6012,6 +6030,8 @@ function calcEarly() {
 
 // ── AUTO SAVE / LOAD (localStorage) ──
 var SAVE_KEY = 'myyolk_v1';
+// saveData is an alias for saveToLocal — called by some inputs
+function saveData() { saveToLocal(); }
 
 function saveToLocal() {
   try {
@@ -6211,6 +6231,10 @@ var _appReady = false;
   recalc = function() {
     _orig.apply(this, arguments);
     if(_appReady) saveToLocal();
+    // Keep Summary tab live if open
+    if(_appReady && document.getElementById("tab-summary")?.classList.contains("active")) {
+      if(typeof updateSummary === "function") updateSummary();
+    }
   };
 })();
 
