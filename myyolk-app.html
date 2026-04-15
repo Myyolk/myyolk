@@ -853,12 +853,12 @@
       <button id="tabSignUp" onclick="switchAuthTab('signup')" style="flex:1;padding:8px;border:none;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;background:none;color:#888">Sign Up</button>
     </div>
     <div id="authError" style="display:none;background:#fff0f0;color:#c0392b;border-radius:8px;padding:0.75rem;margin-bottom:1rem;font-size:0.85rem"></div>
-    <div style="display:flex;flex-direction:column;gap:0.75rem">
-      <input id="authEmail" type="email" placeholder="Email address" style="padding:0.75rem 1rem;border:1.5px solid #e2ddd8;border-radius:10px;font-size:0.95rem;font-family:DM Sans,sans-serif;outline:none">
-      <input id="authPassword" type="password" placeholder="Password" style="padding:0.75rem 1rem;border:1.5px solid #e2ddd8;border-radius:10px;font-size:0.95rem;font-family:DM Sans,sans-serif;outline:none">
-      <button id="authSubmitBtn" onclick="submitAuth()" style="padding:0.85rem;background:#C8860A;color:#fff;border:none;border-radius:10px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer">Sign In</button>
+    <form id="authForm" onsubmit="submitAuth();return false;" autocomplete="on" style="display:flex;flex-direction:column;gap:0.75rem">
+      <input id="authEmail" name="email" type="email" placeholder="Email address" autocomplete="email" style="padding:0.75rem 1rem;border:1.5px solid #e2ddd8;border-radius:10px;font-size:0.95rem;font-family:DM Sans,sans-serif;outline:none">
+      <input id="authPassword" name="password" type="password" placeholder="Password" autocomplete="current-password" style="padding:0.75rem 1rem;border:1.5px solid #e2ddd8;border-radius:10px;font-size:0.95rem;font-family:DM Sans,sans-serif;outline:none">
+      <button id="authSubmitBtn" type="submit" style="padding:0.85rem;background:#C8860A;color:#fff;border:none;border-radius:10px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer">Sign In</button>
       <div id="authSignupNote" style="display:none;font-size:0.78rem;color:#888;text-align:center">By signing up you agree to our terms. Your data is encrypted and private.</div>
-    </div>
+    </form>
     <div style="text-align:center;margin-top:1rem">
       <button onclick="toggleAuthModal()" style="background:none;border:none;color:#aaa;font-size:0.82rem;cursor:pointer;font-family:DM Sans,sans-serif">Cancel</button>
     </div>
@@ -6116,16 +6116,19 @@ function switchAuthTab(mode) {
   var submitBtn = document.getElementById('authSubmitBtn');
   var note = document.getElementById('authSignupNote');
   var on = '#C8860A'; var off = 'none';
+  var pwField = document.getElementById('authPassword');
   if(mode === 'signin') {
     siBtn.style.background = on; siBtn.style.color = '#fff';
     suBtn.style.background = off; suBtn.style.color = '#888';
     submitBtn.textContent = 'Sign In';
     note.style.display = 'none';
+    if(pwField) pwField.autocomplete = 'current-password';
   } else {
     suBtn.style.background = on; suBtn.style.color = '#fff';
     siBtn.style.background = off; siBtn.style.color = '#888';
     submitBtn.textContent = 'Create Account';
     note.style.display = 'block';
+    if(pwField) pwField.autocomplete = 'new-password';
   }
   clearAuthError();
 }
