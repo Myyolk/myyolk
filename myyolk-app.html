@@ -967,9 +967,29 @@
     .meter-labels { font-size: 0.65rem; }
     #rdActions > div { font-size: 0.82rem; }
 
-    /* Any inline repeat(3) grids */
+    /* Any inline repeat grids */
     [style*="repeat(3"] { grid-template-columns: 1fr 1fr !important; }
     [style*="repeat(4"] { grid-template-columns: 1fr 1fr !important; }
+
+    /* Named classes that overflow */
+    .spend-compare-grid { grid-template-columns: 1fr !important; }
+    .retire-adj-grid { grid-template-columns: 1fr !important; }
+    .proj-summary { grid-template-columns: 1fr 1fr !important; flex-wrap: wrap !important; }
+    .proj-table-wrap { overflow-x: auto !important; max-width: 100% !important; }
+    .chart-wrap { overflow-x: hidden !important; }
+
+    /* Projections chart container */
+    #projChart { max-width: 100% !important; }
+
+    /* Life event rows - override inline style */
+    .life-event-row { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 0.5rem !important; }
+
+    /* Property rows in accounts */
+    .property-row { overflow: hidden !important; }
+    .property-row > div[style*="grid"] { grid-template-columns: 1fr !important; }
+
+    /* Scenario grid in What-If */
+    .scenario-grid { grid-template-columns: 1fr !important; }
 
     /* Sliders */
     .adj-row { flex-wrap: wrap; }
@@ -6472,6 +6492,29 @@ function saveData() { saveToLocal(); }
 // Init Supabase on load
 window.addEventListener('load', function() { 
   setTimeout(initSupabase, 300);
+
+  // Fix inline style grids on mobile
+  function fixMobileGrids() {
+    if(window.innerWidth > 768) return;
+    // Fix all inline grid-template-columns with 3+ columns
+    document.querySelectorAll('[style*="grid-template-columns"]').forEach(function(el) {
+      var s = el.style.gridTemplateColumns || '';
+      var colCount = s.split(' ').filter(function(p){ return p.trim().length > 0; }).length;
+      if(colCount >= 3) {
+        el.style.gridTemplateColumns = '1fr 1fr';
+      } else if(colCount === 2 && el.scrollWidth > window.innerWidth + 10) {
+        el.style.gridTemplateColumns = '1fr';
+      }
+    });
+  }
+  fixMobileGrids();
+  // Re-run when tabs switch
+  var _origST = showTab;
+  showTab = function(name) {
+    _origST(name);
+    setTimeout(fixMobileGrids, 50);
+  };
+
   // Hide floating buttons on mobile
   function checkMobile() {
     var isMobile = window.innerWidth <= 768;
