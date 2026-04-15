@@ -4297,45 +4297,67 @@ function generatePDF() {
         return yy + 6.5;
       }
       function pageHeader(pageNum) {
-        // Amber header bar - taller for better proportions
+        // Amber header bar
         doc.setFillColor(amber[0],amber[1],amber[2]);
-        doc.rect(0, 0, W, 36, 'F');
+        doc.rect(0, 0, W, 38, 'F');
 
-        // ── EGG LOGO - smaller, tighter to match site ──
-        var ex = margin + 5;
-        var ey = 18;
-        var erx = 5; var ery = 6.5;
+        // ── EGG LOGO - pixel-perfect match to SVG viewBox 0 0 250 52 ──
+        // SVG is 250x52px. Scale to ~42mm tall header. Scale factor = 38/52 = 0.73
+        // But keep logo small: use scale 0.28 (so 250*0.28 = 70mm wide)
+        var sc = 0.28;
+        var ox = margin;    // x offset in mm
+        var oy = 0;         // y offset in mm
+
+        // Egg: SVG cx=26,cy=28,rx=20,ry=24 -> PDF: cx=26*sc+ox, cy=28*sc+oy
+        var ecx = ox + 26*sc;
+        var ecy = oy + 28*sc;
+        var erx = 20*sc;
+        var ery = 24*sc;
         doc.setFillColor(255,253,240);
         doc.setDrawColor(232,201,106);
         doc.setLineWidth(0.4);
-        doc.ellipse(ex, ey, erx, ery, 'FD');
-        // Yolk - offset right and down like website
+        doc.ellipse(ecx, ecy, erx, ery, 'FD');
+
+        // Yolk: SVG cx=29,cy=34,r=11
+        var ycx = ox + 29*sc;
+        var ycy = oy + 34*sc;
+        var yr  = 11*sc;
         doc.setFillColor(240,165,0);
-        doc.circle(ex + 1.5, ey + 2.5, 3.2, 'F');
+        doc.circle(ycx, ycy, yr, 'F');
 
-        // ── WORDMARK - tight together ──
-        var tx = margin + 13;
-        doc.setFont('times','bold'); doc.setFontSize(20);
+        // "My": SVG x=54,y=31, font-size=26 -> scale
+        var tx = ox + 54*sc;
+        var ty = oy + 31*sc;
+        // Font size: SVG 26px -> scale to mm. 26*sc pts roughly
+        var fs = Math.round(26*sc*3.5); // ~20pt
+        doc.setFont('times','bold'); doc.setFontSize(fs);
         doc.setTextColor(forest[0],forest[1],forest[2]);
-        doc.text('My', tx, 21);
+        doc.text('My', tx, ty);
         var myW = doc.getTextWidth('My');
-        doc.setTextColor(255,253,240);
-        doc.text('Yolk', tx + myW - 0.5, 21);
-        var yolkW = doc.getTextWidth('Yolk');
-        doc.setFontSize(5.5); doc.setTextColor(255,253,240);
-        doc.text('™', tx + myW + yolkW - 0.5, 17);
 
-        // RETIREMENT PLANNING - right under wordmark, same x
-        doc.setFont('times','normal'); doc.setFontSize(6.5);
+        // "Yolk": SVG x=90,y=31
+        var tx2 = ox + 90*sc;
+        doc.setTextColor(255,253,240);
+        doc.text('Yolk', tx2, ty);
+        var yolkW = doc.getTextWidth('Yolk');
+
+        // TM superscript
+        doc.setFontSize(Math.round(fs*0.42));
+        doc.text('™', tx2 + yolkW + 0.3, ty - Math.round(fs*0.25));
+
+        // "RETIREMENT PLANNING": SVG x=54,y=46,font-size=9
+        var rty = oy + 46*sc;
+        var rfs = Math.round(9*sc*3.5); // ~7pt
+        doc.setFont('times','normal'); doc.setFontSize(rfs);
         doc.setTextColor(forest[0],forest[1],forest[2]);
-        doc.setCharSpace(1.5);
-        doc.text('RETIREMENT PLANNING', tx, 27);
+        doc.setCharSpace(1.2);
+        doc.text('RETIREMENT PLANNING', tx, rty);
         doc.setCharSpace(0);
 
-        // Page number right
+        // Page number - right aligned, vertically centered in header
         doc.setFont('times','normal'); doc.setFontSize(8);
         doc.setTextColor(forest[0],forest[1],forest[2]);
-        doc.text('Page ' + pageNum + ' of 2', W-margin, 27, {align:'right'});
+        doc.text('Page ' + pageNum + ' of 2', W-margin, 19, {align:'right'});
       }
       function pageFooter() {
         doc.setFillColor(amber[0],amber[1],amber[2]);
