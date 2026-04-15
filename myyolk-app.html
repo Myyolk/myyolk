@@ -3385,6 +3385,9 @@ function estimateDSS() {
   calcSpouseSsBenefit();
 }
 
+var feedbackNotes = [];
+var currentTabName = "Profile";
+
 function toggleFeedback() {
   var panel = document.getElementById('feedbackPanel');
   panel.classList.toggle('open');
