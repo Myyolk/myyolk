@@ -816,8 +816,10 @@
       top: 0;
     }
     .logo svg { width: 160px; height: 38px; }
-    .header-badge { display: none; }
-    #langSelector { display: none; }
+    .header-badge { display: none !important; }
+    #langSelector { display: none !important; }
+    /* Also hide the clear data button area on mobile */
+    header > div[style*="right:10rem"] { display: none !important; }
     #authUserDisplay { display: none !important; }
     #authBtn {
       font-size: 0.75rem !important;
@@ -845,12 +847,29 @@
       overflow-y: hidden;
       display: flex !important;
       flex-direction: row !important;
-      padding: 0.4rem 0.5rem !important;
+      padding: 0.4rem 0.5rem 0.6rem !important;
       gap: 0 !important;
       border-right: none !important;
-      border-top: 1px solid var(--border);
+      border-top: 2px solid var(--border);
+      border-image: linear-gradient(90deg, var(--sage) 0%, transparent 100%) 1;
       z-index: 50;
       background: var(--warm-white);
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .sidebar::-webkit-scrollbar { display: none; }
+    /* Fade on right edge to hint at scrollability */
+    .sidebar::after {
+      content: '';
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 40px;
+      height: 65px;
+      background: linear-gradient(to left, var(--warm-white) 40%, transparent);
+      pointer-events: none;
+      z-index: 51;
     }
     .sidebar-label { display: none; }
     .sidebar-divider { display: none; }
@@ -907,19 +926,9 @@
       max-width: 100% !important;
     }
 
-    /* PDF/Feedback buttons */
-    #pdfBtn {
-      bottom: 4.5rem !important;
-      right: 0.75rem !important;
-      font-size: 0.75rem !important;
-      padding: 8px 12px !important;
-    }
-    #feedbackBtn {
-      bottom: 4.5rem !important;
-      left: 0.75rem !important;
-      font-size: 0.75rem !important;
-      padding: 8px 12px !important;
-    }
+    /* Hide PDF and Feedback floating buttons on mobile */
+    #pdfBtn { display: none !important; }
+    #feedbackBtn { display: none !important; }
 
     /* Live snapshot in sidebar — hide on mobile */
     .sidebar > div:not(.nav-item):not(.sidebar-label) { display: none; }
