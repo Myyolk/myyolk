@@ -6624,6 +6624,13 @@ function saveToLocal() {
       var cel = document.getElementById('childAge' + ci);
       if(cel) data['childAge' + ci] = cel.value;
     }
+    // Generate and store device token
+    var deviceToken = localStorage.getItem('myyolk_device');
+    if(!deviceToken) {
+      deviceToken = 'dev_' + Math.random().toString(36).substr(2, 16);
+      localStorage.setItem('myyolk_device', deviceToken);
+    }
+    data['__deviceToken'] = deviceToken;
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
     var ind = document.getElementById('saveIndicator');
     if(ind) { ind.style.opacity='1'; setTimeout(function(){ ind.style.opacity='0'; }, 1500); }
@@ -6783,9 +6790,26 @@ var _appReady = false;
 
 
 
-// Auto-load on page ready - wait for everything to settle
+// Auto-load on page ready - only load if data belongs to this device
+// We store a device token when data is first saved here
 setTimeout(function() {
-  loadFromLocal();
+  var stored = localStorage.getItem(SAVE_KEY);
+  if(stored) {
+    try {
+      var parsed = JSON.parse(stored);
+      var deviceToken = localStorage.getItem('myyolk_device');
+      var storedToken = parsed['__deviceToken'];
+      // If no device token stored yet, this is old data — safe to load
+      // If tokens match, this is the same device — safe to load
+      // If tokens don't match, clear it — someone else's data
+      if(storedToken && deviceToken && storedToken !== deviceToken) {
+        console.log('MyYolk: clearing foreign device data');
+        localStorage.removeItem(SAVE_KEY);
+      } else {
+        loadFromLocal();
+      }
+    } catch(e) { loadFromLocal(); }
+  }
   setTimeout(function(){ _appReady = true; }, 800);
 }, 600);
 // ── END AUTO SAVE / LOAD ──
