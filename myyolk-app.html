@@ -3426,6 +3426,11 @@ function sendFeedback() {
     return;
   }
   var email = document.getElementById('feedbackEmail').value.trim();
+  if (!email) {
+    alert('Please enter your email address so we can follow up with you.');
+    document.getElementById('feedbackEmail').focus();
+    return;
+  }
   var body = feedbackNotes.map(function(n, i) {
     return (i+1) + '. [' + n.tab + '] ' + n.note;
   }).join('\n');
@@ -6319,7 +6324,7 @@ setTimeout(function() {
     </div>
     <div class="feedback-input-area">
       <textarea id="feedbackText" placeholder="What's on your mind? A suggestion, confusion, or idea..."></textarea>
-      <input class="feedback-email" id="feedbackEmail" type="email" placeholder="Email (optional — if you'd like a response)">
+      <input class="feedback-email" id="feedbackEmail" type="email" placeholder="Your email address (required to send)">
       <div class="feedback-actions">
         <button class="feedback-add-btn" onclick="addFeedbackNote()">+ Add Note</button>
         <button class="feedback-send-btn" onclick="sendFeedback()">Send All ✓</button>
