@@ -959,12 +959,13 @@
     body, main, .card, .tab-panel, .app { overflow-x: hidden !important; max-width: 100vw; }
     * { box-sizing: border-box; }
 
-    /* Budget table — 2 col, hide annual */
-    .budget-col-headers { grid-template-columns: 1fr 100px !important; }
-    .budget-row { grid-template-columns: 1fr 100px !important; }
-    .budget-total { grid-template-columns: 1fr 100px !important; }
-    .budget-col-headers span:last-child { display: none !important; }
-    .budget-row > input:last-child { display: none !important; }
+    /* Budget table — show both columns, smaller font */
+    .budget-col-headers { grid-template-columns: 1fr 80px 80px !important; }
+    .budget-row { grid-template-columns: 1fr 80px 80px !important; }
+    .budget-total { grid-template-columns: 1fr 80px 80px !important; }
+    .budget-col-headers span { font-size: 0.65rem !important; }
+    .budget-row label { font-size: 0.78rem !important; }
+    .budget-row input { font-size: 0.78rem !important; padding: 0.35rem 0.4rem !important; }
 
     /* Additional income rows — stack on mobile */
     .additional-income-row { 
