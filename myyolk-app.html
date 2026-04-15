@@ -1093,7 +1093,10 @@
         <button id="authSubmitBtn" type="submit" style="padding:0.85rem;background:#C8860A;color:#fff;border:none;border-radius:10px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer">Sign In</button>
         <div id="authSignupNote" style="display:none;font-size:0.78rem;color:#888;text-align:center">By signing up you agree to our terms. Your data is encrypted and private.</div>
       </form>
-      <div style="text-align:center;margin-top:1rem">
+      <div style="text-align:center;margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem">
+        <div id="forgotPasswordLink" style="display:none">
+          <button onclick="showForgotPassword()" style="background:none;border:none;color:#C8860A;font-size:0.82rem;cursor:pointer;font-family:DM Sans,sans-serif;text-decoration:underline">Forgot your password?</button>
+        </div>
         <button onclick="toggleAuthModal()" style="background:none;border:none;color:#aaa;font-size:0.82rem;cursor:pointer;font-family:DM Sans,sans-serif">Cancel</button>
       </div>
     </div>
@@ -6360,6 +6363,8 @@ function switchAuthTab(mode) {
     note.style.display = 'none';
     if(pwField) pwField.autocomplete = 'current-password';
     if(confirmField) confirmField.style.display = 'none';
+    var fpl = document.getElementById('forgotPasswordLink');
+    if(fpl) fpl.style.display = 'block';
   } else {
     suBtn.style.background = on; suBtn.style.color = '#fff';
     siBtn.style.background = off; siBtn.style.color = '#888';
@@ -6367,6 +6372,8 @@ function switchAuthTab(mode) {
     note.style.display = 'block';
     if(pwField) pwField.autocomplete = 'new-password';
     if(confirmField) confirmField.style.display = 'block';
+    var fpl = document.getElementById('forgotPasswordLink');
+    if(fpl) fpl.style.display = 'none';
   }
   clearAuthError();
 }
@@ -6412,6 +6419,30 @@ async function submitAuth() {
   }
   btn.disabled = false;
   btn.textContent = _authMode === 'signup' ? 'Create Account' : 'Sign In';
+}
+
+async function showForgotPassword() {
+  var email = document.getElementById('authEmail').value.trim();
+  if(!email) { showAuthError('Enter your email address above first.'); return; }
+  if(!_sb) return;
+  var btn = document.getElementById('authSubmitBtn');
+  if(btn) { btn.textContent = '...'; btn.disabled = true; }
+  var result = await _sb.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://myyolk.com/myyolk-app.html'
+  });
+  if(btn) { btn.disabled = false; btn.textContent = 'Sign In'; }
+  if(result.error) {
+    showAuthError(result.error.message);
+  } else {
+    clearAuthError();
+    var err = document.getElementById('authError');
+    if(err) {
+      err.style.display = 'block';
+      err.style.background = '#f0fff4';
+      err.style.color = '#2D4A35';
+      err.textContent = 'Password reset email sent! Check your inbox.';
+    }
+  }
 }
 
 async function signOut() {
