@@ -302,6 +302,24 @@
   .bar:hover { opacity: 0.8; }
   .bar-label { font-size: 0.65rem; color: var(--mid); text-align: center; margin-top: 4px; }
 
+  /* ── SS METHOD BUTTONS ── */
+  .ss-tab-btn {
+    flex: 1;
+    padding: 0.65rem;
+    border: 1.5px solid var(--border);
+    border-right: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    background: var(--warm-white);
+    color: var(--charcoal);
+    transition: all 0.15s;
+  }
+  .ss-tab-btn:last-child { border-right: 1.5px solid var(--border); }
+  .ss-tab-btn.active { background: #C8860A !important; color: #fff !important; border-color: #C8860A !important; font-weight: 600; }
+  .ss-tab-btn:hover:not(.active) { background: var(--sage-pale); border-color: var(--sage); color: var(--sage); }
+
   /* ── READINESS METER ── */
   .meter-wrap { margin: 1rem 0; }
   .meter-bar {
@@ -1949,9 +1967,9 @@
       <div class="card">
         <div class="card-title"><span class="dot"></span> <span id="acct-ss-title">Your</span> Social Security</div>
         <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem">
-          <button id="ssBtn-upload" onclick="switchSSMethod('upload')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid #ddd;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:#f0ebe3;color:#555">Upload Statement</button>
-          <button id="ssBtn-manual" onclick="switchSSMethod('manual')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid #ddd;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:#f0ebe3;color:#555">Enter Manually</button>
-          <button id="ssBtn-estimate" onclick="switchSSMethod('estimate')" style="flex:1;padding:0.6rem;border:none;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:#C8860A;color:#fff">Estimate for Me</button>
+          <button id="ssBtn-upload" onclick="switchSSMethod('upload')" class="ss-tab-btn">Upload Statement</button>
+          <button id="ssBtn-manual" onclick="switchSSMethod('manual')" class="ss-tab-btn">Enter Manually</button>
+          <button id="ssBtn-estimate" onclick="switchSSMethod('estimate')" class="ss-tab-btn">Estimate for Me</button>
         </div>
         <div id="ss-method-upload" style="display:none">
           <div class="upload-zone" id="ssUploadZone" style="padding:1.5rem">
@@ -2003,9 +2021,9 @@
       <div class="card" id="densieSSCard" style="display:none">
         <div class="card-title"><span class="dot"></span> <span id="spouse-ss-name">Densie's Social Security</div>
         <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem">
-          <button id="dssBtn-upload" onclick="switchDSSMethod('upload')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid #ddd;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:#f0ebe3;color:#555">Upload Statement</button>
-          <button id="dssBtn-manual" onclick="switchDSSMethod('manual')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid #ddd;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:#f0ebe3;color:#555">Enter Manually</button>
-          <button id="dssBtn-estimate" onclick="switchDSSMethod('estimate')" style="flex:1;padding:0.6rem;border:none;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:#C8860A;color:#fff">Estimate for Me</button>
+          <button id="dssBtn-upload" onclick="switchDSSMethod('upload')" class="ss-tab-btn">Upload Statement</button>
+          <button id="dssBtn-manual" onclick="switchDSSMethod('manual')" class="ss-tab-btn">Enter Manually</button>
+          <button id="dssBtn-estimate" onclick="switchDSSMethod('estimate')" class="ss-tab-btn">Estimate for Me</button>
         </div>
         <div id="dss-method-upload" style="display:none">
           <div class="upload-zone" style="padding:1.5rem">
@@ -3186,8 +3204,9 @@ function switchSSMethod(method) {
     var btn = document.getElementById('ssBtn-' + m);
     if (panel) panel.style.display = m === method ? 'block' : 'none';
     if (btn) {
-      btn.style.background = m === method ? '#C8860A' : '#f0ebe3';
-      btn.style.color = m === method ? '#fff' : '#555';
+      btn.classList.toggle('active', m === method);
+      btn.style.background = '';
+      btn.style.color = '';
       btn.style.color = m === method ? '#fff' : 'var(--mid)';
     }
   });
@@ -3601,8 +3620,9 @@ function switchDSSMethod(method) {
     var btn = document.getElementById('dssBtn-' + m);
     if(el) el.style.display = m === method ? 'block' : 'none';
     if(btn) {
-      btn.style.background = m === method ? '#C8860A' : 'var(--warm-white)';
-      btn.style.color = m === method ? '#fff' : 'var(--mid)';
+      btn.classList.toggle('active', m === method);
+      btn.style.background = '';
+      btn.style.color = '';
       btn.style.color = m === method ? '#fff' : 'var(--mid)';
     }
   });
@@ -6826,9 +6846,9 @@ function loadFromLocal() {
     var hasSS67 = (parseFloat(document.getElementById('ss67')?.value)||0) > 0;
     if(hasSS62 || hasSS67) {
       // Activate manual SS method so fields are treated as manual
-      document.querySelectorAll('.ss-method-btn').forEach(function(b){ b.classList.remove('active'); b.style.background='var(--warm-white)'; b.style.color='var(--mid)'; });
+      document.querySelectorAll('.ss-tab-btn').forEach(function(b){ b.classList.remove('active'); b.style.background=''; b.style.color=''; });
       var manBtn = document.getElementById('ssBtn-manual');
-      if(manBtn) { manBtn.classList.add('active'); manBtn.style.background='var(--amber)'; manBtn.style.color='#fff'; }
+      if(manBtn) { manBtn.classList.add('active'); manBtn.style.background=''; manBtn.style.color=''; }
       var manSection = document.getElementById('ss-method-manual');
       if(manSection) manSection.style.display = 'block';
       var estSection = document.getElementById('ss-method-estimate');
