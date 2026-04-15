@@ -842,25 +842,36 @@
 
 <!-- AUTH MODAL -->
 <div id="authModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center">
-  <div style="background:#fff;border-radius:20px;padding:2.5rem;width:100%;max-width:420px;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
-    <div style="text-align:center;margin-bottom:1.5rem">
-      <div style="font-size:2rem;margin-bottom:0.5rem">🥚</div>
-      <div style="font-family:DM Serif Display,serif;font-size:1.6rem;color:#2D4A35;font-weight:700">MyYolk</div>
-      <div style="font-size:0.85rem;color:#888;margin-top:4px">Save your plan. Access anywhere.</div>
+  <div style="background:#fff;border-radius:20px;overflow:hidden;width:100%;max-width:420px;margin:1rem;box-shadow:0 20px 60px rgba(0,0,0,0.25)">
+    <!-- Amber header bar -->
+    <div style="background:#C8860A;padding:1.5rem 2rem 1.25rem;text-align:center">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 52" width="200" height="42" style="display:inline-block">
+        <defs><clipPath id="egg-clip-m"><ellipse cx="26" cy="28" rx="20" ry="24"/></clipPath></defs>
+        <ellipse cx="26" cy="28" rx="20" ry="24" fill="#fffdf0" stroke="#e8c96a" stroke-width="2"/>
+        <circle cx="29" cy="34" r="11" fill="#F0A500" clip-path="url(#egg-clip-m)"/>
+        <text x="54" y="31" font-family="Georgia, serif" font-size="26" font-weight="700" fill="#2D4A35">My</text>
+        <text x="90" y="31" font-family="Georgia, serif" font-size="26" font-weight="700" fill="#fffdf0">Yolk<tspan font-size="11" font-weight="400" baseline-shift="super">&#8482;</tspan></text>
+        <text x="54" y="46" font-family="Georgia, serif" font-size="9" fill="#2D4A35" letter-spacing="2" opacity="0.8">RETIREMENT PLANNING</text>
+      </svg>
+      <div style="font-size:0.82rem;color:rgba(255,255,255,0.85);margin-top:6px">Save your plan. Access anywhere.</div>
     </div>
-    <div style="display:flex;gap:0;margin-bottom:1.5rem;background:#f5f5f5;border-radius:10px;padding:3px">
-      <button id="tabSignIn" onclick="switchAuthTab('signin')" style="flex:1;padding:8px;border:none;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;background:#C8860A;color:#fff">Sign In</button>
-      <button id="tabSignUp" onclick="switchAuthTab('signup')" style="flex:1;padding:8px;border:none;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;background:none;color:#888">Sign Up</button>
-    </div>
-    <div id="authError" style="display:none;background:#fff0f0;color:#c0392b;border-radius:8px;padding:0.75rem;margin-bottom:1rem;font-size:0.85rem"></div>
-    <form id="authForm" onsubmit="submitAuth();return false;" autocomplete="on" style="display:flex;flex-direction:column;gap:0.75rem">
-      <input id="authEmail" name="email" type="email" placeholder="Email address" autocomplete="email" style="padding:0.75rem 1rem;border:1.5px solid #e2ddd8;border-radius:10px;font-size:0.95rem;font-family:DM Sans,sans-serif;outline:none">
-      <input id="authPassword" name="password" type="password" placeholder="Password" autocomplete="current-password" style="padding:0.75rem 1rem;border:1.5px solid #e2ddd8;border-radius:10px;font-size:0.95rem;font-family:DM Sans,sans-serif;outline:none">
-      <button id="authSubmitBtn" type="submit" style="padding:0.85rem;background:#C8860A;color:#fff;border:none;border-radius:10px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer">Sign In</button>
-      <div id="authSignupNote" style="display:none;font-size:0.78rem;color:#888;text-align:center">By signing up you agree to our terms. Your data is encrypted and private.</div>
-    </form>
-    <div style="text-align:center;margin-top:1rem">
-      <button onclick="toggleAuthModal()" style="background:none;border:none;color:#aaa;font-size:0.82rem;cursor:pointer;font-family:DM Sans,sans-serif">Cancel</button>
+    <!-- Body -->
+    <div style="padding:1.75rem 2rem 2rem">
+      <div style="display:flex;gap:0;margin-bottom:1.25rem;background:#f5f5f5;border-radius:10px;padding:3px">
+        <button id="tabSignIn" onclick="switchAuthTab('signin')" style="flex:1;padding:8px;border:none;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;background:#C8860A;color:#fff">Sign In</button>
+        <button id="tabSignUp" onclick="switchAuthTab('signup')" style="flex:1;padding:8px;border:none;border-radius:8px;font-family:DM Sans,sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;background:none;color:#888">Sign Up</button>
+      </div>
+      <div id="authError" style="display:none;background:#fff0f0;color:#c0392b;border-radius:8px;padding:0.75rem;margin-bottom:1rem;font-size:0.85rem"></div>
+      <form id="authForm" onsubmit="submitAuth();return false;" autocomplete="on" style="display:flex;flex-direction:column;gap:0.75rem">
+        <input id="authEmail" name="email" type="email" placeholder="Email address" autocomplete="email" style="padding:0.75rem 1rem;border:1.5px solid #e2ddd8;border-radius:10px;font-size:0.95rem;font-family:DM Sans,sans-serif;outline:none">
+        <input id="authPassword" name="password" type="password" placeholder="Password" autocomplete="current-password" style="padding:0.75rem 1rem;border:1.5px solid #e2ddd8;border-radius:10px;font-size:0.95rem;font-family:DM Sans,sans-serif;outline:none">
+        <input id="authConfirmPassword" name="confirm-password" type="password" placeholder="Confirm password" autocomplete="new-password" style="display:none;padding:0.75rem 1rem;border:1.5px solid #e2ddd8;border-radius:10px;font-size:0.95rem;font-family:DM Sans,sans-serif;outline:none">
+        <button id="authSubmitBtn" type="submit" style="padding:0.85rem;background:#C8860A;color:#fff;border:none;border-radius:10px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer">Sign In</button>
+        <div id="authSignupNote" style="display:none;font-size:0.78rem;color:#888;text-align:center">By signing up you agree to our terms. Your data is encrypted and private.</div>
+      </form>
+      <div style="text-align:center;margin-top:1rem">
+        <button onclick="toggleAuthModal()" style="background:none;border:none;color:#aaa;font-size:0.82rem;cursor:pointer;font-family:DM Sans,sans-serif">Cancel</button>
+      </div>
     </div>
   </div>
 </div>
@@ -6115,20 +6126,23 @@ function switchAuthTab(mode) {
   var suBtn = document.getElementById('tabSignUp');
   var submitBtn = document.getElementById('authSubmitBtn');
   var note = document.getElementById('authSignupNote');
-  var on = '#C8860A'; var off = 'none';
+  var on = '#C8860A'; var off = 'transparent';
   var pwField = document.getElementById('authPassword');
+  var confirmField = document.getElementById('authConfirmPassword');
   if(mode === 'signin') {
     siBtn.style.background = on; siBtn.style.color = '#fff';
     suBtn.style.background = off; suBtn.style.color = '#888';
     submitBtn.textContent = 'Sign In';
     note.style.display = 'none';
     if(pwField) pwField.autocomplete = 'current-password';
+    if(confirmField) confirmField.style.display = 'none';
   } else {
     suBtn.style.background = on; suBtn.style.color = '#fff';
     siBtn.style.background = off; siBtn.style.color = '#888';
     submitBtn.textContent = 'Create Account';
     note.style.display = 'block';
     if(pwField) pwField.autocomplete = 'new-password';
+    if(confirmField) confirmField.style.display = 'block';
   }
   clearAuthError();
 }
@@ -6149,6 +6163,10 @@ async function submitAuth() {
   var btn = document.getElementById('authSubmitBtn');
   if(!email || !password) { showAuthError('Please enter your email and password.'); return; }
   if(password.length < 6) { showAuthError('Password must be at least 6 characters.'); return; }
+  if(_authMode === 'signup') {
+    var confirm = document.getElementById('authConfirmPassword')?.value;
+    if(password !== confirm) { showAuthError('Passwords do not match.'); return; }
+  }
   btn.textContent = '...'; btn.disabled = true;
   clearAuthError();
   try {
