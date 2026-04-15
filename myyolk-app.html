@@ -6790,8 +6790,7 @@ var _appReady = false;
 
 
 
-// Auto-load on page ready - only load if data belongs to this device
-// We store a device token when data is first saved here
+// Auto-load on page ready - only load if data was saved on THIS device
 setTimeout(function() {
   var stored = localStorage.getItem(SAVE_KEY);
   if(stored) {
@@ -6799,16 +6798,15 @@ setTimeout(function() {
       var parsed = JSON.parse(stored);
       var deviceToken = localStorage.getItem('myyolk_device');
       var storedToken = parsed['__deviceToken'];
-      // If no device token stored yet, this is old data — safe to load
-      // If tokens match, this is the same device — safe to load
-      // If tokens don't match, clear it — someone else's data
-      if(storedToken && deviceToken && storedToken !== deviceToken) {
-        console.log('MyYolk: clearing foreign device data');
-        localStorage.removeItem(SAVE_KEY);
-      } else {
+      // Only load if stored token matches this device's token
+      // No token on either side = old/foreign data, clear it
+      if(storedToken && deviceToken && storedToken === deviceToken) {
         loadFromLocal();
+      } else {
+        console.log('MyYolk: clearing data — no matching device token');
+        localStorage.removeItem(SAVE_KEY);
       }
-    } catch(e) { loadFromLocal(); }
+    } catch(e) { localStorage.removeItem(SAVE_KEY); }
   }
   setTimeout(function(){ _appReady = true; }, 800);
 }, 600);
