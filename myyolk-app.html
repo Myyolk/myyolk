@@ -4297,45 +4297,45 @@ function generatePDF() {
         return yy + 6.5;
       }
       function pageHeader(pageNum) {
-        // Amber header bar
+        // Amber header bar - taller for better proportions
         doc.setFillColor(amber[0],amber[1],amber[2]);
-        doc.rect(0, 0, W, 42, 'F');
+        doc.rect(0, 0, W, 36, 'F');
 
-        // ── EGG LOGO (matching website exactly) ──
-        var ex = margin + 8;   // egg center x
-        var ey = 21;           // egg center y
-        var erx = 7; var ery = 9; // egg radii
-        // Egg shell
+        // ── EGG LOGO - smaller, tighter to match site ──
+        var ex = margin + 5;
+        var ey = 18;
+        var erx = 5; var ery = 6.5;
         doc.setFillColor(255,253,240);
         doc.setDrawColor(232,201,106);
-        doc.setLineWidth(0.5);
+        doc.setLineWidth(0.4);
         doc.ellipse(ex, ey, erx, ery, 'FD');
-        // Yolk circle - offset right like website (cx=29 out of 52 = ~56% across)
+        // Yolk - offset right and down like website
         doc.setFillColor(240,165,0);
-        doc.circle(ex + 2.5, ey + 4, 4.5, 'F');
+        doc.circle(ex + 1.5, ey + 2.5, 3.2, 'F');
 
-        // ── WORDMARK ──
-        var tx = margin + 20; // text start x
-        doc.setFont('times','bold'); doc.setFontSize(22);
+        // ── WORDMARK - tight together ──
+        var tx = margin + 13;
+        doc.setFont('times','bold'); doc.setFontSize(20);
         doc.setTextColor(forest[0],forest[1],forest[2]);
-        doc.text('My', tx, 24);
+        doc.text('My', tx, 21);
         var myW = doc.getTextWidth('My');
         doc.setTextColor(255,253,240);
-        doc.text('Yolk', tx + myW, 24);
-        // TM as small superscript
+        doc.text('Yolk', tx + myW - 0.5, 21);
         var yolkW = doc.getTextWidth('Yolk');
-        doc.setFontSize(6); doc.setTextColor(255,253,240);
-        doc.text('™', tx + myW + yolkW + 0.5, 19);
+        doc.setFontSize(5.5); doc.setTextColor(255,253,240);
+        doc.text('™', tx + myW + yolkW - 0.5, 17);
 
-        // RETIREMENT PLANNING - slightly larger and bolder
-        doc.setFont('times','bold'); doc.setFontSize(7.5);
+        // RETIREMENT PLANNING - right under wordmark, same x
+        doc.setFont('times','normal'); doc.setFontSize(6.5);
         doc.setTextColor(forest[0],forest[1],forest[2]);
-        doc.text('RETIREMENT PLANNING', tx, 31);
+        doc.setCharSpace(1.5);
+        doc.text('RETIREMENT PLANNING', tx, 27);
+        doc.setCharSpace(0);
 
         // Page number right
         doc.setFont('times','normal'); doc.setFontSize(8);
         doc.setTextColor(forest[0],forest[1],forest[2]);
-        doc.text('Page ' + pageNum + ' of 2', W-margin, 31, {align:'right'});
+        doc.text('Page ' + pageNum + ' of 2', W-margin, 27, {align:'right'});
       }
       function pageFooter() {
         doc.setFillColor(amber[0],amber[1],amber[2]);
@@ -4387,23 +4387,26 @@ function generatePDF() {
       // PAGE 1
       // ════════════════════════════════════════
       pageHeader(1);
-      y = 44;
+      y = 46;
 
-      // Report title + name
-      doc.setFont('times','bold'); doc.setFontSize(16); doc.setTextColor(forest[0],forest[1],forest[2]);
+      // Report title + name - clearly below amber band
+      doc.setFont('times','bold'); doc.setFontSize(15); doc.setTextColor(forest[0],forest[1],forest[2]);
       doc.text('Retirement Readiness Report', margin, y);
       if(reportName) {
-        doc.setFont('times','normal'); doc.setFontSize(10); doc.setTextColor(mid[0],mid[1],mid[2]);
-        doc.text(reportName + '  |  Generated: ' + today, margin, y+7);
+        doc.setFont('times','normal'); doc.setFontSize(9.5); doc.setTextColor(mid[0],mid[1],mid[2]);
+        doc.text(reportName + '  |  ' + today, margin, y+7);
       }
-      y += 16;
+      y += 17;
 
       // ── KEY NUMBERS BOX ──
       doc.setFillColor(warm[0],warm[1],warm[2]);
       doc.roundedRect(margin, y, W-margin*2, 44, 2, 2, 'F');
-      var c1=margin+8, c2=margin+60, c3=margin+112, c4=margin+158;
+      // Use 3-column layout for row 1, 4-column for row 2
+      var c1=margin+6, c2=margin+52, c3=margin+100, c4=margin+150;
+      var colW = 44; // max column width for truncation
+
       // Row 1 labels
-      doc.setFont('times','normal'); doc.setFontSize(7.5); doc.setTextColor(mid[0],mid[1],mid[2]);
+      doc.setFont('times','normal'); doc.setFontSize(7); doc.setTextColor(mid[0],mid[1],mid[2]);
       doc.text('Current Age', c1, y+9);
       doc.text('Retirement Age', c2, y+9);
       doc.text('Life Expectancy', c3, y+9);
@@ -4413,18 +4416,23 @@ function generatePDF() {
       doc.text(age, c1, y+20);
       doc.text(retAge, c2, y+20);
       doc.text(lifeExp, c3, y+20);
-      doc.setFontSize(10); doc.text(stateName.split('(')[0].trim(), c4, y+20);
+      // State - use smaller font to fit
+      doc.setFontSize(8.5);
+      var stShort = stateName.length > 12 ? stateName.substring(0,12) + '.' : stateName;
+      doc.text(stShort, c4, y+20);
+
       // Divider
       doc.setDrawColor(220,210,195); doc.setLineWidth(0.3);
       doc.line(margin+4, y+24, W-margin-4, y+24);
+
       // Row 2 labels
-      doc.setFont('times','normal'); doc.setFontSize(7.5); doc.setTextColor(mid[0],mid[1],mid[2]);
+      doc.setFont('times','normal'); doc.setFontSize(7); doc.setTextColor(mid[0],mid[1],mid[2]);
       doc.text('Current Portfolio', c1, y+31);
       doc.text('Portfolio at Retirement', c2, y+31);
-      doc.text('Total Net Worth at Ret.', c3, y+31);
+      doc.text('Net Worth at Ret.', c3, y+31);
       doc.text('Readiness Score', c4, y+31);
       // Row 2 values
-      doc.setFont('times','bold'); doc.setFontSize(13);
+      doc.setFont('times','bold'); doc.setFontSize(12);
       doc.setTextColor(gold[0],gold[1],gold[2]);
       doc.text(sbPortfolio, c1, y+40);
       doc.text(sbAtRet, c2, y+40);
@@ -4496,7 +4504,7 @@ function generatePDF() {
       // ════════════════════════════════════════
       doc.addPage();
       pageHeader(2);
-      y = 44;
+      y = 46;
 
       // ── NET WORTH STATEMENT ──
       y = hdr('NET WORTH STATEMENT', y);
