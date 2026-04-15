@@ -1951,7 +1951,7 @@
         <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem">
           <button id="ssBtn-upload" onclick="switchSSMethod('upload')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Upload Statement</button>
           <button id="ssBtn-manual" onclick="switchSSMethod('manual')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Enter Manually</button>
-          <button id="ssBtn-estimate" onclick="switchSSMethod('estimate')" style="flex:1;padding:0.6rem;border:none;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--gold);color:#fff">Estimate for Me</button>
+          <button id="ssBtn-estimate" onclick="switchSSMethod('estimate')" style="flex:1;padding:0.6rem;border:none;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:#C8860A;color:#fff">Estimate for Me</button>
         </div>
         <div id="ss-method-upload" style="display:none">
           <div class="upload-zone" id="ssUploadZone" style="padding:1.5rem">
@@ -2005,7 +2005,7 @@
         <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem">
           <button id="dssBtn-upload" onclick="switchDSSMethod('upload')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Upload Statement</button>
           <button id="dssBtn-manual" onclick="switchDSSMethod('manual')" style="flex:1;padding:0.6rem;border:none;border-right:1px solid var(--border);font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--warm-white);color:var(--mid)">Enter Manually</button>
-          <button id="dssBtn-estimate" onclick="switchDSSMethod('estimate')" style="flex:1;padding:0.6rem;border:none;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:var(--gold);color:#fff">Estimate for Me</button>
+          <button id="dssBtn-estimate" onclick="switchDSSMethod('estimate')" style="flex:1;padding:0.6rem;border:none;font-family:DM Sans;font-size:0.82rem;font-weight:600;cursor:pointer;background:#C8860A;color:#fff">Estimate for Me</button>
         </div>
         <div id="dss-method-upload" style="display:none">
           <div class="upload-zone" style="padding:1.5rem">
@@ -3601,7 +3601,7 @@ function switchDSSMethod(method) {
     var btn = document.getElementById('dssBtn-' + m);
     if(el) el.style.display = m === method ? 'block' : 'none';
     if(btn) {
-      btn.style.background = m === method ? 'var(--gold)' : 'var(--warm-white)';
+      btn.style.background = m === method ? '#C8860A' : 'var(--warm-white)';
       btn.style.color = m === method ? '#fff' : 'var(--mid)';
       btn.style.color = m === method ? '#fff' : 'var(--mid)';
     }
