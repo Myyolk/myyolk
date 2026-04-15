@@ -4327,13 +4327,14 @@ function generatePDF() {
         doc.text('My', tx, ty);
         var myW = doc.getTextWidth('My');
         doc.setTextColor(255,253,240);
-        doc.text('Yolk', tx + myW, ty);
+        doc.text('Yolk', tx + myW - 1, ty);
         var yolkW = doc.getTextWidth('Yolk');
 
-        // TM - small, right after Yolk, raised
-        doc.setFontSize(6);
+        // TM - superscript, tight after Yolk at cap height
+        var tmSize = Math.round(fs * 0.38);
+        doc.setFontSize(tmSize);
         doc.setTextColor(255,253,240);
-        doc.text('™', tx + myW + yolkW + 0.5, ty - 4);
+        doc.text('™', tx + myW + yolkW + 0.3, ty - fs * 0.28);
 
         // RETIREMENT PLANNING under wordmark
         var rty = oy + 44*sc;
