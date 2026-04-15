@@ -3188,6 +3188,7 @@ function switchSSMethod(method) {
     if (btn) {
       btn.style.background = m === method ? 'var(--sage)' : 'var(--warm-white)';
       btn.style.color = m === method ? '#fff' : 'var(--mid)';
+      btn.style.color = m === method ? '#fff' : 'var(--mid)';
     }
   });
 }
@@ -3601,6 +3602,7 @@ function switchDSSMethod(method) {
     if(el) el.style.display = m === method ? 'block' : 'none';
     if(btn) {
       btn.style.background = m === method ? 'var(--gold)' : 'var(--warm-white)';
+      btn.style.color = m === method ? '#fff' : 'var(--mid)';
       btn.style.color = m === method ? '#fff' : 'var(--mid)';
     }
   });
@@ -6824,7 +6826,7 @@ function loadFromLocal() {
     var hasSS67 = (parseFloat(document.getElementById('ss67')?.value)||0) > 0;
     if(hasSS62 || hasSS67) {
       // Activate manual SS method so fields are treated as manual
-      document.querySelectorAll('.ss-method-btn').forEach(function(b){ b.classList.remove('active'); b.style.background=''; b.style.color=''; });
+      document.querySelectorAll('.ss-method-btn').forEach(function(b){ b.classList.remove('active'); b.style.background='var(--warm-white)'; b.style.color='var(--mid)'; });
       var manBtn = document.getElementById('ssBtn-manual');
       if(manBtn) { manBtn.classList.add('active'); manBtn.style.background='var(--amber)'; manBtn.style.color='#fff'; }
       var manSection = document.getElementById('ss-method-manual');
