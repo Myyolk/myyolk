@@ -4600,10 +4600,12 @@ function generatePDF() {
           var yearEl = m.querySelector('span:first-child');
           var labelEl = m.querySelector('span:last-child');
           if(yearEl && labelEl) {
+            // Strip emojis - jsPDF cant render them
+            var labelText = labelEl.textContent.replace(/[^ -]/g, '').replace(/\s+/g,' ').trim();
             doc.setFont('times','bold'); doc.setFontSize(9); doc.setTextColor(amber[0],amber[1],amber[2]);
             doc.text(yearEl.textContent, margin, y);
             doc.setFont('times','normal'); doc.setTextColor(forest[0],forest[1],forest[2]);
-            var lbl = doc.splitTextToSize(labelEl.textContent, W-margin*2-20);
+            var lbl = doc.splitTextToSize(labelText, W-margin*2-20);
             doc.text(lbl, margin+16, y);
             y += lbl.length * 5 + 2;
           }
@@ -4618,7 +4620,7 @@ function generatePDF() {
         var leTypeLabels = {wedding:'Wedding',child_wedding:"Child's Wedding",newbaby:'New Baby/Adoption',inheritance:'Inheritance/Windfall',death:'Death in Family',divorce:'Divorce',eldercare:'Elder Care',medical:'Major Medical',renovation:'Home Renovation',business:'Start a Business',college:'College Tuition',layoff:'Job Loss/Layoff',severance:'Severance/Buyout',travel:'Travel/Sabbatical',other:'Other'};
         leRows.forEach(function(le) {
           if(y > H-35) return;
-          var leType = leTypeLabels[le.querySelector('.le-type')?.value] || 'Event';
+          var leType = (leTypeLabels[le.querySelector('.le-type')?.value] || 'Event').replace(/[^\x00-\x7F]/g,'').trim();
           var leAge = le.querySelector('.le-age')?.value || '—';
           var leAmt = parseFloat(le.querySelector('.le-amount')?.value)||0;
           var leDir = le.querySelector('.le-direction')?.value === 'income' ? 'Income' : 'Expense';
