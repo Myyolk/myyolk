@@ -930,6 +930,26 @@
     #pdfBtn { display: none !important; }
     #feedbackBtn { display: none !important; }
 
+    /* Budget table — hide annual column on mobile */
+    .budget-col-headers { grid-template-columns: 1fr 110px !important; }
+    .budget-row { grid-template-columns: 1fr 110px !important; }
+    .budget-total { grid-template-columns: 1fr 110px !important; }
+    .budget-col-headers span:last-child { display: none !important; }
+    .budget-row input:last-child { display: none !important; }
+    .budget-total span:last-child { display: none !important; }
+
+    /* Readiness — fix any overflow */
+    .meter-labels { font-size: 0.65rem; }
+    #rdActions > div { font-size: 0.82rem; }
+
+    /* General overflow fix */
+    main, .card, .tab-panel { overflow-x: hidden; }
+    .results-grid { grid-template-columns: 1fr 1fr !important; gap: 0.75rem; }
+
+    /* Fix any inline style grids */
+    [style*="grid-template-columns: repeat(3"] { grid-template-columns: 1fr 1fr !important; }
+    [style*="grid-template-columns:repeat(3"] { grid-template-columns: 1fr 1fr !important; }
+
     /* Live snapshot in sidebar — hide on mobile */
     .sidebar > div:not(.nav-item):not(.sidebar-label) { display: none; }
 
@@ -6421,7 +6441,19 @@ var SAVE_KEY = 'myyolk_v1';
 function saveData() { saveToLocal(); }
 
 // Init Supabase on load
-window.addEventListener('load', function() { setTimeout(initSupabase, 300); });
+window.addEventListener('load', function() { 
+  setTimeout(initSupabase, 300);
+  // Hide floating buttons on mobile
+  function checkMobile() {
+    var isMobile = window.innerWidth <= 768;
+    var pdf = document.getElementById('pdfBtn');
+    var fb = document.getElementById('feedbackBtn');
+    if(pdf) pdf.style.display = isMobile ? 'none' : '';
+    if(fb) fb.style.display = isMobile ? 'none' : '';
+  }
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+});
 
 function saveToLocal() {
   try {
