@@ -889,6 +889,9 @@
     }
     .nav-item .icon { font-size: 1.3rem; width: auto; display: block; margin: 0 auto 1px; }
     .nav-item.active { background: var(--sage) !important; color: #fff !important; }
+    /* Hide full label, show short data-label on mobile */
+    .nav-item .nav-label { display: none; }
+    .nav-item::after { content: attr(data-label); font-size: 0.58rem; display: block; margin-top: 1px; }
 
     /* Main content */
     main {
@@ -1103,35 +1106,35 @@
   <nav class="sidebar">
     <div class="sidebar-label">Planning Steps</div>
 
-    <button class="nav-item active" onclick="showTab('profile')">
-      <span class="icon">👤</span> My Profile
+    <button class="nav-item active" onclick="showTab('profile')" data-label="Profile">
+      <span class="icon">👤</span><span class="nav-label"> My Profile</span>
     </button>
-    <button class="nav-item" onclick="showTab('income')">
-      <span class="icon">💼</span> Income & Pay
+    <button class="nav-item" onclick="showTab('income')" data-label="Income">
+      <span class="icon">💼</span><span class="nav-label"> Income & Pay</span>
     </button>
-    <button class="nav-item" onclick="showTab('accounts')">
-      <span class="icon">🏦</span> Accounts & Savings
+    <button class="nav-item" onclick="showTab('accounts')" data-label="Accounts">
+      <span class="icon">🏦</span><span class="nav-label"> Accounts & Savings</span>
     </button>
-    <button class="nav-item" onclick="showTab('ss')" id="nav-ss">
-      <span class="icon">🏛️</span> Social Security
+    <button class="nav-item" onclick="showTab('ss')" id="nav-ss" data-label="Soc. Sec.">
+      <span class="icon">🏛️</span><span class="nav-label"> Social Security</span>
     </button>
-    <button class="nav-item" onclick="showTab('budget')">
-      <span class="icon">📊</span> Budget
+    <button class="nav-item" onclick="showTab('budget')" data-label="Budget">
+      <span class="icon">📊</span><span class="nav-label"> Budget</span>
     </button>
-    <button class="nav-item" onclick="showTab('projections')">
-      <span class="icon">📈</span> Projections
+    <button class="nav-item" onclick="showTab('projections')" data-label="Project.">
+      <span class="icon">📈</span><span class="nav-label"> Projections</span>
     </button>
-    <button class="nav-item" onclick="showTab('readiness')">
-      <span class="icon">🎯</span> Readiness
+    <button class="nav-item" onclick="showTab('readiness')" data-label="Readiness">
+      <span class="icon">🎯</span><span class="nav-label"> Readiness</span>
     </button>
-    <button class="nav-item" onclick="showTab('whatif')">
-      <span class="icon">🔀</span> What-If Scenarios
+    <button class="nav-item" onclick="showTab('whatif')" data-label="What-If">
+      <span class="icon">🔀</span><span class="nav-label"> What-If Scenarios</span>
     </button>
-    <button class="nav-item" onclick="showTab('early')">
-      <span class="icon">⚡</span> Early Retirement
+    <button class="nav-item" onclick="showTab('early')" data-label="Early Ret.">
+      <span class="icon">⚡</span><span class="nav-label"> Early Retirement</span>
     </button>
-    <button class="nav-item" onclick="showTab('summary')">
-      <span class="icon">✨</span> Summary
+    <button class="nav-item" onclick="showTab('summary')" data-label="Summary">
+      <span class="icon">✨</span><span class="nav-label"> Summary</span>
     </button>
 
     <div class="sidebar-divider"></div>
