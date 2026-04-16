@@ -756,6 +756,20 @@
 
   /* ── RESPONSIVE ── */
   @media (max-width: 768px) {
+    body { overflow-x: hidden; }
+    * { box-sizing: border-box; }
+    .hero-inner { grid-template-columns: 1fr !important; }
+    .features-grid { grid-template-columns: 1fr !important; }
+    .audience-inner { grid-template-columns: 1fr !important; }
+    .pricing-grid { grid-template-columns: 1fr !important; }
+    [style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+    .app-stats-grid { grid-template-columns: 1fr 1fr !important; }
+    footer { flex-direction: column; text-align: center; }
+    .footer-links { justify-content: center; flex-wrap: wrap; }
+    section { padding: 3rem 1.25rem !important; }
+    .hero { padding: 6rem 1.25rem 3rem !important; }
+    h2 { font-size: clamp(1.6rem, 5vw, 2.2rem) !important; }
+    .app-card { max-width: 100% !important; }
     nav { padding: 0 1rem; }
     .nav-links { display: none; }
 
