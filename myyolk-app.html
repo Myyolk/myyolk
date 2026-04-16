@@ -610,7 +610,7 @@
     position: fixed;
     bottom: 1.5rem;
     right: 1.5rem;
-    background: var(--sage);
+    background: #2D4A35;
     color: #fff;
     border: none;
     border-radius: 50px;
@@ -619,14 +619,14 @@
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
     z-index: 1000;
     display: flex;
     align-items: center;
     gap: 6px;
     transition: all 0.2s;
   }
-  #feedbackBtn:hover { background: var(--forest); transform: translateY(-2px); }
+  #feedbackBtn:hover { background: #3D6147; transform: translateY(-2px); }
   #feedbackPanel {
     position: fixed;
     bottom: 4.5rem;
@@ -3733,7 +3733,7 @@ function addFeedbackNote() {
 function renderFeedbackNotes() {
   var container = document.getElementById('feedbackNotes');
   if (feedbackNotes.length === 0) {
-    container.innerHTML = '<div class="feedback-empty">Add notes as you explore — send all at once when ready.</div>';
+    container.innerHTML = '<div class="feedback-empty">Add notes as you explore — send all at once when ready.</div><div style="color:#C8860A;font-weight:600;font-size:0.82rem;padding:0.5rem 0.75rem;background:#FEF3E0;border-radius:8px;margin:0.5rem 0">💡 Is there something you would like to see added? Tell us — we build fast.</div>';
     return;
   }
   container.innerHTML = feedbackNotes.map(function(n) {
@@ -6944,6 +6944,7 @@ setTimeout(function() {
     </div>
     <div class="feedback-notes" id="feedbackNotes">
       <div class="feedback-empty">Add notes as you explore — send all at once when ready.</div>
+      <div style="color:#C8860A;font-weight:600;font-size:0.82rem;padding:0.5rem 0.75rem;background:#FEF3E0;border-radius:8px;margin:0.5rem 0">💡 Is there something you would like to see added? Tell us — we build fast.</div>
     </div>
     <div class="feedback-input-area">
       <textarea id="feedbackText" placeholder="What's on your mind? A suggestion, confusion, or idea..."></textarea>
