@@ -952,9 +952,9 @@
       max-width: 100% !important;
     }
 
-    /* Hide PDF and Feedback floating buttons on mobile */
+    /* Hide PDF button on mobile, keep Feedback */
     #pdfBtn { display: none !important; }
-    #feedbackBtn { display: none !important; }
+    #feedbackBtn { bottom: 75px !important; right: 0.75rem !important; font-size: 0.75rem !important; padding: 8px 12px !important; z-index: 60 !important; }
 
     /* General overflow prevention */
     body, main, .card, .tab-panel, .app { overflow-x: hidden !important; max-width: 100vw; }
@@ -3720,7 +3720,8 @@ function toggleFeedback() {
 function addFeedbackNote() {
   var text = document.getElementById('feedbackText').value.trim();
   if (!text) return;
-  feedbackNotes.push({ tab: currentTabName, note: text, time: new Date().toLocaleTimeString() });
+  var device = window.innerWidth <= 768 ? '📱 Mobile' : '🖥️ Desktop';
+  feedbackNotes.push({ tab: currentTabName, note: text, time: new Date().toLocaleTimeString(), device: device });
   document.getElementById('feedbackText').value = '';
   renderFeedbackNotes();
   // Track in GA
@@ -3753,7 +3754,7 @@ function sendFeedback() {
     return;
   }
   var body = feedbackNotes.map(function(n, i) {
-    return (i+1) + '. [' + n.tab + '] ' + n.note;
+    return (i+1) + '. [' + n.tab + '] [' + (n.device||'Unknown') + '] ' + n.note;
   }).join('\n');
   if (email) body += '\n\nReply to: ' + email;
   
