@@ -6687,7 +6687,7 @@ window.addEventListener('load', function() {
     var pdf = document.getElementById('pdfBtn');
     var fb = document.getElementById('feedbackBtn');
     if(pdf) pdf.style.display = isMobile ? 'none' : '';
-    if(fb) fb.style.display = isMobile ? 'none' : '';
+    // Keep feedback visible on mobile
   }
   checkMobile();
   window.addEventListener('resize', checkMobile);
