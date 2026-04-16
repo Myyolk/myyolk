@@ -39,11 +39,12 @@
     right: 0;
     z-index: 100;
     background: #C8860A;
-    height: 64px;
+    border-bottom: 1px solid rgba(0,0,0,0.15);
+    height: 96px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 2rem;
+    padding: 0 2.5rem;
   }
 
   .nav-logo {
@@ -83,20 +84,15 @@
   /* ── HERO ── */
   .hero {
     min-height: 100vh;
-    background: var(--amber);
+    background: var(--cream);
     display: flex;
     align-items: center;
     position: relative;
     overflow: hidden;
-    padding: 100px 2rem 4rem;
+    padding: 80px 2rem 4rem;
   }
 
-  .hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.08) 0%, transparent 60%);
-  }
+
 
   .hero-inner {
     max-width: 1200px;
@@ -113,9 +109,9 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.3);
-    color: rgba(255,255,255,0.9);
+    background: var(--amber-pale);
+    border: 1px solid rgba(200,134,10,0.3);
+    color: var(--amber);
     font-size: 0.78rem;
     font-weight: 600;
     letter-spacing: 1px;
@@ -128,19 +124,19 @@
   .hero h1 {
     font-family: 'DM Serif Display', serif;
     font-size: clamp(2.8rem, 5vw, 4.5rem);
-    color: #fff;
+    color: var(--charcoal);
     line-height: 1.1;
     margin-bottom: 1.5rem;
   }
 
   .hero h1 em {
     font-style: italic;
-    color: var(--egg);
+    color: var(--amber);
   }
 
   .hero-sub {
     font-size: 1.1rem;
-    color: rgba(255,255,255,0.85);
+    color: var(--mid);
     line-height: 1.6;
     margin-bottom: 2rem;
     max-width: 480px;
@@ -170,17 +166,17 @@
 
   .btn-hero-secondary {
     background: transparent;
-    color: #fff;
+    color: var(--forest);
     padding: 0.85rem 2rem;
     border-radius: 50px;
-    border: 2px solid rgba(255,255,255,0.5);
+    border: 2px solid var(--forest);
     font-family: 'DM Sans', sans-serif;
     font-size: 1rem;
     font-weight: 600;
     text-decoration: none;
     transition: all 0.2s;
   }
-  .btn-hero-secondary:hover { border-color: #fff; background: rgba(255,255,255,0.1); }
+  .btn-hero-secondary:hover { border-color: var(--forest-light); background: var(--amber-pale); }
 
   .hero-trust {
     display: flex;
@@ -193,7 +189,7 @@
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    color: rgba(255,255,255,0.8);
+    color: var(--mid);
     font-size: 0.82rem;
     font-weight: 500;
   }
@@ -676,7 +672,8 @@
   .pricing-features li span:first-child { color: var(--amber); font-weight: 700; flex-shrink: 0; }
   .pricing-card.featured .pricing-features li span:first-child { color: #F0C060; }
 
-  .pricing-features li.no span:first-child { color: var(--mid); }
+  .pricing-features li.no { opacity: 0.4; text-decoration: line-through; }
+  .pricing-features li.no span:first-child { color: #c0392b; text-decoration: none; }
 
   .btn-pricing {
     display: block;
@@ -795,19 +792,20 @@
 <!-- NAV -->
 <nav>
   <a href="/" class="nav-logo">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 42" width="160" height="36">
-      <defs><clipPath id="nc"><ellipse cx="21" cy="22" rx="16" ry="19"/></clipPath></defs>
-      <ellipse cx="21" cy="22" rx="16" ry="19" fill="#fffdf0" stroke="#e8c96a" stroke-width="1.5"/>
-      <circle cx="23" cy="27" r="9" fill="#F0A500" clip-path="url(#nc)"/>
-      <text x="43" y="26" font-family="Georgia,serif" font-size="21" font-weight="700" fill="#2D4A35">My</text>
-      <text x="71" y="26" font-family="Georgia,serif" font-size="21" font-weight="700" fill="#C8860A">Yolk<tspan font-size="9" baseline-shift="super">™</tspan></text>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 62" width="260" height="62">
+      <defs><clipPath id="nc"><ellipse cx="28" cy="30" rx="22" ry="26"/></clipPath></defs>
+      <ellipse cx="28" cy="30" rx="22" ry="26" fill="#fffdf0" stroke="#e8c96a" stroke-width="2"/>
+      <circle cx="31" cy="37" r="13" fill="#F0A500" clip-path="url(#nc)"/>
+      <text x="58" y="33" font-family="Georgia,serif" font-size="28" font-weight="700" fill="#2D4A35">My</text>
+      <text x="98" y="33" font-family="Georgia,serif" font-size="28" font-weight="700" fill="#fff">Yolk<tspan font-size="12" baseline-shift="super">™</tspan></text>
+      <text x="58" y="50" font-family="Georgia,serif" font-size="9" fill="#2D4A35" letter-spacing="2" opacity="0.85">RETIREMENT PLANNING</text>
     </svg>
   </a>
   <div class="nav-links">
     <a href="#features">Features</a>
     <a href="#audience">Who It's For</a>
     <a href="#pricing">Pricing</a>
-    <a href="myyolk-app.html" class="nav-cta">Start Planning →</a>
+    <a href="#" class="nav-cta">Start Planning →</a>
   </div>
 </nav>
 
@@ -817,9 +815,9 @@
     <div class="hero-left">
       <div class="hero-badge">🥚 Retirement Planning for Real Life</div>
       <h1>Protect<br><em>the good stuff.</em></h1>
-      <p class="hero-sub">Know exactly where you stand today — so you can get to where you want to be tomorrow. Built for people with real compensation: RSUs, profit sharing, bonuses, pensions, and more.</p>
+      <p class="hero-sub">Know exactly where you stand today — so you can get to where you want to be tomorrow. Built for people whose compensation is more than just a salary.</p>
       <div class="hero-buttons">
-        <a href="myyolk-app.html" class="btn-hero-primary">Start for free →</a>
+        <a href="#" class="btn-hero-primary">Start for free →</a>
         <a href="#features" class="btn-hero-secondary">See how it works</a>
       </div>
       <div class="hero-trust">
@@ -834,7 +832,7 @@
         <div class="app-card-header">
           <div class="app-card-name">
             Planning for
-            <strong>Dean & Densie's Yolk</strong>
+            <strong>Alex & Sarah's Yolk</strong>
           </div>
           <div class="score-badge">88% ✓</div>
         </div>
@@ -877,8 +875,8 @@
 <section class="story">
   <div class="story-inner fade-in">
     <div class="story-label">Why MyYolk Exists</div>
-    <h2>I got laid off at 56 from<br><em>one of the biggest oil companies in the world.</em></h2>
-    <p class="story-quote">"I had RSUs, profit sharing, a 401k, Social Security coming — but I had no idea what it all actually meant for my retirement. Every tool I found was either too simple or built for financial advisors. So I built my own."</p>
+    <h2>I got laid off at 55 from<br><em>one of the biggest oil companies in the world.</em></h2>
+    <p class="story-quote">"I had a solid career, a 401k, ESPP, and bonuses — but when it came to retirement, I had no idea if I was actually on track. I wish I had started paying attention at 40. So I built something that makes it easy to start at any age — whether you're 25 or 55."</p>
     <div class="story-attribution">Dean Sheppard, Founder — Former SLB employee, 22 years in oilfield</div>
   </div>
 </section>
@@ -894,7 +892,7 @@
     <div class="feature-card fade-in">
       <div class="feature-icon">💰</div>
       <div class="feature-title">Complex Pay, Simplified</div>
-      <p class="feature-desc">Handles salary, RSUs, ESPP, profit sharing, retention bonuses, and sign-on bonuses — the stuff other tools ignore.</p>
+      <p class="feature-desc">Handles bonuses, stock plans, 401k matching, and every other piece of your compensation — the stuff other tools ignore.</p>
     </div>
     <div class="feature-card fade-in">
       <div class="feature-icon">🏛️</div>
@@ -929,9 +927,9 @@
   <div class="audience-inner">
     <div class="fade-in">
       <div class="section-label">Built For You</div>
-      <h2>If your compensation is complicated, this was made for you.</h2>
+      <h2>Built for the 40-something getting serious —<br>and perfect for the 25-year-old getting a head start.</h2>
       <ul class="audience-list">
-        <li>You have RSUs, ESPP, profit sharing, or bonuses that other tools don't understand</li>
+        <li>Whether your compensation is simple or complicated, this handles it</li>
         <li>You're 45–60 and starting to think seriously about retirement</li>
         <li>You've been laid off — or worry it could happen — and need a real plan</li>
         <li>You want clarity, not a pitch from a financial advisor</li>
@@ -941,31 +939,31 @@
     <div class="audience-companies fade-in">
       <div class="company-row">
         <div>
-          <div class="company-name">SLB (Schlumberger)</div>
-          <div class="company-note">RSUs · Profit sharing · ESPP</div>
+          <div class="company-name">The Employee</div>
+          <div class="company-note">Salary, 401k, bonuses — wants a clear retirement number</div>
         </div>
-        <span class="company-tag">Supported</span>
+        <span class="company-tag">✓ Made for you</span>
       </div>
       <div class="company-row">
         <div>
-          <div class="company-name">Halliburton</div>
-          <div class="company-note">401k · Retention bonuses</div>
+          <div class="company-name">The Mid-Career Professional</div>
+          <div class="company-note">45–60, starting to think seriously about the finish line</div>
         </div>
-        <span class="company-tag">Supported</span>
+        <span class="company-tag">✓ Made for you</span>
       </div>
       <div class="company-row">
         <div>
-          <div class="company-name">Baker Hughes</div>
-          <div class="company-note">Stock plans · Profit sharing</div>
+          <div class="company-name">The Couple</div>
+          <div class="company-note">Two incomes, two Social Securities, one plan</div>
         </div>
-        <span class="company-tag">Supported</span>
+        <span class="company-tag">✓ Made for you</span>
       </div>
       <div class="company-row">
         <div>
-          <div class="company-name">ExxonMobil & Others</div>
-          <div class="company-note">Any complex comp structure</div>
+          <div class="company-name">The Laid-Off Worker</div>
+          <div class="company-note">Needs to know exactly where they stand right now</div>
         </div>
-        <span class="company-tag">Supported</span>
+        <span class="company-tag">✓ Made for you</span>
       </div>
     </div>
   </div>
@@ -998,10 +996,10 @@
         <li><span>✓</span> Budget tracker</li>
         <li><span>✓</span> What-if scenarios</li>
         <li><span>✓</span> Saves to this device</li>
-        <li class="no"><span>—</span> Cloud sync across devices</li>
-        <li class="no"><span>—</span> PDF retirement report</li>
+        <li class="no"><span>✕</span> Cloud sync across devices</li>
+        <li class="no"><span>✕</span> PDF retirement report</li>
       </ul>
-      <a href="myyolk-app.html" class="btn-pricing btn-pricing-outline">Start for free</a>
+      <a href="#" class="btn-pricing btn-pricing-outline">Start for free</a>
     </div>
     <div class="pricing-card featured">
       <div class="pricing-popular">Most Popular</div>
@@ -1009,16 +1007,22 @@
       <div class="pricing-price">$9.99</div>
       <div class="pricing-period">per month · cancel anytime</div>
       <ul class="pricing-features">
-        <li><span>✓</span> Everything in Free</li>
+        <li><span>✓</span> Full retirement projection</li>
+        <li><span>✓</span> Readiness score</li>
+        <li><span>✓</span> Social Security planning</li>
+        <li><span>✓</span> Monthly budget tracking</li>
+        <li><span>✓</span> What-if scenarios</li>
+        <li><span>✓</span> Early retirement planner</li>
         <li><span>✓</span> Cloud sync across all devices</li>
         <li><span>✓</span> PDF retirement report</li>
-        <li><span>✓</span> Monthly budget tracking</li>
-        <li><span>✓</span> Year-at-a-glance dashboard</li>
-        <li><span>✓</span> Spending alerts</li>
-        <li><span>✓</span> Priority support</li>
+        <li><span>✓</span> And much more...</li>
       </ul>
-      <a href="myyolk-app.html" class="btn-pricing btn-pricing-solid">Get Pro →</a>
+      <a href="#" class="btn-pricing btn-pricing-solid">Get Pro →</a>
     </div>
+  </div>
+  <div style="text-align:center;margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--border)">
+    <p style="color:var(--mid);font-size:0.9rem;margin-bottom:0.75rem">Looking to offer MyYolk to your team or company?</p>
+    <a href="mailto:myyolkapp@gmail.com?subject=Enterprise Inquiry" style="color:var(--forest);font-weight:700;font-size:0.95rem;text-decoration:none;border-bottom:2px solid var(--amber)">Contact us about enterprise pricing →</a>
   </div>
 </section>
 
@@ -1026,14 +1030,14 @@
 <section class="cta-section">
   <h2 class="fade-in">Know where you stand.<br>Start today.</h2>
   <p class="fade-in">Free to start. No advisor required. Takes 5 minutes.</p>
-  <a href="myyolk-app.html" class="btn-hero-primary fade-in" style="display:inline-flex;background:var(--forest);">Start planning for free →</a>
+  <a href="#" class="btn-hero-primary fade-in" style="display:inline-flex;background:var(--forest);">Start planning for free →</a>
 </section>
 
 <!-- FOOTER -->
 <footer>
   <div class="footer-copy">© 2025 MyYolk™ — Protect the Good Stuff. All rights reserved.</div>
   <div class="footer-links">
-    <a href="myyolk-app.html">Open App</a>
+    <a href="#">Open App</a>
     <a href="mailto:myyolkapp@gmail.com">Contact</a>
     <a href="#">Privacy</a>
   </div>
