@@ -1104,5 +1104,98 @@
   });
 </script>
 
+
+<!-- FEEDBACK WIDGET -->
+<button id="landingFeedbackBtn" onclick="toggleLandingFeedback()" style="position:fixed;bottom:1.5rem;right:1.5rem;background:#2D4A35;color:#fff;border:none;border-radius:50px;padding:10px 18px;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.2);z-index:500;display:flex;align-items:center;gap:6px">
+  💬 Feedback
+</button>
+
+<div id="landingFeedbackModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:flex-end;justify-content:center">
+  <div style="background:#fff;border-radius:20px 20px 0 0;padding:1.75rem;width:100%;max-width:520px;box-shadow:0 -8px 40px rgba(0,0,0,0.15);max-height:85vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <div style="font-family:DM Serif Display,serif;font-size:1.2rem;color:#2C2C2C">Share your thoughts</div>
+      <button onclick="toggleLandingFeedback()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#999;line-height:1">×</button>
+    </div>
+    <p style="font-size:0.82rem;color:#6B6B6B;margin-bottom:1rem">Add as many notes as you like, then hit Send.</p>
+
+    <div style="margin-bottom:1rem">
+      <label style="font-size:0.8rem;font-weight:600;color:#6B6B6B;display:block;margin-bottom:4px">Your email (optional — to be added to our list)</label>
+      <input id="landingFeedbackEmail" type="email" placeholder="you@email.com" style="width:100%;padding:0.65rem 0.85rem;border:1.5px solid #E2DDD8;border-radius:10px;font-size:0.9rem;font-family:DM Sans,sans-serif;box-sizing:border-box">
+    </div>
+
+    <div id="landingNotesList" style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:0.75rem"></div>
+
+    <div style="display:flex;gap:0.5rem;margin-bottom:1rem">
+      <input id="landingNoteInput" type="text" placeholder="Add a note..." style="flex:1;padding:0.65rem 0.85rem;border:1.5px solid #E2DDD8;border-radius:10px;font-size:0.9rem;font-family:DM Sans,sans-serif" onkeydown="if(event.key==='Enter')addLandingNote()">
+      <button onclick="addLandingNote()" style="padding:0.65rem 1rem;background:#E2DDD8;color:#2C2C2C;border:none;border-radius:10px;font-family:DM Sans,sans-serif;font-weight:600;cursor:pointer;white-space:nowrap">+ Add</button>
+    </div>
+
+    <button onclick="submitLandingFeedback()" style="width:100%;padding:0.85rem;background:#C8860A;color:#fff;border:none;border-radius:10px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer">Send All Feedback</button>
+    <div id="landingFeedbackSuccess" style="display:none;text-align:center;color:#2D4A35;font-weight:600;margin-top:1rem;font-size:0.9rem">✓ Thanks! Opening your email app...</div>
+  </div>
+</div>
+
+<script>
+var landingNotes = [];
+
+function toggleLandingFeedback() {
+  var modal = document.getElementById('landingFeedbackModal');
+  modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+  document.getElementById('landingFeedbackSuccess').style.display = 'none';
+}
+
+function addLandingNote() {
+  var input = document.getElementById('landingNoteInput');
+  var text = input.value.trim();
+  if(!text) return;
+  var section = getCurrentSection();
+  landingNotes.push({ section: section, text: text });
+  input.value = '';
+  renderLandingNotes();
+}
+
+function getCurrentSection() {
+  var sections = ['features', 'audience', 'pricing'];
+  var current = 'General';
+  sections.forEach(function(id) {
+    var el = document.getElementById(id);
+    if(el) {
+      var rect = el.getBoundingClientRect();
+      if(rect.top <= window.innerHeight/2 && rect.bottom >= 0) current = id.charAt(0).toUpperCase() + id.slice(1);
+    }
+  });
+  return current;
+}
+
+function renderLandingNotes() {
+  var list = document.getElementById('landingNotesList');
+  list.innerHTML = landingNotes.map(function(n, i) {
+    return '<div style="display:flex;justify-content:space-between;align-items:flex-start;background:#FAF7F2;border-radius:8px;padding:0.6rem 0.75rem;font-size:0.85rem">' +
+      '<span><span style="color:#C8860A;font-weight:600;font-size:0.75rem">[' + n.section + ']</span> ' + n.text + '</span>' +
+      '<button onclick="removeLandingNote(' + i + ')" style="background:none;border:none;color:#999;cursor:pointer;margin-left:8px;flex-shrink:0">✕</button>' +
+    '</div>';
+  }).join('');
+}
+
+function removeLandingNote(i) {
+  landingNotes.splice(i, 1);
+  renderLandingNotes();
+}
+
+function submitLandingFeedback() {
+  if(landingNotes.length === 0) { alert('Add at least one note first.'); return; }
+  var email = document.getElementById('landingFeedbackEmail').value.trim();
+  var device = window.innerWidth <= 768 ? '📱 Mobile' : '🖥️ Desktop';
+  var subject = encodeURIComponent('MyYolk Landing Page Feedback [' + device + ']');
+  var body = 'From: ' + (email || 'Anonymous') + '\nDevice: ' + device + '\nPage: myyolk.com\n\nNotes:\n';
+  landingNotes.forEach(function(n, i) {
+    body += (i+1) + '. [' + n.section + '] ' + n.text + '\n';
+  });
+  if(email) body += '\n--- Add to contact list: ' + email + ' ---';
+  window.location.href = 'mailto:myyolkapp@gmail.com?subject=' + encodeURIComponent(decodeURIComponent(subject)) + '&body=' + encodeURIComponent(body);
+  document.getElementById('landingFeedbackSuccess').style.display = 'block';
+  setTimeout(function(){ toggleLandingFeedback(); landingNotes = []; renderLandingNotes(); }, 2500);
+}
+</script>
 </body>
 </html>
