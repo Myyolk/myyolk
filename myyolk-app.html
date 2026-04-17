@@ -1674,7 +1674,7 @@
       <span class="icon">📊</span><span class="nav-label"> Budget Planner</span>
     </button>
     <button class="nav-item nav-locked" onclick="proGate('tracking','📅 Budget Tracker')" id="nav-tracking" data-label="Tracker">
-      <span class="icon">📅</span><span class="nav-label"> Budget Tracker</span><span class="nav-lock-icon">🔒</span>
+      <span class="icon">📅</span><span class="nav-label"> Budget Tracker</span><span class="nav-lock-icon">🔒</span><span id="btUnloggedBadge" style="display:none;width:8px;height:8px;background:#c0392b;border-radius:50%;margin-left:auto;flex-shrink:0"></span>
     </button>
     <button class="nav-item" onclick="showTab('projections')" data-label="Project.">
       <span class="icon">📈</span><span class="nav-label"> Projections</span>
@@ -1693,6 +1693,13 @@
     </button>
 
     <div class="sidebar-divider"></div>
+
+    <!-- Monthly check-in reminder banner -->
+    <div id="btReminderBanner" style="display:none;background:#fff8e1;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 0.85rem;margin-bottom:0.85rem;cursor:pointer" onclick="proGate('tracking','📅 Budget Tracker')">
+      <div style="font-size:0.78rem;font-weight:700;color:#C8860A;margin-bottom:3px">📅 Time to check in!</div>
+      <div style="font-size:0.75rem;color:#6b6b6b;line-height:1.4" id="btReminderText">Log last month's spending</div>
+    </div>
+
     <div class="sidebar-label">Live Snapshot</div>
     <div class="quick-stat" style="background:#C8860A;border-color:#C8860A">
       <div class="quick-stat-label" style="color:#fff;font-weight:500">Planning for</div>
@@ -7038,6 +7045,8 @@ function setProMode(isPro) {
       showTab('budget');
     }
   }
+  // Update reminder badge/banner
+  if (typeof btCheckUnlogged === 'function') btCheckUnlogged();
 }
 
 function proGate(feature, label) {
@@ -7090,6 +7099,80 @@ window.addEventListener('load', function() {
 });
 
 // ══ END PRO / PAYWALL SYSTEM ══
+
+// ══════════════════════════════════════════
+// ── CHECK-IN REMINDER — BADGE & BANNER ──
+// ══════════════════════════════════════════
+
+function btCheckUnlogged() {
+  // Only show reminder UI for Pro users
+  if (!IS_PRO) {
+    document.getElementById('btUnloggedBadge') && (document.getElementById('btUnloggedBadge').style.display = 'none');
+    document.getElementById('btReminderBanner') && (document.getElementById('btReminderBanner').style.display = 'none');
+    return;
+  }
+
+  // Check if current month OR previous month is unlogged
+  var now = new Date();
+  var currKey = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  var prev = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  var prevKey = prev.getFullYear() + '-' + String(prev.getMonth() + 1).padStart(2, '0');
+  var prevLabel = prev.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+  // Show badge/banner if previous month not logged (after the 1st of current month)
+  var dayOfMonth = now.getDate();
+  var prevUnlogged = !btData[prevKey];
+  var currUnlogged = !btData[currKey];
+
+  var badge = document.getElementById('btUnloggedBadge');
+  var banner = document.getElementById('btReminderBanner');
+  var bannerText = document.getElementById('btReminderText');
+
+  // Show if prev month unlogged (we're past the 1st) OR current month unlogged (after 5th)
+  var shouldShow = (prevUnlogged && dayOfMonth >= 1) || (currUnlogged && dayOfMonth >= 5);
+
+  // Also need at least a budget set up to prompt
+  var hasBudget = Array.from(document.querySelectorAll('.bud-m')).some(function(el) {
+    return parseFloat(el.value) > 0;
+  });
+
+  if (shouldShow && hasBudget) {
+    if (badge) badge.style.display = 'block';
+    if (banner) banner.style.display = 'block';
+    if (bannerText) {
+      if (prevUnlogged) {
+        bannerText.textContent = prevLabel + ' not logged yet';
+      } else {
+        bannerText.textContent = 'Log this month\'s spending';
+      }
+    }
+  } else {
+    if (badge) badge.style.display = 'none';
+    if (banner) banner.style.display = 'none';
+  }
+}
+
+// Handle deep link: myyolk-app.html#tracking opens Tracker tab on load
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    if (window.location.hash === '#tracking') {
+      if (IS_PRO) {
+        showTab('tracking');
+      }
+    }
+    // Run badge/banner check after data loads
+    setTimeout(btCheckUnlogged, 600);
+  }, 500);
+});
+
+// Re-check badge after saving a month
+var _origBtSave = btSaveCheckin;
+btSaveCheckin = function() {
+  _origBtSave();
+  setTimeout(btCheckUnlogged, 200);
+};
+
+// ══ END CHECK-IN REMINDER ══
 
 // ── SUMMARY ──
 function updateSummary() {

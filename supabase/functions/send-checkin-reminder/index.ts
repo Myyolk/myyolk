@@ -1,0 +1,345 @@
+// MyYolk — Monthly Check-In Reminder
+// Supabase Edge Function: send-checkin-reminder
+// Triggered by pg_cron on the 3rd of every month
+// Sends branded email with previous month budget vs actual summary
+
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')!;
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
+const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const APP_URL = 'https://myyolk.com/myyolk-app.html#tracking';
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function getPrevMonthKey(): string {
+  const d = new Date();
+  d.setDate(1);
+  d.setMonth(d.getMonth() - 1);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  return `${y}-${m}`;
+}
+
+function getPrevMonthLabel(): string {
+  const d = new Date();
+  d.setDate(1);
+  d.setMonth(d.getMonth() - 1);
+  return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+}
+
+function fmt(n: number): string {
+  return '$' + Math.round(n).toLocaleString('en-US');
+}
+
+function planTotal(plan: Record<string, number>): number {
+  return Object.values(plan).reduce((s, v) => s + (v || 0), 0);
+}
+
+function actualTotal(actuals: Record<string, number>): number {
+  return Object.values(actuals).reduce((s, v) => s + (parseFloat(String(v)) || 0), 0);
+}
+
+// ── Email HTML builder ────────────────────────────────────────────────────────
+
+function buildEmail(opts: {
+  firstName: string;
+  prevMonthLabel: string;
+  prevMonthKey: string;
+  hasPrevData: boolean;
+  budgetTotal?: number;
+  actualTotal?: number;
+  overBudgetItems?: { label: string; budget: number; actual: number; pct: number }[];
+}): { subject: string; html: string } {
+  const { firstName, prevMonthLabel, hasPrevData, budgetTotal, actualTotal: actTotal, overBudgetItems } = opts;
+
+  const subject = `Stay on track — time for your ${prevMonthLabel} check-in 🥚`;
+
+  const variance = hasPrevData && budgetTotal && actTotal ? actTotal - budgetTotal : 0;
+  const isOver = variance > 0;
+  const varColor = isOver ? '#c0392b' : '#2D4A35';
+  const varLabel = isOver
+    ? `+${fmt(variance)} over budget`
+    : variance < 0
+    ? `${fmt(Math.abs(variance))} under budget`
+    : 'Right on budget';
+
+  const overBudgetRows = (overBudgetItems || []).map(item => `
+    <tr>
+      <td style="padding:6px 12px;font-size:13px;color:#2c2c2c;border-bottom:1px solid #f0ece4">${item.label}</td>
+      <td style="padding:6px 12px;font-size:13px;text-align:right;color:#888;border-bottom:1px solid #f0ece4">${fmt(item.budget)}</td>
+      <td style="padding:6px 12px;font-size:13px;text-align:right;font-weight:600;border-bottom:1px solid #f0ece4">${fmt(item.actual)}</td>
+      <td style="padding:6px 12px;font-size:13px;text-align:right;color:#c0392b;font-weight:700;border-bottom:1px solid #f0ece4">+${item.pct}%</td>
+    </tr>`).join('');
+
+  const summaryBlock = hasPrevData && budgetTotal && actTotal ? `
+    <div style="background:#faf7f2;border-radius:12px;padding:20px 24px;margin:24px 0">
+      <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin-bottom:12px">${prevMonthLabel} Summary</div>
+      <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse">
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#6b6b6b">Planned budget</td>
+          <td style="padding:8px 0;font-size:14px;text-align:right;font-weight:600">${fmt(budgetTotal)}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#6b6b6b;border-top:1px solid #e2ddd8">Actual spending</td>
+          <td style="padding:8px 0;font-size:14px;text-align:right;font-weight:700;border-top:1px solid #e2ddd8">${fmt(actTotal)}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:15px;font-weight:700;color:#2c2c2c;border-top:2px solid #e2ddd8">Variance</td>
+          <td style="padding:8px 0;font-size:15px;text-align:right;font-weight:700;color:${varColor};border-top:2px solid #e2ddd8">${varLabel}</td>
+        </tr>
+      </table>
+    </div>
+    ${overBudgetItems && overBudgetItems.length > 0 ? `
+    <div style="margin-bottom:24px">
+      <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin-bottom:10px">⚠️ Over-Budget Categories</div>
+      <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;border:1px solid #f0ece4">
+        <thead>
+          <tr style="background:#2c2c2c">
+            <th style="padding:8px 12px;font-size:11px;text-align:left;color:#fff;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">Category</th>
+            <th style="padding:8px 12px;font-size:11px;text-align:right;color:#fff;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">Budget</th>
+            <th style="padding:8px 12px;font-size:11px;text-align:right;color:#fff;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">Actual</th>
+            <th style="padding:8px 12px;font-size:11px;text-align:right;color:#fff;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">Over</th>
+          </tr>
+        </thead>
+        <tbody>${overBudgetRows}</tbody>
+      </table>
+    </div>` : ''}` : `
+    <p style="font-size:15px;color:#6b6b6b;line-height:1.6;margin:0 0 24px">
+      You haven't logged ${prevMonthLabel} yet — no worries! It only takes a minute. 
+      Your planned budget is pre-loaded, so just update anything that changed and hit save.
+    </p>`;
+
+  const html = `<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f5f0e8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f0e8;padding:32px 16px">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08)">
+
+        <!-- Header -->
+        <tr>
+          <td style="background:#C8860A;padding:28px 32px;text-align:center">
+            <table cellpadding="0" cellspacing="0" style="margin:0 auto">
+              <tr>
+                <td style="padding-right:12px;vertical-align:middle">
+                  <!-- Egg SVG -->
+                  <svg width="44" height="52" viewBox="0 0 52 62" xmlns="http://www.w3.org/2000/svg">
+                    <defs><clipPath id="egg-c"><ellipse cx="26" cy="32" rx="22" ry="28"/></clipPath></defs>
+                    <ellipse cx="26" cy="32" rx="22" ry="28" fill="#fff"/>
+                    <ellipse cx="26" cy="36" rx="13" ry="13" fill="#F0A500" clip-path="url(#egg-c)"/>
+                  </svg>
+                </td>
+                <td style="vertical-align:middle">
+                  <span style="font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.5px">My</span><span style="font-size:26px;font-weight:700;color:#F0A500;letter-spacing:-0.5px">Yolk</span>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.75);letter-spacing:1px;text-transform:uppercase;margin-top:2px">Retirement Planning</div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Body -->
+        <tr>
+          <td style="padding:36px 40px 32px">
+            <h1 style="font-size:24px;font-weight:700;color:#2c2c2c;margin:0 0 8px;line-height:1.2">
+              Hey ${firstName}, time to check in 👋
+            </h1>
+            <p style="font-size:15px;color:#6b6b6b;line-height:1.6;margin:0 0 24px">
+              ${prevMonthLabel} is behind you — let's see how you did and keep your retirement plan on track.
+            </p>
+
+            ${summaryBlock}
+
+            <!-- CTA -->
+            <table cellpadding="0" cellspacing="0" style="margin:0 0 28px">
+              <tr>
+                <td style="background:#C8860A;border-radius:10px;padding:0">
+                  <a href="${APP_URL}" style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;letter-spacing:0.2px">
+                    Log ${prevMonthLabel} Now →
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+            <p style="font-size:13px;color:#aaa;line-height:1.6;margin:0">
+              Staying consistent with monthly check-ins is one of the best things you can do for your retirement readiness. It only takes 2 minutes.
+            </p>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="background:#faf7f2;padding:20px 40px;border-top:1px solid #e2ddd8;text-align:center">
+            <p style="font-size:12px;color:#aaa;margin:0;line-height:1.6">
+              You're receiving this because you have a MyYolk Pro account.<br>
+              <a href="${APP_URL}" style="color:#C8860A;text-decoration:none">Open MyYolk</a> &nbsp;·&nbsp;
+              <a href="mailto:myyolkapp@gmail.com" style="color:#C8860A;text-decoration:none">Contact Us</a>
+            </p>
+            <p style="font-size:11px;color:#ccc;margin:8px 0 0">
+              © ${new Date().getFullYear()} MyYolk™ · Protect the Good Stuff
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+  return { subject, html };
+}
+
+// ── Key → label map for over-budget items ────────────────────────────────────
+
+const KEY_LABELS: Record<string, string> = {
+  rent:'Rent', propTax:'Property Taxes', homeIns:'Home Insurance', electric:'Electric',
+  gasHeat:'Gas / Heating Oil', water:'Water', sewerage:'Sewerage', trash:'Trash',
+  internet:'Internet', cellPhone:'Telephone', homeMaint:'Home Maintenance',
+  gas:'Gas', carIns:'Car Insurance', carMaint:'Car Maintenance',
+  groceries:'Groceries', dining:'Dining Out',
+  medPrem:'Medical Premiums', rx:'Prescriptions', oop:'Out-of-Pocket',
+  legal:'Legal', accounting:'Accounting', finAdvisor:'Financial Advisor',
+  tuition:'Tuition', edu529:'529 Savings', k12:'K-12', tutoring:'Tutoring',
+  childSupport:'Child Support', childcare:'Childcare', elderCare:'Elder Care',
+  subs:'Subscriptions', entertain:'Entertainment', shopping:'Shopping',
+  gym:'Gym', therapy:'Therapy', vacation:'Vacation', hobbies:'Hobbies',
+  charity:'Donations', lawn:'Lawn', cleaning:'Cleaning', security:'Security',
+  pets:'Pets', gifts:'Gifts', other:'Other',
+  debtCar1:'Car Loan 1', debtCar2:'Car Loan 2', debtStudent:'Student Loans',
+  debtCC1:'Credit Card 1', debtCC2:'Credit Card 2', debtCC3:'Credit Card 3',
+  debtPersonal:'Personal Loan', debtOther:'Other Debt',
+};
+
+// ── Main handler ──────────────────────────────────────────────────────────────
+
+Deno.serve(async (req) => {
+  // Allow manual trigger via POST for testing
+  const isManual = req.method === 'POST';
+
+  try {
+    const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+    const prevKey = getPrevMonthKey();
+    const prevLabel = getPrevMonthLabel();
+
+    // Get all users with saved data
+    const { data: rows, error } = await sb
+      .from('user_data')
+      .select('user_id, data');
+
+    if (error) throw error;
+    if (!rows || rows.length === 0) {
+      return new Response(JSON.stringify({ sent: 0, reason: 'no users' }), { status: 200 });
+    }
+
+    let sent = 0;
+    let skipped = 0;
+    const errors: string[] = [];
+
+    for (const row of rows) {
+      try {
+        const appData = row.data as Record<string, unknown>;
+        const trackingRaw = appData['__budgetTracking'] as string | undefined;
+        const btData: Record<string, { actuals: Record<string, number>; planned?: Record<string, number>; notes?: string }> =
+          trackingRaw ? JSON.parse(trackingRaw) : {};
+
+        // Skip if already logged this month
+        if (!isManual && btData[prevKey]) {
+          skipped++;
+          continue;
+        }
+
+        // Get user email
+        const { data: userData } = await sb.auth.admin.getUserById(row.user_id);
+        const email = userData?.user?.email;
+        if (!email) { skipped++; continue; }
+
+        // Get first name from saved profile data
+        const firstName = (appData['firstName'] as string) || 'there';
+
+        // Build summary from previous month data
+        let budgetTotalVal: number | undefined;
+        let actualTotalVal: number | undefined;
+        let overBudgetItems: { label: string; budget: number; actual: number; pct: number }[] = [];
+        let hasPrevData = false;
+
+        if (btData[prevKey]) {
+          hasPrevData = true;
+          const rec = btData[prevKey];
+          const plan = rec.planned || {};
+          budgetTotalVal = planTotal(plan);
+          actualTotalVal = actualTotal(rec.actuals || {});
+
+          // Find over-budget items (>10% over)
+          Object.entries(rec.actuals || {}).forEach(([k, actVal]) => {
+            const budVal = plan[k] || 0;
+            if (budVal > 0 && actVal > budVal * 1.10) {
+              const pct = Math.round(((actVal - budVal) / budVal) * 100);
+              overBudgetItems.push({
+                label: KEY_LABELS[k] || k,
+                budget: budVal,
+                actual: actVal,
+                pct,
+              });
+            }
+          });
+          // Sort by % over, descending
+          overBudgetItems.sort((a, b) => b.pct - a.pct);
+          // Cap at 5 items
+          overBudgetItems = overBudgetItems.slice(0, 5);
+        }
+
+        // If no data at all and this is an automated run, still send if they have a budget set up
+        const hasBudgetSetup = Object.keys(appData).some(k => k.startsWith('bud__'));
+        if (!hasPrevData && !hasBudgetSetup && !isManual) {
+          skipped++;
+          continue;
+        }
+
+        const { subject, html } = buildEmail({
+          firstName,
+          prevMonthLabel: prevLabel,
+          prevMonthKey: prevKey,
+          hasPrevData,
+          budgetTotal: budgetTotalVal,
+          actualTotal: actualTotalVal,
+          overBudgetItems,
+        });
+
+        // Send via Resend
+        const res = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${RESEND_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: 'MyYolk <reminders@myyolk.com>',
+            to: [email],
+            subject,
+            html,
+          }),
+        });
+
+        if (res.ok) {
+          sent++;
+        } else {
+          const errBody = await res.text();
+          errors.push(`${email}: ${errBody}`);
+        }
+      } catch (userErr) {
+        errors.push(`user ${row.user_id}: ${String(userErr)}`);
+      }
+    }
+
+    return new Response(
+      JSON.stringify({ sent, skipped, errors: errors.length, errorDetails: errors }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
+
+  } catch (err) {
+    return new Response(JSON.stringify({ error: String(err) }), { status: 500 });
+  }
+});
