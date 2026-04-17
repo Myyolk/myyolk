@@ -1577,7 +1577,7 @@
     <div class="paywall-subtitle">This feature is part of MyYolk Pro — unlock smarter retirement planning tools.</div>
     <div class="paywall-feature-name" id="paywallFeatureName">Pro Feature</div>
     <div class="paywall-perks">
-      <div class="paywall-perk">Budget Tracking — monthly check-in &amp; history</div>
+      <div class="paywall-perk">Budget Tracker — monthly check-in &amp; history</div>
       <div class="paywall-perk">What-If Scenarios — model life changes</div>
       <div class="paywall-perk">Early Retirement Calculator</div>
       <div class="paywall-perk">Full Summary &amp; PDF Export</div>
@@ -1670,11 +1670,11 @@
     <button class="nav-item" onclick="showTab('ss')" id="nav-ss" data-label="Soc. Sec.">
       <span class="icon">🏛️</span><span class="nav-label"> Social Security</span>
     </button>
-    <button class="nav-item" onclick="showTab('budget')" data-label="Budget">
-      <span class="icon">📊</span><span class="nav-label"> Budget</span>
+    <button class="nav-item" onclick="showTab('budget')" data-label="Planner">
+      <span class="icon">📊</span><span class="nav-label"> Budget Planner</span>
     </button>
-    <button class="nav-item nav-locked" onclick="proGate('tracking','📅 Budget Tracking')" id="nav-tracking" data-label="Tracking">
-      <span class="icon">📅</span><span class="nav-label"> Tracking</span><span class="nav-lock-icon">🔒</span>
+    <button class="nav-item nav-locked" onclick="proGate('tracking','📅 Budget Tracker')" id="nav-tracking" data-label="Tracker">
+      <span class="icon">📅</span><span class="nav-label"> Budget Tracker</span><span class="nav-lock-icon">🔒</span>
     </button>
     <button class="nav-item" onclick="showTab('projections')" data-label="Project.">
       <span class="icon">📈</span><span class="nav-label"> Projections</span>
@@ -2640,7 +2640,7 @@
     </div>
 
         <div class="tab-panel" id="tab-budget">
-      <h1 class="page-title">Monthly Budget</h1>
+      <h1 class="page-title">Budget Planner</h1>
       <p class="page-subtitle">Enter your estimated monthly expenses. This helps calculate how much you'll need in retirement.</p>
 
       <div class="card">
@@ -2967,7 +2967,7 @@
 
     <!-- ══ TRACKING TAB ══ -->
     <div class="tab-panel" id="tab-tracking">
-      <h1 class="page-title">📅 Budget Tracking</h1>
+      <h1 class="page-title">Budget Tracker</h1>
       <p class="page-subtitle">Log what you actually spent each month and watch your patterns over time.</p>
 
       <div class="bt-pills">
@@ -7071,7 +7071,7 @@ var _origShowTabPro = showTab;
 showTab = function(name) {
   if (!IS_PRO && PRO_TABS.includes(name)) {
     var labels = {
-      tracking: '📅 Budget Tracking',
+      tracking: '📅 Budget Tracker',
       whatif:   '🔀 What-If Scenarios',
       early:    '⚡ Early Retirement',
       summary:  '✨ Summary & PDF Export'
