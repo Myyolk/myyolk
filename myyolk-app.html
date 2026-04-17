@@ -1050,6 +1050,198 @@
     .nav-item { min-width: 46px; font-size: 0.58rem !important; }
   }
 
+  /* ── PRO TOGGLE ── */
+  .pro-toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-right: 0.5rem;
+  }
+  .pro-toggle-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+  }
+  .pro-toggle-label.active { color: #fff; }
+  .pro-toggle-switch {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    cursor: pointer;
+  }
+  .pro-toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .pro-toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.2);
+    border-radius: 22px;
+    transition: background 0.2s;
+  }
+  .pro-toggle-slider:before {
+    content: '';
+    position: absolute;
+    width: 16px; height: 16px;
+    left: 3px; top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+  .pro-toggle-switch input:checked + .pro-toggle-slider { background: #2D4A35; }
+  .pro-toggle-switch input:checked + .pro-toggle-slider:before { transform: translateX(18px); }
+
+  /* ── LOCKED NAV ITEMS ── */
+  .nav-item.nav-locked {
+    opacity: 0.48;
+    cursor: default;
+    position: relative;
+  }
+  .nav-item.nav-locked:hover { background: none; color: var(--mid); }
+  .nav-item.nav-locked.active { background: var(--sage); color: #fff; opacity: 1; }
+  .nav-lock-icon {
+    font-size: 0.7rem;
+    margin-left: auto;
+    opacity: 0.7;
+  }
+
+  /* ── PAYWALL MODAL ── */
+  .paywall-modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+  }
+  .paywall-modal-backdrop.show { display: flex; }
+  .paywall-modal {
+    background: #fff;
+    border-radius: 20px;
+    padding: 2.5rem 2.25rem 2rem;
+    max-width: 420px;
+    width: calc(100% - 2rem);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    text-align: center;
+    position: relative;
+    animation: fadeUp 0.2s ease;
+  }
+  .paywall-egg {
+    width: 64px;
+    height: 64px;
+    background: #C8860A;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    margin: 0 auto 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+  }
+  .paywall-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: var(--charcoal);
+    margin-bottom: 0.4rem;
+  }
+  .paywall-subtitle {
+    font-size: 0.9rem;
+    color: var(--mid);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+  .paywall-feature-name {
+    display: inline-block;
+    background: var(--sage-pale);
+    color: #C8860A;
+    font-weight: 700;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    padding: 4px 14px;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.3px;
+  }
+  .paywall-perks {
+    text-align: left;
+    background: var(--cream);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .paywall-perk {
+    font-size: 0.85rem;
+    color: var(--charcoal);
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .paywall-perk::before { content: '✓'; color: #2D4A35; font-weight: 700; }
+  .paywall-btn-primary {
+    display: block;
+    width: 100%;
+    padding: 0.85rem;
+    background: #C8860A;
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 0.75rem;
+    transition: background 0.15s;
+  }
+  .paywall-btn-primary:hover { background: #b07608; }
+  .paywall-btn-secondary {
+    background: none;
+    border: none;
+    font-size: 0.85rem;
+    color: var(--mid);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    text-decoration: underline;
+  }
+  .paywall-close {
+    position: absolute;
+    top: 1rem; right: 1.25rem;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: var(--mid);
+    line-height: 1;
+  }
+
+  /* ── LOCKED PANEL OVERLAY (for Spending Insights inside Budget tab) ── */
+  .pro-locked-panel {
+    position: relative;
+    pointer-events: none;
+  }
+  .pro-locked-panel::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(250,247,242,0.75);
+    border-radius: var(--radius);
+    z-index: 2;
+  }
+  .pro-lock-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--sage-pale);
+    border: 1.5px solid #C8860A;
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    pointer-events: all;
+  }
+  .pro-lock-banner:hover { background: #fde8b0; }
+  .pro-lock-banner span { font-size: 0.88rem; color: var(--charcoal); }
+  .pro-lock-banner strong { color: #C8860A; }
+
   /* ── BUDGET TRACKING ── */
   .bt-section-title {
     font-family: 'DM Serif Display', serif;
@@ -1362,10 +1554,39 @@
     <button onclick="clearSavedData()" title="Clear all saved data" style="font-size:0.75rem;background:none;border:1px solid #ddd;border-radius:6px;padding:3px 8px;cursor:pointer;color:#888">Clear Data</button>
   </div>
   <div style="display:flex;align-items:center;gap:0.5rem;margin-left:auto">
+    <!-- Pro/Free Toggle -->
+    <div class="pro-toggle-wrap" id="proToggleWrap" title="Toggle Pro/Free mode for testing">
+      <span class="pro-toggle-label" id="proToggleLabelFree" style="color:rgba(255,255,255,0.5)">FREE</span>
+      <label class="pro-toggle-switch">
+        <input type="checkbox" id="proToggleCheck" checked onchange="setProMode(this.checked)">
+        <span class="pro-toggle-slider"></span>
+      </label>
+      <span class="pro-toggle-label active" id="proToggleLabelPro">PRO</span>
+    </div>
     <span id="authUserDisplay" style="font-size:0.75rem;color:#fff;opacity:0.85;display:none"></span>
     <button id="authBtn" onclick="toggleAuthModal()" style="font-size:0.8rem;font-weight:600;background:none;border:1.5px solid rgba(255,255,255,0.6);border-radius:8px;padding:5px 14px;cursor:pointer;color:#fff;font-family:DM Sans,sans-serif">Sign In</button>
   </div>
 </header>
+
+<!-- PAYWALL MODAL -->
+<div class="paywall-modal-backdrop" id="paywallModal">
+  <div class="paywall-modal">
+    <button class="paywall-close" onclick="closePaywall()">×</button>
+    <div class="paywall-egg">🔒</div>
+    <div class="paywall-title">MyYolk Pro</div>
+    <div class="paywall-subtitle">This feature is part of MyYolk Pro — unlock smarter retirement planning tools.</div>
+    <div class="paywall-feature-name" id="paywallFeatureName">Pro Feature</div>
+    <div class="paywall-perks">
+      <div class="paywall-perk">Budget Tracking — monthly check-in &amp; history</div>
+      <div class="paywall-perk">What-If Scenarios — model life changes</div>
+      <div class="paywall-perk">Early Retirement Calculator</div>
+      <div class="paywall-perk">Full Summary &amp; PDF Export</div>
+      <div class="paywall-perk">Spending Insights &amp; analysis</div>
+    </div>
+    <button class="paywall-btn-primary" onclick="closePaywall()">Learn More About Pro</button>
+    <button class="paywall-btn-secondary" onclick="closePaywall()">Maybe later</button>
+  </div>
+</div>
 
 <!-- PASSWORD RESET MODAL -->
 <div id="resetModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center">
@@ -1452,20 +1673,23 @@
     <button class="nav-item" onclick="showTab('budget')" data-label="Budget">
       <span class="icon">📊</span><span class="nav-label"> Budget</span>
     </button>
+    <button class="nav-item nav-locked" onclick="proGate('tracking','📅 Budget Tracking')" id="nav-tracking" data-label="Tracking">
+      <span class="icon">📅</span><span class="nav-label"> Tracking</span><span class="nav-lock-icon">🔒</span>
+    </button>
     <button class="nav-item" onclick="showTab('projections')" data-label="Project.">
       <span class="icon">📈</span><span class="nav-label"> Projections</span>
     </button>
     <button class="nav-item" onclick="showTab('readiness')" data-label="Readiness">
       <span class="icon">🎯</span><span class="nav-label"> Readiness</span>
     </button>
-    <button class="nav-item" onclick="showTab('whatif')" data-label="What-If">
-      <span class="icon">🔀</span><span class="nav-label"> What-If Scenarios</span>
+    <button class="nav-item nav-locked" onclick="proGate('whatif','🔀 What-If Scenarios')" id="nav-whatif-lock" data-label="What-If">
+      <span class="icon">🔀</span><span class="nav-label"> What-If Scenarios</span><span class="nav-lock-icon">🔒</span>
     </button>
-    <button class="nav-item" onclick="showTab('early')" data-label="Early Ret.">
-      <span class="icon">⚡</span><span class="nav-label"> Early Retirement</span>
+    <button class="nav-item nav-locked" onclick="proGate('early','⚡ Early Retirement')" id="nav-early-lock" data-label="Early Ret.">
+      <span class="icon">⚡</span><span class="nav-label"> Early Retirement</span><span class="nav-lock-icon">🔒</span>
     </button>
-    <button class="nav-item" onclick="showTab('summary')" data-label="Summary">
-      <span class="icon">✨</span><span class="nav-label"> Summary</span>
+    <button class="nav-item nav-locked" onclick="proGate('summary','✨ Summary & PDF Export')" id="nav-summary-lock" data-label="Summary">
+      <span class="icon">✨</span><span class="nav-label"> Summary</span><span class="nav-lock-icon">🔒</span>
     </button>
 
     <div class="sidebar-divider"></div>
@@ -2577,8 +2801,13 @@
         </div>
       </div>
 
-      <!-- ── BUDGET ANALYSIS PANEL ── -->
+      <!-- ── BUDGET ANALYSIS PANEL (Pro) ── -->
+      <div id="insightsLockBanner" class="pro-lock-banner" onclick="proGate('insights','💡 Spending Insights')" style="display:none">
+        <span>🔒</span>
+        <span><strong>Spending Insights &amp; Analysis</strong> is a MyYolk Pro feature — <strong>upgrade to unlock</strong> retirement coverage analysis, lifestyle adjustments, and personalized insights.</span>
+      </div>
 
+      <div id="budgetAnalysisSection">
       <!-- Current vs Retirement Spend -->
       <div class="card" id="budgetAnalysisPanel">
         <div class="card-title"><span class="dot"></span> Current vs. Retirement Spending</div>
@@ -2675,128 +2904,7 @@
           <div style="color:var(--mid);font-size:0.85rem">Fill in your budget and account details to unlock personalized insights.</div>
         </div>
       </div>
-
-      <!-- ══ BUDGET TRACKING SECTION ══ -->
-      <div id="budgetTrackingSection">
-        <div class="bt-section-title">📅 Monthly Tracking</div>
-        <p class="bt-section-sub">Log what you actually spent each month and watch your patterns over time.</p>
-
-        <div class="bt-pills">
-          <button class="bt-pill active" onclick="btShowPanel('checkin')" id="btPill-checkin">✏️ Monthly Check-In</button>
-          <button class="bt-pill" onclick="btShowPanel('history')" id="btPill-history">📈 Spending History</button>
-        </div>
-
-        <!-- ── CHECK-IN PANEL ── -->
-        <div id="btPanel-checkin">
-          <div class="card">
-            <div class="bt-checkin-header">
-              <div>
-                <div style="font-weight:700;font-size:1rem;color:var(--charcoal)" id="btCheckinTitle">Log Your Actuals</div>
-                <div style="font-size:0.82rem;color:var(--mid);margin-top:2px">Pre-filled from last month — edit any amount that changed</div>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
-                <label style="font-size:0.75rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.4px">Month</label>
-                <input type="month" id="btCheckinMonth" class="bt-month-pick" onchange="btLoadCheckin()">
-              </div>
-            </div>
-
-            <div id="btAlertBar" class="bt-alert-bar">
-              <strong>⚠️ Over-Budget Categories</strong>
-              <div id="btAlertList"></div>
-            </div>
-
-            <div class="table-wrap">
-              <table class="bt-checkin-grid" id="btCheckinTable">
-                <thead>
-                  <tr>
-                    <th style="width:40%">Category / Line Item</th>
-                    <th>Budget</th>
-                    <th>Actual</th>
-                    <th>Variance</th>
-                  </tr>
-                </thead>
-                <tbody id="btCheckinBody"></tbody>
-              </table>
-            </div>
-
-            <div style="margin-top:1rem">
-              <label style="font-size:0.8rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.4px;display:block;margin-bottom:6px">Notes (optional)</label>
-              <textarea class="bt-notes-field" id="btCheckinNotes" placeholder="e.g. Higher electric bill, holiday gifts, car repair..."></textarea>
-            </div>
-
-            <div class="bt-save-row">
-              <button class="btn btn-primary" onclick="btSaveCheckin()" style="padding:0.65rem 1.5rem">💾 Save This Month</button>
-              <span class="bt-saved-badge" id="btSavedBadge">✓ Saved</span>
-              <button onclick="btClearCheckin()" style="background:none;border:none;font-size:0.82rem;color:var(--mid);cursor:pointer;font-family:DM Sans,sans-serif;text-decoration:underline">Clear actuals</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- ── HISTORY PANEL ── -->
-        <div id="btPanel-history" style="display:none">
-          <div class="card">
-            <div class="bt-filter-row">
-              <span class="bt-filter-label">Show:</span>
-              <select class="bt-filter-select" id="btRangeFilter" onchange="btRenderHistory()">
-                <option value="3">Last 3 months</option>
-                <option value="6">Last 6 months</option>
-                <option value="12" selected>Last 12 months</option>
-                <option value="24">Last 24 months</option>
-                <option value="all">All time</option>
-                <option value="custom">Custom range…</option>
-              </select>
-              <div id="btCustomRange" style="display:none;gap:6px;align-items:center;display:none">
-                <input type="month" id="btRangeFrom" class="bt-month-pick" style="padding:0.4rem 0.7rem;font-size:0.85rem" onchange="btRenderHistory()">
-                <span style="color:var(--mid);font-size:0.82rem">to</span>
-                <input type="month" id="btRangeTo" class="bt-month-pick" style="padding:0.4rem 0.7rem;font-size:0.85rem" onchange="btRenderHistory()">
-              </div>
-              <span id="btHistoryCount" style="font-size:0.8rem;color:var(--mid);margin-left:auto"></span>
-            </div>
-
-            <!-- Bar chart -->
-            <div class="bt-chart-wrap">
-              <canvas id="btHistoryChart"></canvas>
-            </div>
-
-            <!-- Category drill-down -->
-            <div id="btCatDrill" class="bt-cat-drill">
-              <div class="bt-cat-drill-title" id="btCatDrillTitle">Category Trend</div>
-              <div class="bt-chart-wrap" style="height:150px">
-                <canvas id="btDrillChart"></canvas>
-              </div>
-              <button onclick="btCloseDrill()" style="background:none;border:none;font-size:0.8rem;color:var(--mid);cursor:pointer;font-family:DM Sans,sans-serif;text-decoration:underline;margin-top:0.5rem">✕ Close</button>
-            </div>
-
-            <!-- History table -->
-            <div id="btHistoryEmpty" class="bt-empty-state" style="display:none">
-              <div class="bt-empty-icon">📭</div>
-              <p>No months logged yet in this range.<br>Use the Check-In tab to start tracking.</p>
-            </div>
-            <div class="table-wrap" id="btHistoryTableWrap">
-              <table class="bt-history-table" id="btHistoryTable">
-                <thead>
-                  <tr>
-                    <th>Month</th>
-                    <th>Budget</th>
-                    <th>Actual</th>
-                    <th>Variance</th>
-                    <th>Status</th>
-                    <th>Detail</th>
-                  </tr>
-                </thead>
-                <tbody id="btHistoryBody"></tbody>
-              </table>
-            </div>
-
-            <!-- Category filter -->
-            <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)">
-              <div style="font-size:0.8rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:0.5rem">Drill into a category:</div>
-              <div style="display:flex;gap:6px;flex-wrap:wrap" id="btCatButtons"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- ══ END BUDGET TRACKING ══ -->
+      </div><!-- end budgetAnalysisSection -->
 
       <div class="btn-row">
       <div class="card">
@@ -2856,6 +2964,124 @@
         <button class="btn btn-primary" onclick="showTab('projections')">Next: Projections →</button>
       </div>
     </div>
+
+    <!-- ══ TRACKING TAB ══ -->
+    <div class="tab-panel" id="tab-tracking">
+      <h1 class="page-title">📅 Budget Tracking</h1>
+      <p class="page-subtitle">Log what you actually spent each month and watch your patterns over time.</p>
+
+      <div class="bt-pills">
+        <button class="bt-pill active" onclick="btShowPanel('checkin')" id="btPill-checkin">✏️ Monthly Check-In</button>
+        <button class="bt-pill" onclick="btShowPanel('history')" id="btPill-history">📈 Spending History</button>
+      </div>
+
+      <!-- ── CHECK-IN PANEL ── -->
+      <div id="btPanel-checkin">
+        <div class="card">
+          <div class="bt-checkin-header">
+            <div>
+              <div style="font-weight:700;font-size:1rem;color:var(--charcoal)" id="btCheckinTitle">Log Your Actuals</div>
+              <div style="font-size:0.82rem;color:var(--mid);margin-top:2px">Pre-filled from last month — edit any amount that changed</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+              <label style="font-size:0.75rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.4px">Month</label>
+              <input type="month" id="btCheckinMonth" class="bt-month-pick" onchange="btLoadCheckin()">
+            </div>
+          </div>
+
+          <div id="btAlertBar" class="bt-alert-bar">
+            <strong>⚠️ Over-Budget Categories</strong>
+            <div id="btAlertList"></div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="bt-checkin-grid" id="btCheckinTable">
+              <thead>
+                <tr>
+                  <th style="width:40%">Category / Line Item</th>
+                  <th>Budget</th>
+                  <th>Actual</th>
+                  <th>Variance</th>
+                </tr>
+              </thead>
+              <tbody id="btCheckinBody"></tbody>
+            </table>
+          </div>
+
+          <div style="margin-top:1rem">
+            <label style="font-size:0.8rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.4px;display:block;margin-bottom:6px">Notes (optional)</label>
+            <textarea class="bt-notes-field" id="btCheckinNotes" placeholder="e.g. Higher electric bill, holiday gifts, car repair..."></textarea>
+          </div>
+
+          <div class="bt-save-row">
+            <button class="btn btn-primary" onclick="btSaveCheckin()" style="padding:0.65rem 1.5rem">💾 Save This Month</button>
+            <span class="bt-saved-badge" id="btSavedBadge">✓ Saved</span>
+            <button onclick="btClearCheckin()" style="background:none;border:none;font-size:0.82rem;color:var(--mid);cursor:pointer;font-family:DM Sans,sans-serif;text-decoration:underline">Clear actuals</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── HISTORY PANEL ── -->
+      <div id="btPanel-history" style="display:none">
+        <div class="card">
+          <div class="bt-filter-row">
+            <span class="bt-filter-label">Show:</span>
+            <select class="bt-filter-select" id="btRangeFilter" onchange="btRenderHistory()">
+              <option value="3">Last 3 months</option>
+              <option value="6">Last 6 months</option>
+              <option value="12" selected>Last 12 months</option>
+              <option value="24">Last 24 months</option>
+              <option value="all">All time</option>
+              <option value="custom">Custom range…</option>
+            </select>
+            <div id="btCustomRange" style="display:none;gap:6px;align-items:center">
+              <input type="month" id="btRangeFrom" class="bt-month-pick" style="padding:0.4rem 0.7rem;font-size:0.85rem" onchange="btRenderHistory()">
+              <span style="color:var(--mid);font-size:0.82rem">to</span>
+              <input type="month" id="btRangeTo" class="bt-month-pick" style="padding:0.4rem 0.7rem;font-size:0.85rem" onchange="btRenderHistory()">
+            </div>
+            <span id="btHistoryCount" style="font-size:0.8rem;color:var(--mid);margin-left:auto"></span>
+          </div>
+
+          <div class="bt-chart-wrap">
+            <canvas id="btHistoryChart"></canvas>
+          </div>
+
+          <div id="btCatDrill" class="bt-cat-drill">
+            <div class="bt-cat-drill-title" id="btCatDrillTitle">Category Trend</div>
+            <div class="bt-chart-wrap" style="height:150px">
+              <canvas id="btDrillChart"></canvas>
+            </div>
+            <button onclick="btCloseDrill()" style="background:none;border:none;font-size:0.8rem;color:var(--mid);cursor:pointer;font-family:DM Sans,sans-serif;text-decoration:underline;margin-top:0.5rem">✕ Close</button>
+          </div>
+
+          <div id="btHistoryEmpty" class="bt-empty-state" style="display:none">
+            <div class="bt-empty-icon">📭</div>
+            <p>No months logged yet in this range.<br>Use the Check-In tab to start tracking.</p>
+          </div>
+          <div class="table-wrap" id="btHistoryTableWrap">
+            <table class="bt-history-table" id="btHistoryTable">
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th>Budget</th>
+                  <th>Actual</th>
+                  <th>Variance</th>
+                  <th>Status</th>
+                  <th>Detail</th>
+                </tr>
+              </thead>
+              <tbody id="btHistoryBody"></tbody>
+            </table>
+          </div>
+
+          <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)">
+            <div style="font-size:0.8rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:0.5rem">Drill into a category:</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap" id="btCatButtons"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ══ END TRACKING TAB ══ -->
 
     <!-- ══ PROJECTIONS TAB ══ -->
     <div class="tab-panel" id="tab-projections">
@@ -6752,6 +6978,115 @@ function btCloseDrill() {
 
 // ══ END BUDGET TRACKING ENGINE ══
 
+// ══════════════════════════════════════════
+// ── PRO / PAYWALL SYSTEM ──
+// ══════════════════════════════════════════
+
+var IS_PRO = true; // defaults to Pro for Dean's test account
+
+var PRO_TABS = ['tracking', 'whatif', 'early', 'summary'];
+var PRO_FEATURES = { insights: '💡 Spending Insights & Analysis' };
+
+function setProMode(isPro) {
+  IS_PRO = !!isPro;
+
+  // Update toggle labels
+  var labelFree = document.getElementById('proToggleLabelFree');
+  var labelPro  = document.getElementById('proToggleLabelPro');
+  if (labelFree) labelFree.style.color = isPro ? 'rgba(255,255,255,0.5)' : '#fff';
+  if (labelPro)  labelPro.style.color  = isPro ? '#fff' : 'rgba(255,255,255,0.5)';
+
+  // Lock/unlock nav items
+  PRO_TABS.forEach(function(tab) {
+    // find nav buttons by their onclick content
+    var btns = Array.from(document.querySelectorAll('.nav-item'));
+    btns.forEach(function(btn) {
+      var oc = btn.getAttribute('onclick') || '';
+      var isThisTab = oc.includes("'" + tab + "'") || btn.id === 'nav-' + tab;
+      if (isThisTab) {
+        if (isPro) {
+          btn.classList.remove('nav-locked');
+          btn.querySelector('.nav-lock-icon') && (btn.querySelector('.nav-lock-icon').style.display = 'none');
+          // restore onclick to showTab
+          btn.setAttribute('onclick', "showTab('" + tab + "')");
+        } else {
+          btn.classList.add('nav-locked');
+          btn.querySelector('.nav-lock-icon') && (btn.querySelector('.nav-lock-icon').style.display = '');
+          // gate onclick
+          var label = btn.querySelector('.nav-label') ? btn.querySelector('.nav-label').textContent.trim() : tab;
+          btn.setAttribute('onclick', "proGate('" + tab + "','" + label + "')");
+        }
+      }
+    });
+  });
+
+  // Lock/unlock budget analysis section
+  var analysisSection = document.getElementById('budgetAnalysisSection');
+  var lockBanner = document.getElementById('insightsLockBanner');
+  if (analysisSection) analysisSection.style.display = isPro ? 'block' : 'none';
+  if (lockBanner) lockBanner.style.display = isPro ? 'none' : 'flex';
+
+  // If current tab is now locked, bounce back to budget
+  var activePanel = document.querySelector('.tab-panel.active');
+  if (activePanel && !isPro) {
+    var activeId = activePanel.id.replace('tab-', '');
+    if (PRO_TABS.includes(activeId)) {
+      showTab('budget');
+    }
+  }
+}
+
+function proGate(feature, label) {
+  if (IS_PRO) {
+    // Unlocked — navigate normally
+    if (PRO_TABS.includes(feature)) {
+      showTab(feature);
+    }
+    return;
+  }
+  // Show paywall modal
+  var nameEl = document.getElementById('paywallFeatureName');
+  if (nameEl) nameEl.textContent = label || 'Pro Feature';
+  var modal = document.getElementById('paywallModal');
+  if (modal) modal.classList.add('show');
+}
+
+function closePaywall() {
+  var modal = document.getElementById('paywallModal');
+  if (modal) modal.classList.remove('show');
+}
+
+// Close on backdrop click
+document.addEventListener('click', function(e) {
+  var modal = document.getElementById('paywallModal');
+  if (modal && e.target === modal) closePaywall();
+});
+
+// Patch showTab so locked tabs always check pro gate
+var _origShowTabPro = showTab;
+showTab = function(name) {
+  if (!IS_PRO && PRO_TABS.includes(name)) {
+    var labels = {
+      tracking: '📅 Budget Tracking',
+      whatif:   '🔀 What-If Scenarios',
+      early:    '⚡ Early Retirement',
+      summary:  '✨ Summary & PDF Export'
+    };
+    proGate(name, labels[name] || name);
+    return;
+  }
+  _origShowTabPro(name);
+  // Init tracking when navigating to it
+  if (name === 'tracking') setTimeout(btInit, 100);
+};
+
+// Apply initial state on load
+window.addEventListener('load', function() {
+  setTimeout(function() { setProMode(IS_PRO); }, 400);
+});
+
+// ══ END PRO / PAYWALL SYSTEM ══
+
 // ── SUMMARY ──
 function updateSummary() {
   var el = function(id) { return document.getElementById(id); };
@@ -7675,7 +8010,7 @@ window.addEventListener('load', function() {
   showTab = function(name) {
     _origST(name);
     setTimeout(fixMobileGrids, 50);
-    if (name === 'budget') setTimeout(btInit, 100);
+    if (name === 'budget') setTimeout(fixMobileGrids, 100);
     // Add nav arrow on mobile
   if(window.innerWidth <= 768 && !document.getElementById('navArrow')) {
     var arrow = document.createElement('div');
