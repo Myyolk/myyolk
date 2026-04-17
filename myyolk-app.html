@@ -6990,6 +6990,10 @@ var PRO_FEATURES = { insights: '💡 Spending Insights & Analysis' };
 function setProMode(isPro) {
   IS_PRO = !!isPro;
 
+  // Sync checkbox
+  var chk = document.getElementById('proToggleCheck');
+  if (chk) chk.checked = !!isPro;
+
   // Update toggle labels
   var labelFree = document.getElementById('proToggleLabelFree');
   var labelPro  = document.getElementById('proToggleLabelPro');
