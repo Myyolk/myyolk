@@ -1527,13 +1527,11 @@
     .bt-history-table th, .bt-history-table td { padding: 0.45rem 0.5rem; }
     .bt-checkin-grid th, .bt-checkin-grid td { padding: 0.4rem 0.5rem; }
     .bt-actual-input { width: 72px; font-size: 0.8rem; }
-    /* On mobile hide Budget and Variance columns — show Category and Actual only */
-    .bt-checkin-grid th:nth-child(2),
-    .bt-checkin-grid td:nth-child(2),
-    .bt-checkin-grid th:nth-child(4),
-    .bt-checkin-grid td:nth-child(4) { display: none; }
-    .bt-checkin-grid th:first-child { width: 55%; }
-    .bt-checkin-grid th:nth-child(3) { text-align: right; }
+    /* Show all 4 columns on mobile — smaller text/padding */
+    .bt-checkin-grid { font-size: 0.72rem; }
+    .bt-checkin-grid th, .bt-checkin-grid td { padding: 0.3rem 0.25rem !important; }
+    .bt-checkin-grid th:first-child, .bt-checkin-grid td:first-child { width: 35%; }
+    .bt-actual-input { width: 58px !important; font-size: 0.72rem !important; }
     /* History table — hide Status and Detail on mobile */
     .bt-history-table th:nth-child(5),
     .bt-history-table td:nth-child(5),
