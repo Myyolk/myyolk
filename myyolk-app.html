@@ -1049,6 +1049,286 @@
     .results-grid { grid-template-columns: 1fr !important; }
     .nav-item { min-width: 46px; font-size: 0.58rem !important; }
   }
+
+  /* ── BUDGET TRACKING ── */
+  .bt-section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: var(--charcoal);
+    margin: 2.5rem 0 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .bt-section-sub {
+    color: var(--mid);
+    font-size: 0.88rem;
+    margin-bottom: 1.25rem;
+  }
+  .bt-pills {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .bt-pill {
+    padding: 0.45rem 1.1rem;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: var(--warm-white);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--mid);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .bt-pill:hover { border-color: var(--sage); color: var(--sage); }
+  .bt-pill.active { background: var(--sage); border-color: var(--sage); color: #fff; }
+
+  /* Check-in panel */
+  .bt-checkin-header {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .bt-month-pick {
+    padding: 0.55rem 0.9rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--charcoal);
+    background: var(--warm-white);
+    outline: none;
+    cursor: pointer;
+  }
+  .bt-month-pick:focus { border-color: var(--sage); }
+  .bt-checkin-grid {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin-bottom: 1rem;
+  }
+  .bt-checkin-grid th {
+    background: var(--charcoal);
+    color: #fff;
+    padding: 0.6rem 0.9rem;
+    text-align: left;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-weight: 600;
+  }
+  .bt-checkin-grid th:not(:first-child) { text-align: right; }
+  .bt-checkin-grid td {
+    padding: 0.45rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .bt-checkin-grid td:not(:first-child) { text-align: right; }
+  .bt-checkin-grid tr:nth-child(even) td { background: var(--cream); }
+  .bt-checkin-grid tr:hover td { background: var(--sage-pale); }
+  .bt-cat-row td {
+    background: #f5f0e8 !important;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--mid);
+    padding: 0.35rem 0.9rem;
+  }
+  .bt-actual-input {
+    width: 100px;
+    padding: 0.3rem 0.5rem;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-family: 'DM Sans', sans-serif;
+    text-align: right;
+    background: #fff;
+    color: var(--charcoal);
+    outline: none;
+    float: right;
+  }
+  .bt-actual-input:focus { border-color: var(--sage); box-shadow: 0 0 0 2px rgba(200,134,10,0.12); }
+  .bt-var-over { color: #c0392b; font-weight: 600; }
+  .bt-var-under { color: #2D4A35; font-weight: 600; }
+  .bt-var-zero { color: var(--mid); }
+  .bt-total-row td {
+    background: var(--sage) !important;
+    color: #fff !important;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 0.65rem 0.9rem;
+  }
+  .bt-alert-bar {
+    background: #fff8e1;
+    border: 1.5px solid #f0a500;
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    display: none;
+  }
+  .bt-alert-bar.show { display: block; }
+  .bt-alert-bar strong { color: #b07800; display: block; margin-bottom: 0.4rem; }
+  .bt-alert-item { color: var(--charcoal); margin: 2px 0; }
+  .bt-notes-field {
+    width: 100%;
+    padding: 0.65rem 0.9rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--charcoal);
+    background: var(--warm-white);
+    resize: vertical;
+    min-height: 60px;
+    outline: none;
+    margin-bottom: 1rem;
+  }
+  .bt-notes-field:focus { border-color: var(--sage); }
+  .bt-save-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .bt-saved-badge {
+    font-size: 0.82rem;
+    color: #2D4A35;
+    background: #e8f5e9;
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-weight: 600;
+    display: none;
+  }
+  .bt-saved-badge.show { display: inline-block; }
+
+  /* History panel */
+  .bt-filter-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .bt-filter-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--mid);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+  }
+  .bt-filter-select {
+    padding: 0.45rem 0.8rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--charcoal);
+    background: var(--warm-white);
+    outline: none;
+    cursor: pointer;
+  }
+  .bt-filter-select:focus { border-color: var(--sage); }
+  .bt-chart-wrap {
+    height: 200px;
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+  .bt-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  .bt-history-table th {
+    background: var(--charcoal);
+    color: #fff;
+    padding: 0.6rem 0.9rem;
+    text-align: right;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .bt-history-table th:first-child { text-align: left; }
+  .bt-history-table td {
+    padding: 0.55rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .bt-history-table td:first-child { text-align: left; font-weight: 600; }
+  .bt-history-table tr:nth-child(even) td { background: var(--cream); }
+  .bt-history-table tr:hover td { background: var(--sage-pale); }
+  .bt-badge-over {
+    display: inline-block;
+    background: #fde8e8;
+    color: #c0392b;
+    border-radius: 10px;
+    padding: 2px 9px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .bt-badge-under {
+    display: inline-block;
+    background: #e8f5e9;
+    color: #2D4A35;
+    border-radius: 10px;
+    padding: 2px 9px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .bt-cat-detail-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 9px;
+    font-size: 0.75rem;
+    color: var(--mid);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+  .bt-cat-detail-btn:hover { border-color: var(--sage); color: var(--sage); }
+  .bt-cat-drill {
+    background: #fffdf5;
+    border: 1px solid #f0e8cc;
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    display: none;
+  }
+  .bt-cat-drill.show { display: block; }
+  .bt-cat-drill-title {
+    font-weight: 700;
+    color: var(--sage);
+    margin-bottom: 0.75rem;
+    font-size: 0.92rem;
+  }
+  .bt-empty-state {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--mid);
+  }
+  .bt-empty-state .bt-empty-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .bt-empty-state p { font-size: 0.9rem; }
+  @media (max-width: 768px) {
+    .bt-checkin-header { grid-template-columns: 1fr; }
+    .bt-actual-input { width: 80px; }
+    .bt-history-table { font-size: 0.78rem; }
+    .bt-history-table th, .bt-history-table td { padding: 0.45rem 0.5rem; }
+    .bt-checkin-grid th, .bt-checkin-grid td { padding: 0.4rem 0.5rem; }
+    .bt-actual-input { width: 72px; }
+  }
   </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -2395,6 +2675,128 @@
           <div style="color:var(--mid);font-size:0.85rem">Fill in your budget and account details to unlock personalized insights.</div>
         </div>
       </div>
+
+      <!-- ══ BUDGET TRACKING SECTION ══ -->
+      <div id="budgetTrackingSection">
+        <div class="bt-section-title">📅 Monthly Tracking</div>
+        <p class="bt-section-sub">Log what you actually spent each month and watch your patterns over time.</p>
+
+        <div class="bt-pills">
+          <button class="bt-pill active" onclick="btShowPanel('checkin')" id="btPill-checkin">✏️ Monthly Check-In</button>
+          <button class="bt-pill" onclick="btShowPanel('history')" id="btPill-history">📈 Spending History</button>
+        </div>
+
+        <!-- ── CHECK-IN PANEL ── -->
+        <div id="btPanel-checkin">
+          <div class="card">
+            <div class="bt-checkin-header">
+              <div>
+                <div style="font-weight:700;font-size:1rem;color:var(--charcoal)" id="btCheckinTitle">Log Your Actuals</div>
+                <div style="font-size:0.82rem;color:var(--mid);margin-top:2px">Pre-filled from last month — edit any amount that changed</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+                <label style="font-size:0.75rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.4px">Month</label>
+                <input type="month" id="btCheckinMonth" class="bt-month-pick" onchange="btLoadCheckin()">
+              </div>
+            </div>
+
+            <div id="btAlertBar" class="bt-alert-bar">
+              <strong>⚠️ Over-Budget Categories</strong>
+              <div id="btAlertList"></div>
+            </div>
+
+            <div class="table-wrap">
+              <table class="bt-checkin-grid" id="btCheckinTable">
+                <thead>
+                  <tr>
+                    <th style="width:40%">Category / Line Item</th>
+                    <th>Budget</th>
+                    <th>Actual</th>
+                    <th>Variance</th>
+                  </tr>
+                </thead>
+                <tbody id="btCheckinBody"></tbody>
+              </table>
+            </div>
+
+            <div style="margin-top:1rem">
+              <label style="font-size:0.8rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.4px;display:block;margin-bottom:6px">Notes (optional)</label>
+              <textarea class="bt-notes-field" id="btCheckinNotes" placeholder="e.g. Higher electric bill, holiday gifts, car repair..."></textarea>
+            </div>
+
+            <div class="bt-save-row">
+              <button class="btn btn-primary" onclick="btSaveCheckin()" style="padding:0.65rem 1.5rem">💾 Save This Month</button>
+              <span class="bt-saved-badge" id="btSavedBadge">✓ Saved</span>
+              <button onclick="btClearCheckin()" style="background:none;border:none;font-size:0.82rem;color:var(--mid);cursor:pointer;font-family:DM Sans,sans-serif;text-decoration:underline">Clear actuals</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── HISTORY PANEL ── -->
+        <div id="btPanel-history" style="display:none">
+          <div class="card">
+            <div class="bt-filter-row">
+              <span class="bt-filter-label">Show:</span>
+              <select class="bt-filter-select" id="btRangeFilter" onchange="btRenderHistory()">
+                <option value="3">Last 3 months</option>
+                <option value="6">Last 6 months</option>
+                <option value="12" selected>Last 12 months</option>
+                <option value="24">Last 24 months</option>
+                <option value="all">All time</option>
+                <option value="custom">Custom range…</option>
+              </select>
+              <div id="btCustomRange" style="display:none;gap:6px;align-items:center;display:none">
+                <input type="month" id="btRangeFrom" class="bt-month-pick" style="padding:0.4rem 0.7rem;font-size:0.85rem" onchange="btRenderHistory()">
+                <span style="color:var(--mid);font-size:0.82rem">to</span>
+                <input type="month" id="btRangeTo" class="bt-month-pick" style="padding:0.4rem 0.7rem;font-size:0.85rem" onchange="btRenderHistory()">
+              </div>
+              <span id="btHistoryCount" style="font-size:0.8rem;color:var(--mid);margin-left:auto"></span>
+            </div>
+
+            <!-- Bar chart -->
+            <div class="bt-chart-wrap">
+              <canvas id="btHistoryChart"></canvas>
+            </div>
+
+            <!-- Category drill-down -->
+            <div id="btCatDrill" class="bt-cat-drill">
+              <div class="bt-cat-drill-title" id="btCatDrillTitle">Category Trend</div>
+              <div class="bt-chart-wrap" style="height:150px">
+                <canvas id="btDrillChart"></canvas>
+              </div>
+              <button onclick="btCloseDrill()" style="background:none;border:none;font-size:0.8rem;color:var(--mid);cursor:pointer;font-family:DM Sans,sans-serif;text-decoration:underline;margin-top:0.5rem">✕ Close</button>
+            </div>
+
+            <!-- History table -->
+            <div id="btHistoryEmpty" class="bt-empty-state" style="display:none">
+              <div class="bt-empty-icon">📭</div>
+              <p>No months logged yet in this range.<br>Use the Check-In tab to start tracking.</p>
+            </div>
+            <div class="table-wrap" id="btHistoryTableWrap">
+              <table class="bt-history-table" id="btHistoryTable">
+                <thead>
+                  <tr>
+                    <th>Month</th>
+                    <th>Budget</th>
+                    <th>Actual</th>
+                    <th>Variance</th>
+                    <th>Status</th>
+                    <th>Detail</th>
+                  </tr>
+                </thead>
+                <tbody id="btHistoryBody"></tbody>
+              </table>
+            </div>
+
+            <!-- Category filter -->
+            <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)">
+              <div style="font-size:0.8rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:0.5rem">Drill into a category:</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap" id="btCatButtons"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ══ END BUDGET TRACKING ══ -->
 
       <div class="btn-row">
       <div class="card">
@@ -5726,6 +6128,630 @@ function updateBudgetAnalysis() {
   }
 }
 
+// ══════════════════════════════════════════
+// ── BUDGET TRACKING ENGINE ──
+// ══════════════════════════════════════════
+
+// Category map: matches the bud-m data-key attributes grouped by category
+var BT_CATS = [
+  { label: '🏠 Housing', keys: ['rent','propTax','homeIns','electric','gasHeat','water','sewerage','trash','internet','cellPhone','homeMaint'] },
+  { label: '🚗 Transportation', keys: ['gas','carIns','carMaint'] },
+  { label: '🍽️ Food', keys: ['groceries','dining'] },
+  { label: '🏥 Health', keys: ['medPrem','rx','oop'] },
+  { label: '💼 Professional', keys: ['legal','accounting','finAdvisor'] },
+  { label: '🎓 Education & Family', keys: ['tuition','edu529','k12','tutoring','childSupport','childcare','elderCare'] },
+  { label: '🎭 Lifestyle', keys: ['subs','entertain','shopping','gym','therapy','vacation','hobbies','charity','lawn','cleaning','security','pets','gifts','other'] },
+  { label: '💳 Debt Payments', keys: ['debtCar1','debtCar2','debtStudent','debtCC1','debtCC2','debtCC3','debtPersonal','debtOther'] }
+];
+
+// Key → human label map
+var BT_KEY_LABELS = {
+  rent:'Rent', propTax:'Property Taxes', homeIns:'Home Insurance', electric:'Electric',
+  gasHeat:'Gas / Heating Oil', water:'Water', sewerage:'Sewerage', trash:'Trash / Recycling',
+  internet:'Internet', cellPhone:'Telephone', homeMaint:'Home Maintenance',
+  gas:'Gas', carIns:'Car Insurance', carMaint:'Maintenance / Repairs',
+  groceries:'Groceries', dining:'Dining Out',
+  medPrem:'Medical Premiums', rx:'Prescriptions', oop:'Out-of-Pocket',
+  legal:'Legal / Attorney', accounting:'Accounting / Tax Prep', finAdvisor:'Financial Advisor',
+  tuition:'College / Tuition', edu529:'529 Savings', k12:'K-12 / Private School',
+  tutoring:'Tutoring / Activities', childSupport:'Child Support', childcare:'Childcare',
+  elderCare:'Elder Care',
+  subs:'Subscriptions', entertain:'Entertainment', shopping:'Shopping / Clothing',
+  gym:'Gym / Fitness', therapy:'Therapy / Counseling', vacation:'Vacation',
+  hobbies:'Hobbies', charity:'Charitable Donations', lawn:'Lawn / Landscaping',
+  cleaning:'Cleaning Service', security:'Security / Monitoring', pets:'Pets',
+  gifts:'Gifts / Family', other:'Other',
+  debtCar1:'Car Loan 1', debtCar2:'Car Loan 2', debtStudent:'Student Loans',
+  debtCC1:'Credit Card 1', debtCC2:'Credit Card 2', debtCC3:'Credit Card 3',
+  debtPersonal:'Personal Loan', debtOther:'Other Debt'
+};
+
+// In-memory store for tracking data: { 'YYYY-MM': { actuals: {key: val}, notes: '', savedAt: '' } }
+var btData = {};
+var btChartInstance = null;
+var btDrillChartInstance = null;
+var btCurrentDrillCat = null;
+
+// ── Helpers ──
+
+function btFmt(n) {
+  if (!n && n !== 0) return '—';
+  return '$' + Math.round(n).toLocaleString();
+}
+
+function btCurrentMonthStr() {
+  var d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+
+function btPrevMonthStr(fromStr) {
+  var d = fromStr ? new Date(fromStr + '-01') : new Date();
+  d.setMonth(d.getMonth() - 1);
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+
+function btMonthLabel(yyyymm) {
+  var d = new Date(yyyymm + '-02');
+  return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+}
+
+function btGetPlanned() {
+  // Read current planned budget from the bud-m inputs
+  var plan = {};
+  document.querySelectorAll('.bud-m[data-key]').forEach(function(el) {
+    var key = el.getAttribute('data-key');
+    var val = parseFloat(el.value) || 0;
+    if (val > 0) plan[key] = val;
+  });
+  return plan;
+}
+
+function btPlanTotal(plan) {
+  return Object.values(plan).reduce(function(s, v) { return s + v; }, 0);
+}
+
+function btActualTotal(actuals) {
+  return Object.values(actuals).reduce(function(s, v) { return s + (parseFloat(v) || 0); }, 0);
+}
+
+// ── Persistence: piggyback on collectAllData ──
+
+function btSerialize() {
+  return JSON.stringify(btData);
+}
+
+function btDeserialize(str) {
+  try { btData = str ? JSON.parse(str) : {}; } catch(e) { btData = {}; }
+}
+
+// Patch collectAllData to include btData
+var _origCollect = collectAllData;
+collectAllData = function() {
+  var d = _origCollect();
+  d['__budgetTracking'] = btSerialize();
+  return d;
+};
+
+
+
+// ── Panel toggle ──
+
+function btShowPanel(name) {
+  ['checkin','history'].forEach(function(p) {
+    var panel = document.getElementById('btPanel-' + p);
+    var pill = document.getElementById('btPill-' + p);
+    if (panel) panel.style.display = p === name ? 'block' : 'none';
+    if (pill) {
+      pill.classList.toggle('active', p === name);
+    }
+  });
+  if (name === 'history') btRenderHistory();
+}
+
+// ── Init ──
+
+function btInit() {
+  // Set default month picker to current month
+  var mp = document.getElementById('btCheckinMonth');
+  if (mp && !mp.value) mp.value = btCurrentMonthStr();
+  btLoadCheckin();
+  btRenderCatButtons();
+}
+
+// ── Check-In ──
+
+function btLoadCheckin() {
+  var monthVal = document.getElementById('btCheckinMonth')?.value || btCurrentMonthStr();
+  var titleEl = document.getElementById('btCheckinTitle');
+  if (titleEl) titleEl.textContent = 'Log Actuals — ' + btMonthLabel(monthVal);
+
+  var planned = btGetPlanned();
+  var prevMonth = btPrevMonthStr(monthVal);
+  var prevActuals = (btData[prevMonth] && btData[prevMonth].actuals) ? btData[prevMonth].actuals : {};
+  var savedActuals = (btData[monthVal] && btData[monthVal].actuals) ? btData[monthVal].actuals : null;
+
+  // Pre-fill: if month already saved, use saved; else use last month's actuals; else use planned
+  var prefill = savedActuals || prevActuals;
+  var useActuals = savedActuals ? savedActuals : prefill;
+
+  // Restore notes if saved
+  var notesEl = document.getElementById('btCheckinNotes');
+  if (notesEl) notesEl.value = (btData[monthVal] && btData[monthVal].notes) ? btData[monthVal].notes : '';
+
+  btBuildCheckinTable(planned, useActuals);
+  btUpdateVariances();
+
+  // Show saved badge if already saved
+  var badge = document.getElementById('btSavedBadge');
+  if (badge) {
+    badge.classList.toggle('show', !!savedActuals);
+    badge.textContent = savedActuals ? '✓ Saved ' + btMonthLabel(monthVal) : '';
+  }
+}
+
+function btBuildCheckinTable(planned, prefillActuals) {
+  var tbody = document.getElementById('btCheckinBody');
+  if (!tbody) return;
+  var html = '';
+  BT_CATS.forEach(function(cat) {
+    // Only render rows that have a planned value OR a prefilled actual
+    var catRows = cat.keys.filter(function(k) {
+      return (planned[k] || 0) > 0 || (parseFloat(prefillActuals[k]) || 0) > 0;
+    });
+    if (catRows.length === 0) return;
+
+    html += '<tr class="bt-cat-row"><td colspan="4">' + cat.label + '</td></tr>';
+    catRows.forEach(function(k) {
+      var bud = planned[k] || 0;
+      var act = parseFloat(prefillActuals[k]) || 0;
+      var varVal = act - bud;
+      var varClass = varVal > 0.5 ? 'bt-var-over' : varVal < -0.5 ? 'bt-var-under' : 'bt-var-zero';
+      var varStr = varVal > 0.5 ? '+' + btFmt(varVal) : varVal < -0.5 ? btFmt(varVal) : '—';
+      html += '<tr>' +
+        '<td>' + (BT_KEY_LABELS[k] || k) + '</td>' +
+        '<td>' + (bud > 0 ? btFmt(bud) : '<span style="color:var(--mid)">—</span>') + '</td>' +
+        '<td><input type="number" class="bt-actual-input" data-btkey="' + k + '" value="' + (act || '') + '" placeholder="0" oninput="btUpdateVariances()">' +
+        '</td>' +
+        '<td class="' + varClass + '" id="btVar-' + k + '">' + varStr + '</td>' +
+        '</tr>';
+    });
+  });
+
+  // Totals
+  var planTotal = btPlanTotal(planned);
+  var actTotal = btActualTotal(prefillActuals);
+  var totVar = actTotal - planTotal;
+  var totVarStr = totVar > 0.5 ? '+' + btFmt(totVar) : totVar < -0.5 ? btFmt(totVar) : '—';
+  html += '<tr class="bt-total-row">' +
+    '<td>TOTAL</td>' +
+    '<td>' + btFmt(planTotal) + '</td>' +
+    '<td id="btActualTotalCell">' + btFmt(actTotal) + '</td>' +
+    '<td id="btVarTotalCell">' + totVarStr + '</td>' +
+    '</tr>';
+
+  tbody.innerHTML = html;
+}
+
+function btUpdateVariances() {
+  var planned = btGetPlanned();
+  var alerts = [];
+  var actTotal = 0;
+  var planTotal = btPlanTotal(planned);
+
+  document.querySelectorAll('.bt-actual-input').forEach(function(inp) {
+    var k = inp.getAttribute('data-btkey');
+    var act = parseFloat(inp.value) || 0;
+    var bud = planned[k] || 0;
+    var varVal = act - bud;
+    actTotal += act;
+    var varEl = document.getElementById('btVar-' + k);
+    if (varEl) {
+      if (varVal > 0.5) {
+        varEl.className = 'bt-var-over';
+        varEl.textContent = '+' + btFmt(varVal);
+        // Alert if >10% over and bud > 0
+        if (bud > 0 && varVal / bud > 0.10) {
+          alerts.push((BT_KEY_LABELS[k] || k) + ': ' + btFmt(bud) + ' budgeted, ' + btFmt(act) + ' actual (+' + Math.round(varVal/bud*100) + '%)');
+        }
+      } else if (varVal < -0.5) {
+        varEl.className = 'bt-var-under';
+        varEl.textContent = btFmt(varVal);
+      } else {
+        varEl.className = 'bt-var-zero';
+        varEl.textContent = '—';
+      }
+    }
+  });
+
+  // Update totals
+  var totVar = actTotal - planTotal;
+  var actTotalEl = document.getElementById('btActualTotalCell');
+  var varTotalEl = document.getElementById('btVarTotalCell');
+  if (actTotalEl) actTotalEl.textContent = btFmt(actTotal);
+  if (varTotalEl) {
+    varTotalEl.textContent = totVar > 0.5 ? '+' + btFmt(totVar) : totVar < -0.5 ? btFmt(totVar) : '—';
+  }
+
+  // Alert bar
+  var alertBar = document.getElementById('btAlertBar');
+  var alertList = document.getElementById('btAlertList');
+  if (alertBar && alertList) {
+    if (alerts.length > 0) {
+      alertBar.classList.add('show');
+      alertList.innerHTML = alerts.map(function(a) {
+        return '<div class="bt-alert-item">• ' + a + '</div>';
+      }).join('');
+    } else {
+      alertBar.classList.remove('show');
+    }
+  }
+}
+
+function btSaveCheckin() {
+  var monthVal = document.getElementById('btCheckinMonth')?.value || btCurrentMonthStr();
+  var actuals = {};
+  document.querySelectorAll('.bt-actual-input').forEach(function(inp) {
+    var k = inp.getAttribute('data-btkey');
+    var v = parseFloat(inp.value) || 0;
+    if (v > 0) actuals[k] = v;
+  });
+  var notes = document.getElementById('btCheckinNotes')?.value || '';
+
+  btData[monthVal] = {
+    actuals: actuals,
+    notes: notes,
+    savedAt: new Date().toISOString(),
+    planned: btGetPlanned()  // snapshot of planned at time of saving
+  };
+
+  // Persist via the app's existing save pipeline
+  if (typeof cloudSave === 'function') cloudSave();
+  else if (typeof saveToLocal === 'function') saveToLocal();
+
+  var badge = document.getElementById('btSavedBadge');
+  if (badge) {
+    badge.textContent = '✓ Saved ' + btMonthLabel(monthVal);
+    badge.classList.add('show');
+    setTimeout(function() { badge.classList.remove('show'); }, 3000);
+  }
+
+  btRenderCatButtons();
+}
+
+function btClearCheckin() {
+  document.querySelectorAll('.bt-actual-input').forEach(function(inp) {
+    inp.value = '';
+  });
+  btUpdateVariances();
+  var notesEl = document.getElementById('btCheckinNotes');
+  if (notesEl) notesEl.value = '';
+}
+
+// ── History ──
+
+function btGetFilteredMonths() {
+  var rangeVal = document.getElementById('btRangeFilter')?.value || '12';
+  var allMonths = Object.keys(btData).sort();
+
+  if (rangeVal === 'all') return allMonths;
+
+  if (rangeVal === 'custom') {
+    var from = document.getElementById('btRangeFrom')?.value;
+    var to = document.getElementById('btRangeTo')?.value;
+    return allMonths.filter(function(m) {
+      return (!from || m >= from) && (!to || m <= to);
+    });
+  }
+
+  var n = parseInt(rangeVal);
+  // Get the last n months (by calendar, not just by saved entries)
+  var cutoff = new Date();
+  cutoff.setMonth(cutoff.getMonth() - n);
+  var cutoffStr = cutoff.getFullYear() + '-' + String(cutoff.getMonth() + 1).padStart(2, '0');
+  return allMonths.filter(function(m) { return m >= cutoffStr; });
+}
+
+function btRenderHistory() {
+  // Show/hide custom range inputs
+  var rangeVal = document.getElementById('btRangeFilter')?.value;
+  var customDiv = document.getElementById('btCustomRange');
+  if (customDiv) customDiv.style.display = rangeVal === 'custom' ? 'flex' : 'none';
+
+  var months = btGetFilteredMonths();
+  var countEl = document.getElementById('btHistoryCount');
+  if (countEl) countEl.textContent = months.length + ' month' + (months.length !== 1 ? 's' : '');
+
+  var emptyEl = document.getElementById('btHistoryEmpty');
+  var tableWrap = document.getElementById('btHistoryTableWrap');
+
+  if (months.length === 0) {
+    if (emptyEl) emptyEl.style.display = 'block';
+    if (tableWrap) tableWrap.style.display = 'none';
+    btDestroyCharts();
+    return;
+  }
+  if (emptyEl) emptyEl.style.display = 'none';
+  if (tableWrap) tableWrap.style.display = 'block';
+
+  btRenderHistoryChart(months);
+  btRenderHistoryTable(months);
+  btRenderCatButtons();
+}
+
+function btDestroyCharts() {
+  if (btChartInstance) { btChartInstance.destroy(); btChartInstance = null; }
+}
+
+function btRenderHistoryChart(months) {
+  var canvas = document.getElementById('btHistoryChart');
+  if (!canvas) return;
+  if (btChartInstance) btChartInstance.destroy();
+
+  var labels = months.map(btMonthLabel);
+  var budgets = months.map(function(m) {
+    var rec = btData[m];
+    if (!rec) return 0;
+    var plan = rec.planned || btGetPlanned();
+    return btPlanTotal(plan);
+  });
+  var actuals = months.map(function(m) {
+    var rec = btData[m];
+    return rec ? btActualTotal(rec.actuals || {}) : 0;
+  });
+
+  btChartInstance = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Budget',
+          data: budgets,
+          backgroundColor: 'rgba(200,134,10,0.25)',
+          borderColor: '#C8860A',
+          borderWidth: 2,
+          borderRadius: 4
+        },
+        {
+          label: 'Actual',
+          data: actuals,
+          backgroundColor: actuals.map(function(a, i) {
+            return a > budgets[i] * 1.05 ? 'rgba(192,57,43,0.75)' : 'rgba(45,74,53,0.75)';
+          }),
+          borderColor: actuals.map(function(a, i) {
+            return a > budgets[i] * 1.05 ? '#c0392b' : '#2D4A35';
+          }),
+          borderWidth: 2,
+          borderRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { font: { family: 'DM Sans', size: 12 }, boxWidth: 14 } },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              return ctx.dataset.label + ': $' + Math.round(ctx.raw).toLocaleString();
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { family: 'DM Sans', size: 11 } } },
+        y: {
+          ticks: {
+            font: { family: 'DM Sans', size: 11 },
+            callback: function(v) { return '$' + (v >= 1000 ? (v/1000).toFixed(0) + 'k' : v); }
+          }
+        }
+      }
+    }
+  });
+}
+
+function btRenderHistoryTable(months) {
+  var tbody = document.getElementById('btHistoryBody');
+  if (!tbody) return;
+  var html = '';
+  // Show most recent first
+  var sorted = months.slice().reverse();
+  sorted.forEach(function(m) {
+    var rec = btData[m];
+    if (!rec) return;
+    var plan = rec.planned || btGetPlanned();
+    var budTotal = btPlanTotal(plan);
+    var actTotal = btActualTotal(rec.actuals || {});
+    var varVal = actTotal - budTotal;
+    var isOver = varVal > budTotal * 0.02;
+    var isUnder = varVal < -budTotal * 0.02;
+    var badge = isOver
+      ? '<span class="bt-badge-over">Over</span>'
+      : isUnder
+        ? '<span class="bt-badge-under">Under</span>'
+        : '<span style="color:var(--mid);font-size:0.78rem">On track</span>';
+    var varStr = varVal > 0.5 ? '<span style="color:#c0392b;font-weight:600">+' + btFmt(varVal) + '</span>'
+      : varVal < -0.5 ? '<span style="color:#2D4A35;font-weight:600">' + btFmt(varVal) + '</span>'
+      : '<span style="color:var(--mid)">—</span>';
+
+    html += '<tr>' +
+      '<td>' + btMonthLabel(m) + (rec.notes ? ' <span title="' + rec.notes.replace(/"/g,"'") + '" style="cursor:help;font-size:0.8rem">📝</span>' : '') + '</td>' +
+      '<td>' + btFmt(budTotal) + '</td>' +
+      '<td style="font-weight:600">' + btFmt(actTotal) + '</td>' +
+      '<td>' + varStr + '</td>' +
+      '<td>' + badge + '</td>' +
+      '<td><button class="bt-cat-detail-btn" onclick="btShowMonthDetail(\'' + m + '\')">Detail</button></td>' +
+      '</tr>';
+  });
+  tbody.innerHTML = html || '<tr><td colspan="6" style="color:var(--mid);text-align:center;padding:1.5rem">No data</td></tr>';
+}
+
+function btShowMonthDetail(monthKey) {
+  var rec = btData[monthKey];
+  if (!rec) return;
+  var drill = document.getElementById('btCatDrill');
+  var title = document.getElementById('btCatDrillTitle');
+  if (!drill || !title) return;
+
+  title.textContent = '📋 ' + btMonthLabel(monthKey) + ' — Line-by-Line Detail';
+  var plan = rec.planned || btGetPlanned();
+
+  // Build a mini table showing all actuals for that month
+  var rows = '';
+  BT_CATS.forEach(function(cat) {
+    var catRows = cat.keys.filter(function(k) {
+      return (plan[k] || 0) > 0 || (parseFloat((rec.actuals || {})[k]) || 0) > 0;
+    });
+    if (catRows.length === 0) return;
+    rows += '<div style="font-weight:700;font-size:0.78rem;text-transform:uppercase;color:var(--mid);letter-spacing:0.4px;margin:0.75rem 0 0.25rem">' + cat.label + '</div>';
+    catRows.forEach(function(k) {
+      var bud = plan[k] || 0;
+      var act = parseFloat((rec.actuals || {})[k]) || 0;
+      var v = act - bud;
+      var vStr = v > 0.5 ? '<span style="color:#c0392b">+' + btFmt(v) + '</span>'
+        : v < -0.5 ? '<span style="color:#2D4A35">' + btFmt(v) + '</span>'
+        : '<span style="color:var(--mid)">—</span>';
+      rows += '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #f0ece4;font-size:0.83rem">' +
+        '<span>' + (BT_KEY_LABELS[k] || k) + '</span>' +
+        '<span style="display:flex;gap:20px">' +
+        '<span style="color:var(--mid);min-width:70px;text-align:right">' + (bud > 0 ? btFmt(bud) : '—') + '</span>' +
+        '<span style="font-weight:600;min-width:70px;text-align:right">' + (act > 0 ? btFmt(act) : '—') + '</span>' +
+        '<span style="min-width:70px;text-align:right">' + vStr + '</span>' +
+        '</span></div>';
+    });
+  });
+
+  // Replace drill chart canvas with the detail table
+  var chartWrap = drill.querySelector('.bt-chart-wrap');
+  if (chartWrap) {
+    chartWrap.style.display = 'none';
+  }
+  // Insert detail table before the close button
+  var closeBtn = drill.querySelector('button');
+  var detailDiv = drill.querySelector('#btMonthDetailDiv');
+  if (!detailDiv) {
+    detailDiv = document.createElement('div');
+    detailDiv.id = 'btMonthDetailDiv';
+    if (closeBtn) drill.insertBefore(detailDiv, closeBtn);
+    else drill.appendChild(detailDiv);
+  }
+  detailDiv.innerHTML = rows;
+
+  drill.classList.add('show');
+  drill.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function btRenderCatButtons() {
+  var container = document.getElementById('btCatButtons');
+  if (!container) return;
+  container.innerHTML = BT_CATS.map(function(cat) {
+    return '<button class="bt-cat-detail-btn' + (btCurrentDrillCat === cat.label ? ' active' : '') + '" onclick="btDrillCat(\'' + cat.label.replace(/'/g,"\\'") + '\')">' + cat.label + '</button>';
+  }).join('');
+}
+
+function btDrillCat(catLabel) {
+  var months = btGetFilteredMonths();
+  if (months.length === 0) return;
+
+  btCurrentDrillCat = catLabel;
+  var cat = BT_CATS.find(function(c) { return c.label === catLabel; });
+  if (!cat) return;
+
+  var drill = document.getElementById('btCatDrill');
+  var title = document.getElementById('btCatDrillTitle');
+  var detailDiv = document.getElementById('btMonthDetailDiv');
+  if (detailDiv) detailDiv.innerHTML = '';
+  var chartWrap = drill ? drill.querySelector('.bt-chart-wrap') : null;
+  if (chartWrap) chartWrap.style.display = 'block';
+
+  if (title) title.textContent = catLabel + ' — Monthly Trend';
+
+  var labels = months.map(btMonthLabel);
+  var catActuals = months.map(function(m) {
+    var rec = btData[m];
+    if (!rec) return 0;
+    return cat.keys.reduce(function(s, k) {
+      return s + (parseFloat((rec.actuals || {})[k]) || 0);
+    }, 0);
+  });
+  var catBudgets = months.map(function(m) {
+    var rec = btData[m];
+    var plan = (rec && rec.planned) ? rec.planned : btGetPlanned();
+    return cat.keys.reduce(function(s, k) { return s + (plan[k] || 0); }, 0);
+  });
+
+  var canvas = document.getElementById('btDrillChart');
+  if (!canvas) return;
+  if (btDrillChartInstance) btDrillChartInstance.destroy();
+
+  btDrillChartInstance = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Budget',
+          data: catBudgets,
+          borderColor: '#C8860A',
+          backgroundColor: 'rgba(200,134,10,0.1)',
+          borderDash: [5, 3],
+          borderWidth: 2,
+          pointRadius: 4,
+          tension: 0.3
+        },
+        {
+          label: 'Actual',
+          data: catActuals,
+          borderColor: '#2D4A35',
+          backgroundColor: 'rgba(45,74,53,0.1)',
+          borderWidth: 2.5,
+          pointRadius: 4,
+          tension: 0.3,
+          fill: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { font: { family: 'DM Sans', size: 11 }, boxWidth: 14 } },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              return ctx.dataset.label + ': $' + Math.round(ctx.raw).toLocaleString();
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { family: 'DM Sans', size: 11 } } },
+        y: {
+          ticks: {
+            font: { family: 'DM Sans', size: 11 },
+            callback: function(v) { return '$' + (v >= 1000 ? (v/1000).toFixed(1) + 'k' : v); }
+          }
+        }
+      }
+    }
+  });
+
+  if (drill) drill.classList.add('show');
+  btRenderCatButtons();
+}
+
+function btCloseDrill() {
+  var drill = document.getElementById('btCatDrill');
+  if (drill) drill.classList.remove('show');
+  btCurrentDrillCat = null;
+  if (btDrillChartInstance) { btDrillChartInstance.destroy(); btDrillChartInstance = null; }
+  btRenderCatButtons();
+}
+
+// ══ END BUDGET TRACKING ENGINE ══
+
 // ── SUMMARY ──
 function updateSummary() {
   var el = function(id) { return document.getElementById(id); };
@@ -6649,6 +7675,7 @@ window.addEventListener('load', function() {
   showTab = function(name) {
     _origST(name);
     setTimeout(fixMobileGrids, 50);
+    if (name === 'budget') setTimeout(btInit, 100);
     // Add nav arrow on mobile
   if(window.innerWidth <= 768 && !document.getElementById('navArrow')) {
     var arrow = document.createElement('div');
@@ -6874,6 +7901,10 @@ function loadFromLocal() {
     var hasDSS67 = (parseFloat(document.getElementById('dss67')?.value)||0) > 0;
     if((hasDSS62 || hasDSS67) && typeof dssManualUpdate === 'function') dssManualUpdate();
     console.log('MyYolk: data restored from localStorage');
+    // Restore budget tracking data
+    if(data['__budgetTracking']) {
+      try { btData = JSON.parse(data['__budgetTracking']); } catch(e) { btData = {}; }
+    }
     // Strip old inline styles from income rows so CSS class takes over
     document.querySelectorAll('.additional-income-row').forEach(function(row) {
       row.style.cssText = '';
