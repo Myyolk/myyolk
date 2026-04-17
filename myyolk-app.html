@@ -859,12 +859,14 @@
       left: 0;
       right: 0;
       top: auto !important;
-      height: auto !important;
+      height: 68px !important;
+      max-height: 68px !important;
       width: 100% !important;
       overflow-x: auto;
       overflow-y: hidden;
       display: flex !important;
       flex-direction: row !important;
+      align-items: center !important;
       padding: 0.4rem 0.5rem 0.6rem !important;
       gap: 0 !important;
       border-right: none !important;
@@ -900,13 +902,18 @@
       font-size: 0.6rem !important;
       min-width: 60px;
       max-width: 60px;
+      height: 56px !important;
+      max-height: 56px !important;
       text-align: center;
       border-radius: 8px !important;
       white-space: nowrap;
       overflow: hidden;
+      align-items: center !important;
+      justify-content: center !important;
+      position: relative;
     }
     .nav-item .icon { font-size: 1.3rem; width: auto; display: block; margin: 0 auto 1px; }
-    .nav-item.active { background: var(--sage) !important; color: #fff !important; }
+    .nav-item.active { background: var(--sage) !important; color: #fff !important; height: 56px !important; max-height: 56px !important; }
     /* Hide full label, show short data-label on mobile */
     .nav-item .nav-label { display: none; }
     .nav-item::after { content: attr(data-label); font-size: 0.58rem; display: block; margin-top: 1px; }
@@ -1686,8 +1693,8 @@
     <button class="nav-item" onclick="showTab('budget')" data-label="Planner">
       <span class="icon">📊</span><span class="nav-label"> Budget Planner</span>
     </button>
-    <button class="nav-item nav-locked" onclick="proGate('tracking','📅 Budget Tracker')" id="nav-tracking" data-label="Tracker">
-      <span class="icon">📅</span><span class="nav-label"> Budget Tracker</span><span class="nav-lock-icon">🔒</span><span id="btUnloggedBadge" style="display:none;width:8px;height:8px;background:#c0392b;border-radius:50%;margin-left:auto;flex-shrink:0"></span>
+    <button class="nav-item nav-locked" onclick="proGate('tracking','📅 Budget Tracker')" id="nav-tracking" data-label="Tracker" style="position:relative">
+      <span class="icon">📅</span><span class="nav-label"> Budget Tracker</span><span class="nav-lock-icon">🔒</span><span id="btUnloggedBadge" style="display:none;position:absolute;top:4px;right:4px;width:8px;height:8px;background:#c0392b;border-radius:50%;flex-shrink:0"></span>
     </button>
     <button class="nav-item" onclick="showTab('projections')" data-label="Project.">
       <span class="icon">📈</span><span class="nav-label"> Projections</span>
