@@ -4712,10 +4712,10 @@ showTab = function(name) {
     setTimeout(calcReadiness, 100);
   }
   if(name === 'summary') {
-    // Initialize with one vehicle
+    setTimeout(function() {
+  // Initialize with one vehicle
   if(document.getElementById('vehicleList') && document.getElementById('vehicleList').children.length === 0) addVehicle();
 
-  setTimeout(function() {
       if(typeof calcProjections === 'function') calcProjections();
       if(typeof calcReadiness === 'function') calcReadiness();
       if(typeof updateSummary === 'function') updateSummary();
