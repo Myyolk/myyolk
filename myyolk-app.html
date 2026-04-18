@@ -7038,6 +7038,8 @@ function btCloseDrill() {
 // ══════════════════════════════════════════
 
 var IS_PRO = true; // TESTER MODE — all Pro features unlocked
+// Sync toggle on load
+document.addEventListener('DOMContentLoaded', function() { var chk = document.querySelector('input[type=checkbox][id*=pro], input[type=checkbox][id*=Pro]'); if(chk) chk.checked = IS_PRO; setProMode(IS_PRO); });
 
 var PRO_TABS = ['tracking', 'whatif', 'early', 'summary'];
 var PRO_FEATURES = { insights: '💡 Spending Insights & Analysis' };
