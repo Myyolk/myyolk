@@ -1547,7 +1547,7 @@
 <body>
 
 <header>
-  <div class="logo">
+  <div class="logo"><a href="https://myyolk.com" style="display:block;text-decoration:none">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 52" width="280" height="58" style="display:block">
       <defs><clipPath id="egg-clip"><ellipse cx="26" cy="28" rx="20" ry="24"/></clipPath></defs>
       <ellipse cx="26" cy="28" rx="20" ry="24" fill="#fffdf0" stroke="#e8c96a" stroke-width="2"/>
@@ -1556,7 +1556,7 @@
       <text x="90" y="31" font-family="Georgia, serif" font-size="26" font-weight="700" fill="#fffdf0">Yolk<tspan font-size="11" font-weight="400" baseline-shift="super">&#8482;</tspan></text>
       <text x="54" y="46" font-family="Georgia, serif" font-size="9" fill="#2D4A35" letter-spacing="2" opacity="0.7">RETIREMENT PLANNING</text>
     </svg>
-  </div>
+  </a></div>
   <div class="header-badge">Protect the Good Stuff</div>
   <div id="langSelector" onclick="toggleLangDropdown()">
     <span id="currentFlag">🇺🇸</span>
@@ -7034,7 +7034,7 @@ function btCloseDrill() {
 // ── PRO / PAYWALL SYSTEM ──
 // ══════════════════════════════════════════
 
-var IS_PRO = true; // defaults to Pro for Dean's test account
+var IS_PRO = true; // TESTER MODE — all Pro features unlocked
 
 var PRO_TABS = ['tracking', 'whatif', 'early', 'summary'];
 var PRO_FEATURES = { insights: '💡 Spending Insights & Analysis' };
