@@ -1603,7 +1603,7 @@
       <div class="paywall-perk">Full Summary &amp; PDF Export</div>
       <div class="paywall-perk">Spending Insights &amp; analysis</div>
     </div>
-    <button class="paywall-btn-primary" onclick="closePaywall()">Learn More About Pro</button>
+    <button class="paywall-btn-primary" onclick="closePaywall();window.open('https://myyolk.com/#pricing','_blank')">Learn More About Pro</button>
     <button class="paywall-btn-secondary" onclick="closePaywall()">Maybe later</button>
   </div>
 </div>
@@ -8459,7 +8459,7 @@ setTimeout(function() {
 
 
   <!-- PDF EXPORT BUTTON -->
-  <button id="pdfBtn" onclick="generatePDF()">📄 Download Report</button>
+  <button id="pdfBtn" onclick="if(!IS_PRO){proGate('pdf','📄 PDF Report');}else{generatePDF();}">📄 Download Report</button>
 
 </body>
 </html>
