@@ -7043,19 +7043,21 @@ var PRO_TABS = ['tracking', 'whatif', 'early', 'summary'];
 var PRO_FEATURES = { insights: '💡 Spending Insights & Analysis' };
 
 function setProMode(isPro) {
-  var pdfBtn = document.getElementById('pdfBtn');
-  if(pdfBtn) {
-    if(isPro) {
-      pdfBtn.style.opacity = '1';
-      pdfBtn.style.cursor = 'pointer';
-      pdfBtn.style.background = '#2D4A35';
-    } else {
-      pdfBtn.style.opacity = '0.4';
-      pdfBtn.style.cursor = 'not-allowed';
-      pdfBtn.style.background = '#888';
-    }
-  }
   IS_PRO = !!isPro;
+  setTimeout(function() {
+    var pdfBtn = document.getElementById('pdfBtn');
+    if(pdfBtn) {
+      if(isPro) {
+        pdfBtn.style.opacity = '1';
+        pdfBtn.style.cursor = 'pointer';
+        pdfBtn.style.background = '#2D4A35';
+      } else {
+        pdfBtn.style.opacity = '0.4';
+        pdfBtn.style.cursor = 'not-allowed';
+        pdfBtn.style.background = '#888';
+      }
+    }
+  }, 100);
 
   // Sync checkbox
   var chk = document.getElementById('proToggleCheck');
