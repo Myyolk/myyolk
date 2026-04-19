@@ -2314,8 +2314,8 @@
             </div>
             <div class="field ai-owner-col" style="margin:0;display:none"><label id="aiOwnerLabel">Whose?</label>
               <select class="ai-owner" onchange="recalc()" style="width:100%">
-                <option value="mine">Dean's</option>
-                <option value="spouse">Densie's</option>
+                <option value="mine">Mine</option>
+                <option value="spouse" id="spouseDropdownOption">Spouse's</option>
               </select>
             </div>
             <div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:6px 8px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>
@@ -2545,7 +2545,7 @@
 
       <!-- DENSIE SS CARD -->
       <div class="card" id="densieSSCard" style="display:none">
-        <div class="card-title"><span class="dot"></span> <span id="spouse-ss-name">Densie's Social Security</div>
+        <div class="card-title"><span class="dot"></span> <span id="spouse-ss-name">Spouse's Social Security</div>
         <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem">
           <button id="dssBtn-upload" onclick="switchDSSMethod('upload')" class="ss-tab-btn">Upload Statement</button>
           <button id="dssBtn-manual" onclick="switchDSSMethod('manual')" class="ss-tab-btn">Enter Manually</button>
@@ -4235,9 +4235,9 @@ function calcSpouseSsBenefit() {
   var deanNote = '';
   if(spouseOwn > 0 && halfOfSpouse > deanOwn) {
     deanFinal = halfOfSpouse;
-    deanNote = 'Dean: $' + Math.round(halfOfSpouse).toLocaleString() + '/mo (spousal — 50% of Densie’s $' + Math.round(spouseOwn).toLocaleString() + ')';
+    deanNote = 'You: $' + Math.round(halfOfSpouse).toLocaleString() + '/mo (spousal — 50% of spouse\'s $' + Math.round(spouseOwn).toLocaleString() + ')';
   } else if(deanOwn > 0) {
-    deanNote = 'Dean: $' + Math.round(deanOwn).toLocaleString() + '/mo (his own benefit)';
+    deanNote = 'You: $' + Math.round(deanOwn).toLocaleString() + '/mo (his own benefit)';
   }
 
   // Spouse's final benefit
@@ -4246,14 +4246,17 @@ function calcSpouseSsBenefit() {
   if(spouseOwn > 0) {
     if(spouseOwn >= halfOfDean) {
       spouseFinal = spouseOwn;
-      spouseNote = 'Densie: $' + Math.round(spouseOwn).toLocaleString() + '/mo (their own benefit)';
+      var spouseName = document.getElementById('spouseFirstName')?.value || 'Spouse';
+    spouseNote = spouseName + ': $' + Math.round(spouseOwn).toLocaleString() + '/mo (their own benefit)';
     } else {
       spouseFinal = halfOfDean;
-      spouseNote = 'Densie: $' + Math.round(halfOfDean).toLocaleString() + '/mo (spousal — 50% of Dean’s $' + Math.round(deanOwn).toLocaleString() + ')';
+      var spouseName = document.getElementById('spouseFirstName')?.value || 'Spouse';
+    spouseNote = spouseName + ': $' + Math.round(halfOfDean).toLocaleString() + '/mo (spousal — 50% of Dean’s $' + Math.round(deanOwn).toLocaleString() + ')';
     }
   } else {
     spouseFinal = halfOfDean;
-    spouseNote = 'Densie: $' + Math.round(halfOfDean).toLocaleString() + '/mo (spousal — 50% of Dean’s $' + Math.round(deanOwn).toLocaleString() + ')';
+    var spouseName = document.getElementById('spouseFirstName')?.value || 'Spouse';
+    spouseNote = spouseName + ': $' + Math.round(halfOfDean).toLocaleString() + '/mo (spousal — 50% of Dean’s $' + Math.round(deanOwn).toLocaleString() + ')';
   }
 
   var totalHousehold = deanFinal + spouseFinal;
@@ -4562,7 +4565,7 @@ function calcProjections() {
     if(ssAtRetirement > 0) {
       projSS.textContent = '$' + Math.round(ssAtRetirement).toLocaleString() + '/mo';
       var isCouple = document.getElementById('planCouple')?.checked;
-      projSS.nextElementSibling.textContent = isCouple ? 'SS Income (Dean + Densie)' : 'SS Income at Retirement';
+      projSS.nextElementSibling.textContent = isCouple ? 'SS Income (You + Spouse)' : 'SS Income at Retirement';
     } else {
       projSS.textContent = '—';
     }
