@@ -1569,7 +1569,8 @@
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:0.5rem;">
-    <span id="saveIndicator" style="font-size:0.75rem;color:#2d6a4f;opacity:0;transition:opacity 0.5s">💾 Saved</span>
+    <span id="saveIndicator" style="font-size:0.75rem;color:#2d6a4f;opacity:0;transition:opacity 0.5s">☁️ Saved</span>
+    <button onclick="manuallySave()" title="Save your data to the cloud" style="font-size:0.75rem;font-weight:600;background:#2D4A35;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;color:#fff;font-family:DM Sans,sans-serif">💾 Save</button>
     <button onclick="clearSavedData()" title="Clear all saved data" style="font-size:0.75rem;background:none;border:1px solid #ddd;border-radius:6px;padding:3px 8px;cursor:pointer;color:#888">Clear Data</button>
   </div>
   <div style="display:flex;align-items:center;gap:0.5rem;margin-left:auto">
@@ -3998,7 +3999,7 @@ function addBudgetSub() {
       '<input type="text" id="budSubName_'+id+'" placeholder="e.g. Netflix" style="padding:0.25rem 0.5rem;border:1.5px solid var(--border);border-radius:6px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%;min-width:0">' +
       '<button onclick="removeBudgetSub('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.1rem;line-height:1;flex-shrink:0">×</button>' +
     '</label>' +
-    '<input type="number" id="budSubCost_'+id+'" class="bud-m" placeholder="0" oninput="calcBudget(this)" style="text-align:right">' +
+    '<input type="number" id="budSubCost_'+id+'" class="bud-m" placeholder="0" oninput="calcBudget(this);saveToLocal();if(typeof cloudSave===\'function\')cloudSave();" style="text-align:right">' +
     '<input type="number" id="budSubAnnual_'+id+'" class="bud-a" placeholder="0" oninput="calcBudget(this)" style="text-align:right">';
   document.getElementById('budgetSubList').appendChild(div);
   calcBudget({classList:{contains:function(){return false;}}});
@@ -4018,7 +4019,7 @@ function addCustomBudgetItem(catId) {
       '<input type="text" id="customName_'+safeId+'" placeholder="Item name" style="padding:0.25rem 0.5rem;border:1.5px solid var(--border);border-radius:6px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%;min-width:0">' +
       '<button data-cat="'+catId+'" data-itemid="'+safeId+'" onclick="removeCustomByCat(this)" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.1rem;line-height:1;flex-shrink:0">×</button>' +
     '</label>' +
-    '<input type="number" id="customCost_'+safeId+'" class="bud-m" data-cat="'+catId+'" placeholder="0" oninput="calcBudget(this)" style="text-align:right">' +
+    '<input type="number" id="customCost_'+safeId+'" class="bud-m" data-cat="'+catId+'" placeholder="0" oninput="calcBudget(this);saveToLocal();if(typeof cloudSave===\'function\')cloudSave();" style="text-align:right">' +
     '<input type="number" id="customAnnual_'+safeId+'" class="bud-a" placeholder="0" oninput="calcBudget(this)" style="text-align:right">';
   document.getElementById('customList_'+catId).appendChild(div);
 }
@@ -8551,6 +8552,12 @@ function collectAllData() {
 var SAVE_KEY = 'myyolk_v1';
 // saveData is an alias
 function saveData() { saveToLocal(); }
+function manuallySave() {
+  saveToLocal();
+  if(typeof cloudSave === 'function') cloudSave();
+  var ind = document.getElementById('saveIndicator');
+  if(ind) { ind.textContent = '☁️ Saved'; ind.style.opacity = '1'; setTimeout(function(){ ind.style.opacity='0'; }, 2500); }
+}
 
 // Init Supabase on load
 window.addEventListener('load', function() { 
