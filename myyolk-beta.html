@@ -2827,7 +2827,13 @@
 
         <div class="budget-category">
           <div class="budget-cat-header">🎭 Lifestyle</div>
-          <div class="budget-row"><label>Subscriptions / Streaming</label><input type="number" class="bud-m" data-key="subs" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="margin-bottom:0.5rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem">
+              <label style="font-size:0.88rem;color:var(--charcoal)">Subscriptions / Streaming</label>
+              <button onclick="addBudgetSub()" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:4px 12px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
+            </div>
+            <div id="budgetSubList"></div>
+          </div>
           <div class="budget-row"><label>Entertainment</label><input type="number" class="bud-m" data-key="entertain" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Shopping / Clothing</label><input type="number" class="bud-m" data-key="shopping" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Gym / Fitness</label><input type="number" class="bud-m" data-key="gym" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
@@ -3921,6 +3927,36 @@ function addSubscription() {
   document.getElementById('subscriptionList').appendChild(div);
 }
 function removeSub(id) { var el = document.getElementById('sub_'+id); if(el) el.remove(); recalc(); }
+
+// Budget tab subscriptions
+var budSubCount = 0;
+function addBudgetSub() {
+  budSubCount++;
+  var id = budSubCount;
+  var div = document.createElement('div');
+  div.id = 'budSub_' + id;
+  div.style.cssText = 'display:grid;grid-template-columns:1fr 120px auto;gap:0.5rem;align-items:center;margin-bottom:0.5rem';
+  div.innerHTML =
+    '<input type="text" id="budSubName_'+id+'" placeholder="e.g. Netflix" style="padding:0.35rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;width:100%">' +
+    '<input type="number" id="budSubCost_'+id+'" placeholder="$/mo" oninput="calcBudgetSubs()" style="padding:0.35rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;width:100%;text-align:right">' +
+    '<button onclick="removeBudgetSub('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.2rem;line-height:1">×</button>';
+  document.getElementById('budgetSubList').appendChild(div);
+  calcBudgetSubs();
+}
+function removeBudgetSub(id) {
+  var el = document.getElementById('budSub_'+id);
+  if(el) el.remove();
+  calcBudgetSubs();
+}
+function calcBudgetSubs() {
+  var total = 0;
+  document.querySelectorAll('[id^="budSubCost_"]').forEach(function(el) {
+    total += parseFloat(el.value) || 0;
+  });
+  // Store total in hidden subs field so calcBudget picks it up
+  var hidden = document.querySelector('[data-key="subs"]');
+  if(hidden) { hidden.value = total; calcBudget(hidden); }
+}
 
 // ── INVESTMENT PROPERTIES ──
 var propCount = 0;
@@ -5223,7 +5259,11 @@ function calcReadiness() {
     var savingsRate = annualContribTotal / totalSalary;
     scoreSavings = Math.min(Math.round((savingsRate / 0.15) * 100), 100);
   } else {
-    scoreSavings = 70; // no salary entered — neutral
+    // No salary — score based on portfolio already built
+    if(portfolio >= 500000) scoreSavings = 100;
+    else if(portfolio >= 250000) scoreSavings = 85;
+    else if(portfolio >= 100000) scoreSavings = 70;
+    else scoreSavings = 50;
   }
 
   // Weighted total
@@ -8370,6 +8410,16 @@ function collectAllData() {
     });
   });
   data['__leRows'] = JSON.stringify(leRows);
+  // Budget subscription rows
+  var budSubRows = [];
+  document.querySelectorAll('[id^="budSub_"]').forEach(function(row) {
+    var id = row.id.replace('budSub_','');
+    budSubRows.push({
+      name: document.getElementById('budSubName_'+id)?.value||'',
+      cost: document.getElementById('budSubCost_'+id)?.value||''
+    });
+  });
+  data['__budSubRows'] = JSON.stringify(budSubRows);
   return data;
 }
 
@@ -8570,6 +8620,26 @@ function loadFromLocal() {
         if(leContainer && leRows.length > 0) {
           leContainer.innerHTML = '';
           leRows.forEach(function(rd) { addLifeEvent(rd); });
+        }
+      } catch(e) {}
+    }
+    // Restore budget subscription rows
+    if(data['__budSubRows']) {
+      try {
+        var budSubRows = JSON.parse(data['__budSubRows']);
+        var budSubContainer = document.getElementById('budgetSubList');
+        if(budSubContainer && budSubRows.length > 0) {
+          budSubContainer.innerHTML = '';
+          budSubCount = 0;
+          budSubRows.forEach(function(rd) {
+            addBudgetSub();
+            var id = budSubCount;
+            var nameEl = document.getElementById('budSubName_'+id);
+            var costEl = document.getElementById('budSubCost_'+id);
+            if(nameEl) nameEl.value = rd.name;
+            if(costEl) costEl.value = rd.cost;
+          });
+          calcBudgetSubs();
         }
       } catch(e) {}
     }
