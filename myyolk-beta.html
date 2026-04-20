@@ -8532,6 +8532,22 @@ function collectAllData() {
     });
   });
   data['__budSubRows'] = JSON.stringify(budSubRows);
+  // Vehicle rows
+  var vehicleRows = [];
+  document.querySelectorAll('[id^="vehicle_"]').forEach(function(row) {
+    var id = row.id.replace('vehicle_','');
+    if(!id || isNaN(id)) return;
+    vehicleRows.push({
+      name:    document.getElementById('vehicleName_'+id)?.value||'',
+      ins:     document.getElementById('vehicleIns_'+id)?.value||'',
+      maint:   document.getElementById('vehicleMaint_'+id)?.value||'',
+      wash:    document.getElementById('vehicleWash_'+id)?.value||'',
+      loan:    document.getElementById('vehicleLoan_'+id)?.value||'',
+      payoff:  document.getElementById('vehiclePayoff_'+id)?.value||'',
+      replace: document.getElementById('vehicleReplace_'+id)?.value||''
+    });
+  });
+  data['__vehicleRows'] = JSON.stringify(vehicleRows);
   // Custom budget items per category
   var customCats = ['housing','transport','food','health','profsvc','education','lifestyle','insurance'];
   customCats.forEach(function(catId) {
@@ -8777,6 +8793,28 @@ function loadFromLocal() {
             if(annualEl && rd.annual) annualEl.value = rd.annual;
           });
           calcBudgetSubs();
+        }
+      } catch(e) {}
+    }
+    // Restore vehicle rows
+    if(data['__vehicleRows']) {
+      try {
+        var vehicleRows = JSON.parse(data['__vehicleRows']);
+        var vList = document.getElementById('vehicleList');
+        if(vList && vehicleRows.length > 0) {
+          vList.innerHTML = '';
+          vehicleCount = 0;
+          vehicleRows.forEach(function(rd) {
+            addVehicle();
+            var id = vehicleCount;
+            if(document.getElementById('vehicleName_'+id)) document.getElementById('vehicleName_'+id).value = rd.name;
+            if(document.getElementById('vehicleIns_'+id)) document.getElementById('vehicleIns_'+id).value = rd.ins;
+            if(document.getElementById('vehicleMaint_'+id)) document.getElementById('vehicleMaint_'+id).value = rd.maint;
+            if(document.getElementById('vehicleWash_'+id)) document.getElementById('vehicleWash_'+id).value = rd.wash;
+            if(document.getElementById('vehicleLoan_'+id)) document.getElementById('vehicleLoan_'+id).value = rd.loan;
+            if(document.getElementById('vehiclePayoff_'+id)) document.getElementById('vehiclePayoff_'+id).value = rd.payoff;
+            if(document.getElementById('vehicleReplace_'+id)) document.getElementById('vehicleReplace_'+id).value = rd.replace;
+          });
         }
       } catch(e) {}
     }
