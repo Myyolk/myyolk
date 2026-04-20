@@ -6080,6 +6080,9 @@ function generatePDF() {
       var budgetTotal = document.getElementById('budgetMonthlyTotal')?.textContent || '—';
       if(budgetTotal !== '—' && budgetTotal !== '$0' && y < H-80) {
         y = hdr('MONTHLY BUDGET SUMMARY', y);
+        doc.setFont('times','italic'); doc.setFontSize(7.5); doc.setTextColor(mid[0],mid[1],mid[2]);
+        doc.text("Today's dollars. Gap Analysis on page 1 shows inflation-adjusted figure at retirement.", margin, y);
+        y += 5;
         var budgetKeys = [
           ['Housing (utilities, maintenance)', ['electric','gasHeat','water','sewerage','trash','internet','cellPhone','homeMaint','propTax','homeIns']],
           ['Transportation', ['gas','carIns','carMaint','carWash']],
