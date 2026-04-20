@@ -1934,11 +1934,11 @@
       <div class="card">
         <div class="card-title"><span class="dot"></span> Upload a Pay Stub <span class="tag tag-gray" style="margin-left:auto;font-family:DM Sans">Optional</span></div>
         <p style="font-size:0.88rem;color:var(--mid);margin-bottom:1rem;">Upload a recent pay stub and we'll read your income and contribution details automatically.</p>
-        <div class="upload-zone" id="uploadZone">
-          <input type="file" accept=".pdf,image/*" onchange="handleUpload(event)">
-          <div class="upload-icon">📄</div>
-          <div class="upload-title">Drop your pay stub here</div>
-          <div class="upload-sub">PDF or image · Your data stays private</div>
+        <div class="upload-zone" id="uploadZone" style="opacity:0.6;cursor:default;pointer-events:none">
+          <input type="file" accept=".pdf,image/*" disabled>
+          <div class="upload-icon">🔧</div>
+          <div class="upload-title">Pay Stub Upload</div>
+          <div class="upload-sub" style="color:#C8860A;font-weight:600">Coming Soon</div>
         </div>
         <div class="upload-result" id="uploadResult">
           <div style="font-size:1.5rem">✅</div>
@@ -2127,7 +2127,7 @@
 
         <div style="margin-top:1.5rem">
           <div style="font-weight:600;font-size:0.85rem;color:var(--forest);margin-bottom:0.75rem">📄 Upload Spouse Pay Stub <span style="font-size:0.75rem;font-weight:400;color:#888">Optional</span></div>
-          <div class="upload-zone" id="spouseUploadZone" onclick="document.getElementById('spousePayStubFile').click()" style="cursor:pointer">
+          <div class="upload-zone" id="spouseUploadZone" style="opacity:0.6;cursor:default;pointer-events:none">
             <input type="file" id="spousePayStubFile" accept=".pdf,image/*" style="display:none" onchange="handleSpousePayStub(this)">
             <div style="font-size:1.5rem;margin-bottom:0.5rem">📄</div>
             <div style="font-weight:600;font-size:0.85rem">Drop spouse pay stub here</div>
@@ -2570,9 +2570,20 @@
         </div>
 
         <div style="border-top:1px solid var(--border);margin-top:1.25rem;padding-top:1.25rem">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem"><div style="font-weight:600;font-size:0.85rem;color:var(--forest)">🚗 Vehicles</div><button onclick="addVehicle()" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add Vehicle</button></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
+            <div style="font-weight:600;font-size:0.85rem;color:var(--forest)">🚗 Vehicles</div>
+            <button onclick="addVehicle()" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add Vehicle</button>
+          </div>
           <div id="vehicleList"></div>
-          <div class="form-grid" style="margin-top:1rem"><div class="field"><label>Other Assets ($)</label><input type="number" id="otherAssets" value="" placeholder="0" oninput="recalc()"></div></div>
+        </div>
+
+        <div style="border-top:1px solid var(--border);margin-top:1.25rem;padding-top:1.25rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
+            <div style="font-weight:600;font-size:0.85rem;color:var(--forest)">💎 Other Assets</div>
+            <button onclick="addOtherAsset()" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add Asset</button>
+          </div>
+          <div id="otherAssetList"></div>
+          <input type="hidden" id="otherAssets" value="0">
         </div>
       </div>
 
@@ -2597,7 +2608,7 @@
           <button id="ssBtn-estimate" onclick="switchSSMethod('estimate')" class="ss-tab-btn">Estimate for Me</button>
         </div>
         <div id="ss-method-upload" style="display:none">
-          <div class="upload-zone" id="ssUploadZone" style="padding:1.5rem">
+          <div class="upload-zone" id="ssUploadZone" style="padding:1.5rem;opacity:0.6;cursor:default;pointer-events:none">
             <input type="file" accept=".pdf,image/*" onchange="handleSSUpload(event)">
             <div style="font-size:2rem;margin-bottom:0.5rem">🏛️</div>
             <div style="font-size:0.95rem;font-weight:600">Drop your SSA Statement PDF here</div>
@@ -2951,23 +2962,11 @@
             <label style="font-size:0.78rem;color:var(--sage)">↳ Student Loan Payoff</label>
             <input type="month" id="studentLoanPayoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
           </div>
-          <div id="creditCardRows">
-            <div class="budget-row">
-              <label>Credit Card 1</label>
-              <input type="number" class="bud-m" data-key="debtCC1" placeholder="0" oninput="calcBudget(this)">
-              <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
-            </div>
-            <div class="budget-row">
-              <label>Credit Card 2</label>
-              <input type="number" class="bud-m" data-key="debtCC2" placeholder="0" oninput="calcBudget(this)">
-              <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
-            </div>
-            <div class="budget-row">
-              <label>Credit Card 3</label>
-              <input type="number" class="bud-m" data-key="debtCC3" placeholder="0" oninput="calcBudget(this)">
-              <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
-            </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0">
+            <span style="font-size:0.82rem;color:var(--mid)">Credit Cards</span>
+            <button onclick="addCreditCard()" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add Card</button>
           </div>
+          <div id="creditCardRows"></div>
           <div class="budget-row">
             <label>Personal Loan</label>
             <input type="number" class="bud-m" data-key="debtPersonal" placeholder="0" oninput="calcBudget(this)">
@@ -3958,17 +3957,63 @@ function addVehicle() {
   div.style.cssText = 'border:1px solid #e5d9c3;border-radius:12px;padding:1rem;margin-bottom:1rem;background:#fffdf7';
   div.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem"><span style="font-weight:600;font-size:0.85rem">Vehicle ' + id + '</span><button onclick="removeVehicle('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer">Remove</button></div>' +
     '<div class="form-grid">' +
-    '<div class="field"><label>Year/Make/Model</label><input type="text" id="vehicleName_'+id+'" placeholder="e.g. 2022 Ford F-150"></div>' +
-    '<div class="field"><label>Auto Insurance ($/mo)</label><input type="number" id="vehicleIns_'+id+'" placeholder="e.g. 120" oninput="recalc()"></div>' +
-    '<div class="field"><label>Maintenance ($/mo)</label><input type="number" id="vehicleMaint_'+id+'" placeholder="e.g. 100" oninput="recalc()"></div>' +
-    '<div class="field"><label>Car Washes ($/mo)</label><input type="number" id="vehicleWash_'+id+'" placeholder="e.g. 20" oninput="recalc()"></div>' +
-    '<div class="field"><label>Loan Payment ($/mo)</label><input type="number" id="vehicleLoan_'+id+'" placeholder="e.g. 450" oninput="recalc()"></div>' +
-    '<div class="field"><label>Loan Payoff Year</label><input type="number" id="vehiclePayoff_'+id+'" placeholder="e.g. 2027" oninput="recalc()"></div>' +
+    '<div class="field"><label>Year/Make/Model</label><input type="text" id="vehicleName_'+id+'" placeholder="e.g. 2022 Ford F-150" oninput="saveToLocal()"></div>' +
     '<div class="field"><label>Expected Replacement Year</label><input type="number" id="vehicleReplace_'+id+'" placeholder="e.g. 2030" oninput="recalc()"><div class="hint">We will flag this as a future expense</div></div>' +
     '</div>';
   document.getElementById('vehicleList').appendChild(div);
 }
 function removeVehicle(id) { var el = document.getElementById('vehicle_'+id); if(el) el.remove(); recalc(); }
+
+// Other Assets
+var otherAssetCount = 0;
+function addOtherAsset() {
+  otherAssetCount++;
+  var id = otherAssetCount;
+  var div = document.createElement('div');
+  div.id = 'otherAsset_' + id;
+  div.style.cssText = 'display:grid;grid-template-columns:1fr 140px auto;gap:0.5rem;align-items:center;margin-bottom:0.5rem';
+  div.innerHTML =
+    '<input type="text" id="otherAssetName_'+id+'" placeholder="e.g. Jewelry, Art, Boat" style="padding:0.35rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;width:100%">' +
+    '<input type="number" id="otherAssetValue_'+id+'" placeholder="Value ($)" oninput="calcOtherAssets()" style="padding:0.35rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;width:100%;text-align:right">' +
+    '<button onclick="removeOtherAsset('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.2rem;line-height:1">×</button>';
+  document.getElementById('otherAssetList').appendChild(div);
+}
+function removeOtherAsset(id) {
+  var el = document.getElementById('otherAsset_'+id);
+  if(el) el.remove();
+  calcOtherAssets();
+}
+function calcOtherAssets() {
+  var total = 0;
+  document.querySelectorAll('[id^="otherAssetValue_"]').forEach(function(el) {
+    total += parseFloat(el.value) || 0;
+  });
+  var hidden = document.getElementById('otherAssets');
+  if(hidden) { hidden.value = total; recalc(); }
+}
+
+// Credit Cards
+var creditCardCount = 0;
+function addCreditCard() {
+  creditCardCount++;
+  var id = creditCardCount;
+  var div = document.createElement('div');
+  div.id = 'ccRow_' + id;
+  div.className = 'budget-row';
+  div.innerHTML =
+    '<label style="display:flex;align-items:center;gap:6px">' +
+      '<input type="text" id="ccName_'+id+'" placeholder="e.g. PNC Visa" style="padding:0.25rem 0.5rem;border:1.5px solid var(--border);border-radius:6px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%;min-width:0">' +
+      '<button onclick="removeCreditCard('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.1rem;line-height:1;flex-shrink:0">×</button>' +
+    '</label>' +
+    '<input type="number" id="ccPayment_'+id+'" class="bud-m" placeholder="0" oninput="calcBudget(this);saveToLocal();if(typeof cloudSave==='function')cloudSave();" style="text-align:right">' +
+    '<input type="number" id="ccAnnual_'+id+'" class="bud-a" placeholder="0" oninput="calcBudget(this)" style="text-align:right">';
+  document.getElementById('creditCardRows').appendChild(div);
+}
+function removeCreditCard(id) {
+  var el = document.getElementById('ccRow_'+id);
+  if(el) el.remove();
+  calcBudget({classList:{contains:function(){return false;}}});
+}
 
 // ── SUBSCRIPTIONS ──
 var subCount = 0;
@@ -8548,6 +8593,29 @@ function collectAllData() {
     });
   });
   data['__vehicleRows'] = JSON.stringify(vehicleRows);
+  // Other assets
+  var otherAssetRows = [];
+  document.querySelectorAll('[id^="otherAsset_"]').forEach(function(row) {
+    var id = row.id.replace('otherAsset_','');
+    if(!id || isNaN(id)) return;
+    otherAssetRows.push({
+      name: document.getElementById('otherAssetName_'+id)?.value||'',
+      value: document.getElementById('otherAssetValue_'+id)?.value||''
+    });
+  });
+  data['__otherAssetRows'] = JSON.stringify(otherAssetRows);
+  // Credit cards
+  var ccRows = [];
+  document.querySelectorAll('[id^="ccRow_"]').forEach(function(row) {
+    var id = row.id.replace('ccRow_','');
+    if(!id || isNaN(id)) return;
+    ccRows.push({
+      name: document.getElementById('ccName_'+id)?.value||'',
+      payment: document.getElementById('ccPayment_'+id)?.value||'',
+      annual: document.getElementById('ccAnnual_'+id)?.value||''
+    });
+  });
+  data['__ccRows'] = JSON.stringify(ccRows);
   // Custom budget items per category
   var customCats = ['housing','transport','food','health','profsvc','education','lifestyle','insurance'];
   customCats.forEach(function(catId) {
@@ -8815,6 +8883,43 @@ function loadFromLocal() {
             if(document.getElementById('vehiclePayoff_'+id)) document.getElementById('vehiclePayoff_'+id).value = rd.payoff;
             if(document.getElementById('vehicleReplace_'+id)) document.getElementById('vehicleReplace_'+id).value = rd.replace;
           });
+        }
+      } catch(e) {}
+    }
+    // Restore other assets
+    if(data['__otherAssetRows']) {
+      try {
+        var oaRows = JSON.parse(data['__otherAssetRows']);
+        var oaList = document.getElementById('otherAssetList');
+        if(oaList && oaRows.length > 0) {
+          oaList.innerHTML = '';
+          otherAssetCount = 0;
+          oaRows.forEach(function(rd) {
+            addOtherAsset();
+            var id = otherAssetCount;
+            if(document.getElementById('otherAssetName_'+id)) document.getElementById('otherAssetName_'+id).value = rd.name;
+            if(document.getElementById('otherAssetValue_'+id)) document.getElementById('otherAssetValue_'+id).value = rd.value;
+          });
+          calcOtherAssets();
+        }
+      } catch(e) {}
+    }
+    // Restore credit cards
+    if(data['__ccRows']) {
+      try {
+        var ccRows = JSON.parse(data['__ccRows']);
+        var ccList = document.getElementById('creditCardRows');
+        if(ccList && ccRows.length > 0) {
+          ccList.innerHTML = '';
+          creditCardCount = 0;
+          ccRows.forEach(function(rd) {
+            addCreditCard();
+            var id = creditCardCount;
+            if(document.getElementById('ccName_'+id)) document.getElementById('ccName_'+id).value = rd.name;
+            if(document.getElementById('ccPayment_'+id)) document.getElementById('ccPayment_'+id).value = rd.payment;
+            if(document.getElementById('ccAnnual_'+id)) document.getElementById('ccAnnual_'+id).value = rd.annual;
+          });
+          calcBudget({classList:{contains:function(){return false;}}});
         }
       } catch(e) {}
     }
