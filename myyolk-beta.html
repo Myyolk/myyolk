@@ -2974,6 +2974,10 @@
             <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
           </div>
           <div class="budget-row">
+            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
+            <input type="number" id="balCarLoan1" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
+          </div>
+          <div class="budget-row">
             <label style="font-size:0.78rem;color:var(--sage)">↳ Car Loan 1 Payoff</label>
             <input type="month" id="carLoan1Payoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
           </div>
@@ -2983,6 +2987,10 @@
             <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
           </div>
           <div class="budget-row">
+            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
+            <input type="number" id="balCarLoan2" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
+          </div>
+          <div class="budget-row">
             <label style="font-size:0.78rem;color:var(--sage)">↳ Car Loan 2 Payoff</label>
             <input type="month" id="carLoan2Payoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
           </div>
@@ -2990,6 +2998,10 @@
             <label>Student Loans</label>
             <input type="number" class="bud-m" data-key="debtStudent" placeholder="0" oninput="calcBudget(this)">
             <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
+          </div>
+          <div class="budget-row">
+            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
+            <input type="number" id="balStudentLoan" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
           </div>
           <div class="budget-row">
             <label style="font-size:0.78rem;color:var(--sage)">↳ Student Loan Payoff</label>
@@ -3006,9 +3018,17 @@
             <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
           </div>
           <div class="budget-row">
+            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
+            <input type="number" id="balPersonalLoan" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
+          </div>
+          <div class="budget-row">
             <label>Other Debt</label>
             <input type="number" class="bud-m" data-key="debtOther" placeholder="0" oninput="calcBudget(this)">
             <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
+          </div>
+          <div class="budget-row">
+            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
+            <input type="number" id="balOtherDebt" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
           </div>
           <div style="padding:8px 0 4px;font-size:0.78rem;color:var(--sage);font-style:italic">
             💡 Debts with payoff dates will be removed from your retirement expense projections automatically
@@ -4038,8 +4058,12 @@ function addCreditCard() {
       '<input type="text" id="ccName_'+id+'" placeholder="e.g. PNC Visa" style="padding:0.25rem 0.5rem;border:1.5px solid var(--border);border-radius:6px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%;min-width:0">' +
       '<button onclick="removeCreditCard('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.1rem;line-height:1;flex-shrink:0">×</button>' +
     '</label>' +
-    '<input type="number" id="ccPayment_'+id+'" class="bud-m" placeholder="0" oninput="calcBudget(this);saveToLocal();" style="text-align:right">' +
-    '<input type="number" id="ccAnnual_'+id+'" class="bud-a" placeholder="0" oninput="calcBudget(this)" style="text-align:right">';
+    '<input type="number" id="ccPayment_'+id+'" class="bud-m" placeholder="Min Payment" oninput="calcBudget(this);saveToLocal();" style="text-align:right">' +
+    '<input type="number" id="ccAnnual_'+id+'" class="bud-a" placeholder="0" oninput="calcBudget(this)" style="text-align:right">' +
+    '<div style="grid-column:1/-1;display:flex;align-items:center;gap:0.5rem;margin-top:-0.25rem">' +
+      '<label style="font-size:0.75rem;color:var(--mid);white-space:nowrap">↳ Balance Owed ($)</label>' +
+      '<input type="number" id="ccBalance_'+id+'" placeholder="0" oninput="recalc()" style="padding:0.2rem 0.5rem;border:1px solid #ddd;border-radius:6px;font-size:0.82rem;width:140px;text-align:right">' +
+    '</div>';
   document.getElementById('creditCardRows').appendChild(div);
 }
 function _fakeInput() { return {classList:{contains:function(){return false;}},value:'',parentNode:null}; }
@@ -7743,7 +7767,17 @@ function updateSummary() {
   var personalProp = assetVehicles + otherAssets;
 
   var totalAssets = retAccounts + balCash + totalHomeEquity + personalProp;
-  var totalLiabilities = totalMortgages + getVal('creditCardBalance');
+  // Liabilities — mortgage + CC balance + loan balances
+  var ccBalance = getVal('creditCardBalance') || 0;
+  var carLoan1Bal = parseFloat(document.getElementById('balCarLoan1')?.value) || 0;
+  var carLoan2Bal = parseFloat(document.getElementById('balCarLoan2')?.value) || 0;
+  var studentBal = parseFloat(document.getElementById('balStudentLoan')?.value) || 0;
+  var personalBal = parseFloat(document.getElementById('balPersonalLoan')?.value) || 0;
+  var otherDebtBal = parseFloat(document.getElementById('balOtherDebt')?.value) || 0;
+  // Sum dynamic credit card balances
+  var ccRowsBalance = 0;
+  document.querySelectorAll('[id^="ccBalance_"]').forEach(function(el) { ccRowsBalance += parseFloat(el.value) || 0; });
+  var totalLiabilities = totalMortgages + ccBalance + ccRowsBalance + carLoan1Bal + carLoan2Bal + studentBal + personalBal + otherDebtBal;
   var netWorth = totalAssets - totalLiabilities;
 
   if (el('sumTotalAssets')) el('sumTotalAssets').textContent = fmt(totalAssets);
@@ -8663,7 +8697,8 @@ function collectAllData() {
     ccRows.push({
       name: document.getElementById('ccName_'+id)?.value||'',
       payment: document.getElementById('ccPayment_'+id)?.value||'',
-      annual: document.getElementById('ccAnnual_'+id)?.value||''
+      annual: document.getElementById('ccAnnual_'+id)?.value||'',
+      balance: document.getElementById('ccBalance_'+id)?.value||''
     });
   });
   data['__ccRows'] = JSON.stringify(ccRows);
@@ -8974,6 +9009,7 @@ function loadFromLocal() {
             if(document.getElementById('ccName_'+id)) document.getElementById('ccName_'+id).value = rd.name;
             if(document.getElementById('ccPayment_'+id)) document.getElementById('ccPayment_'+id).value = rd.payment;
             if(document.getElementById('ccAnnual_'+id)) document.getElementById('ccAnnual_'+id).value = rd.annual;
+            if(document.getElementById('ccBalance_'+id) && rd.balance) document.getElementById('ccBalance_'+id).value = rd.balance;
           });
           calcBudget(_fakeInput());
         }
