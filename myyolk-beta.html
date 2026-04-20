@@ -5847,6 +5847,8 @@ function generatePDF() {
       var age = document.getElementById('age')?.value || '—';
       var retAge = document.getElementById('retAge')?.value || '—';
       var lifeExp = document.getElementById('lifeExp')?.value || '90';
+      var spouseLifeExp = document.getElementById('spouseLifeExp')?.value || '';
+      var lifeExpDisplay = lifeExp + (isCouple && spouseLifeExp ? ' / ' + spouseLifeExp : '');
       var stateEl = document.getElementById('stateRes');
       var stateName = (stateEl?.options[stateEl?.selectedIndex]?.text || '—').split('(')[0].trim();
       var sbPortfolio = document.getElementById('sb-portfolio')?.textContent || '—';
@@ -5902,13 +5904,13 @@ function generatePDF() {
       doc.setFont('times','normal'); doc.setFontSize(7); doc.setTextColor(mid[0],mid[1],mid[2]);
       doc.text('Current Age', c1, y+9);
       doc.text('Retirement Age', c2, y+9);
-      doc.text('Life Expectancy', c3, y+9);
+      doc.text(isCouple ? 'Life Exp (Dean/Densie)' : 'Life Expectancy', c3, y+9);
       doc.text('State', c4, y+9);
       // Row 1 values
       doc.setFont('times','bold'); doc.setFontSize(15); doc.setTextColor(forest[0],forest[1],forest[2]);
       doc.text(age, c1, y+20);
       doc.text(retAge, c2, y+20);
-      doc.text(lifeExp, c3, y+20);
+      doc.text(lifeExpDisplay, c3, y+20);
       // State - use smaller font to fit
       doc.setFontSize(8.5);
       var stShort = stateName.length > 12 ? stateName.substring(0,12) + '.' : stateName;
@@ -6033,6 +6035,11 @@ function generatePDF() {
       doc.text(sumNW, margin+bw*2+12, y+17);
       y += 28;
 
+      // No debt note
+      if(sumLiab === '$0' || sumLiab === '$0.00') {
+        doc.setFont('times','italic'); doc.setFontSize(8); doc.setTextColor(forest[0],forest[1],forest[2]);
+        doc.text('No outstanding debt — debt free!', margin+bw+4, y+12, {align:'center', maxWidth:bw});
+      }
       // Asset breakdown
       doc.setFont('times','bold'); doc.setFontSize(8.5); doc.setTextColor(forest[0],forest[1],forest[2]);
       doc.text('Asset Breakdown', margin, y); y += 6;
@@ -6067,6 +6074,29 @@ function generatePDF() {
             y += 3;
           }
         });
+      }
+
+      // ── MONTHLY BUDGET SUMMARY ──
+      var budgetTotal = document.getElementById('budgetMonthlyTotal')?.textContent || '—';
+      if(budgetTotal !== '—' && budgetTotal !== '$0' && y < H-80) {
+        y = hdr('MONTHLY BUDGET SUMMARY', y);
+        var budgetKeys = [
+          ['Housing (utilities, maintenance)', ['electric','gasHeat','water','sewerage','trash','internet','cellPhone','homeMaint','propTax','homeIns']],
+          ['Transportation', ['gas','carIns','carMaint','carWash']],
+          ['Food & Dining', ['groceries','dining']],
+          ['Health & Wellness', ['medPrem','rx','oop','therapy','massage']],
+          ['Insurance & Life', ['lifeInsDean','lifeInsSpouse','disabilityIns']],
+          ['Lifestyle & Subscriptions', ['subs','entertain','shopping','gym','hobbies','charity','pets','gifts','vacation']],
+        ];
+        var getB = function(key) { var el = document.querySelector('[data-key="'+key+'"]'); return parseFloat(el?.value)||0; };
+        budgetKeys.forEach(function(cat) {
+          var total = cat[1].reduce(function(s,k){ return s+getB(k); }, 0);
+          if(total > 0 && y < H-40) y = row(cat[0], '$'+Math.round(total).toLocaleString()+'/mo', y);
+        });
+        doc.setFillColor(warm[0],warm[1],warm[2]);
+        doc.rect(margin, y-4, W-margin*2, 9, 'F');
+        y = row('Total Monthly Budget', budgetTotal, y+1, true, forest);
+        y += 4;
       }
 
       // ── KEY MILESTONES ──
