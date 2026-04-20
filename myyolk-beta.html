@@ -825,6 +825,7 @@
      MOBILE RESPONSIVE — 768px and below
   ══════════════════════════════════ */
   @media (max-width: 768px) {
+    #pdfBtn { display: none !important; }
 
     /* Header */
     header {
@@ -960,7 +961,7 @@
     }
 
     /* Hide PDF button on mobile, keep Feedback */
-    #pdfBtn { display: none !important; }
+    /* #pdfBtn visible on mobile */
     #feedbackBtn { bottom: 75px !important; right: 0.75rem !important; font-size: 0.75rem !important; padding: 8px 12px !important; z-index: 60 !important; }
 
     /* General overflow prevention */
@@ -1547,7 +1548,7 @@
 <body>
 
 <header>
-  <div class="logo">
+  <div class="logo"><a href="https://myyolk.com" style="display:block;text-decoration:none">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 52" width="280" height="58" style="display:block">
       <defs><clipPath id="egg-clip"><ellipse cx="26" cy="28" rx="20" ry="24"/></clipPath></defs>
       <ellipse cx="26" cy="28" rx="20" ry="24" fill="#fffdf0" stroke="#e8c96a" stroke-width="2"/>
@@ -1556,7 +1557,7 @@
       <text x="90" y="31" font-family="Georgia, serif" font-size="26" font-weight="700" fill="#fffdf0">Yolk<tspan font-size="11" font-weight="400" baseline-shift="super">&#8482;</tspan></text>
       <text x="54" y="46" font-family="Georgia, serif" font-size="9" fill="#2D4A35" letter-spacing="2" opacity="0.7">RETIREMENT PLANNING</text>
     </svg>
-  </div>
+  </a></div>
   <div class="header-badge">Protect the Good Stuff</div>
   <div id="langSelector" onclick="toggleLangDropdown()">
     <span id="currentFlag">🇺🇸</span>
@@ -1572,19 +1573,13 @@
     <button onclick="clearSavedData()" title="Clear all saved data" style="font-size:0.75rem;background:none;border:1px solid #ddd;border-radius:6px;padding:3px 8px;cursor:pointer;color:#888">Clear Data</button>
   </div>
   <div style="display:flex;align-items:center;gap:0.5rem;margin-left:auto">
-    <!-- Pro/Free Toggle -->
-    <div class="pro-toggle-wrap" id="proToggleWrap" title="Toggle Pro/Free mode for testing">
-      <span class="pro-toggle-label" id="proToggleLabelFree" style="color:rgba(255,255,255,0.5)">FREE</span>
-      <label class="pro-toggle-switch">
-        <input type="checkbox" id="proToggleCheck" checked onchange="setProMode(this.checked)">
-        <span class="pro-toggle-slider"></span>
-      </label>
-      <span class="pro-toggle-label active" id="proToggleLabelPro">PRO</span>
-    </div>
+
     <span id="authUserDisplay" style="font-size:0.75rem;color:#fff;opacity:0.85;display:none"></span>
     <button id="authBtn" onclick="toggleAuthModal()" style="font-size:0.8rem;font-weight:600;background:none;border:1.5px solid rgba(255,255,255,0.6);border-radius:8px;padding:5px 14px;cursor:pointer;color:#fff;font-family:DM Sans,sans-serif">Sign In</button>
   </div>
 </header>
+<div id="testerBanner" style="background:#2D4A35;color:#fff;text-align:center;padding:8px 1rem;font-family:sans-serif;font-size:0.78rem;width:100%;box-sizing:border-box;position:sticky;top:80px;z-index:98">&#x1F9EA; <strong>Tester Mode</strong> - All Pro features unlocked. After launch some features require Pro subscription. <a href="#" onclick="document.getElementById('testerBanner').style.display='none';return false;" style="color:#F0A500;margin-left:1rem">Dismiss x</a></div>
+
 
 <!-- PAYWALL MODAL -->
 <div class="paywall-modal-backdrop" id="paywallModal">
@@ -1592,7 +1587,7 @@
     <button class="paywall-close" onclick="closePaywall()">×</button>
     <div class="paywall-egg">🔒</div>
     <div class="paywall-title">MyYolk Pro</div>
-    <div class="paywall-subtitle">This feature is part of MyYolk Pro — unlock smarter retirement planning tools.</div>
+    <div class="paywall-subtitle">This is a Pro feature — free during the testing period. After launch, Pro is $9.99/month.</div>
     <div class="paywall-feature-name" id="paywallFeatureName">Pro Feature</div>
     <div class="paywall-perks">
       <div class="paywall-perk">Budget Tracker — monthly check-in &amp; history</div>
@@ -1601,7 +1596,7 @@
       <div class="paywall-perk">Full Summary &amp; PDF Export</div>
       <div class="paywall-perk">Spending Insights &amp; analysis</div>
     </div>
-    <button class="paywall-btn-primary" onclick="closePaywall()">Learn More About Pro</button>
+    <button class="paywall-btn-primary" onclick="closePaywall();window.open('https://myyolk.com/#pricing','_blank')">Learn More About Pro</button>
     <button class="paywall-btn-secondary" onclick="closePaywall()">Maybe later</button>
   </div>
 </div>
@@ -1692,7 +1687,7 @@
       <span class="icon">📊</span><span class="nav-label"> Budget Planner</span>
     </button>
     <button class="nav-item nav-locked" onclick="proGate('tracking','📅 Budget Tracker')" id="nav-tracking" data-label="Tracker" style="position:relative">
-      <span class="icon">📅</span><span class="nav-label"> Budget Tracker</span><span class="nav-lock-icon">🔒</span><span id="btUnloggedBadge" style="display:none;position:absolute;top:4px;right:4px;width:8px;height:8px;background:#c0392b;border-radius:50%;flex-shrink:0"></span>
+      <span class="icon">📅</span><span class="nav-label"> Budget Tracker</span><span class="nav-lock-icon" style="font-size:0.5rem;background:#C8860A;color:#fff;border-radius:4px;padding:1px 4px;position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:DM Sans,sans-serif;font-weight:700">FREE NOW</span><span id="btUnloggedBadge" style="display:none;position:absolute;top:4px;right:4px;width:8px;height:8px;background:#c0392b;border-radius:50%;flex-shrink:0"></span>
     </button>
     <button class="nav-item" onclick="showTab('projections')" data-label="Project.">
       <span class="icon">📈</span><span class="nav-label"> Projections</span>
@@ -1701,13 +1696,13 @@
       <span class="icon">🎯</span><span class="nav-label"> Readiness</span>
     </button>
     <button class="nav-item nav-locked" onclick="proGate('whatif','🔀 What-If Scenarios')" id="nav-whatif-lock" data-label="What-If">
-      <span class="icon">🔀</span><span class="nav-label"> What-If Scenarios</span><span class="nav-lock-icon">🔒</span>
+      <span class="icon">🔀</span><span class="nav-label"> What-If Scenarios</span><span class="nav-lock-icon" style="font-size:0.5rem;background:#C8860A;color:#fff;border-radius:4px;padding:1px 4px;position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:DM Sans,sans-serif;font-weight:700">FREE NOW</span>
     </button>
     <button class="nav-item nav-locked" onclick="proGate('early','⚡ Early Retirement')" id="nav-early-lock" data-label="Early Ret.">
-      <span class="icon">⚡</span><span class="nav-label"> Early Retirement</span><span class="nav-lock-icon">🔒</span>
+      <span class="icon">⚡</span><span class="nav-label"> Early Retirement</span><span class="nav-lock-icon" style="font-size:0.5rem;background:#C8860A;color:#fff;border-radius:4px;padding:1px 4px;position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:DM Sans,sans-serif;font-weight:700">FREE NOW</span>
     </button>
     <button class="nav-item nav-locked" onclick="proGate('summary','✨ Summary & PDF Export')" id="nav-summary-lock" data-label="Summary">
-      <span class="icon">✨</span><span class="nav-label"> Summary</span><span class="nav-lock-icon">🔒</span>
+      <span class="icon">✨</span><span class="nav-label"> Summary</span><span class="nav-lock-icon" style="font-size:0.5rem;background:#C8860A;color:#fff;border-radius:4px;padding:1px 4px;position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:DM Sans,sans-serif;font-weight:700">FREE NOW</span>
     </button>
 
     <div class="sidebar-divider"></div>
@@ -2319,8 +2314,8 @@
             </div>
             <div class="field ai-owner-col" style="margin:0;display:none"><label id="aiOwnerLabel">Whose?</label>
               <select class="ai-owner" onchange="recalc()" style="width:100%">
-                <option value="mine">Dean's</option>
-                <option value="spouse">Densie's</option>
+                <option value="mine">Mine</option>
+                <option value="spouse" id="spouseDropdownOption">Spouse's</option>
               </select>
             </div>
             <div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:6px 8px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>
@@ -2476,11 +2471,9 @@
         </div>
 
         <div style="border-top:1px solid var(--border);margin-top:1.25rem;padding-top:1.25rem">
-          <div style="font-weight:600;font-size:0.85rem;color:var(--forest);margin-bottom:0.75rem">Other Assets</div>
-          <div class="form-grid">
-            <div class="field"><label>Vehicle Value ($)</label><input type="number" id="vehicleValue" value="" placeholder="0" oninput="recalc()"><div class="hint">⚠️ Vehicles depreciate — excluded from retirement projections</div></div>
-            <div class="field"><label>Other Assets ($)</label><input type="number" id="otherAssets" value="" placeholder="0" oninput="recalc()"></div>
-          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem"><div style="font-weight:600;font-size:0.85rem;color:var(--forest)">🚗 Vehicles</div><button onclick="addVehicle()" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add Vehicle</button></div>
+          <div id="vehicleList"></div>
+          <div class="form-grid" style="margin-top:1rem"><div class="field"><label>Other Assets ($)</label><input type="number" id="otherAssets" value="" placeholder="0" oninput="recalc()"></div></div>
         </div>
       </div>
 
@@ -2552,7 +2545,7 @@
 
       <!-- DENSIE SS CARD -->
       <div class="card" id="densieSSCard" style="display:none">
-        <div class="card-title"><span class="dot"></span> <span id="spouse-ss-name">Densie's Social Security</div>
+        <div class="card-title"><span class="dot"></span> <span id="spouse-ss-name">Spouse's Social Security</div>
         <div style="display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem">
           <button id="dssBtn-upload" onclick="switchDSSMethod('upload')" class="ss-tab-btn">Upload Statement</button>
           <button id="dssBtn-manual" onclick="switchDSSMethod('manual')" class="ss-tab-btn">Enter Manually</button>
@@ -2753,9 +2746,9 @@
         </div>
 
         <div class="budget-category">
-          <div class="budget-cat-header">🛡️ Insurance & Life</div>
-          <div class="budget-row"><label>Life Insurance (Dean)</label><input type="number" class="bud-m" data-key="lifeInsDean" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
-          <div class="budget-row"><label>Life Insurance (Spouse)</label><input type="number" class="bud-m" data-key="lifeInsSpouse" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-cat-header">🛡️ Insurance &amp; Life</div>
+          <div class="budget-row"><label id="lifeInsDeanLabel">Life Insurance</label><input type="number" class="bud-m" data-key="lifeInsDean" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row" id="lifeInsSpouseRow" style="display:none"><label id="lifeInsSpouseLabel">Life Insurance (Spouse)</label><input type="number" class="bud-m" data-key="lifeInsSpouse" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Disability Insurance</label><input type="number" class="bud-m" data-key="disabilityIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Umbrella Policy</label><input type="number" class="bud-m" data-key="umbrellaIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
         </div>
@@ -3001,6 +2994,8 @@
 
     <!-- ══ TRACKING TAB ══ -->
     <div class="tab-panel" id="tab-tracking">
+      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($9.99/mo).</div>
+      
       <h1 class="page-title">Budget Tracker</h1>
       <p class="page-subtitle">Log what you actually spent each month and watch your patterns over time.</p>
 
@@ -3300,6 +3295,8 @@
     </div>
 
     <div class="tab-panel" id="tab-whatif">
+      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($9.99/mo).</div>
+      
       <h1 class="page-title">What-If Scenarios</h1>
       <p class="page-subtitle">See how small changes today create big differences at retirement.</p>
 
@@ -3432,6 +3429,8 @@
     </div>
 
     <div class="tab-panel" id="tab-early">
+      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($9.99/mo).</div>
+      
       <h1 class="page-title">Early Retirement & Layoff</h1>
       <p class="page-subtitle">What if income stopped earlier than planned? Model the impact.</p>
 
@@ -3504,6 +3503,8 @@
 
     <!-- ══ SUMMARY TAB ══ -->
     <div class="tab-panel" id="tab-summary">
+      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($9.99/mo).</div>
+      
       <h1 class="page-title">Your MyYolk Summary</h1>
       <p class="page-subtitle">Your complete financial snapshot - net worth, retirement readiness, and key milestones.</p>
 
@@ -4144,7 +4145,7 @@ function addIncomeRow() {
   var row = document.createElement('div');
   row.className = 'additional-income-row';
   // grid handled by CSS class
-  row.innerHTML = '<div class="field" style="margin:0"><label>Income Type</label><select class="ai-type" onchange="recalc()" style="width:100%"><option value="alimony">Alimony Received</option><option value="annuity">Annuity</option><option value="business">Business Income</option><option value="dividends">Dividends</option><option value="inheritance">Inheritance / One-Time</option><option value="royalties">Oil &amp; Gas Royalties</option><option value="other">Other</option><option value="parttime">Part-time / Consulting</option><option value="pension">Pension</option><option value="rental">Rental Income</option><option value="rmd">RMD</option><option value="trust">Trust / Estate</option><option value="veterans">Veterans Benefits</option></select></div><div class="field" style="margin:0"><label>Amount ($)</label><input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()"></div><div class="field" style="margin:0"><label>Frequency</label><select class="ai-freq" onchange="recalc()" style="width:100%"><option value="monthly">Monthly</option><option value="annual">Annual</option><option value="onetime">One-Time</option></select></div><div class="field" style="margin:0"><label>Start Age</label><input type="number" class="ai-start" placeholder="e.g. 62" oninput="recalc()" style="width:100%"></div><div class="field" style="margin:0"><label>End Age</label><input type="number" class="ai-end" placeholder="∞ (forever)" oninput="recalc()" style="width:100%"></div><div class="field ai-owner-col" style="margin:0;display:none"><label>Whose?</label><select class="ai-owner" onchange="recalc()" style="width:100%"><option value="joint">Both / Joint</option><option value="mine">Dean\'s</option><option value="spouse">Densie\'s</option></select></div><div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:6px 8px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>';
+  row.innerHTML = '<div class="field" style="margin:0"><label>Income Type</label><select class="ai-type" onchange="recalc()" style="width:100%"><option value="alimony">Alimony Received</option><option value="annuity">Annuity</option><option value="business">Business Income</option><option value="dividends">Dividends</option><option value="inheritance">Inheritance / One-Time</option><option value="royalties">Oil &amp; Gas Royalties</option><option value="other">Other</option><option value="parttime">Part-time / Consulting</option><option value="pension">Pension</option><option value="rental">Rental Income</option><option value="rmd">RMD</option><option value="trust">Trust / Estate</option><option value="veterans">Veterans Benefits</option></select></div><div class="field" style="margin:0"><label>Amount ($)</label><input type="number" class="ai-amount" placeholder="e.g. 1500" oninput="recalc()"></div><div class="field" style="margin:0"><label>Frequency</label><select class="ai-freq" onchange="recalc()" style="width:100%"><option value="monthly">Monthly</option><option value="annual">Annual</option><option value="onetime">One-Time</option></select></div><div class="field" style="margin:0"><label>Start Age</label><input type="number" class="ai-start" placeholder="e.g. 62" oninput="recalc()" style="width:100%"></div><div class="field" style="margin:0"><label>End Age</label><input type="number" class="ai-end" placeholder="∞ (forever)" oninput="recalc()" style="width:100%"></div><div class="field ai-owner-col" style="margin:0;display:none"><label>Whose?</label><select class="ai-owner" onchange="recalc()" style="width:100%"><option value="joint">Both / Joint</option><option value="mine">Mine</option><option value="spouse">Spouse\'s</option></select></div><div style="padding-bottom:2px"><button onclick="removeIncomeRow(this)" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:6px 8px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>';
   container.appendChild(row);
   // Show Whose? column if in couple mode
   if(isCouple) {
@@ -4243,9 +4244,9 @@ function calcSpouseSsBenefit() {
   var deanNote = '';
   if(spouseOwn > 0 && halfOfSpouse > deanOwn) {
     deanFinal = halfOfSpouse;
-    deanNote = 'Dean: $' + Math.round(halfOfSpouse).toLocaleString() + '/mo (spousal — 50% of Densie’s $' + Math.round(spouseOwn).toLocaleString() + ')';
+    deanNote = 'You: $' + Math.round(halfOfSpouse).toLocaleString() + '/mo (spousal — 50% of spouse\'s $' + Math.round(spouseOwn).toLocaleString() + ')';
   } else if(deanOwn > 0) {
-    deanNote = 'Dean: $' + Math.round(deanOwn).toLocaleString() + '/mo (his own benefit)';
+    deanNote = 'You: $' + Math.round(deanOwn).toLocaleString() + '/mo (his own benefit)';
   }
 
   // Spouse's final benefit
@@ -4254,14 +4255,17 @@ function calcSpouseSsBenefit() {
   if(spouseOwn > 0) {
     if(spouseOwn >= halfOfDean) {
       spouseFinal = spouseOwn;
-      spouseNote = 'Densie: $' + Math.round(spouseOwn).toLocaleString() + '/mo (their own benefit)';
+      var spouseName = document.getElementById('spouseFirstName')?.value || 'Spouse';
+    spouseNote = spouseName + ': $' + Math.round(spouseOwn).toLocaleString() + '/mo (their own benefit)';
     } else {
       spouseFinal = halfOfDean;
-      spouseNote = 'Densie: $' + Math.round(halfOfDean).toLocaleString() + '/mo (spousal — 50% of Dean’s $' + Math.round(deanOwn).toLocaleString() + ')';
+      var spouseName = document.getElementById('spouseFirstName')?.value || 'Spouse';
+    spouseNote = spouseName + ': $' + Math.round(halfOfDean).toLocaleString() + '/mo (spousal — 50% of Dean’s $' + Math.round(deanOwn).toLocaleString() + ')';
     }
   } else {
     spouseFinal = halfOfDean;
-    spouseNote = 'Densie: $' + Math.round(halfOfDean).toLocaleString() + '/mo (spousal — 50% of Dean’s $' + Math.round(deanOwn).toLocaleString() + ')';
+    var spouseName = document.getElementById('spouseFirstName')?.value || 'Spouse';
+    spouseNote = spouseName + ': $' + Math.round(halfOfDean).toLocaleString() + '/mo (spousal — 50% of Dean’s $' + Math.round(deanOwn).toLocaleString() + ')';
   }
 
   var totalHousehold = deanFinal + spouseFinal;
@@ -4420,7 +4424,7 @@ function sendFeedback() {
   }).join('\n');
   if (email) body += '\n\nReply to: ' + email;
   
-  var mailto = 'mailto:myyolkapp@gmail.com?subject=MyYolk%20Feedback&body=' + encodeURIComponent(body);
+  var mailto = 'mailto:support@myyolk.com?subject=MyYolk%20Feedback&body=' + encodeURIComponent(body);
   window.location.href = mailto;
   
   // Track in GA
@@ -4570,7 +4574,7 @@ function calcProjections() {
     if(ssAtRetirement > 0) {
       projSS.textContent = '$' + Math.round(ssAtRetirement).toLocaleString() + '/mo';
       var isCouple = document.getElementById('planCouple')?.checked;
-      projSS.nextElementSibling.textContent = isCouple ? 'SS Income (Dean + Densie)' : 'SS Income at Retirement';
+      projSS.nextElementSibling.textContent = isCouple ? 'SS Income (You + Spouse)' : 'SS Income at Retirement';
     } else {
       projSS.textContent = '—';
     }
@@ -4722,6 +4726,9 @@ showTab = function(name) {
   }
   if(name === 'summary') {
     setTimeout(function() {
+  // Initialize with one vehicle
+  if(document.getElementById('vehicleList') && document.getElementById('vehicleList').children.length === 0) addVehicle();
+
       if(typeof calcProjections === 'function') calcProjections();
       if(typeof calcReadiness === 'function') calcReadiness();
       if(typeof updateSummary === 'function') updateSummary();
@@ -4833,7 +4840,7 @@ function calcReadiness() {
     projNW.textContent = portfolio >= 1000000 ? '$' + (portfolio/1000000).toFixed(2) + 'M' : '$' + Math.round(portfolio/1000) + 'K';
   }
 
-  // SS income - check all methods (Dean + Densie)
+  // SS income - check all methods
   var ssIncome = 0;
   // Manual entry method
   var ssManual62 = parseFloat(document.getElementById('ss62')?.value) || 0;
@@ -5256,6 +5263,12 @@ function calcReadiness() {
 
 // ── PDF EXPORT ──
 function generatePDF() {
+  // Show free during testing toast
+  var toast = document.createElement('div');
+  toast.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#2D4A35;color:#fff;padding:1.25rem 2rem;border-radius:12px;font-size:0.95rem;z-index:99999;font-family:DM Sans,sans-serif;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.3);max-width:400px;line-height:1.5';
+  toast.innerHTML = '🧪 Pro feature — free during testing. After launch $9.99/mo.';
+  document.body.appendChild(toast);
+  setTimeout(function(){ toast.remove(); }, 4000);
   if(typeof window.jspdf === 'undefined' && typeof jsPDF === 'undefined') {
     alert('PDF library loading... please try again in a moment.');
     return;
@@ -5762,6 +5775,14 @@ function updatePlanningFor() {
   st('spouse-bal-title', name2 + ' Finances');
   st('spouse-401k-title', name2);
   st('spouse-ss-title', name2);
+
+  // Insurance & Life — dynamic labels
+  var lifeInsDeanLabel = document.getElementById('lifeInsDeanLabel');
+  if (lifeInsDeanLabel) lifeInsDeanLabel.textContent = cap1 ? 'Life Insurance (' + cap1 + ')' : 'Life Insurance';
+  var lifeInsSpouseRow = document.getElementById('lifeInsSpouseRow');
+  if (lifeInsSpouseRow) lifeInsSpouseRow.style.display = (isCouple && cap2) ? '' : 'none';
+  var lifeInsSpouseLabel = document.getElementById('lifeInsSpouseLabel');
+  if (lifeInsSpouseLabel) lifeInsSpouseLabel.textContent = cap2 ? 'Life Insurance (' + cap2 + ')' : 'Life Insurance (Spouse)';
 }
 
 function updateGreeting() {
@@ -7043,13 +7064,29 @@ function btCloseDrill() {
 // ── PRO / PAYWALL SYSTEM ──
 // ══════════════════════════════════════════
 
-var IS_PRO = true; // defaults to Pro for Dean's test account
+var IS_PRO = true; // TESTER MODE — all Pro features unlocked
+// Sync toggle on load
+document.addEventListener('DOMContentLoaded', function() { var chk = document.querySelector('input[type=checkbox][id*=pro], input[type=checkbox][id*=Pro]'); if(chk) chk.checked = IS_PRO; setProMode(IS_PRO); });
 
 var PRO_TABS = ['tracking', 'whatif', 'early', 'summary'];
 var PRO_FEATURES = { insights: '💡 Spending Insights & Analysis' };
 
 function setProMode(isPro) {
   IS_PRO = !!isPro;
+  setTimeout(function() {
+    var pdfBtn = document.getElementById('pdfBtn');
+    if(pdfBtn) {
+      if(isPro) {
+        pdfBtn.style.opacity = '1';
+        pdfBtn.style.cursor = 'pointer';
+        pdfBtn.style.background = '#2D4A35';
+      } else {
+        pdfBtn.style.opacity = '0.4';
+        pdfBtn.style.cursor = 'not-allowed';
+        pdfBtn.style.background = '#888';
+      }
+    }
+  }, 100);
 
   // Sync checkbox
   var chk = document.getElementById('proToggleCheck');
@@ -8067,7 +8104,7 @@ async function cloudSave() {
 async function cloudLoad() {
   if(!_sb || !_sbUser) return;
   try {
-    var result = await _sb.from('user_data').select('data').eq('user_id', _sbUser.id).single();
+    var result = await _sb.from('user_data').select('data').eq('user_id', _sbUser.id).limit(1).maybeSingle();
     if(result.data && result.data.data) {
       var stored = JSON.stringify(result.data.data);
       localStorage.setItem(SAVE_KEY, stored);
@@ -8465,7 +8502,8 @@ setTimeout(function() {
 
 
   <!-- PDF EXPORT BUTTON -->
-  <button id="pdfBtn" onclick="generatePDF()">📄 Download Report</button>
+  <button id="pdfBtn" onclick="if(!IS_PRO){proGate('pdf','📄 PDF Report');}else{generatePDF();}">📄 Download Report</button>
 
 </body>
-</html>
+</html> 
+ 
