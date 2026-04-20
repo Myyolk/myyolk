@@ -8302,6 +8302,10 @@ function initSupabase() {
     if(r.data && r.data.session) {
       _sbUser = r.data.session.user;
       updateAuthUI();
+    } else {
+      // No active session — clear any stale local data so app shows blank
+      localStorage.removeItem(SAVE_KEY);
+      localStorage.removeItem('myyolk_device');
     }
   });
 }
