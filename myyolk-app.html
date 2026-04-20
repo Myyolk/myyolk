@@ -8087,7 +8087,7 @@ async function cloudSave() {
 async function cloudLoad() {
   if(!_sb || !_sbUser) return;
   try {
-    var result = await _sb.from('user_data').select('data').eq('user_id', _sbUser.id).single();
+    var result = await _sb.from('user_data').select('data').eq('user_id', _sbUser.id).limit(1).maybeSingle();
     if(result.data && result.data.data) {
       var stored = JSON.stringify(result.data.data);
       localStorage.setItem(SAVE_KEY, stored);
