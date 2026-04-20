@@ -3992,14 +3992,16 @@ function addBudgetSub() {
   var id = budSubCount;
   var div = document.createElement('div');
   div.id = 'budSub_' + id;
-  div.style.cssText = 'display:grid;grid-template-columns:1fr 100px 110px auto;gap:0.5rem;align-items:center;margin-bottom:0.5rem';
+  div.className = 'budget-row';
   div.innerHTML =
-    '<input type="text" id="budSubName_'+id+'" placeholder="e.g. Netflix" style="padding:0.35rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;width:100%">' +
-    '<input type="number" id="budSubCost_'+id+'" placeholder="Amount" oninput="calcBudgetSubs()" style="padding:0.35rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;width:100%;text-align:right">' +
-    '<select id="budSubFreq_'+id+'" onchange="calcBudgetSubs()" style="padding:0.35rem 0.4rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.8rem;font-family:DM Sans,sans-serif;width:100%"><option value="monthly">Monthly</option><option value="annual">Annual</option></select>' +
-    '<button onclick="removeBudgetSub('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.2rem;line-height:1">×</button>';
+    '<label style="display:flex;align-items:center;gap:6px">' +
+      '<input type="text" id="budSubName_'+id+'" placeholder="e.g. Netflix" style="padding:0.25rem 0.5rem;border:1.5px solid var(--border);border-radius:6px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%;min-width:0">' +
+      '<button onclick="removeBudgetSub('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.1rem;line-height:1;flex-shrink:0">×</button>' +
+    '</label>' +
+    '<input type="number" id="budSubCost_'+id+'" class="bud-m" placeholder="0" oninput="calcBudget(this)" style="text-align:right">' +
+    '<input type="number" id="budSubAnnual_'+id+'" class="bud-a" placeholder="0" oninput="calcBudget(this)" style="text-align:right">';
   document.getElementById('budgetSubList').appendChild(div);
-  calcBudgetSubs();
+  calcBudget({classList:{contains:function(){return false;}}});
 }
 // Generic custom budget item rows per category
 var customItemCounts = {};
@@ -4056,20 +4058,10 @@ function calcCustomItemsByCat(catId) {
 function removeBudgetSub(id) {
   var el = document.getElementById('budSub_'+id);
   if(el) el.remove();
-  calcBudgetSubs();
+  calcBudget({classList:{contains:function(){return false;}}});
 }
 function calcBudgetSubs() {
-  var monthlyTotal = 0;
-  document.querySelectorAll('[id^="budSubCost_"]').forEach(function(el) {
-    var id = el.id.replace('budSubCost_','');
-    var freq = document.getElementById('budSubFreq_'+id)?.value || 'monthly';
-    var val = parseFloat(el.value) || 0;
-    monthlyTotal += freq === 'annual' ? val / 12 : val;
-  });
-  monthlyTotal = Math.round(monthlyTotal * 100) / 100;
-  // Store monthly total in subs field so calcBudget picks it up
-  var hidden = document.querySelector('[data-key="subs"]');
-  if(hidden) { hidden.value = monthlyTotal; calcBudget(hidden); }
+  // No longer needed - bud-m fields feed directly into calcBudget
 }
 
 // ── INVESTMENT PROPERTIES ──
@@ -8531,7 +8523,7 @@ function collectAllData() {
     budSubRows.push({
       name: document.getElementById('budSubName_'+id)?.value||'',
       cost: document.getElementById('budSubCost_'+id)?.value||'',
-      freq: document.getElementById('budSubFreq_'+id)?.value||'monthly'
+      annual: document.getElementById('budSubAnnual_'+id)?.value||''
     });
   });
   data['__budSubRows'] = JSON.stringify(budSubRows);
@@ -8770,8 +8762,8 @@ function loadFromLocal() {
             var costEl = document.getElementById('budSubCost_'+id);
             if(nameEl) nameEl.value = rd.name;
             if(costEl) costEl.value = rd.cost;
-            var freqEl = document.getElementById('budSubFreq_'+id);
-            if(freqEl && rd.freq) freqEl.value = rd.freq;
+            var annualEl = document.getElementById('budSubAnnual_'+id);
+            if(annualEl && rd.annual) annualEl.value = rd.annual;
           });
           calcBudgetSubs();
         }
