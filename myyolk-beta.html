@@ -4009,10 +4009,11 @@ function addCreditCard() {
     '<input type="number" id="ccAnnual_'+id+'" class="bud-a" placeholder="0" oninput="calcBudget(this)" style="text-align:right">';
   document.getElementById('creditCardRows').appendChild(div);
 }
+function _fakeInput() { return {classList:{contains:function(){return false;}},value:'',parentNode:null}; }
 function removeCreditCard(id) {
   var el = document.getElementById('ccRow_'+id);
   if(el) el.remove();
-  calcBudget({classList:{contains:function(){return false;}}});
+  calcBudget(_fakeInput());
 }
 
 // ── SUBSCRIPTIONS ──
@@ -4047,7 +4048,7 @@ function addBudgetSub() {
     '<input type="number" id="budSubCost_'+id+'" class="bud-m" placeholder="0" oninput="calcBudget(this);saveToLocal();if(typeof cloudSave===\'function\')cloudSave();" style="text-align:right">' +
     '<input type="number" id="budSubAnnual_'+id+'" class="bud-a" placeholder="0" oninput="calcBudget(this)" style="text-align:right">';
   document.getElementById('budgetSubList').appendChild(div);
-  calcBudget({classList:{contains:function(){return false;}}});
+  calcBudget(_fakeInput());
 }
 // Generic custom budget item rows per category
 var customItemCounts = {};
@@ -4072,12 +4073,12 @@ function removeCustomByCat(btn) {
   var itemId = btn.getAttribute('data-itemid');
   var row = document.getElementById('customItem_'+itemId);
   if(row) row.remove();
-  calcBudget({classList:{contains:function(){return false;}}});
+  calcBudget(_fakeInput());
 }
 function removeCustomBudgetItem(id, catId) {
   var el = document.getElementById('customItem_'+id);
   if(el) el.remove();
-  calcBudget({classList:{contains:function(){return false;}}});
+  calcBudget(_fakeInput());
 }
 function calcCustomItems(el) {}
 function calcCustomItemsByCat(catId) {
@@ -4104,7 +4105,7 @@ function calcCustomItemsByCat(catId) {
 function removeBudgetSub(id) {
   var el = document.getElementById('budSub_'+id);
   if(el) el.remove();
-  calcBudget({classList:{contains:function(){return false;}}});
+  calcBudget(_fakeInput());
 }
 function calcBudgetSubs() {
   // No longer needed - bud-m fields feed directly into calcBudget
@@ -8919,7 +8920,7 @@ function loadFromLocal() {
             if(document.getElementById('ccPayment_'+id)) document.getElementById('ccPayment_'+id).value = rd.payment;
             if(document.getElementById('ccAnnual_'+id)) document.getElementById('ccAnnual_'+id).value = rd.annual;
           });
-          calcBudget({classList:{contains:function(){return false;}}});
+          calcBudget(_fakeInput());
         }
       } catch(e) {}
     }
@@ -8945,7 +8946,7 @@ function loadFromLocal() {
               if(costEl) costEl.value = rd.cost;
               if(annualEl && rd.annual) annualEl.value = rd.annual;
             });
-            calcBudget({classList:{contains:function(){return false;}}});
+            calcBudget(_fakeInput());
           }
         } catch(e) {}
       }
