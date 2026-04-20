@@ -8408,6 +8408,7 @@ var SUPABASE_KEY = 'sb_publishable_uDYHE8ktzY4WCQl3JvyC9Q_UUnoDvZO';
 var _sb = null;
 var _sbUser = null;
 var _pageLoadedClean = false; // only true if no JS errors on load
+var _cloudLoaded = false;    // only true after cloudLoad completes
 var _authMode = 'signin';
 
 async function submitNewPassword() {
@@ -8465,6 +8466,7 @@ function initSupabase() {
       // No active session — clear any stale local data so app shows blank
       localStorage.removeItem(SAVE_KEY);
       localStorage.removeItem('myyolk_device');
+      _cloudLoaded = true; // no session, safe to consider loaded
     }
   });
 }
@@ -8609,6 +8611,10 @@ async function cloudSave() {
     console.warn('MyYolk: skipping cloud save — page did not load cleanly');
     return;
   }
+  if(!_cloudLoaded) {
+    console.warn('MyYolk: skipping cloud save — cloud data not yet loaded');
+    return;
+  }
   if(!_sb || !_sbUser) { saveToLocal(); return; }
   try {
     var data = collectAllData();
@@ -8639,6 +8645,8 @@ async function cloudLoad() {
       loadFromLocal();
     }
   } catch(e) {}
+  // Mark cloud load as complete — safe to auto-save now
+  _cloudLoaded = true;
 }
 
 function collectAllData() {
