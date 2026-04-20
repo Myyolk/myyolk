@@ -7809,6 +7809,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if(typeof toggleCouple==='function') toggleCouple();
   if(typeof updatePlanningFor==='function') updatePlanningFor();
   if(typeof recalc==='function') recalc();
+  // Mark page as cleanly loaded — if JS errored above this never runs
+  _pageLoadedClean = true;
 });
 // ── CHILD SS BENEFIT CALCULATOR ──
 function updateChildAgeInputs() {
@@ -8305,6 +8307,7 @@ var SUPABASE_URL = 'https://lcecdqihjdpmsmiwabkk.supabase.co';
 var SUPABASE_KEY = 'sb_publishable_uDYHE8ktzY4WCQl3JvyC9Q_UUnoDvZO';
 var _sb = null;
 var _sbUser = null;
+var _pageLoadedClean = false; // only true if no JS errors on load
 var _authMode = 'signin';
 
 async function submitNewPassword() {
@@ -8492,6 +8495,10 @@ async function signOut() {
 }
 
 async function cloudSave() {
+  if(!_pageLoadedClean) {
+    console.warn('MyYolk: skipping cloud save — page did not load cleanly');
+    return;
+  }
   if(!_sb || !_sbUser) { saveToLocal(); return; }
   try {
     var data = collectAllData();
