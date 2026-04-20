@@ -4007,44 +4007,37 @@ function addCustomBudgetItem(catId) {
   if(!customItemCounts[catId]) customItemCounts[catId] = 0;
   customItemCounts[catId]++;
   var id = catId + '_' + customItemCounts[catId];
-  var div = document.createElement('div');
-  div.id = 'customItem_' + id;
-  div.style.cssText = 'display:grid;grid-template-columns:1fr 100px 110px auto;gap:0.5rem;align-items:center;margin-bottom:0.4rem';
   var safeId = id.replace(/[^a-zA-Z0-9_]/g,'_');
+  var div = document.createElement('div');
+  div.id = 'customItem_' + safeId;
+  div.className = 'budget-row custom-budget-row';
   div.innerHTML =
-    '<input type="text" id="customName_'+safeId+'" placeholder="e.g. Electrolysis" style="padding:0.3rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%">' +
-    '<input type="number" id="customCost_'+safeId+'" placeholder="Amount" oninput="calcCustomItems(this)" data-cat="'+catId+'" style="padding:0.3rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%;text-align:right">' +
-    '<select id="customFreq_'+safeId+'" onchange="calcCustomItems(this)" data-cat="'+catId+'" style="padding:0.3rem 0.4rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.78rem;font-family:DM Sans,sans-serif;width:100%"><option value="monthly">Monthly</option><option value="annual">Annual</option></select>' +
-    '<button data-cat="'+catId+'" data-itemid="'+safeId+'" onclick="removeCustomByCat(this)" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.2rem;line-height:1">×</button>';
+    '<label style="display:flex;align-items:center;gap:6px">' +
+      '<input type="text" id="customName_'+safeId+'" placeholder="Item name" style="padding:0.25rem 0.5rem;border:1.5px solid var(--border);border-radius:6px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%;min-width:0">' +
+      '<button data-cat="'+catId+'" data-itemid="'+safeId+'" onclick="removeCustomByCat(this)" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.1rem;line-height:1;flex-shrink:0">×</button>' +
+    '</label>' +
+    '<input type="number" id="customCost_'+safeId+'" class="bud-m" data-cat="'+catId+'" placeholder="0" oninput="calcBudget(this)" style="text-align:right">' +
+    '<input type="number" id="customAnnual_'+safeId+'" class="bud-a" placeholder="0" oninput="calcBudget(this)" style="text-align:right">';
   document.getElementById('customList_'+catId).appendChild(div);
 }
 function removeCustomByCat(btn) {
-  var catId = btn.getAttribute('data-cat');
   var itemId = btn.getAttribute('data-itemid');
   var row = document.getElementById('customItem_'+itemId);
   if(row) row.remove();
-  calcCustomItemsByCat(catId);
+  calcBudget({classList:{contains:function(){return false;}}});
 }
 function removeCustomBudgetItem(id, catId) {
   var el = document.getElementById('customItem_'+id);
   if(el) el.remove();
-  calcCustomItemsByCat(catId);
+  calcBudget({classList:{contains:function(){return false;}}});
 }
-function calcCustomItems(el) {
-  var catId = el ? el.getAttribute('data-cat') : null;
-  if(!catId) return;
-  calcCustomItemsByCat(catId);
-}
+function calcCustomItems(el) {}
 function calcCustomItemsByCat(catId) {
   var total = 0;
   var list = document.getElementById('customList_'+catId);
   if(!list) return;
   list.querySelectorAll('[id^="customCost_"]').forEach(function(costEl) {
-    var itemId = costEl.id.replace('customCost_','');
-    var freqEl = document.getElementById('customFreq_'+itemId);
-    var freq = freqEl ? freqEl.value : 'monthly';
-    var val = parseFloat(costEl.value) || 0;
-    total += freq === 'annual' ? val / 12 : val;
+    total += parseFloat(costEl.value) || 0;
   });
   var hiddenKey = 'customTotal_' + catId;
   var hidden = document.querySelector('[data-key="'+hiddenKey+'"]');
@@ -8553,7 +8546,7 @@ function collectAllData() {
         rows.push({
           name: document.getElementById('customName_'+id)?.value||'',
           cost: document.getElementById('customCost_'+id)?.value||'',
-          freq: document.getElementById('customFreq_'+id)?.value||'monthly'
+          annual: document.getElementById('customAnnual_'+id)?.value||''
         });
       });
     }
@@ -8798,14 +8791,15 @@ function loadFromLocal() {
             rows.forEach(function(rd) {
               addCustomBudgetItem(catId);
               var id = catId + '_' + customItemCounts[catId];
-              var nameEl = document.getElementById('customName_'+id);
-              var costEl = document.getElementById('customCost_'+id);
-              var freqEl = document.getElementById('customFreq_'+id);
+              var safeId = id.replace(/[^a-zA-Z0-9_]/g,'_');
+              var nameEl = document.getElementById('customName_'+safeId);
+              var costEl = document.getElementById('customCost_'+safeId);
+              var annualEl = document.getElementById('customAnnual_'+safeId);
               if(nameEl) nameEl.value = rd.name;
               if(costEl) costEl.value = rd.cost;
-              if(freqEl && rd.freq) freqEl.value = rd.freq;
+              if(annualEl && rd.annual) annualEl.value = rd.annual;
             });
-            calcCustomItems(catId);
+            calcBudget({classList:{contains:function(){return false;}}});
           }
         } catch(e) {}
       }
