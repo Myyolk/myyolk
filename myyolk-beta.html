@@ -4010,29 +4010,42 @@ function addCustomBudgetItem(catId) {
   var div = document.createElement('div');
   div.id = 'customItem_' + id;
   div.style.cssText = 'display:grid;grid-template-columns:1fr 100px 110px auto;gap:0.5rem;align-items:center;margin-bottom:0.4rem';
+  var safeId = id.replace(/[^a-zA-Z0-9_]/g,'_');
   div.innerHTML =
-    '<input type="text" id="customName_'+id+'" placeholder="e.g. Electrolysis" style="padding:0.3rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%">' +
-    '<input type="number" id="customCost_'+id+'" placeholder="Amount" oninput="calcCustomItems(''+catId+'')" style="padding:0.3rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%;text-align:right">' +
-    '<select id="customFreq_'+id+'" onchange="calcCustomItems(''+catId+'')" style="padding:0.3rem 0.4rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.78rem;font-family:DM Sans,sans-serif;width:100%"><option value="monthly">Monthly</option><option value="annual">Annual</option></select>' +
-    '<button onclick="removeCustomBudgetItem(''+id+'',''+catId+'')" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.2rem;line-height:1">×</button>';
+    '<input type="text" id="customName_'+safeId+'" placeholder="e.g. Electrolysis" style="padding:0.3rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%">' +
+    '<input type="number" id="customCost_'+safeId+'" placeholder="Amount" oninput="calcCustomItems(this)" data-cat="'+catId+'" style="padding:0.3rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%;text-align:right">' +
+    '<select id="customFreq_'+safeId+'" onchange="calcCustomItems(this)" data-cat="'+catId+'" style="padding:0.3rem 0.4rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.78rem;font-family:DM Sans,sans-serif;width:100%"><option value="monthly">Monthly</option><option value="annual">Annual</option></select>' +
+    '<button data-cat="'+catId+'" data-itemid="'+safeId+'" onclick="removeCustomByCat(this)" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.2rem;line-height:1">×</button>';
   document.getElementById('customList_'+catId).appendChild(div);
+}
+function removeCustomByCat(btn) {
+  var catId = btn.getAttribute('data-cat');
+  var itemId = btn.getAttribute('data-itemid');
+  var row = document.getElementById('customItem_'+itemId);
+  if(row) row.remove();
+  calcCustomItemsByCat(catId);
 }
 function removeCustomBudgetItem(id, catId) {
   var el = document.getElementById('customItem_'+id);
   if(el) el.remove();
-  calcCustomItems(catId);
+  calcCustomItemsByCat(catId);
 }
-function calcCustomItems(catId) {
+function calcCustomItems(el) {
+  var catId = el ? el.getAttribute('data-cat') : null;
+  if(!catId) return;
+  calcCustomItemsByCat(catId);
+}
+function calcCustomItemsByCat(catId) {
   var total = 0;
   var list = document.getElementById('customList_'+catId);
   if(!list) return;
-  list.querySelectorAll('[id^="customCost_"]').forEach(function(el) {
-    var itemId = el.id.replace('customCost_','');
-    var freq = document.getElementById('customFreq_'+itemId)?.value || 'monthly';
-    var val = parseFloat(el.value) || 0;
+  list.querySelectorAll('[id^="customCost_"]').forEach(function(costEl) {
+    var itemId = costEl.id.replace('customCost_','');
+    var freqEl = document.getElementById('customFreq_'+itemId);
+    var freq = freqEl ? freqEl.value : 'monthly';
+    var val = parseFloat(costEl.value) || 0;
     total += freq === 'annual' ? val / 12 : val;
   });
-  // Store in a hidden data-key field for this category
   var hiddenKey = 'customTotal_' + catId;
   var hidden = document.querySelector('[data-key="'+hiddenKey+'"]');
   if(!hidden) {
@@ -4041,7 +4054,6 @@ function calcCustomItems(catId) {
     hidden.setAttribute('data-key', hiddenKey);
     hidden.style.display = 'none';
     hidden.className = 'bud-m';
-    hidden.setAttribute('oninput', 'calcBudget(this)');
     document.body.appendChild(hidden);
   }
   hidden.value = Math.round(total * 100) / 100;
