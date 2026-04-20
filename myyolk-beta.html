@@ -2039,6 +2039,55 @@
           <div class="field">
             <label>Spouse Life Expectancy</label>
             <input type="number" id="spouseLifeExp" value="" placeholder="e.g. 90" oninput="recalc()">
+            <div style="margin-top:0.5rem">
+              <button type="button" onclick="toggleActuarialCalcSpouse()" style="font-size:0.78rem;font-weight:600;background:none;border:1.5px solid var(--sage);color:var(--sage);border-radius:8px;padding:5px 12px;cursor:pointer;font-family:DM Sans,sans-serif">🧮 Calculate for me</button>
+            </div>
+            <div id="actuarialCalcSpouse" style="display:none;margin-top:1rem;background:var(--sage-pale);border-radius:12px;padding:1rem;border:1px solid #e8c96a">
+              <div style="font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.75rem">Life Expectancy Estimator</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem">
+                <div>
+                  <label style="font-size:0.78rem;color:var(--mid);display:block;margin-bottom:4px">Biological Sex</label>
+                  <select id="actSpouseSex" onchange="calcActuarialSpouse()" style="width:100%;padding:0.4rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;background:#fff">
+                    <option value="">Select...</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.78rem;color:var(--mid);display:block;margin-bottom:4px">Smoking Status</label>
+                  <select id="actSpouseSmoking" onchange="calcActuarialSpouse()" style="width:100%;padding:0.4rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;background:#fff">
+                    <option value="never">Never smoked</option>
+                    <option value="former">Former smoker</option>
+                    <option value="current">Current smoker</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.78rem;color:var(--mid);display:block;margin-bottom:4px">General Health</label>
+                  <select id="actSpouseHealth" onchange="calcActuarialSpouse()" style="width:100%;padding:0.4rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;background:#fff">
+                    <option value="excellent">Excellent</option>
+                    <option value="good" selected>Good</option>
+                    <option value="fair">Fair</option>
+                    <option value="poor">Poor</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.78rem;color:var(--mid);display:block;margin-bottom:4px">Exercise Frequency</label>
+                  <select id="actSpouseExercise" onchange="calcActuarialSpouse()" style="width:100%;padding:0.4rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;background:#fff">
+                    <option value="active">Active (3+ days/week)</option>
+                    <option value="moderate" selected>Moderate (1-2 days/week)</option>
+                    <option value="sedentary">Sedentary</option>
+                  </select>
+                </div>
+              </div>
+              <div id="actuarialResultSpouse" style="display:none;background:#fff;border-radius:10px;padding:0.75rem 1rem;margin-bottom:0.75rem;border:1px solid var(--border)">
+                <div style="font-size:0.78rem;color:var(--mid);margin-bottom:4px">Estimated Life Expectancy</div>
+                <div style="display:flex;align-items:center;gap:0.75rem">
+                  <div id="actuarialAgeSpouse" style="font-size:2rem;font-weight:800;color:var(--sage);font-family:DM Serif Display,serif">--</div>
+                  <div id="actuarialFactorsSpouse" style="font-size:0.75rem;color:var(--mid);line-height:1.5"></div>
+                </div>
+              </div>
+              <button type="button" id="useEstimateBtnSpouse" onclick="useActuarialEstimateSpouse()" style="display:none;width:100%;padding:0.6rem;background:var(--sage);color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">Use This Estimate</button>
+            </div>
           </div>
           <div class="field">
             <label>Job Title / Role</label>
@@ -3749,6 +3798,56 @@ function useActuarialEstimate() {
   var lifeExpEl = document.getElementById('lifeExp');
   if (lifeExpEl) { lifeExpEl.value = est; recalc(); }
   var calc = document.getElementById('actuarialCalc');
+  if (calc) calc.style.display = 'none';
+}
+
+function toggleActuarialCalcSpouse() {
+  var calc = document.getElementById('actuarialCalcSpouse');
+  if (!calc) return;
+  calc.style.display = calc.style.display === 'none' ? 'block' : 'none';
+  if (calc.style.display === 'block') calcActuarialSpouse();
+}
+
+function calcActuarialSpouse() {
+  var age = parseInt(document.getElementById('spouseAge')?.value) || 50;
+  var sex = document.getElementById('actSpouseSex')?.value;
+  var smoking = document.getElementById('actSpouseSmoking')?.value || 'never';
+  var health = document.getElementById('actSpouseHealth')?.value || 'good';
+  var exercise = document.getElementById('actSpouseExercise')?.value || 'moderate';
+  if (!sex) return;
+  var base = sex === 'female' ? 84 : 79;
+  if (age >= 65) base += 2;
+  if (age >= 75) base += 2;
+  var factors = [];
+  if (smoking === 'current') { base -= 8; factors.push('Smoking: -8 yrs'); }
+  else if (smoking === 'former') { base -= 3; factors.push('Former smoker: -3 yrs'); }
+  else { factors.push('Non-smoker: +0'); }
+  if (health === 'excellent') { base += 3; factors.push('Excellent health: +3 yrs'); }
+  else if (health === 'good') { factors.push('Good health: +0'); }
+  else if (health === 'fair') { base -= 3; factors.push('Fair health: -3 yrs'); }
+  else if (health === 'poor') { base -= 7; factors.push('Poor health: -7 yrs'); }
+  if (exercise === 'active') { base += 3; factors.push('Active lifestyle: +3 yrs'); }
+  else if (exercise === 'moderate') { base += 1; factors.push('Moderate exercise: +1 yr'); }
+  else { base -= 2; factors.push('Sedentary: -2 yrs'); }
+  base = Math.max(base, age + 5);
+  base = Math.round(base);
+  var resultEl = document.getElementById('actuarialResultSpouse');
+  var ageEl = document.getElementById('actuarialAgeSpouse');
+  var factorsEl = document.getElementById('actuarialFactorsSpouse');
+  var btnEl = document.getElementById('useEstimateBtnSpouse');
+  if (resultEl) resultEl.style.display = 'block';
+  if (ageEl) ageEl.textContent = base;
+  if (factorsEl) factorsEl.innerHTML = factors.join('<br>');
+  if (btnEl) { btnEl.style.display = 'block'; btnEl.setAttribute('data-est', base); }
+}
+
+function useActuarialEstimateSpouse() {
+  var btn = document.getElementById('useEstimateBtnSpouse');
+  var est = btn?.getAttribute('data-est');
+  if (!est) return;
+  var el = document.getElementById('spouseLifeExp');
+  if (el) { el.value = est; recalc(); }
+  var calc = document.getElementById('actuarialCalcSpouse');
   if (calc) calc.style.display = 'none';
 }
 
