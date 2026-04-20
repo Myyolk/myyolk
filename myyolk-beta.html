@@ -2784,6 +2784,13 @@
           <div class="budget-row"><label>Internet</label><input type="number" class="bud-m" data-key="internet" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Telephone <span style="font-size:0.75rem;color:#888;font-weight:400">(Cell &amp; Home)</span></label><input type="number" class="bud-m" data-key="cellPhone" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Home Maintenance</label><input type="number" class="bud-m" data-key="homeMaint" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="margin-top:0.4rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
+              <button onclick="addCustomBudgetItem('housing')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
+            </div>
+            <div id="customList_housing"></div>
+          </div>
         </div>
 
         <div class="budget-category">
@@ -2792,12 +2799,26 @@
           <div class="budget-row"><label>Car Insurance</label><input type="number" class="bud-m" data-key="carIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Maintenance / Repairs</label><input type="number" class="bud-m" data-key="carMaint" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Car Wash</label><input type="number" class="bud-m" data-key="carWash" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="margin-top:0.4rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
+              <button onclick="addCustomBudgetItem('transport')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
+            </div>
+            <div id="customList_transport"></div>
+          </div>
         </div>
 
         <div class="budget-category">
           <div class="budget-cat-header">🍽️ Food</div>
           <div class="budget-row"><label>Groceries</label><input type="number" class="bud-m" data-key="groceries" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Dining Out</label><input type="number" class="bud-m" data-key="dining" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="margin-top:0.4rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
+              <button onclick="addCustomBudgetItem('food')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
+            </div>
+            <div id="customList_food"></div>
+          </div>
         </div>
 
         <div class="budget-category">
@@ -2805,6 +2826,15 @@
           <div class="budget-row"><label>Medical Premiums</label><input type="number" class="bud-m" data-key="medPrem" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Prescriptions</label><input type="number" class="bud-m" data-key="rx" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Out-of-Pocket</label><input type="number" class="bud-m" data-key="oop" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Therapy / Counseling</label><input type="number" class="bud-m" data-key="therapy" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Massage / Wellness</label><input type="number" class="bud-m" data-key="massage" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="margin-top:0.4rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
+              <button onclick="addCustomBudgetItem('health')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
+            </div>
+            <div id="customList_health"></div>
+          </div>
         </div>
 
         <div class="budget-category">
@@ -2812,6 +2842,13 @@
           <div class="budget-row"><label>Legal / Attorney Fees</label><input type="number" class="bud-m" data-key="legal" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Accounting / Tax Prep</label><input type="number" class="bud-m" data-key="accounting" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Financial Advisor Fees</label><input type="number" class="bud-m" data-key="finAdvisor" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="margin-top:0.4rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
+              <button onclick="addCustomBudgetItem('profsvc')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
+            </div>
+            <div id="customList_profsvc"></div>
+          </div>
         </div>
 
         <div class="budget-category">
@@ -2823,6 +2860,13 @@
           <div class="budget-row"><label>Child Support / Alimony</label><input type="number" class="bud-m" data-key="childSupport" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Childcare / Daycare</label><input type="number" class="bud-m" data-key="childcare" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Parent / Elder Care</label><input type="number" class="bud-m" data-key="elderCare" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="margin-top:0.4rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
+              <button onclick="addCustomBudgetItem('education')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
+            </div>
+            <div id="customList_education"></div>
+          </div>
         </div>
 
         <div class="budget-category">
@@ -2837,7 +2881,6 @@
           <div class="budget-row"><label>Entertainment</label><input type="number" class="bud-m" data-key="entertain" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Shopping / Clothing</label><input type="number" class="bud-m" data-key="shopping" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Gym / Fitness</label><input type="number" class="bud-m" data-key="gym" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
-          <div class="budget-row"><label>Therapy / Counseling</label><input type="number" class="bud-m" data-key="therapy" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Vacation (monthly avg)</label><input type="number" class="bud-m" data-key="vacation" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Hobbies</label><input type="number" class="bud-m" data-key="hobbies" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Charitable Donations / Tithing</label><input type="number" class="bud-m" data-key="charity" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
@@ -2847,6 +2890,13 @@
           <div class="budget-row"><label>Pets</label><input type="number" class="bud-m" data-key="pets" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Gifts / Family</label><input type="number" class="bud-m" data-key="gifts" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Other</label><input type="number" class="bud-m" data-key="other" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="margin-top:0.4rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
+              <button onclick="addCustomBudgetItem('lifestyle')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
+            </div>
+            <div id="customList_lifestyle"></div>
+          </div>
         </div>
 
         <div class="budget-category">
@@ -2855,6 +2905,13 @@
           <div class="budget-row" id="lifeInsSpouseRow" style="display:none"><label id="lifeInsSpouseLabel">Life Insurance (Spouse)</label><input type="number" class="bud-m" data-key="lifeInsSpouse" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Disability Insurance</label><input type="number" class="bud-m" data-key="disabilityIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Umbrella Policy</label><input type="number" class="bud-m" data-key="umbrellaIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="margin-top:0.4rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
+              <button onclick="addCustomBudgetItem('insurance')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
+            </div>
+            <div id="customList_insurance"></div>
+          </div>
         </div>
 
         <div class="budget-category">
@@ -3944,6 +4001,53 @@ function addBudgetSub() {
   document.getElementById('budgetSubList').appendChild(div);
   calcBudgetSubs();
 }
+// Generic custom budget item rows per category
+var customItemCounts = {};
+function addCustomBudgetItem(catId) {
+  if(!customItemCounts[catId]) customItemCounts[catId] = 0;
+  customItemCounts[catId]++;
+  var id = catId + '_' + customItemCounts[catId];
+  var div = document.createElement('div');
+  div.id = 'customItem_' + id;
+  div.style.cssText = 'display:grid;grid-template-columns:1fr 100px 110px auto;gap:0.5rem;align-items:center;margin-bottom:0.4rem';
+  div.innerHTML =
+    '<input type="text" id="customName_'+id+'" placeholder="e.g. Electrolysis" style="padding:0.3rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%">' +
+    '<input type="number" id="customCost_'+id+'" placeholder="Amount" oninput="calcCustomItems(''+catId+'')" style="padding:0.3rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%;text-align:right">' +
+    '<select id="customFreq_'+id+'" onchange="calcCustomItems(''+catId+'')" style="padding:0.3rem 0.4rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.78rem;font-family:DM Sans,sans-serif;width:100%"><option value="monthly">Monthly</option><option value="annual">Annual</option></select>' +
+    '<button onclick="removeCustomBudgetItem(''+id+'',''+catId+'')" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.2rem;line-height:1">×</button>';
+  document.getElementById('customList_'+catId).appendChild(div);
+}
+function removeCustomBudgetItem(id, catId) {
+  var el = document.getElementById('customItem_'+id);
+  if(el) el.remove();
+  calcCustomItems(catId);
+}
+function calcCustomItems(catId) {
+  var total = 0;
+  var list = document.getElementById('customList_'+catId);
+  if(!list) return;
+  list.querySelectorAll('[id^="customCost_"]').forEach(function(el) {
+    var itemId = el.id.replace('customCost_','');
+    var freq = document.getElementById('customFreq_'+itemId)?.value || 'monthly';
+    var val = parseFloat(el.value) || 0;
+    total += freq === 'annual' ? val / 12 : val;
+  });
+  // Store in a hidden data-key field for this category
+  var hiddenKey = 'customTotal_' + catId;
+  var hidden = document.querySelector('[data-key="'+hiddenKey+'"]');
+  if(!hidden) {
+    hidden = document.createElement('input');
+    hidden.type = 'number';
+    hidden.setAttribute('data-key', hiddenKey);
+    hidden.style.display = 'none';
+    hidden.className = 'bud-m';
+    hidden.setAttribute('oninput', 'calcBudget(this)');
+    document.body.appendChild(hidden);
+  }
+  hidden.value = Math.round(total * 100) / 100;
+  calcBudget(hidden);
+}
+
 function removeBudgetSub(id) {
   var el = document.getElementById('budSub_'+id);
   if(el) el.remove();
@@ -8426,6 +8530,23 @@ function collectAllData() {
     });
   });
   data['__budSubRows'] = JSON.stringify(budSubRows);
+  // Custom budget items per category
+  var customCats = ['housing','transport','food','health','profsvc','education','lifestyle','insurance'];
+  customCats.forEach(function(catId) {
+    var rows = [];
+    var list = document.getElementById('customList_'+catId);
+    if(list) {
+      list.querySelectorAll('[id^="customItem_"]').forEach(function(row) {
+        var id = row.id.replace('customItem_','');
+        rows.push({
+          name: document.getElementById('customName_'+id)?.value||'',
+          cost: document.getElementById('customCost_'+id)?.value||'',
+          freq: document.getElementById('customFreq_'+id)?.value||'monthly'
+        });
+      });
+    }
+    data['__custom_'+catId] = JSON.stringify(rows);
+  });
   return data;
 }
 
@@ -8651,6 +8772,32 @@ function loadFromLocal() {
         }
       } catch(e) {}
     }
+    // Restore custom budget items
+    var customCats = ['housing','transport','food','health','profsvc','education','lifestyle','insurance'];
+    customCats.forEach(function(catId) {
+      var key = '__custom_'+catId;
+      if(data[key]) {
+        try {
+          var rows = JSON.parse(data[key]);
+          var list = document.getElementById('customList_'+catId);
+          if(list && rows.length > 0) {
+            list.innerHTML = '';
+            if(!customItemCounts[catId]) customItemCounts[catId] = 0;
+            rows.forEach(function(rd) {
+              addCustomBudgetItem(catId);
+              var id = catId + '_' + customItemCounts[catId];
+              var nameEl = document.getElementById('customName_'+id);
+              var costEl = document.getElementById('customCost_'+id);
+              var freqEl = document.getElementById('customFreq_'+id);
+              if(nameEl) nameEl.value = rd.name;
+              if(costEl) costEl.value = rd.cost;
+              if(freqEl && rd.freq) freqEl.value = rd.freq;
+            });
+            calcCustomItems(catId);
+          }
+        } catch(e) {}
+      }
+    });
     if(data['__aiRows']) {
       try {
         var aiRows = JSON.parse(data['__aiRows']);
