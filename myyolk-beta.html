@@ -1582,6 +1582,39 @@
 <div id="testerBanner" style="background:#2D4A35;color:#fff;text-align:center;padding:8px 1rem;font-family:sans-serif;font-size:0.78rem;width:100%;box-sizing:border-box;position:sticky;top:80px;z-index:98">&#x1F9EA; <strong>Tester Mode</strong> - All Pro features unlocked. After launch some features require Pro subscription. <a href="#" onclick="document.getElementById('testerBanner').style.display='none';return false;" style="color:#F0A500;margin-left:1rem">Dismiss x</a></div>
 
 
+<!-- WELCOME MODAL -->
+<div id="welcomeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9999;align-items:center;justify-content:center;padding:1rem">
+  <div style="background:#fff;border-radius:20px;max-width:520px;width:100%;padding:2.5rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2);position:relative">
+    <!-- Egg logo -->
+    <div style="margin-bottom:1.25rem">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="72" height="72">
+        <ellipse cx="40" cy="44" rx="32" ry="36" fill="#fffdf0" stroke="#e8c96a" stroke-width="2.5"/>
+        <circle cx="44" cy="52" r="18" fill="#F0A500" clip-path="url(#wc)"/>
+        <defs><clipPath id="wc"><ellipse cx="40" cy="44" rx="32" ry="36"/></clipPath></defs>
+      </svg>
+    </div>
+    <h2 style="font-family:Georgia,serif;font-size:1.75rem;color:#2D4A35;margin-bottom:0.5rem">Welcome to MyYolk™</h2>
+    <p style="font-size:1rem;color:#C8860A;font-weight:600;margin-bottom:1.25rem;font-family:Georgia,serif;font-style:italic">Protect the Good Stuff</p>
+    <p style="font-size:0.92rem;color:#555;line-height:1.6;margin-bottom:1.5rem">Your personal retirement planning tool — built to help you understand where you stand, what you have, and what it will take to retire with confidence.</p>
+    <div style="text-align:left;background:#faf7f2;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.75rem">
+      <div style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:0.75rem">
+        <span style="font-size:1.1rem">📋</span>
+        <div><strong style="font-size:0.88rem;color:#2D4A35">Build your profile</strong><br><span style="font-size:0.82rem;color:#888">Enter your income, savings, and Social Security estimates</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:0.75rem">
+        <span style="font-size:1.1rem">💰</span>
+        <div><strong style="font-size:0.88rem;color:#2D4A35">Track your budget</strong><br><span style="font-size:0.82rem;color:#888">See exactly where your money goes and what you'll need in retirement</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:0.75rem">
+        <span style="font-size:1.1rem">🎯</span>
+        <div><strong style="font-size:0.88rem;color:#2D4A35">Get your Readiness Score</strong><br><span style="font-size:0.82rem;color:#888">A clear picture of whether you're on track — and what to do about it</span></div>
+      </div>
+    </div>
+    <button onclick="dismissWelcome()" style="width:100%;padding:0.85rem;background:#2D4A35;color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;letter-spacing:0.3px">Let's Get Started 🥚</button>
+    <p style="font-size:0.75rem;color:#aaa;margin-top:0.75rem">Your data is private and never sold. Ever.</p>
+  </div>
+</div>
+
 <!-- PAYWALL MODAL -->
 <div class="paywall-modal-backdrop" id="paywallModal">
   <div class="paywall-modal">
@@ -8345,6 +8378,16 @@ function initSupabase() {
     updateAuthUI();
     if(_sbUser) {
       cloudLoad();
+      if(event === 'SIGNED_IN') {
+        // Show welcome modal only if never dismissed before
+        var welcomed = localStorage.getItem('myyolk_welcomed');
+        if(!welcomed) {
+          setTimeout(function() {
+            var modal = document.getElementById('welcomeModal');
+            if(modal) modal.style.display = 'flex';
+          }, 800);
+        }
+      }
     }
   });
   _sb.auth.getSession().then(function(r) {
@@ -8648,6 +8691,11 @@ function collectAllData() {
 var SAVE_KEY = 'myyolk_v1';
 // saveData is an alias
 function saveData() { saveToLocal(); }
+function dismissWelcome() {
+  var modal = document.getElementById('welcomeModal');
+  if(modal) modal.style.display = 'none';
+  localStorage.setItem('myyolk_welcomed', '1');
+}
 function manuallySave() {
   saveToLocal();
   if(typeof cloudSave === 'function') cloudSave();
