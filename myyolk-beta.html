@@ -4005,7 +4005,7 @@ function addCreditCard() {
       '<input type="text" id="ccName_'+id+'" placeholder="e.g. PNC Visa" style="padding:0.25rem 0.5rem;border:1.5px solid var(--border);border-radius:6px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%;min-width:0">' +
       '<button onclick="removeCreditCard('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.1rem;line-height:1;flex-shrink:0">×</button>' +
     '</label>' +
-    '<input type="number" id="ccPayment_'+id+'" class="bud-m" placeholder="0" oninput="calcBudget(this);saveToLocal();if(typeof cloudSave==='function')cloudSave();" style="text-align:right">' +
+    '<input type="number" id="ccPayment_'+id+'" class="bud-m" placeholder="0" oninput="calcBudget(this);saveToLocal();" style="text-align:right">' +
     '<input type="number" id="ccAnnual_'+id+'" class="bud-a" placeholder="0" oninput="calcBudget(this)" style="text-align:right">';
   document.getElementById('creditCardRows').appendChild(div);
 }
