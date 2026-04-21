@@ -6754,6 +6754,14 @@ function generatePDF() {
   updateSnapshot();
 
 function showTab(name) {
+  if (name === "budgettracker" && typeof btGetPlanned === "function") {
+    setTimeout(function() {
+      var plan = btGetPlanned();
+      var ms = btCurrentMonthStr();
+      var pf = (btData[ms] && btData[ms].actuals) ? btData[ms].actuals : {};
+      btBuildCheckinTable(plan, pf);
+    }, 300);
+  }
   var main = document.querySelector('main');
   if(main) main.scrollTop = 0;
   document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
@@ -7493,13 +7501,17 @@ function updateBudgetAnalysis() {
 // Category map: matches the bud-m data-key attributes grouped by category
 var BT_CATS = [
   { label: '🏠 Housing', keys: ['rent','propTax','homeIns','electric','gasHeat','water','sewerage','trash','internet','cellPhone','homeMaint'] },
-  { label: '🚗 Transportation', keys: ['gas','carIns','carMaint'] },
+  { label: '🚗 Transportation', keys: ['gas','carIns','carMaint','carWash'] },
   { label: '🍽️ Food', keys: ['groceries','dining'] },
-  { label: '🏥 Health', keys: ['medPrem','rx','oop'] },
+  { label: '🏥 Health', keys: ['medPrem','rx','oop','therapy','massage'] },
   { label: '💼 Professional', keys: ['legal','accounting','finAdvisor'] },
   { label: '🎓 Education & Family', keys: ['tuition','edu529','k12','tutoring','childSupport','childcare','elderCare'] },
   { label: '🎭 Lifestyle', keys: ['subs','entertain','shopping','gym','therapy','vacation','hobbies','charity','lawn','cleaning','security','pets','gifts','other'] },
-  { label: '💳 Debt Payments', keys: ['debtCar1','debtCar2','debtStudent','debtCC1','debtCC2','debtCC3','debtPersonal','debtOther'] }
+  { label: '💳 Debt Payments', keys: ['debtCar1','debtCar2','debtStudent','debtCC1','debtCC2','debtCC3','debtPersonal','debtOther'] },
+  { label: '🛡️ Insurance & Life', keys: ['__ins__'] },
+  { label: '📦 Subscriptions', keys: ['__subs__'] },
+  { label: '🏠 Custom Housing', keys: ['__customHousing__'] },
+  { label: '🏥 Custom Health', keys: ['__customHealth__'] }
 ];
 
 // Key → human label map
@@ -7554,12 +7566,54 @@ function btMonthLabel(yyyymm) {
 }
 
 function btGetPlanned() {
-  // Read current planned budget from the bud-m inputs
   var plan = {};
   document.querySelectorAll('.bud-m[data-key]').forEach(function(el) {
     var key = el.getAttribute('data-key');
     var val = parseFloat(el.value) || 0;
     if (val > 0) plan[key] = val;
+  });
+  document.querySelectorAll('.ins-policy-row').forEach(function(row) {
+    var name = row.querySelector('.ins-name') ? row.querySelector('.ins-name').value : 'Insurance Policy';
+    var val = parseFloat(row.querySelector('.ins-monthly') ? row.querySelector('.ins-monthly').value : 0) || 0;
+    if (val > 0) {
+      var k = '__ins__' + name.replace(/[^a-zA-Z0-9]/g,'_');
+      plan[k] = val;
+      BT_KEY_LABELS[k] = name;
+    }
+  });
+  document.querySelectorAll('[id^="budSub_"]').forEach(function(row) {
+    var id = row.id.replace('budSub_','');
+    var nameEl = document.getElementById('budSubName_'+id);
+    var costEl = document.getElementById('budSubCost_'+id);
+    var name = nameEl ? nameEl.value : 'Subscription';
+    var val = parseFloat(costEl ? costEl.value : 0) || 0;
+    if (val > 0 && name) {
+      var k = '__subs__' + name.replace(/[^a-zA-Z0-9]/g,'_');
+      plan[k] = val;
+      BT_KEY_LABELS[k] = name;
+    }
+  });
+  document.querySelectorAll('#customList_housing .custom-budget-row').forEach(function(row) {
+    var nameEl = row.querySelector('input[type="text"]');
+    var valEl = row.querySelector('.bud-m');
+    var name = nameEl ? nameEl.value : 'Custom Housing';
+    var val = parseFloat(valEl ? valEl.value : 0) || 0;
+    if (val > 0) {
+      var k = '__customHousing__' + name.replace(/[^a-zA-Z0-9]/g,'_');
+      plan[k] = val;
+      BT_KEY_LABELS[k] = name;
+    }
+  });
+  document.querySelectorAll('#customList_health .custom-budget-row').forEach(function(row) {
+    var nameEl = row.querySelector('input[type="text"]');
+    var valEl = row.querySelector('.bud-m');
+    var name = nameEl ? nameEl.value : 'Custom Health';
+    var val = parseFloat(valEl ? valEl.value : 0) || 0;
+    if (val > 0) {
+      var k = '__customHealth__' + name.replace(/[^a-zA-Z0-9]/g,'_');
+      plan[k] = val;
+      BT_KEY_LABELS[k] = name;
+    }
   });
   return plan;
 }
@@ -7680,8 +7734,15 @@ function btBuildCheckinTable(planned, prefillActuals) {
   var html = '';
   BT_CATS.forEach(function(cat) {
     // Only render rows that have a planned value OR a prefilled actual
-    var catRows = cat.keys.filter(function(k) {
-      return (planned[k] || 0) > 0 || (parseFloat(prefillActuals[k]) || 0) > 0;
+    var catRows = [];
+    cat.keys.forEach(function(k) {
+      if (k.startsWith('__')) {
+        Object.keys(planned).forEach(function(pk) {
+          if (pk.startsWith(k) && ((planned[pk]||0) > 0 || (parseFloat(prefillActuals[pk])||0) > 0)) catRows.push(pk);
+        });
+      } else {
+        if ((planned[k]||0) > 0 || (parseFloat(prefillActuals[k])||0) > 0) catRows.push(k);
+      }
     });
     if (catRows.length === 0) return;
 
