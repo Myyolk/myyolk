@@ -1079,7 +1079,7 @@
       <div class="pricing-tier">MyYolk Pro</div>
       <div style="display:flex;justify-content:center;gap:0.5rem;margin-bottom:1rem">
   <button onclick="setPricing('monthly')" id="lp-monthly-btn" style="padding:0.35rem 1rem;border-radius:20px;border:1.5px solid #fff;background:#fff;color:#2D4A35;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit">Monthly</button>
-  <button onclick="setPricing('annual')" id="lp-annual-btn" style="padding:0.35rem 1rem;border-radius:20px;border:1.5px solid rgba(255,255,255,0.4);background:transparent;color:#fff;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit">Annual <span style="background:#C8860A;color:#fff;font-size:0.7rem;padding:1px 6px;border-radius:10px;margin-left:4px">Save 45%</span></button>
+  <button onclick="setPricing('annual')" id="lp-annual-btn" style="padding:0.35rem 1rem;border-radius:20px;border:1.5px solid #fff;background:transparent;color:#fff;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit">Annual <span style="background:#C8860A;color:#fff;font-size:0.7rem;padding:1px 6px;border-radius:10px;margin-left:4px">Save 45%</span></button>
 </div>
 <div class="pricing-price" id="lp-price">$14.99</div>
       <div class="pricing-period"><span id="lp-period">per month · cancel anytime</span></div>
@@ -1292,13 +1292,13 @@ function setPricing(type) {
   if(type === 'annual') {
     priceEl.textContent = '$8.25';
     periodEl.innerHTML = 'per month · billed $99/yr · cancel anytime';
-    aBtn.style.background = '#2D4A35'; aBtn.style.color = '#fff';
-    mBtn.style.background = 'transparent'; mBtn.style.color = '#2D4A35';
+    aBtn.style.background = '#fff'; aBtn.style.color = '#2D4A35'; aBtn.style.border = '1.5px solid #fff';
+    mBtn.style.background = 'transparent'; mBtn.style.color = '#fff'; mBtn.style.border = '1.5px solid #fff';
   } else {
     priceEl.textContent = '$14.99';
     periodEl.textContent = 'per month · cancel anytime';
-    mBtn.style.background = '#2D4A35'; mBtn.style.color = '#fff';
-    aBtn.style.background = 'transparent'; aBtn.style.color = '#2D4A35';
+    mBtn.style.background = '#fff'; mBtn.style.color = '#2D4A35'; mBtn.style.border = '1.5px solid #fff';
+    aBtn.style.background = 'transparent'; aBtn.style.color = '#fff'; aBtn.style.border = '1.5px solid #fff';
   }
 }
 </script>
