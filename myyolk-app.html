@@ -6527,7 +6527,8 @@ function recalc() {
   var balHSA = getVal('balHSA');
   var balESPP = getVal('balESPP');
   var balCash = getVal('balCash');
-  var totalBal = bal401k + balRoth + balRothIRA + balTaxable + balHSA + balESPP;
+  var balRolloverIRA_rc = getVal('balRolloverIRA');
+  var totalBal = bal401k + balRoth + balRothIRA + balRolloverIRA_rc + balTaxable + balHSA + balESPP;
 
   // Add spouse accounts
   if (isCouple) {
@@ -6548,6 +6549,7 @@ function recalc() {
   }
 
   // Projections
+  state.portfolioAtRetirement = 0; // reset before recalculating
   var currentAge = getVal('age', 30);
   var retireAge = getVal('retAge', 65);
   var lifeExp = getVal('lifeExp', 85);
