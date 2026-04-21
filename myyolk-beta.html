@@ -5321,11 +5321,10 @@ function calcBudgetHealthCheck() {
   var state2 = document.getElementById('stateTax')?.value || 'PA';
 
   if(grossAnnual <= 0) {
-    document.getElementById('budgetHealthCard').style.display = '';
-    // show card in retired/laid-off mode
+    document.getElementById('budgetHealthCard').style.display = 'none';
+    return;
   }
-  if (grossAnnual <= 0) {
-    document.getElementById('budgetHealthCard').style.display = '';
+  document.getElementById('budgetHealthCard').style.display = '';
 
   // Federal tax estimate (2024 brackets)
   var standardDed = isCouple ? 29200 : 14600;
@@ -6755,14 +6754,6 @@ function generatePDF() {
   updateSnapshot();
 
 function showTab(name) {
-  if (name === "budgettracker" && typeof btGetPlanned === "function") {
-    setTimeout(function () {
-      var plan = btGetPlanned();
-      var ms = btCurrentMonthStr();
-      var pf = (btData[ms] && btData[ms].actuals) ? btData[ms].actuals : {};
-      btBuildCheckinTable(plan, pf);
-    }, 300);
-  }
   var main = document.querySelector('main');
   if(main) main.scrollTop = 0;
   document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
@@ -7528,7 +7519,6 @@ var BT_KEY_LABELS = {
   hobbies:'Hobbies', charity:'Charitable Donations', lawn:'Lawn / Landscaping',
   cleaning:'Cleaning Service', security:'Security / Monitoring', pets:'Pets',
   gifts:'Gifts / Family', other:'Other',
-  carWash:'Car Wash', massage:'Massage / Wellness',
   debtCar1:'Car Loan 1', debtCar2:'Car Loan 2', debtStudent:'Student Loans',
   debtCC1:'Credit Card 1', debtCC2:'Credit Card 2', debtCC3:'Credit Card 3',
   debtPersonal:'Personal Loan', debtOther:'Other Debt'
