@@ -1621,7 +1621,7 @@
     <button class="paywall-close" onclick="closePaywall()">×</button>
     <div class="paywall-egg">🔒</div>
     <div class="paywall-title">MyYolk Pro</div>
-    <div class="paywall-subtitle">This is a Pro feature — free during the testing period. After launch, Pro is $14.99/month.</div>
+    <div class="paywall-subtitle">This is a Pro feature — free during the testing period. After launch, Pro is $9.99/month.</div>
     <div class="paywall-feature-name" id="paywallFeatureName">Pro Feature</div>
     <div class="paywall-perks">
       <div class="paywall-perk">Budget Tracker — monthly check-in &amp; history</div>
@@ -2964,16 +2964,15 @@
 
         <div class="budget-category">
           <div class="budget-cat-header">🛡️ Insurance &amp; Life</div>
-          <div class="budget-row"><label id="lifeInsDeanLabel">Life Insurance</label><input type="number" class="bud-m" data-key="lifeInsDean" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
-          <div class="budget-row" id="lifeInsSpouseRow" style="display:none"><label id="lifeInsSpouseLabel">Life Insurance (Spouse)</label><input type="number" class="bud-m" data-key="lifeInsSpouse" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
-          <div class="budget-row"><label>Disability Insurance</label><input type="number" class="bud-m" data-key="disabilityIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
-          <div class="budget-row"><label>Umbrella Policy</label><input type="number" class="bud-m" data-key="umbrellaIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
-          <div style="margin-top:0.4rem">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
-              <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
-              <button onclick="addCustomBudgetItem('insurance')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
-            </div>
-            <div id="customList_insurance"></div>
+          <div class="budget-col-headers" style="margin-bottom:0.25rem">
+            <span>Policy Name</span><span>Monthly</span><span>Annual</span>
+          </div>
+          <div id="insurancePolicyRows" style="display:flex;flex-direction:column;gap:0.4rem"></div>
+          <div style="margin-top:0.5rem;display:flex;gap:0.5rem;flex-wrap:wrap">
+            <button onclick="addInsurancePolicy()" style="background:var(--sage-pale);color:var(--forest);border:1px solid var(--sage);border-radius:8px;padding:0.3rem 0.85rem;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add Policy</button>
+          </div>
+          <div id="insuranceTotalRow" style="display:none;margin-top:0.5rem;padding:0.5rem 0.75rem;background:var(--warm-white);border-radius:8px;font-size:0.82rem;color:var(--forest)">
+            Total Insurance: <strong id="insuranceTotalAmt" style="color:var(--sage)">$0/mo</strong>
           </div>
         </div>
 
@@ -3226,7 +3225,7 @@
 
     <!-- ══ TRACKING TAB ══ -->
     <div class="tab-panel" id="tab-tracking">
-      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($14.99/mo).</div>
+      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($9.99/mo).</div>
       
       <h1 class="page-title">Budget Tracker</h1>
       <p class="page-subtitle">Log what you actually spent each month and watch your patterns over time.</p>
@@ -3559,7 +3558,7 @@
     </div>
 
     <div class="tab-panel" id="tab-whatif">
-      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($14.99/mo).</div>
+      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($9.99/mo).</div>
       
       <h1 class="page-title">What-If Scenarios</h1>
       <p class="page-subtitle">See how small changes today create big differences at retirement.</p>
@@ -3693,7 +3692,7 @@
     </div>
 
     <div class="tab-panel" id="tab-early">
-      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($14.99/mo).</div>
+      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($9.99/mo).</div>
       
       <h1 class="page-title">Early Retirement & Layoff</h1>
       <p class="page-subtitle">What if income stopped earlier than planned? Model the impact.</p>
@@ -3767,7 +3766,7 @@
 
     <!-- ══ SUMMARY TAB ══ -->
     <div class="tab-panel" id="tab-summary">
-      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($14.99/mo).</div>
+      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($9.99/mo).</div>
       
       <h1 class="page-title">Your MyYolk Summary</h1>
       <p class="page-subtitle">Your complete financial snapshot - net worth, retirement readiness, and key milestones.</p>
@@ -5413,6 +5412,102 @@ function getVestingLifeEvents() {
 }
 
 
+
+// ── INSURANCE POLICY ROWS ────────────────────────────────────────────
+var _insPolicyCount = 0;
+
+function addInsurancePolicy(data) {
+  _insPolicyCount++;
+  var id = _insPolicyCount;
+  var row = document.createElement('div');
+  row.className = 'ins-policy-row budget-row';
+  row.dataset.id = id;
+  row.style.cssText = 'display:grid;grid-template-columns:1fr 80px 80px 32px;gap:0.4rem;align-items:center';
+  row.innerHTML =
+    '<input type="text" class="ins-name" placeholder="e.g. Dean - Northwestern Mutual" ' +
+    'value="' + (data?.name||'') + '" oninput="calcInsuranceTotal()" ' +
+    'style="font-size:0.82rem;padding:0.35rem 0.5rem;border:1px solid var(--border);border-radius:6px;width:100%">' +
+    '<input type="number" class="ins-monthly bud-m" placeholder="0" value="' + (data?.monthly||'') + '" ' +
+    'oninput="syncInsAnnual(this);calcInsuranceTotal();calcBudget(this)" ' +
+    'style="font-size:0.82rem;padding:0.35rem 0.4rem;border:1px solid var(--border);border-radius:6px;width:100%;text-align:right">' +
+    '<input type="number" class="ins-annual bud-a" placeholder="0" value="' + (data?.annual||'') + '" ' +
+    'oninput="syncInsMonthly(this);calcInsuranceTotal();calcBudget(this)" ' +
+    'style="font-size:0.82rem;padding:0.35rem 0.4rem;border:1px solid var(--border);border-radius:6px;width:100%;text-align:right">' +
+    '<button onclick="removeInsurancePolicy(this,' + id + ')" ' +
+    'style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:4px 7px;cursor:pointer;font-size:0.8rem;line-height:1">✕</button>';
+  document.getElementById('insurancePolicyRows').appendChild(row);
+  calcInsuranceTotal();
+}
+
+function syncInsAnnual(el) {
+  var row = el.closest('.ins-policy-row');
+  var monthly = parseFloat(el.value) || 0;
+  var annualEl = row.querySelector('.ins-annual');
+  if(annualEl && monthly > 0) annualEl.value = Math.round(monthly * 12);
+}
+
+function syncInsMonthly(el) {
+  var row = el.closest('.ins-policy-row');
+  var annual = parseFloat(el.value) || 0;
+  var monthlyEl = row.querySelector('.ins-monthly');
+  if(monthlyEl && annual > 0) monthlyEl.value = (annual / 12).toFixed(2);
+}
+
+function removeInsurancePolicy(btn, id) {
+  var row = document.querySelector('.ins-policy-row[data-id="' + id + '"]');
+  if(row) row.remove();
+  calcInsuranceTotal();
+  saveInsurancePolicies();
+  calcBudget(document.querySelector('.bud-m') || {value:'0'});
+}
+
+function calcInsuranceTotal() {
+  var total = 0;
+  document.querySelectorAll('.ins-policy-row').forEach(function(row) {
+    total += parseFloat(row.querySelector('.ins-monthly')?.value) || 0;
+  });
+  var totalEl = document.getElementById('insuranceTotalRow');
+  var totalAmt = document.getElementById('insuranceTotalAmt');
+  var rows = document.querySelectorAll('.ins-policy-row');
+  if(rows.length > 0) {
+    totalEl.style.display = '';
+    totalAmt.textContent = '$' + total.toFixed(2).replace(/\.00$/, '') + '/mo';
+  } else {
+    totalEl.style.display = 'none';
+  }
+  saveInsurancePolicies();
+}
+
+function saveInsurancePolicies() {
+  var rows = [];
+  document.querySelectorAll('.ins-policy-row').forEach(function(row) {
+    rows.push({
+      name: row.querySelector('.ins-name')?.value || '',
+      monthly: row.querySelector('.ins-monthly')?.value || '',
+      annual: row.querySelector('.ins-annual')?.value || '',
+    });
+  });
+  var saved = JSON.parse(localStorage.getItem('myyolk_v1') || '{}');
+  saved.__insurancePolicies = JSON.stringify(rows);
+  localStorage.setItem('myyolk_v1', JSON.stringify(saved));
+}
+
+function loadInsurancePolicies(data) {
+  var rows = [];
+  try { rows = JSON.parse(data.__insurancePolicies || '[]'); } catch(e) {}
+  // If no saved policies but old lifeInsDean exists, migrate it
+  if(rows.length === 0 && (parseFloat(data.lifeInsDean)||0) > 0) {
+    rows.push({name: 'Life Insurance', monthly: data.lifeInsDean, annual: ''});
+  }
+  if(rows.length === 0 && (parseFloat(data.lifeInsSpouse)||0) > 0) {
+    rows.push({name: 'Life Insurance (Spouse)', monthly: data.lifeInsSpouse, annual: ''});
+  }
+  document.getElementById('insurancePolicyRows').innerHTML = '';
+  _insPolicyCount = 0;
+  rows.forEach(function(r) { addInsurancePolicy(r); });
+}
+
+
 // ── MONTE CARLO SIMULATION ──────────────────────────────────────────
 function runMonteCarlo() {
   var portfolio = state.portfolioAtRetirement || 0;
@@ -6064,7 +6159,7 @@ function generatePDF() {
   // Show free during testing toast
   var toast = document.createElement('div');
   toast.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#2D4A35;color:#fff;padding:1.25rem 2rem;border-radius:12px;font-size:0.95rem;z-index:99999;font-family:DM Sans,sans-serif;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.3);max-width:400px;line-height:1.5';
-  toast.innerHTML = '🧪 Pro feature — free during testing. After launch $14.99/mo.';
+  toast.innerHTML = '🧪 Pro feature — free during testing. After launch $9.99/mo.';
   document.body.appendChild(toast);
   setTimeout(function(){ toast.remove(); }, 4000);
   if(typeof window.jspdf === 'undefined' && typeof jsPDF === 'undefined') {
@@ -6422,7 +6517,7 @@ function generatePDF() {
           ['Transportation', ['gas','carIns','carMaint','carWash']],
           ['Food & Dining', ['groceries','dining']],
           ['Health & Wellness', ['medPrem','rx','oop','therapy','massage']],
-          ['Insurance & Life', ['lifeInsDean','lifeInsSpouse','disabilityIns']],
+          ['Insurance & Life', []], // dynamic policy rows handled separately
           ['Lifestyle & Subscriptions', ['subs','entertain','shopping','gym','hobbies','charity','pets','gifts','vacation']],
         ];
         var getB = function(key) { var el = document.querySelector('[data-key="'+key+'"]'); return parseFloat(el?.value)||0; };
@@ -9045,6 +9140,12 @@ function collectAllData() {
     });
   });
   data['__vestingRows'] = JSON.stringify(vestSaveRows);
+  // Insurance policies
+  var insPolicies = [];
+  document.querySelectorAll('.ins-policy-row').forEach(function(row){
+    insPolicies.push({name:row.querySelector('.ins-name')?.value||'',monthly:row.querySelector('.ins-monthly')?.value||'',annual:row.querySelector('.ins-annual')?.value||''});
+  });
+  data['__insurancePolicies'] = JSON.stringify(insPolicies);
   var budSubRows = [];
   document.querySelectorAll('[id^="budSub_"]').forEach(function(row) {
     var id = row.id.replace('budSub_','');
@@ -9261,6 +9362,12 @@ function saveToLocal() {
       });
     });
     data['__vestingRows'] = JSON.stringify(vestSaveRows2);
+    // Insurance policies
+    var insPolicies2 = [];
+    document.querySelectorAll('.ins-policy-row').forEach(function(row){
+      insPolicies2.push({name:row.querySelector('.ins-name')?.value||'',monthly:row.querySelector('.ins-monthly')?.value||'',annual:row.querySelector('.ins-annual')?.value||''});
+    });
+    data['__insurancePolicies'] = JSON.stringify(insPolicies2);
     // Save individual child ages
     for(var ci = 1; ci <= 5; ci++) {
       var cel = document.getElementById('childAge' + ci);
@@ -9495,6 +9602,8 @@ function loadFromLocal() {
       if(estSection) estSection.style.display = 'none';
       if(typeof ssManualUpdate === 'function') ssManualUpdate();
     }
+    // Restore insurance policies
+    if(typeof loadInsurancePolicies === 'function') loadInsurancePolicies(data);
     // Restore vesting/future income rows
     if(data['__vestingRows']) {
       try {
