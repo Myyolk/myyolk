@@ -5312,10 +5312,12 @@ function addVestingRow(type, data) {
     '<div class="field" style="margin:0"><label>' + (t.recurring === false ? 'Vest Year' : 'Start Year') + '</label><input type="number" class="vr-start" placeholder="' + currentYear + '" oninput="calcVestingTotal()" value="' + (data?.start||'') + '"></div>' +
     endField +
     recurringToggle +
+    '<div class="field" style="margin:0"><label>Whose?</label><select class="vr-owner" onchange="calcVestingTotal()" style="width:100%"><option value="mine">Mine</option><option value="spouse">Spouse's</option></select></div>' +
     '<div class="field" style="margin:0"><label style="font-size:0.78rem;display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" class="vr-401k" onchange="calcVestingTotal()" ' + (data?.is401k?'checked':'') + '> 401k applies</label></div>' +
     '<div style="padding-bottom:2px"><button onclick="removeVestingRow(this,' + id + ')" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>';
 
   if(data?.recur) row.querySelector('.vr-recur') && (row.querySelector('.vr-recur').value = data.recur);
+  if(data?.owner) row.querySelector('.vr-owner') && (row.querySelector('.vr-owner').value = data.owner);
 
   document.getElementById('vestingRows').appendChild(row);
   calcVestingTotal();
@@ -5360,6 +5362,7 @@ function saveVestingRows() {
       end: row.querySelector('.vr-end')?.value || '',
       recur: row.querySelector('.vr-recur')?.value || '',
       is401k: row.querySelector('.vr-401k')?.checked || false,
+      owner: row.querySelector('.vr-owner')?.value || 'mine',
     });
   });
   var saved = JSON.parse(localStorage.getItem('myyolk_v1') || '{}');
@@ -9037,6 +9040,7 @@ function collectAllData() {
       end: row.querySelector('.vr-end')?.value||'',
       recur: row.querySelector('.vr-recur')?.value||'',
       is401k: row.querySelector('.vr-401k')?.checked||false,
+      owner: row.querySelector('.vr-owner')?.value||'mine',
     });
   });
   data['__vestingRows'] = JSON.stringify(vestSaveRows);
@@ -9252,6 +9256,7 @@ function saveToLocal() {
         end: row.querySelector('.vr-end')?.value||'',
         recur: row.querySelector('.vr-recur')?.value||'',
         is401k: row.querySelector('.vr-401k')?.checked||false,
+      owner: row.querySelector('.vr-owner')?.value||'mine',
       });
     });
     data['__vestingRows'] = JSON.stringify(vestSaveRows2);
