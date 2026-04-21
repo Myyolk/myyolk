@@ -3495,6 +3495,38 @@
       <div id="rdYearsLast" style="padding:1rem;background:var(--warm-white);border-radius:8px;font-size:0.9rem;color:var(--forest);text-align:center"></div>
       </div>
 
+
+      <!-- MONTE CARLO SIMULATION -->
+      <div class="card" id="mcCard" style="margin-bottom:1.5rem">
+        <div class="card-title"><span class="dot"></span> 🎲 Monte Carlo Simulation <span style="font-size:0.72rem;background:#e8f4f0;color:var(--forest);padding:2px 8px;border-radius:20px;margin-left:8px;font-weight:600">1,000 Scenarios</span></div>
+        <p style="font-size:0.85rem;color:var(--mid);margin-bottom:1rem">Instead of one straight-line projection, we simulate 1,000 possible market scenarios with realistic ups and downs. This shows your probability of <strong>not outliving your money</strong>.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem">
+          <div style="text-align:center;padding:1.25rem;border-radius:12px;background:var(--sage-pale)">
+            <div style="font-size:0.78rem;color:var(--mid);margin-bottom:6px;font-weight:600">SUCCESS RATE</div>
+            <div id="mcSuccessRate" style="font-size:2.2rem;font-weight:800;color:var(--forest)">—</div>
+            <div id="mcSuccessLabel" style="font-size:0.8rem;color:var(--mid);margin-top:4px">of scenarios you don't run out</div>
+          </div>
+          <div style="text-align:center;padding:1.25rem;border-radius:12px;background:var(--warm-white)">
+            <div style="font-size:0.78rem;color:var(--mid);margin-bottom:6px;font-weight:600">MEDIAN PORTFOLIO AT END</div>
+            <div id="mcMedianEnd" style="font-size:2.2rem;font-weight:800;color:var(--forest)">—</div>
+            <div style="font-size:0.8rem;color:var(--mid);margin-top:4px">at age <span id="mcEndAge">—</span> (50th percentile)</div>
+          </div>
+        </div>
+        <div style="margin-bottom:1rem">
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--mid);margin-bottom:6px">
+            <span>0%</span><span>Failure</span><span style="font-weight:700;color:var(--forest)" id="mcBarLabel">—</span><span>Success</span><span>100%</span>
+          </div>
+          <div style="height:14px;background:#f0f0f0;border-radius:7px;overflow:hidden">
+            <div id="mcBar" style="height:100%;width:0%;border-radius:7px;transition:width 0.8s ease;background:linear-gradient(90deg,var(--clay),#e5a800,var(--sage))"></div>
+          </div>
+        </div>
+        <div id="mcFanChart" style="margin-bottom:1rem"></div>
+        <div id="mcInsight" style="font-size:0.85rem;padding:0.75rem 1rem;border-radius:8px;border-left:4px solid var(--sage);background:var(--sage-pale)"></div>
+        <div style="margin-top:0.75rem;font-size:0.75rem;color:var(--mid)">
+          Assumes mean annual return of <strong id="mcMeanReturn">—</strong> with standard deviation of 12% (historical stock market volatility). Each simulation varies returns randomly year by year.
+        </div>
+      </div>
+
       <!-- ACTION ITEMS -->
       <div class="card" id="rdActionsCard" style="display:none">
         <div class="card-title"><span class="dot"></span> Recommended Actions</div>
@@ -5216,6 +5248,130 @@ showTab = function(name) {
 
 
 // ── READINESS SCORE ──
+
+// ── MONTE CARLO SIMULATION ──────────────────────────────────────────
+function runMonteCarlo() {
+  var portfolio = state.portfolioAtRetirement || 0;
+  if(portfolio <= 0) {
+    document.getElementById('mcCard').style.display = 'none';
+    return;
+  }
+  document.getElementById('mcCard').style.display = '';
+
+  var lifeExp = parseInt(document.getElementById('lifeExp')?.value) || 85;
+  var retAge  = parseInt(document.getElementById('retAge')?.value)  || 62;
+  var yearsInRetirement = Math.max(lifeExp - retAge, 1);
+
+  // Monthly spend in retirement (inflation-adjusted)
+  var monthlyExpenses = 0;
+  var rdInfl = document.getElementById('rdInflatedBudget');
+  if(rdInfl) {
+    monthlyExpenses = parseFloat(rdInfl.textContent.replace(/[^0-9.]/g,'')) || 0;
+  }
+
+  // Monthly SS + additional income
+  var ssMonthly = (state.ssMonthly || 0) + (state.spouseSsMonthly || 0);
+  var additionalIncome = state.additionalMonthly || 0;
+  var monthlyNonPortfolio = ssMonthly + additionalIncome;
+  var monthlyDraw = Math.max(monthlyExpenses - monthlyNonPortfolio, 0);
+  var annualDraw = monthlyDraw * 12;
+
+  var growthRate = parseFloat(document.getElementById('growthRate')?.value) || 0.07;
+  var meanReturn = growthRate;
+  var stdDev = 0.12; // historical stock market std dev
+  var simCount = 1000;
+  var successes = 0;
+  var finalValues = [];
+
+  // Box-Muller transform for normal random numbers
+  function randNormal(mean, sd) {
+    var u = 1 - Math.random();
+    var v = Math.random();
+    var z = Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+    return mean + sd * z;
+  }
+
+  for(var s = 0; s < simCount; s++) {
+    var bal = portfolio;
+    for(var y = 0; y < yearsInRetirement; y++) {
+      var annualReturn = randNormal(meanReturn, stdDev);
+      bal = bal * (1 + annualReturn) - annualDraw;
+      if(bal <= 0) { bal = 0; break; }
+    }
+    finalValues.push(bal);
+    if(bal > 0) successes++;
+  }
+
+  var successRate = Math.round((successes / simCount) * 100);
+  finalValues.sort(function(a,b){return a-b;});
+  var median = finalValues[Math.floor(simCount * 0.5)];
+  var p10 = finalValues[Math.floor(simCount * 0.10)];
+  var p90 = finalValues[Math.floor(simCount * 0.90)];
+
+  // Format
+  function fmtM(v) {
+    if(v >= 1000000) return '$' + (v/1000000).toFixed(2) + 'M';
+    if(v >= 1000) return '$' + Math.round(v/1000) + 'K';
+    return '$' + Math.round(v).toLocaleString();
+  }
+
+  document.getElementById('mcSuccessRate').textContent = successRate + '%';
+  document.getElementById('mcMedianEnd').textContent = fmtM(median);
+  document.getElementById('mcEndAge').textContent = lifeExp;
+  document.getElementById('mcBar').style.width = successRate + '%';
+  document.getElementById('mcBarLabel').textContent = successRate + '%';
+  document.getElementById('mcMeanReturn').textContent = Math.round(meanReturn * 100) + '%';
+
+  // Color success rate
+  var scoreEl = document.getElementById('mcSuccessRate');
+  if(successRate >= 85) { scoreEl.style.color = 'var(--sage)'; }
+  else if(successRate >= 70) { scoreEl.style.color = '#e5a800'; }
+  else { scoreEl.style.color = 'var(--clay)'; }
+
+  // Fan chart (SVG)
+  var w = 340, h = 120, pad = 30;
+  var maxVal = Math.max(p90, portfolio) * 1.1;
+  function px(v) { return pad + (w - pad*2) * v / yearsInRetirement; }
+  function py(v) { return h - pad - (h - pad*2) * Math.min(v, maxVal) / maxVal; }
+
+  var svg = '<svg width="100%" viewBox="0 0 ' + w + ' ' + h + '" style="display:block">';
+  // 10-90 band
+  svg += '<path d="M' + px(0) + ',' + py(portfolio);
+  for(var y2=1; y2<=yearsInRetirement; y2++) {
+    var frac = y2/yearsInRetirement;
+    var topV = portfolio * Math.pow(1 + meanReturn + stdDev*1.28, y2) - annualDraw * (Math.pow(1+meanReturn,y2)-1)/meanReturn;
+    svg += ' L' + px(y2) + ',' + py(Math.max(topV,0));
+  }
+  for(var y3=yearsInRetirement; y3>=0; y3--) {
+    var botV = portfolio * Math.pow(1 + meanReturn - stdDev*1.28, y3) - annualDraw * (Math.pow(1+meanReturn,y3)-1)/meanReturn;
+    svg += ' L' + px(y3) + ',' + py(Math.max(botV,0));
+  }
+  svg += ' Z" fill="rgba(95,158,120,0.15)" />';
+  // Median line
+  svg += '<path d="M' + px(0) + ',' + py(portfolio);
+  for(var y4=1; y4<=yearsInRetirement; y4++) {
+    var medV = portfolio * Math.pow(1+meanReturn,y4) - annualDraw * (Math.pow(1+meanReturn,y4)-1)/(meanReturn||0.001);
+    svg += ' L' + px(y4) + ',' + py(Math.max(medV,0));
+  }
+  svg += '" fill="none" stroke="var(--sage)" stroke-width="2" />';
+  // Zero line
+  svg += '<line x1="' + pad + '" y1="' + py(0) + '" x2="' + (w-pad) + '" y2="' + py(0) + '" stroke="#ddd" stroke-width="1" stroke-dasharray="4" />';
+  // Labels
+  svg += '<text x="' + pad + '" y="' + (h-8) + '" font-size="9" fill="#aaa">Age ' + retAge + '</text>';
+  svg += '<text x="' + (w-pad) + '" y="' + (h-8) + '" font-size="9" fill="#aaa" text-anchor="end">Age ' + lifeExp + '</text>';
+  svg += '</svg>';
+  document.getElementById('mcFanChart').innerHTML = svg;
+
+  // Insight
+  var insight = '';
+  if(successRate >= 90) insight = '✅ Excellent — your plan is highly resilient to market volatility. Even in bad market scenarios you are well positioned.';
+  else if(successRate >= 80) insight = '👍 Strong — most market scenarios work in your favor. Consider a small buffer in spending flexibility.';
+  else if(successRate >= 70) insight = '⚠️ Moderate — about 1 in 3 scenarios runs into trouble. Delaying retirement, reducing spending, or working part-time could improve this significantly.';
+  else if(successRate >= 50) insight = '🔴 Risky — half of market scenarios lead to running out of money. Use the What-If tab to explore changes that could improve your odds.';
+  else insight = '🚨 High Risk — the majority of scenarios result in depleting your portfolio. Significant changes to your retirement plan are recommended.';
+  document.getElementById('mcInsight').textContent = insight;
+}
+
 function calcReadiness() {
   // Run projections silently first to get accurate portfolioAtRetirement
   if(typeof calcProjections === 'function' && !state._inReadiness) {
@@ -5732,6 +5888,9 @@ function calcReadiness() {
     sbReadiness.textContent = score + '%';
     sbReadiness.style.color = score >= 80 ? 'var(--sage)' : score >= 60 ? 'var(--gold)' : 'var(--clay)';
   }
+
+  // Run Monte Carlo simulation
+  if(typeof runMonteCarlo === 'function') runMonteCarlo();
 }
 
 
