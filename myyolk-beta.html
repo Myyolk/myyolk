@@ -2252,7 +2252,7 @@
             </div>
           </div>
           <div class="field">
-            <label>RSU / Stock Vesting ($)</label>
+            <label>RSU / Stock Vesting (current year, $)</label>
             <input type="number" id="bonusRSU" value="" placeholder="e.g. 15000" oninput="recalc()">
             <div style="display:flex;gap:1rem;margin-top:4px;flex-wrap:wrap">
               <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
@@ -2260,6 +2260,7 @@
               </label>
               <label style="font-size:0.78rem;color:#c96a3a;font-weight:500">One-time · NOT projected forward</label>
             </div>
+            <div class="hint" style="margin-top:6px">For multiple vesting dates across different years, use <strong>Future Income Schedule</strong> below.</div>
           </div>
         </div>
 
@@ -2375,7 +2376,7 @@
               </div>
             </div>
             <div class="field">
-              <label>RSU / Stock Vesting ($)</label>
+              <label>RSU / Stock Vesting (current year, $)</label>
               <input type="number" id="spouseBonusRSU" value="" placeholder="e.g. 15000" oninput="recalc()">
               <div style="display:flex;gap:1rem;margin-top:4px;flex-wrap:wrap">
                 <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px"><input type="checkbox" id="spouseBonusRSU401k" onchange="recalc()"> 401k applies</label>
@@ -5312,7 +5313,7 @@ function addVestingRow(type, data) {
     '<div class="field" style="margin:0"><label>' + (t.recurring === false ? 'Vest Year' : 'Start Year') + '</label><input type="number" class="vr-start" placeholder="' + currentYear + '" oninput="calcVestingTotal()" value="' + (data?.start||'') + '"></div>' +
     endField +
     recurringToggle +
-    '<div class="field" style="margin:0"><label>Whose?</label><select class="vr-owner" onchange="calcVestingTotal()" style="width:100%"><option value="mine">Mine</option><option value="spouse">Spouse's</option></select></div>' +
+    '<div class="field" style="margin:0"><label>Whose?</label><select class="vr-owner" onchange="calcVestingTotal()" style="width:100%"><option value="mine">Mine</option><option value="spouse">Spouse\'s</option></select></div>' +
     '<div class="field" style="margin:0"><label style="font-size:0.78rem;display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" class="vr-401k" onchange="calcVestingTotal()" ' + (data?.is401k?'checked':'') + '> 401k applies</label></div>' +
     '<div style="padding-bottom:2px"><button onclick="removeVestingRow(this,' + id + ')" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>';
 
