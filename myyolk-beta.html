@@ -3433,7 +3433,7 @@
             <div id="rdPortfolioIncome" style="font-size:1.1rem;font-weight:700;color:var(--sage);padding:0.5rem 0">—</div>
           </div>
           <div class="field">
-            <label>Social Security (your est.)</label>
+            <label>Social Security (Household est.)</label>
             <div id="rdSSIncome" style="font-size:1.1rem;font-weight:700;color:var(--sage);padding:0.5rem 0">—</div>
             <div id="rdChildStepdown" style="display:none;margin-top:0.25rem"></div>
           </div>
@@ -6360,7 +6360,9 @@ function updateSnapshot() {
 
   // Use calcProjections as single source of truth
   if(typeof calcProjections === 'function') calcProjections();
-  var portfolio = state.portfolioAtRetirement || totalNow;
+  // Only use financial portfolio, not home equity, when accounts are empty
+  var financialAssets = (parseFloat(document.getElementById('balRolloverIRA')?.value)||0) + (parseFloat(document.getElementById('balRoth401')?.value)||0) + (parseFloat(document.getElementById('balRothIRA')?.value)||0) + (parseFloat(document.getElementById('balTaxable')?.value)||0) + (parseFloat(document.getElementById('balCash')?.value)||0) + (parseFloat(document.getElementById('spouseBalCash')?.value)||0);
+  var portfolio = financialAssets > 0 ? (state.portfolioAtRetirement || 0) : 0;
 
   // Safe withdrawal (4% rule / 12 months)
   var monthlyWithdrawal = (portfolio * 0.04) / 12;
