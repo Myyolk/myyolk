@@ -4926,7 +4926,11 @@ function calcProjections() {
   var savingsRate = (parseFloat(document.getElementById('savingsRate')?.value) || 4.5) / 100;
   // Cash grows at savings rate, not investment rate
   var balCashAtRetirement = balCash * Math.pow(1 + savingsRate, yearsToRetire);
-  var totalBalance = bal401k + balRoth401 + balRothIRA + balTaxable + balHSA; // exclude cash from investment growth
+  var balRolloverIRA2 = parseFloat(document.getElementById('balRolloverIRA')?.value) || 0;
+  var spBal401k2 = parseFloat(document.getElementById('spouseBal401k')?.value) || 0;
+  var spBalRoth2 = parseFloat(document.getElementById('spouseBalRoth401')?.value) || 0;
+  var spBalIRA2 = parseFloat(document.getElementById('spouseBalRothIRA')?.value) || 0;
+  var totalBalance = bal401k + balRoth401 + balRothIRA + balRolloverIRA2 + balTaxable + balHSA + spBal401k2 + spBalRoth2 + spBalIRA2; // exclude cash from investment growth
 
   // Spouse SS for projections
   var spouseSsForProj = 0;
