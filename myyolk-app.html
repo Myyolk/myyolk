@@ -1569,7 +1569,8 @@
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:0.5rem;">
-    <span id="saveIndicator" style="font-size:0.75rem;color:#2d6a4f;opacity:0;transition:opacity 0.5s">💾 Saved</span>
+    <span id="saveIndicator" style="font-size:0.75rem;color:#2d6a4f;opacity:0;transition:opacity 0.5s">☁️ Saved</span>
+    <button onclick="manuallySave()" title="Save your data to the cloud" style="font-size:0.75rem;font-weight:600;background:#2D4A35;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;color:#fff;font-family:DM Sans,sans-serif">💾 Save</button>
     <button onclick="clearSavedData()" title="Clear all saved data" style="font-size:0.75rem;background:none;border:1px solid #ddd;border-radius:6px;padding:3px 8px;cursor:pointer;color:#888">Clear Data</button>
   </div>
   <div style="display:flex;align-items:center;gap:0.5rem;margin-left:auto">
@@ -1580,6 +1581,39 @@
 </header>
 <div id="testerBanner" style="background:#2D4A35;color:#fff;text-align:center;padding:8px 1rem;font-family:sans-serif;font-size:0.78rem;width:100%;box-sizing:border-box;position:sticky;top:80px;z-index:98">&#x1F9EA; <strong>Tester Mode</strong> - All Pro features unlocked. After launch some features require Pro subscription. <a href="#" onclick="document.getElementById('testerBanner').style.display='none';return false;" style="color:#F0A500;margin-left:1rem">Dismiss x</a></div>
 
+
+<!-- WELCOME MODAL -->
+<div id="welcomeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9999;align-items:center;justify-content:center;padding:1rem">
+  <div style="background:#fff;border-radius:20px;max-width:520px;width:100%;padding:2.5rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2);position:relative">
+    <!-- Egg logo -->
+    <div style="margin-bottom:1.25rem">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="72" height="72">
+        <ellipse cx="40" cy="44" rx="32" ry="36" fill="#fffdf0" stroke="#e8c96a" stroke-width="2.5"/>
+        <circle cx="44" cy="52" r="18" fill="#F0A500" clip-path="url(#wc)"/>
+        <defs><clipPath id="wc"><ellipse cx="40" cy="44" rx="32" ry="36"/></clipPath></defs>
+      </svg>
+    </div>
+    <h2 style="font-family:Georgia,serif;font-size:1.75rem;color:#2D4A35;margin-bottom:0.5rem">Welcome to MyYolk™</h2>
+    <p style="font-size:1rem;color:#C8860A;font-weight:600;margin-bottom:1.25rem;font-family:Georgia,serif;font-style:italic">Protect the Good Stuff</p>
+    <p style="font-size:0.92rem;color:#555;line-height:1.6;margin-bottom:1.5rem">Your personal retirement planning tool — built to help you understand where you stand, what you have, and what it will take to retire with confidence.</p>
+    <div style="text-align:left;background:#faf7f2;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.75rem">
+      <div style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:0.75rem">
+        <span style="font-size:1.1rem">📋</span>
+        <div><strong style="font-size:0.88rem;color:#2D4A35">Build your profile</strong><br><span style="font-size:0.82rem;color:#888">Enter your income, savings, and Social Security estimates</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:0.75rem">
+        <span style="font-size:1.1rem">💰</span>
+        <div><strong style="font-size:0.88rem;color:#2D4A35">Track your budget</strong><br><span style="font-size:0.82rem;color:#888">See exactly where your money goes and what you'll need in retirement</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:0.75rem">
+        <span style="font-size:1.1rem">🎯</span>
+        <div><strong style="font-size:0.88rem;color:#2D4A35">Get your Readiness Score</strong><br><span style="font-size:0.82rem;color:#888">A clear picture of whether you're on track — and what to do about it</span></div>
+      </div>
+    </div>
+    <button onclick="dismissWelcome()" style="width:100%;padding:0.85rem;background:#2D4A35;color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;letter-spacing:0.3px">Let's Get Started 🥚</button>
+    <p style="font-size:0.75rem;color:#aaa;margin-top:0.75rem">Your data is private and never sold. Ever.</p>
+  </div>
+</div>
 
 <!-- PAYWALL MODAL -->
 <div class="paywall-modal-backdrop" id="paywallModal">
@@ -1687,7 +1721,7 @@
       <span class="icon">📊</span><span class="nav-label"> Budget Planner</span>
     </button>
     <button class="nav-item nav-locked" onclick="proGate('tracking','📅 Budget Tracker')" id="nav-tracking" data-label="Tracker" style="position:relative">
-      <span class="icon">📅</span><span class="nav-label"> Budget Tracker</span><span class="nav-lock-icon" style="font-size:0.5rem;background:#C8860A;color:#fff;border-radius:4px;padding:1px 4px;position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:DM Sans,sans-serif;font-weight:700">FREE NOW</span><span id="btUnloggedBadge" style="display:none;position:absolute;top:4px;right:4px;width:8px;height:8px;background:#c0392b;border-radius:50%;flex-shrink:0"></span>
+      <span class="icon">📅</span><span class="nav-label"> Budget Tracker</span><span class="nav-lock-icon" style="font-size:0.55rem;background:#9ca3af;color:#fff;border-radius:4px;padding:1px 5px;position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:DM Sans,sans-serif;font-weight:700;letter-spacing:0.3px">PRO</span><span id="btUnloggedBadge" style="display:none;position:absolute;top:4px;right:4px;width:8px;height:8px;background:#c0392b;border-radius:50%;flex-shrink:0"></span>
     </button>
     <button class="nav-item" onclick="showTab('projections')" data-label="Project.">
       <span class="icon">📈</span><span class="nav-label"> Projections</span>
@@ -1696,13 +1730,13 @@
       <span class="icon">🎯</span><span class="nav-label"> Readiness</span>
     </button>
     <button class="nav-item nav-locked" onclick="proGate('whatif','🔀 What-If Scenarios')" id="nav-whatif-lock" data-label="What-If">
-      <span class="icon">🔀</span><span class="nav-label"> What-If Scenarios</span><span class="nav-lock-icon" style="font-size:0.5rem;background:#C8860A;color:#fff;border-radius:4px;padding:1px 4px;position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:DM Sans,sans-serif;font-weight:700">FREE NOW</span>
+      <span class="icon">🔀</span><span class="nav-label"> What-If Scenarios</span><span class="nav-lock-icon" style="font-size:0.55rem;background:#9ca3af;color:#fff;border-radius:4px;padding:1px 5px;position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:DM Sans,sans-serif;font-weight:700;letter-spacing:0.3px">PRO</span>
     </button>
     <button class="nav-item nav-locked" onclick="proGate('early','⚡ Early Retirement')" id="nav-early-lock" data-label="Early Ret.">
-      <span class="icon">⚡</span><span class="nav-label"> Early Retirement</span><span class="nav-lock-icon" style="font-size:0.5rem;background:#C8860A;color:#fff;border-radius:4px;padding:1px 4px;position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:DM Sans,sans-serif;font-weight:700">FREE NOW</span>
+      <span class="icon">⚡</span><span class="nav-label"> Early Retirement</span><span class="nav-lock-icon" style="font-size:0.55rem;background:#9ca3af;color:#fff;border-radius:4px;padding:1px 5px;position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:DM Sans,sans-serif;font-weight:700;letter-spacing:0.3px">PRO</span>
     </button>
     <button class="nav-item nav-locked" onclick="proGate('summary','✨ Summary & PDF Export')" id="nav-summary-lock" data-label="Summary">
-      <span class="icon">✨</span><span class="nav-label"> Summary</span><span class="nav-lock-icon" style="font-size:0.5rem;background:#C8860A;color:#fff;border-radius:4px;padding:1px 4px;position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:DM Sans,sans-serif;font-weight:700">FREE NOW</span>
+      <span class="icon">✨</span><span class="nav-label"> Summary</span><span class="nav-lock-icon" style="font-size:0.55rem;background:#9ca3af;color:#fff;border-radius:4px;padding:1px 5px;position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:DM Sans,sans-serif;font-weight:700;letter-spacing:0.3px">PRO</span>
     </button>
 
     <div class="sidebar-divider"></div>
@@ -1844,6 +1878,55 @@
           <div class="field">
             <label>Life Expectancy</label>
             <input type="number" id="lifeExp" value="" placeholder="e.g. 90" oninput="recalc()">
+            <div style="margin-top:0.5rem">
+              <button type="button" onclick="toggleActuarialCalc()" style="font-size:0.78rem;font-weight:600;background:none;border:1.5px solid var(--sage);color:var(--sage);border-radius:8px;padding:5px 12px;cursor:pointer;font-family:DM Sans,sans-serif">🧮 Calculate for me</button>
+            </div>
+            <div id="actuarialCalc" style="display:none;margin-top:1rem;background:var(--sage-pale);border-radius:12px;padding:1rem;border:1px solid #e8c96a">
+              <div style="font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.75rem">Life Expectancy Estimator</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem">
+                <div>
+                  <label style="font-size:0.78rem;color:var(--mid);display:block;margin-bottom:4px">Biological Sex</label>
+                  <select id="actSex" onchange="calcActuarial()" style="width:100%;padding:0.4rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;background:#fff">
+                    <option value="">Select...</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.78rem;color:var(--mid);display:block;margin-bottom:4px">Smoking Status</label>
+                  <select id="actSmoking" onchange="calcActuarial()" style="width:100%;padding:0.4rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;background:#fff">
+                    <option value="never">Never smoked</option>
+                    <option value="former">Former smoker</option>
+                    <option value="current">Current smoker</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.78rem;color:var(--mid);display:block;margin-bottom:4px">General Health</label>
+                  <select id="actHealth" onchange="calcActuarial()" style="width:100%;padding:0.4rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;background:#fff">
+                    <option value="excellent">Excellent</option>
+                    <option value="good" selected>Good</option>
+                    <option value="fair">Fair</option>
+                    <option value="poor">Poor</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.78rem;color:var(--mid);display:block;margin-bottom:4px">Exercise Frequency</label>
+                  <select id="actExercise" onchange="calcActuarial()" style="width:100%;padding:0.4rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;background:#fff">
+                    <option value="active">Active (3+ days/week)</option>
+                    <option value="moderate" selected>Moderate (1-2 days/week)</option>
+                    <option value="sedentary">Sedentary</option>
+                  </select>
+                </div>
+              </div>
+              <div id="actuarialResult" style="display:none;background:#fff;border-radius:10px;padding:0.75rem 1rem;margin-bottom:0.75rem;border:1px solid var(--border)">
+                <div style="font-size:0.78rem;color:var(--mid);margin-bottom:4px">Estimated Life Expectancy</div>
+                <div style="display:flex;align-items:center;gap:0.75rem">
+                  <div id="actuarialAge" style="font-size:2rem;font-weight:800;color:var(--sage);font-family:DM Serif Display,serif">--</div>
+                  <div id="actuarialFactors" style="font-size:0.75rem;color:var(--mid);line-height:1.5"></div>
+                </div>
+              </div>
+              <button type="button" id="useEstimateBtn" onclick="useActuarialEstimate()" style="display:none;width:100%;padding:0.6rem;background:var(--sage);color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">Use This Estimate</button>
+            </div>
           </div>
           <div class="field">
             <label>Job Title / Role</label>
@@ -1884,11 +1967,11 @@
       <div class="card">
         <div class="card-title"><span class="dot"></span> Upload a Pay Stub <span class="tag tag-gray" style="margin-left:auto;font-family:DM Sans">Optional</span></div>
         <p style="font-size:0.88rem;color:var(--mid);margin-bottom:1rem;">Upload a recent pay stub and we'll read your income and contribution details automatically.</p>
-        <div class="upload-zone" id="uploadZone">
-          <input type="file" accept=".pdf,image/*" onchange="handleUpload(event)">
-          <div class="upload-icon">📄</div>
-          <div class="upload-title">Drop your pay stub here</div>
-          <div class="upload-sub">PDF or image · Your data stays private</div>
+        <div class="upload-zone" id="uploadZone" style="opacity:0.6;cursor:default;pointer-events:none">
+          <input type="file" accept=".pdf,image/*" disabled>
+          <div class="upload-icon">🔧</div>
+          <div class="upload-title">Pay Stub Upload</div>
+          <div class="upload-sub" style="color:#C8860A;font-weight:600">Coming Soon</div>
         </div>
         <div class="upload-result" id="uploadResult">
           <div style="font-size:1.5rem">✅</div>
@@ -1990,6 +2073,55 @@
           <div class="field">
             <label>Spouse Life Expectancy</label>
             <input type="number" id="spouseLifeExp" value="" placeholder="e.g. 90" oninput="recalc()">
+            <div style="margin-top:0.5rem">
+              <button type="button" onclick="toggleActuarialCalcSpouse()" style="font-size:0.78rem;font-weight:600;background:none;border:1.5px solid var(--sage);color:var(--sage);border-radius:8px;padding:5px 12px;cursor:pointer;font-family:DM Sans,sans-serif">🧮 Calculate for me</button>
+            </div>
+            <div id="actuarialCalcSpouse" style="display:none;margin-top:1rem;background:var(--sage-pale);border-radius:12px;padding:1rem;border:1px solid #e8c96a">
+              <div style="font-size:0.82rem;font-weight:600;color:var(--charcoal);margin-bottom:0.75rem">Life Expectancy Estimator</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem">
+                <div>
+                  <label style="font-size:0.78rem;color:var(--mid);display:block;margin-bottom:4px">Biological Sex</label>
+                  <select id="actSpouseSex" onchange="calcActuarialSpouse()" style="width:100%;padding:0.4rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;background:#fff">
+                    <option value="">Select...</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.78rem;color:var(--mid);display:block;margin-bottom:4px">Smoking Status</label>
+                  <select id="actSpouseSmoking" onchange="calcActuarialSpouse()" style="width:100%;padding:0.4rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;background:#fff">
+                    <option value="never">Never smoked</option>
+                    <option value="former">Former smoker</option>
+                    <option value="current">Current smoker</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.78rem;color:var(--mid);display:block;margin-bottom:4px">General Health</label>
+                  <select id="actSpouseHealth" onchange="calcActuarialSpouse()" style="width:100%;padding:0.4rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;background:#fff">
+                    <option value="excellent">Excellent</option>
+                    <option value="good" selected>Good</option>
+                    <option value="fair">Fair</option>
+                    <option value="poor">Poor</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.78rem;color:var(--mid);display:block;margin-bottom:4px">Exercise Frequency</label>
+                  <select id="actSpouseExercise" onchange="calcActuarialSpouse()" style="width:100%;padding:0.4rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;background:#fff">
+                    <option value="active">Active (3+ days/week)</option>
+                    <option value="moderate" selected>Moderate (1-2 days/week)</option>
+                    <option value="sedentary">Sedentary</option>
+                  </select>
+                </div>
+              </div>
+              <div id="actuarialResultSpouse" style="display:none;background:#fff;border-radius:10px;padding:0.75rem 1rem;margin-bottom:0.75rem;border:1px solid var(--border)">
+                <div style="font-size:0.78rem;color:var(--mid);margin-bottom:4px">Estimated Life Expectancy</div>
+                <div style="display:flex;align-items:center;gap:0.75rem">
+                  <div id="actuarialAgeSpouse" style="font-size:2rem;font-weight:800;color:var(--sage);font-family:DM Serif Display,serif">--</div>
+                  <div id="actuarialFactorsSpouse" style="font-size:0.75rem;color:var(--mid);line-height:1.5"></div>
+                </div>
+              </div>
+              <button type="button" id="useEstimateBtnSpouse" onclick="useActuarialEstimateSpouse()" style="display:none;width:100%;padding:0.6rem;background:var(--sage);color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">Use This Estimate</button>
+            </div>
           </div>
           <div class="field">
             <label>Job Title / Role</label>
@@ -2028,11 +2160,11 @@
 
         <div style="margin-top:1.5rem">
           <div style="font-weight:600;font-size:0.85rem;color:var(--forest);margin-bottom:0.75rem">📄 Upload Spouse Pay Stub <span style="font-size:0.75rem;font-weight:400;color:#888">Optional</span></div>
-          <div class="upload-zone" id="spouseUploadZone" onclick="document.getElementById('spousePayStubFile').click()" style="cursor:pointer">
-            <input type="file" id="spousePayStubFile" accept=".pdf,image/*" style="display:none" onchange="handleSpousePayStub(this)">
-            <div style="font-size:1.5rem;margin-bottom:0.5rem">📄</div>
-            <div style="font-weight:600;font-size:0.85rem">Drop spouse pay stub here</div>
-            <div style="font-size:0.75rem;color:#888;margin-top:4px">PDF or image · Reads salary & contributions automatically</div>
+          <div class="upload-zone" id="spouseUploadZone" style="opacity:0.6;cursor:default;pointer-events:none">
+            <input type="file" id="spousePayStubFile" accept=".pdf,image/*" style="display:none" disabled>
+            <div class="upload-icon">🔧</div>
+            <div class="upload-title">Spouse Pay Stub Upload</div>
+            <div class="upload-sub" style="color:#C8860A;font-weight:600">Coming Soon</div>
           </div>
           <div id="spouseUploadStatus" style="margin-top:0.5rem;font-size:0.82rem;color:var(--sage)"></div>
         </div>
@@ -2471,9 +2603,20 @@
         </div>
 
         <div style="border-top:1px solid var(--border);margin-top:1.25rem;padding-top:1.25rem">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem"><div style="font-weight:600;font-size:0.85rem;color:var(--forest)">🚗 Vehicles</div><button onclick="addVehicle()" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add Vehicle</button></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
+            <div style="font-weight:600;font-size:0.85rem;color:var(--forest)">🚗 Vehicles</div>
+            <button onclick="addVehicle()" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add Vehicle</button>
+          </div>
           <div id="vehicleList"></div>
-          <div class="form-grid" style="margin-top:1rem"><div class="field"><label>Other Assets ($)</label><input type="number" id="otherAssets" value="" placeholder="0" oninput="recalc()"></div></div>
+        </div>
+
+        <div style="border-top:1px solid var(--border);margin-top:1.25rem;padding-top:1.25rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
+            <div style="font-weight:600;font-size:0.85rem;color:var(--forest)">💎 Other Assets</div>
+            <button onclick="addOtherAsset()" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add Asset</button>
+          </div>
+          <div id="otherAssetList"></div>
+          <input type="hidden" id="otherAssets" value="0">
         </div>
       </div>
 
@@ -2498,7 +2641,7 @@
           <button id="ssBtn-estimate" onclick="switchSSMethod('estimate')" class="ss-tab-btn">Estimate for Me</button>
         </div>
         <div id="ss-method-upload" style="display:none">
-          <div class="upload-zone" id="ssUploadZone" style="padding:1.5rem">
+          <div class="upload-zone" id="ssUploadZone" style="padding:1.5rem;opacity:0.6;cursor:default;pointer-events:none">
             <input type="file" accept=".pdf,image/*" onchange="handleSSUpload(event)">
             <div style="font-size:2rem;margin-bottom:0.5rem">🏛️</div>
             <div style="font-size:0.95rem;font-weight:600">Drop your SSA Statement PDF here</div>
@@ -2686,6 +2829,13 @@
           <div class="budget-row"><label>Internet</label><input type="number" class="bud-m" data-key="internet" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Telephone <span style="font-size:0.75rem;color:#888;font-weight:400">(Cell &amp; Home)</span></label><input type="number" class="bud-m" data-key="cellPhone" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Home Maintenance</label><input type="number" class="bud-m" data-key="homeMaint" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="margin-top:0.4rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
+              <button onclick="addCustomBudgetItem('housing')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
+            </div>
+            <div id="customList_housing"></div>
+          </div>
         </div>
 
         <div class="budget-category">
@@ -2693,12 +2843,27 @@
           <div class="budget-row"><label>Gas</label><input type="number" class="bud-m" data-key="gas" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Car Insurance</label><input type="number" class="bud-m" data-key="carIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Maintenance / Repairs</label><input type="number" class="bud-m" data-key="carMaint" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Car Wash</label><input type="number" class="bud-m" data-key="carWash" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="margin-top:0.4rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
+              <button onclick="addCustomBudgetItem('transport')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
+            </div>
+            <div id="customList_transport"></div>
+          </div>
         </div>
 
         <div class="budget-category">
           <div class="budget-cat-header">🍽️ Food</div>
           <div class="budget-row"><label>Groceries</label><input type="number" class="bud-m" data-key="groceries" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Dining Out</label><input type="number" class="bud-m" data-key="dining" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="margin-top:0.4rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
+              <button onclick="addCustomBudgetItem('food')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
+            </div>
+            <div id="customList_food"></div>
+          </div>
         </div>
 
         <div class="budget-category">
@@ -2706,6 +2871,15 @@
           <div class="budget-row"><label>Medical Premiums</label><input type="number" class="bud-m" data-key="medPrem" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Prescriptions</label><input type="number" class="bud-m" data-key="rx" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Out-of-Pocket</label><input type="number" class="bud-m" data-key="oop" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Therapy / Counseling</label><input type="number" class="bud-m" data-key="therapy" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Massage / Wellness</label><input type="number" class="bud-m" data-key="massage" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="margin-top:0.4rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
+              <button onclick="addCustomBudgetItem('health')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
+            </div>
+            <div id="customList_health"></div>
+          </div>
         </div>
 
         <div class="budget-category">
@@ -2713,6 +2887,13 @@
           <div class="budget-row"><label>Legal / Attorney Fees</label><input type="number" class="bud-m" data-key="legal" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Accounting / Tax Prep</label><input type="number" class="bud-m" data-key="accounting" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Financial Advisor Fees</label><input type="number" class="bud-m" data-key="finAdvisor" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="margin-top:0.4rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
+              <button onclick="addCustomBudgetItem('profsvc')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
+            </div>
+            <div id="customList_profsvc"></div>
+          </div>
         </div>
 
         <div class="budget-category">
@@ -2724,15 +2905,27 @@
           <div class="budget-row"><label>Child Support / Alimony</label><input type="number" class="bud-m" data-key="childSupport" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Childcare / Daycare</label><input type="number" class="bud-m" data-key="childcare" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Parent / Elder Care</label><input type="number" class="bud-m" data-key="elderCare" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="margin-top:0.4rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
+              <button onclick="addCustomBudgetItem('education')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
+            </div>
+            <div id="customList_education"></div>
+          </div>
         </div>
 
         <div class="budget-category">
           <div class="budget-cat-header">🎭 Lifestyle</div>
-          <div class="budget-row"><label>Subscriptions / Streaming</label><input type="number" class="bud-m" data-key="subs" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="margin-bottom:0.5rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem">
+              <label style="font-size:0.88rem;color:var(--charcoal)">Subscriptions / Streaming</label>
+              <button onclick="addBudgetSub()" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:4px 12px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
+            </div>
+            <div id="budgetSubList"></div>
+          </div>
           <div class="budget-row"><label>Entertainment</label><input type="number" class="bud-m" data-key="entertain" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Shopping / Clothing</label><input type="number" class="bud-m" data-key="shopping" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Gym / Fitness</label><input type="number" class="bud-m" data-key="gym" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
-          <div class="budget-row"><label>Therapy / Counseling</label><input type="number" class="bud-m" data-key="therapy" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Vacation (monthly avg)</label><input type="number" class="bud-m" data-key="vacation" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Hobbies</label><input type="number" class="bud-m" data-key="hobbies" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Charitable Donations / Tithing</label><input type="number" class="bud-m" data-key="charity" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
@@ -2742,6 +2935,28 @@
           <div class="budget-row"><label>Pets</label><input type="number" class="bud-m" data-key="pets" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Gifts / Family</label><input type="number" class="bud-m" data-key="gifts" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Other</label><input type="number" class="bud-m" data-key="other" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="margin-top:0.4rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
+              <button onclick="addCustomBudgetItem('lifestyle')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
+            </div>
+            <div id="customList_lifestyle"></div>
+          </div>
+        </div>
+
+        <div class="budget-category">
+          <div class="budget-cat-header">🛡️ Insurance &amp; Life</div>
+          <div class="budget-row"><label id="lifeInsDeanLabel">Life Insurance</label><input type="number" class="bud-m" data-key="lifeInsDean" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row" id="lifeInsSpouseRow" style="display:none"><label id="lifeInsSpouseLabel">Life Insurance (Spouse)</label><input type="number" class="bud-m" data-key="lifeInsSpouse" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Disability Insurance</label><input type="number" class="bud-m" data-key="disabilityIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Umbrella Policy</label><input type="number" class="bud-m" data-key="umbrellaIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="margin-top:0.4rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
+              <button onclick="addCustomBudgetItem('insurance')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
+            </div>
+            <div id="customList_insurance"></div>
+          </div>
         </div>
 
         <div class="budget-category">
@@ -2759,6 +2974,10 @@
             <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
           </div>
           <div class="budget-row">
+            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
+            <input type="number" id="balCarLoan1" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
+          </div>
+          <div class="budget-row">
             <label style="font-size:0.78rem;color:var(--sage)">↳ Car Loan 1 Payoff</label>
             <input type="month" id="carLoan1Payoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
           </div>
@@ -2766,6 +2985,10 @@
             <label>Car Loan 2</label>
             <input type="number" class="bud-m" data-key="debtCar2" placeholder="0" oninput="calcBudget(this)">
             <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
+          </div>
+          <div class="budget-row">
+            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
+            <input type="number" id="balCarLoan2" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
           </div>
           <div class="budget-row">
             <label style="font-size:0.78rem;color:var(--sage)">↳ Car Loan 2 Payoff</label>
@@ -2777,35 +3000,35 @@
             <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
           </div>
           <div class="budget-row">
+            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
+            <input type="number" id="balStudentLoan" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
+          </div>
+          <div class="budget-row">
             <label style="font-size:0.78rem;color:var(--sage)">↳ Student Loan Payoff</label>
             <input type="month" id="studentLoanPayoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
           </div>
-          <div id="creditCardRows">
-            <div class="budget-row">
-              <label>Credit Card 1</label>
-              <input type="number" class="bud-m" data-key="debtCC1" placeholder="0" oninput="calcBudget(this)">
-              <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
-            </div>
-            <div class="budget-row">
-              <label>Credit Card 2</label>
-              <input type="number" class="bud-m" data-key="debtCC2" placeholder="0" oninput="calcBudget(this)">
-              <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
-            </div>
-            <div class="budget-row">
-              <label>Credit Card 3</label>
-              <input type="number" class="bud-m" data-key="debtCC3" placeholder="0" oninput="calcBudget(this)">
-              <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
-            </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0">
+            <span style="font-size:0.82rem;color:var(--mid)">Credit Cards</span>
+            <button onclick="addCreditCard()" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add Card</button>
           </div>
+          <div id="creditCardRows"></div>
           <div class="budget-row">
             <label>Personal Loan</label>
             <input type="number" class="bud-m" data-key="debtPersonal" placeholder="0" oninput="calcBudget(this)">
             <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
           </div>
           <div class="budget-row">
+            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
+            <input type="number" id="balPersonalLoan" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
+          </div>
+          <div class="budget-row">
             <label>Other Debt</label>
             <input type="number" class="bud-m" data-key="debtOther" placeholder="0" oninput="calcBudget(this)">
             <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
+          </div>
+          <div class="budget-row">
+            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
+            <input type="number" id="balOtherDebt" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
           </div>
           <div style="padding:8px 0 4px;font-size:0.78rem;color:var(--sage);font-style:italic">
             💡 Debts with payoff dates will be removed from your retirement expense projections automatically
@@ -3210,7 +3433,7 @@
             <div id="rdPortfolioIncome" style="font-size:1.1rem;font-weight:700;color:var(--sage);padding:0.5rem 0">—</div>
           </div>
           <div class="field">
-            <label>Social Security (your est.)</label>
+            <label>Social Security (Household est.)</label>
             <div id="rdSSIncome" style="font-size:1.1rem;font-weight:700;color:var(--sage);padding:0.5rem 0">—</div>
             <div id="rdChildStepdown" style="display:none;margin-top:0.25rem"></div>
           </div>
@@ -3628,6 +3851,122 @@ function updateAboutYouSection() {
   if (spouseLabel) spouseLabel.textContent = 'About ' + cap2;
 }
 
+function toggleActuarialCalc() {
+  var calc = document.getElementById('actuarialCalc');
+  if (!calc) return;
+  calc.style.display = calc.style.display === 'none' ? 'block' : 'none';
+  if (calc.style.display === 'block') calcActuarial();
+}
+
+function calcActuarial() {
+  var age = parseInt(document.getElementById('age')?.value) || 50;
+  var sex = document.getElementById('actSex')?.value;
+  var smoking = document.getElementById('actSmoking')?.value || 'never';
+  var health = document.getElementById('actHealth')?.value || 'good';
+  var exercise = document.getElementById('actExercise')?.value || 'moderate';
+
+  if (!sex) return;
+
+  // Base life expectancy from SSA actuarial tables (approximate)
+  var base = sex === 'female' ? 84 : 79;
+
+  // Adjust for current age (conditional life expectancy increases as you age)
+  if (age >= 65) base += 2;
+  if (age >= 75) base += 2;
+
+  var factors = [];
+
+  // Smoking
+  if (smoking === 'current') { base -= 8; factors.push('Smoking: -8 yrs'); }
+  else if (smoking === 'former') { base -= 3; factors.push('Former smoker: -3 yrs'); }
+  else { factors.push('Non-smoker: +0'); }
+
+  // Health
+  if (health === 'excellent') { base += 3; factors.push('Excellent health: +3 yrs'); }
+  else if (health === 'good') { factors.push('Good health: +0'); }
+  else if (health === 'fair') { base -= 3; factors.push('Fair health: -3 yrs'); }
+  else if (health === 'poor') { base -= 7; factors.push('Poor health: -7 yrs'); }
+
+  // Exercise
+  if (exercise === 'active') { base += 3; factors.push('Active lifestyle: +3 yrs'); }
+  else if (exercise === 'moderate') { base += 1; factors.push('Moderate exercise: +1 yr'); }
+  else { base -= 2; factors.push('Sedentary: -2 yrs'); }
+
+  // Can't die before current age + a few years
+  base = Math.max(base, age + 5);
+  base = Math.round(base);
+
+  var resultEl = document.getElementById('actuarialResult');
+  var ageEl = document.getElementById('actuarialAge');
+  var factorsEl = document.getElementById('actuarialFactors');
+  var btnEl = document.getElementById('useEstimateBtn');
+
+  if (resultEl) resultEl.style.display = 'block';
+  if (ageEl) ageEl.textContent = base;
+  if (factorsEl) factorsEl.innerHTML = factors.join('<br>');
+  if (btnEl) { btnEl.style.display = 'block'; btnEl.setAttribute('data-est', base); }
+}
+
+function useActuarialEstimate() {
+  var btn = document.getElementById('useEstimateBtn');
+  var est = btn?.getAttribute('data-est');
+  if (!est) return;
+  var lifeExpEl = document.getElementById('lifeExp');
+  if (lifeExpEl) { lifeExpEl.value = est; recalc(); }
+  var calc = document.getElementById('actuarialCalc');
+  if (calc) calc.style.display = 'none';
+}
+
+function toggleActuarialCalcSpouse() {
+  var calc = document.getElementById('actuarialCalcSpouse');
+  if (!calc) return;
+  calc.style.display = calc.style.display === 'none' ? 'block' : 'none';
+  if (calc.style.display === 'block') calcActuarialSpouse();
+}
+
+function calcActuarialSpouse() {
+  var age = parseInt(document.getElementById('spouseAge')?.value) || 50;
+  var sex = document.getElementById('actSpouseSex')?.value;
+  var smoking = document.getElementById('actSpouseSmoking')?.value || 'never';
+  var health = document.getElementById('actSpouseHealth')?.value || 'good';
+  var exercise = document.getElementById('actSpouseExercise')?.value || 'moderate';
+  if (!sex) return;
+  var base = sex === 'female' ? 84 : 79;
+  if (age >= 65) base += 2;
+  if (age >= 75) base += 2;
+  var factors = [];
+  if (smoking === 'current') { base -= 8; factors.push('Smoking: -8 yrs'); }
+  else if (smoking === 'former') { base -= 3; factors.push('Former smoker: -3 yrs'); }
+  else { factors.push('Non-smoker: +0'); }
+  if (health === 'excellent') { base += 3; factors.push('Excellent health: +3 yrs'); }
+  else if (health === 'good') { factors.push('Good health: +0'); }
+  else if (health === 'fair') { base -= 3; factors.push('Fair health: -3 yrs'); }
+  else if (health === 'poor') { base -= 7; factors.push('Poor health: -7 yrs'); }
+  if (exercise === 'active') { base += 3; factors.push('Active lifestyle: +3 yrs'); }
+  else if (exercise === 'moderate') { base += 1; factors.push('Moderate exercise: +1 yr'); }
+  else { base -= 2; factors.push('Sedentary: -2 yrs'); }
+  base = Math.max(base, age + 5);
+  base = Math.round(base);
+  var resultEl = document.getElementById('actuarialResultSpouse');
+  var ageEl = document.getElementById('actuarialAgeSpouse');
+  var factorsEl = document.getElementById('actuarialFactorsSpouse');
+  var btnEl = document.getElementById('useEstimateBtnSpouse');
+  if (resultEl) resultEl.style.display = 'block';
+  if (ageEl) ageEl.textContent = base;
+  if (factorsEl) factorsEl.innerHTML = factors.join('<br>');
+  if (btnEl) { btnEl.style.display = 'block'; btnEl.setAttribute('data-est', base); }
+}
+
+function useActuarialEstimateSpouse() {
+  var btn = document.getElementById('useEstimateBtnSpouse');
+  var est = btn?.getAttribute('data-est');
+  if (!est) return;
+  var el = document.getElementById('spouseLifeExp');
+  if (el) { el.value = est; recalc(); }
+  var calc = document.getElementById('actuarialCalcSpouse');
+  if (calc) calc.style.display = 'none';
+}
+
 function toggleCouple() {
   var isCouple = document.getElementById('planCouple')?.checked;
   // Show/hide Whose? columns in additional income rows
@@ -3671,17 +4010,68 @@ function addVehicle() {
   div.style.cssText = 'border:1px solid #e5d9c3;border-radius:12px;padding:1rem;margin-bottom:1rem;background:#fffdf7';
   div.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem"><span style="font-weight:600;font-size:0.85rem">Vehicle ' + id + '</span><button onclick="removeVehicle('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer">Remove</button></div>' +
     '<div class="form-grid">' +
-    '<div class="field"><label>Year/Make/Model</label><input type="text" id="vehicleName_'+id+'" placeholder="e.g. 2022 Ford F-150"></div>' +
-    '<div class="field"><label>Auto Insurance ($/mo)</label><input type="number" id="vehicleIns_'+id+'" placeholder="e.g. 120" oninput="recalc()"></div>' +
-    '<div class="field"><label>Maintenance ($/mo)</label><input type="number" id="vehicleMaint_'+id+'" placeholder="e.g. 100" oninput="recalc()"></div>' +
-    '<div class="field"><label>Car Washes ($/mo)</label><input type="number" id="vehicleWash_'+id+'" placeholder="e.g. 20" oninput="recalc()"></div>' +
-    '<div class="field"><label>Loan Payment ($/mo)</label><input type="number" id="vehicleLoan_'+id+'" placeholder="e.g. 450" oninput="recalc()"></div>' +
-    '<div class="field"><label>Loan Payoff Year</label><input type="number" id="vehiclePayoff_'+id+'" placeholder="e.g. 2027" oninput="recalc()"></div>' +
+    '<div class="field"><label>Year/Make/Model</label><input type="text" id="vehicleName_'+id+'" placeholder="e.g. 2022 Ford F-150" oninput="saveToLocal()"></div>' +
     '<div class="field"><label>Expected Replacement Year</label><input type="number" id="vehicleReplace_'+id+'" placeholder="e.g. 2030" oninput="recalc()"><div class="hint">We will flag this as a future expense</div></div>' +
     '</div>';
   document.getElementById('vehicleList').appendChild(div);
 }
 function removeVehicle(id) { var el = document.getElementById('vehicle_'+id); if(el) el.remove(); recalc(); }
+
+// Other Assets
+var otherAssetCount = 0;
+function addOtherAsset() {
+  otherAssetCount++;
+  var id = otherAssetCount;
+  var div = document.createElement('div');
+  div.id = 'otherAsset_' + id;
+  div.style.cssText = 'display:grid;grid-template-columns:1fr 140px auto;gap:0.5rem;align-items:center;margin-bottom:0.5rem';
+  div.innerHTML =
+    '<input type="text" id="otherAssetName_'+id+'" placeholder="e.g. Jewelry, Art, Boat" style="padding:0.35rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;width:100%">' +
+    '<input type="number" id="otherAssetValue_'+id+'" placeholder="Value ($)" oninput="calcOtherAssets()" style="padding:0.35rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;font-family:DM Sans,sans-serif;width:100%;text-align:right">' +
+    '<button onclick="removeOtherAsset('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.2rem;line-height:1">×</button>';
+  document.getElementById('otherAssetList').appendChild(div);
+}
+function removeOtherAsset(id) {
+  var el = document.getElementById('otherAsset_'+id);
+  if(el) el.remove();
+  calcOtherAssets();
+}
+function calcOtherAssets() {
+  var total = 0;
+  document.querySelectorAll('[id^="otherAssetValue_"]').forEach(function(el) {
+    total += parseFloat(el.value) || 0;
+  });
+  var hidden = document.getElementById('otherAssets');
+  if(hidden) { hidden.value = total; recalc(); }
+}
+
+// Credit Cards
+var creditCardCount = 0;
+function addCreditCard() {
+  creditCardCount++;
+  var id = creditCardCount;
+  var div = document.createElement('div');
+  div.id = 'ccRow_' + id;
+  div.className = 'budget-row';
+  div.innerHTML =
+    '<label style="display:flex;align-items:center;gap:6px">' +
+      '<input type="text" id="ccName_'+id+'" placeholder="e.g. PNC Visa" style="padding:0.25rem 0.5rem;border:1.5px solid var(--border);border-radius:6px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%;min-width:0">' +
+      '<button onclick="removeCreditCard('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.1rem;line-height:1;flex-shrink:0">×</button>' +
+    '</label>' +
+    '<input type="number" id="ccPayment_'+id+'" class="bud-m" placeholder="Min Payment" oninput="calcBudget(this);saveToLocal();" style="text-align:right">' +
+    '<input type="number" id="ccAnnual_'+id+'" class="bud-a" placeholder="0" oninput="calcBudget(this)" style="text-align:right">' +
+    '<div style="grid-column:1/-1;display:flex;align-items:center;gap:0.5rem;margin-top:-0.25rem">' +
+      '<label style="font-size:0.75rem;color:var(--mid);white-space:nowrap">↳ Balance Owed ($)</label>' +
+      '<input type="number" id="ccBalance_'+id+'" placeholder="0" oninput="recalc()" style="padding:0.2rem 0.5rem;border:1px solid #ddd;border-radius:6px;font-size:0.82rem;width:140px;text-align:right">' +
+    '</div>';
+  document.getElementById('creditCardRows').appendChild(div);
+}
+function _fakeInput() { return {classList:{contains:function(){return false;}},value:'',parentNode:null}; }
+function removeCreditCard(id) {
+  var el = document.getElementById('ccRow_'+id);
+  if(el) el.remove();
+  calcBudget(_fakeInput());
+}
 
 // ── SUBSCRIPTIONS ──
 var subCount = 0;
@@ -3698,6 +4088,85 @@ function addSubscription() {
   document.getElementById('subscriptionList').appendChild(div);
 }
 function removeSub(id) { var el = document.getElementById('sub_'+id); if(el) el.remove(); recalc(); }
+
+// Budget tab subscriptions
+var budSubCount = 0;
+function addBudgetSub() {
+  budSubCount++;
+  var id = budSubCount;
+  var div = document.createElement('div');
+  div.id = 'budSub_' + id;
+  div.className = 'budget-row';
+  div.innerHTML =
+    '<label style="display:flex;align-items:center;gap:6px">' +
+      '<input type="text" id="budSubName_'+id+'" placeholder="e.g. Netflix" style="padding:0.25rem 0.5rem;border:1.5px solid var(--border);border-radius:6px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%;min-width:0">' +
+      '<button onclick="removeBudgetSub('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.1rem;line-height:1;flex-shrink:0">×</button>' +
+    '</label>' +
+    '<input type="number" id="budSubCost_'+id+'" class="bud-m" placeholder="0" oninput="calcBudget(this);saveToLocal();if(typeof cloudSave===\'function\')cloudSave();" style="text-align:right">' +
+    '<input type="number" id="budSubAnnual_'+id+'" class="bud-a" placeholder="0" oninput="calcBudget(this)" style="text-align:right">';
+  document.getElementById('budgetSubList').appendChild(div);
+  calcBudget(_fakeInput());
+}
+// Generic custom budget item rows per category
+var customItemCounts = {};
+function addCustomBudgetItem(catId) {
+  if(!customItemCounts[catId]) customItemCounts[catId] = 0;
+  customItemCounts[catId]++;
+  var id = catId + '_' + customItemCounts[catId];
+  var safeId = id.replace(/[^a-zA-Z0-9_]/g,'_');
+  var div = document.createElement('div');
+  div.id = 'customItem_' + safeId;
+  div.className = 'budget-row custom-budget-row';
+  div.innerHTML =
+    '<label style="display:flex;align-items:center;gap:6px">' +
+      '<input type="text" id="customName_'+safeId+'" placeholder="Item name" style="padding:0.25rem 0.5rem;border:1.5px solid var(--border);border-radius:6px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%;min-width:0">' +
+      '<button data-cat="'+catId+'" data-itemid="'+safeId+'" onclick="removeCustomByCat(this)" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.1rem;line-height:1;flex-shrink:0">×</button>' +
+    '</label>' +
+    '<input type="number" id="customCost_'+safeId+'" class="bud-m" data-cat="'+catId+'" placeholder="0" oninput="calcBudget(this);saveToLocal();if(typeof cloudSave===\'function\')cloudSave();" style="text-align:right">' +
+    '<input type="number" id="customAnnual_'+safeId+'" class="bud-a" placeholder="0" oninput="calcBudget(this)" style="text-align:right">';
+  document.getElementById('customList_'+catId).appendChild(div);
+}
+function removeCustomByCat(btn) {
+  var itemId = btn.getAttribute('data-itemid');
+  var row = document.getElementById('customItem_'+itemId);
+  if(row) row.remove();
+  calcBudget(_fakeInput());
+}
+function removeCustomBudgetItem(id, catId) {
+  var el = document.getElementById('customItem_'+id);
+  if(el) el.remove();
+  calcBudget(_fakeInput());
+}
+function calcCustomItems(el) {}
+function calcCustomItemsByCat(catId) {
+  var total = 0;
+  var list = document.getElementById('customList_'+catId);
+  if(!list) return;
+  list.querySelectorAll('[id^="customCost_"]').forEach(function(costEl) {
+    total += parseFloat(costEl.value) || 0;
+  });
+  var hiddenKey = 'customTotal_' + catId;
+  var hidden = document.querySelector('[data-key="'+hiddenKey+'"]');
+  if(!hidden) {
+    hidden = document.createElement('input');
+    hidden.type = 'number';
+    hidden.setAttribute('data-key', hiddenKey);
+    hidden.style.display = 'none';
+    hidden.className = 'bud-m';
+    document.body.appendChild(hidden);
+  }
+  hidden.value = Math.round(total * 100) / 100;
+  calcBudget(hidden);
+}
+
+function removeBudgetSub(id) {
+  var el = document.getElementById('budSub_'+id);
+  if(el) el.remove();
+  calcBudget(_fakeInput());
+}
+function calcBudgetSubs() {
+  // No longer needed - bud-m fields feed directly into calcBudget
+}
 
 // ── INVESTMENT PROPERTIES ──
 var propCount = 0;
@@ -4457,7 +4926,11 @@ function calcProjections() {
   var savingsRate = (parseFloat(document.getElementById('savingsRate')?.value) || 4.5) / 100;
   // Cash grows at savings rate, not investment rate
   var balCashAtRetirement = balCash * Math.pow(1 + savingsRate, yearsToRetire);
-  var totalBalance = bal401k + balRoth401 + balRothIRA + balTaxable + balHSA; // exclude cash from investment growth
+  var balRolloverIRA2 = parseFloat(document.getElementById('balRolloverIRA')?.value) || 0;
+  var spBal401k2 = parseFloat(document.getElementById('spouseBal401k')?.value) || 0;
+  var spBalRoth2 = parseFloat(document.getElementById('spouseBalRoth401')?.value) || 0;
+  var spBalIRA2 = parseFloat(document.getElementById('spouseBalRothIRA')?.value) || 0;
+  var totalBalance = bal401k + balRoth401 + balRothIRA + balRolloverIRA2 + balTaxable + balHSA + spBal401k2 + spBalRoth2 + spBalIRA2; // exclude cash from investment growth
 
   // Spouse SS for projections
   var spouseSsForProj = 0;
@@ -4812,11 +5285,17 @@ function calcReadiness() {
   var annualContrib = (salary * contrib401k) + (salary * contribRoth401) + (salary * empMatch) + contribRothIRA + contribTaxable + contrib401kDollar + totalBonus401k + spouseAnnualContrib + spouseContrib401kDollar + totalSpouseBonus401k;
 
   // Use projected portfolio from calcProjections, fallback to own calculation
+  // Only count financial assets, not home equity, in portfolio
+  var financialPortfolio = bal401k + balRoth401 + balRothIRA + balTaxable + balHSA + balCash + (parseFloat(document.getElementById('spouseBal401k')?.value)||0) + (parseFloat(document.getElementById('spouseBalRoth401')?.value)||0) + (parseFloat(document.getElementById('spouseBalRothIRA')?.value)||0);
   var portfolio = state.portfolioAtRetirement || 0;
   if(!portfolio || portfolio === state._rdOwnPortfolio) {
-    portfolio = totalNow;
-    for(var i = 0; i < yearsToRetire; i++) {
-      portfolio = (portfolio + annualContrib) * (1 + growthRate);
+    if(financialPortfolio > 0) {
+      portfolio = financialPortfolio;
+      for(var i = 0; i < yearsToRetire; i++) {
+        portfolio = (portfolio + annualContrib) * (1 + growthRate);
+      }
+    } else {
+      portfolio = 0;
     }
   }
   // state.portfolioAtRetirement set by calcProjections
@@ -4837,7 +5316,7 @@ function calcReadiness() {
   var ssManual62 = parseFloat(document.getElementById('ss62')?.value) || 0;
   var ssManual67 = parseFloat(document.getElementById('ss67')?.value) || 0;
   var ssManual70 = parseFloat(document.getElementById('ss70')?.value) || 0;
-  var ssManualAge = parseInt(document.getElementById('ssClaimingAgeManual')?.value) || 67;
+  var ssManualAge = parseInt(document.getElementById('ssClaimingAge')?.value || document.getElementById('ssClaimingAgeManual')?.value) || 67;
   if(ssManual67 || ssManual62 || ssManual70) {
     if(ssManualAge <= 62) ssIncome = ssManual62;
     else if(ssManualAge >= 70) ssIncome = ssManual70;
@@ -5000,7 +5479,11 @@ function calcReadiness() {
     var savingsRate = annualContribTotal / totalSalary;
     scoreSavings = Math.min(Math.round((savingsRate / 0.15) * 100), 100);
   } else {
-    scoreSavings = 70; // no salary entered — neutral
+    // No salary — score based on portfolio already built
+    if(portfolio >= 500000) scoreSavings = 100;
+    else if(portfolio >= 250000) scoreSavings = 85;
+    else if(portfolio >= 100000) scoreSavings = 70;
+    else scoreSavings = 50;
   }
 
   // Weighted total
@@ -5374,6 +5857,8 @@ function generatePDF() {
       var age = document.getElementById('age')?.value || '—';
       var retAge = document.getElementById('retAge')?.value || '—';
       var lifeExp = document.getElementById('lifeExp')?.value || '90';
+      var spouseLifeExp = document.getElementById('spouseLifeExp')?.value || '';
+      var lifeExpDisplay = lifeExp + (isCouple && spouseLifeExp ? ' / ' + spouseLifeExp : '');
       var stateEl = document.getElementById('stateRes');
       var stateName = (stateEl?.options[stateEl?.selectedIndex]?.text || '—').split('(')[0].trim();
       var sbPortfolio = document.getElementById('sb-portfolio')?.textContent || '—';
@@ -5429,13 +5914,13 @@ function generatePDF() {
       doc.setFont('times','normal'); doc.setFontSize(7); doc.setTextColor(mid[0],mid[1],mid[2]);
       doc.text('Current Age', c1, y+9);
       doc.text('Retirement Age', c2, y+9);
-      doc.text('Life Expectancy', c3, y+9);
+      doc.text(isCouple ? 'Life Exp (Dean/Densie)' : 'Life Expectancy', c3, y+9);
       doc.text('State', c4, y+9);
       // Row 1 values
       doc.setFont('times','bold'); doc.setFontSize(15); doc.setTextColor(forest[0],forest[1],forest[2]);
       doc.text(age, c1, y+20);
       doc.text(retAge, c2, y+20);
-      doc.text(lifeExp, c3, y+20);
+      doc.text(lifeExpDisplay, c3, y+20);
       // State - use smaller font to fit
       doc.setFontSize(8.5);
       var stShort = stateName.length > 12 ? stateName.substring(0,12) + '.' : stateName;
@@ -5560,6 +6045,11 @@ function generatePDF() {
       doc.text(sumNW, margin+bw*2+12, y+17);
       y += 28;
 
+      // No debt note
+      if(sumLiab === '$0' || sumLiab === '$0.00') {
+        doc.setFont('times','italic'); doc.setFontSize(8); doc.setTextColor(forest[0],forest[1],forest[2]);
+        doc.text('No outstanding debt — debt free!', margin+bw+4, y+12, {align:'center', maxWidth:bw});
+      }
       // Asset breakdown
       doc.setFont('times','bold'); doc.setFontSize(8.5); doc.setTextColor(forest[0],forest[1],forest[2]);
       doc.text('Asset Breakdown', margin, y); y += 6;
@@ -5594,6 +6084,32 @@ function generatePDF() {
             y += 3;
           }
         });
+      }
+
+      // ── MONTHLY BUDGET SUMMARY ──
+      var budgetTotal = document.getElementById('budgetMonthlyTotal')?.textContent || '—';
+      if(budgetTotal !== '—' && budgetTotal !== '$0' && y < H-80) {
+        y = hdr('MONTHLY BUDGET SUMMARY', y);
+        doc.setFont('times','italic'); doc.setFontSize(7.5); doc.setTextColor(mid[0],mid[1],mid[2]);
+        doc.text("Today's dollars. Gap Analysis on page 1 shows inflation-adjusted figure at retirement.", margin, y);
+        y += 5;
+        var budgetKeys = [
+          ['Housing (utilities, maintenance)', ['electric','gasHeat','water','sewerage','trash','internet','cellPhone','homeMaint','propTax','homeIns']],
+          ['Transportation', ['gas','carIns','carMaint','carWash']],
+          ['Food & Dining', ['groceries','dining']],
+          ['Health & Wellness', ['medPrem','rx','oop','therapy','massage']],
+          ['Insurance & Life', ['lifeInsDean','lifeInsSpouse','disabilityIns']],
+          ['Lifestyle & Subscriptions', ['subs','entertain','shopping','gym','hobbies','charity','pets','gifts','vacation']],
+        ];
+        var getB = function(key) { var el = document.querySelector('[data-key="'+key+'"]'); return parseFloat(el?.value)||0; };
+        budgetKeys.forEach(function(cat) {
+          var total = cat[1].reduce(function(s,k){ return s+getB(k); }, 0);
+          if(total > 0 && y < H-40) y = row(cat[0], '$'+Math.round(total).toLocaleString()+'/mo', y);
+        });
+        doc.setFillColor(warm[0],warm[1],warm[2]);
+        doc.rect(margin, y-4, W-margin*2, 9, 'F');
+        y = row('Total Monthly Budget', budgetTotal, y+1, true, forest);
+        y += 4;
       }
 
       // ── KEY MILESTONES ──
@@ -5766,6 +6282,14 @@ function updatePlanningFor() {
   st('spouse-bal-title', name2 + ' Finances');
   st('spouse-401k-title', name2);
   st('spouse-ss-title', name2);
+
+  // Insurance & Life — dynamic labels
+  var lifeInsDeanLabel = document.getElementById('lifeInsDeanLabel');
+  if (lifeInsDeanLabel) lifeInsDeanLabel.textContent = cap1 ? 'Life Insurance (' + cap1 + ')' : 'Life Insurance';
+  var lifeInsSpouseRow = document.getElementById('lifeInsSpouseRow');
+  if (lifeInsSpouseRow) lifeInsSpouseRow.style.display = (isCouple && cap2) ? '' : 'none';
+  var lifeInsSpouseLabel = document.getElementById('lifeInsSpouseLabel');
+  if (lifeInsSpouseLabel) lifeInsSpouseLabel.textContent = cap2 ? 'Life Insurance (' + cap2 + ')' : 'Life Insurance (Spouse)';
 }
 
 function updateGreeting() {
@@ -5846,7 +6370,9 @@ function updateSnapshot() {
 
   // Use calcProjections as single source of truth
   if(typeof calcProjections === 'function') calcProjections();
-  var portfolio = state.portfolioAtRetirement || totalNow;
+  // Only use financial portfolio, not home equity, when accounts are empty
+  var financialAssets = (parseFloat(document.getElementById('balRolloverIRA')?.value)||0) + (parseFloat(document.getElementById('balRoth401')?.value)||0) + (parseFloat(document.getElementById('balRothIRA')?.value)||0) + (parseFloat(document.getElementById('balTaxable')?.value)||0) + (parseFloat(document.getElementById('balCash')?.value)||0) + (parseFloat(document.getElementById('spouseBalCash')?.value)||0);
+  var portfolio = financialAssets > 0 ? (state.portfolioAtRetirement || 0) : 0;
 
   // Safe withdrawal (4% rule / 12 months)
   var monthlyWithdrawal = (portfolio * 0.04) / 12;
@@ -7286,7 +7812,17 @@ function updateSummary() {
   var personalProp = assetVehicles + otherAssets;
 
   var totalAssets = retAccounts + balCash + totalHomeEquity + personalProp;
-  var totalLiabilities = totalMortgages + getVal('creditCardBalance');
+  // Liabilities — mortgage + CC balance + loan balances
+  var ccBalance = getVal('creditCardBalance') || 0;
+  var carLoan1Bal = parseFloat(document.getElementById('balCarLoan1')?.value) || 0;
+  var carLoan2Bal = parseFloat(document.getElementById('balCarLoan2')?.value) || 0;
+  var studentBal = parseFloat(document.getElementById('balStudentLoan')?.value) || 0;
+  var personalBal = parseFloat(document.getElementById('balPersonalLoan')?.value) || 0;
+  var otherDebtBal = parseFloat(document.getElementById('balOtherDebt')?.value) || 0;
+  // Sum dynamic credit card balances
+  var ccRowsBalance = 0;
+  document.querySelectorAll('[id^="ccBalance_"]').forEach(function(el) { ccRowsBalance += parseFloat(el.value) || 0; });
+  var totalLiabilities = totalMortgages + ccBalance + ccRowsBalance + carLoan1Bal + carLoan2Bal + studentBal + personalBal + otherDebtBal;
   var netWorth = totalAssets - totalLiabilities;
 
   if (el('sumTotalAssets')) el('sumTotalAssets').textContent = fmt(totalAssets);
@@ -7385,6 +7921,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if(typeof toggleCouple==='function') toggleCouple();
   if(typeof updatePlanningFor==='function') updatePlanningFor();
   if(typeof recalc==='function') recalc();
+  // Mark page as cleanly loaded — if JS errored above this never runs
+  _pageLoadedClean = true;
 });
 // ── CHILD SS BENEFIT CALCULATOR ──
 function updateChildAgeInputs() {
@@ -7881,6 +8419,8 @@ var SUPABASE_URL = 'https://lcecdqihjdpmsmiwabkk.supabase.co';
 var SUPABASE_KEY = 'sb_publishable_uDYHE8ktzY4WCQl3JvyC9Q_UUnoDvZO';
 var _sb = null;
 var _sbUser = null;
+var _pageLoadedClean = false; // only true if no JS errors on load
+var _cloudLoaded = false;    // only true after cloudLoad completes
 var _authMode = 'signin';
 
 async function submitNewPassword() {
@@ -7918,12 +8458,27 @@ function initSupabase() {
     updateAuthUI();
     if(_sbUser) {
       cloudLoad();
+      if(event === 'SIGNED_IN') {
+        // Show welcome modal only if never dismissed before
+        var welcomed = localStorage.getItem('myyolk_welcomed');
+        if(!welcomed) {
+          setTimeout(function() {
+            var modal = document.getElementById('welcomeModal');
+            if(modal) modal.style.display = 'flex';
+          }, 800);
+        }
+      }
     }
   });
   _sb.auth.getSession().then(function(r) {
     if(r.data && r.data.session) {
       _sbUser = r.data.session.user;
       updateAuthUI();
+    } else {
+      // No active session — clear any stale local data so app shows blank
+      localStorage.removeItem(SAVE_KEY);
+      localStorage.removeItem('myyolk_device');
+      _cloudLoaded = true; // no session, safe to consider loaded
     }
   });
 }
@@ -8064,6 +8619,14 @@ async function signOut() {
 }
 
 async function cloudSave() {
+  if(!_pageLoadedClean) {
+    console.warn('MyYolk: skipping cloud save — page did not load cleanly');
+    return;
+  }
+  if(!_cloudLoaded) {
+    console.warn('MyYolk: skipping cloud save — cloud data not yet loaded');
+    return;
+  }
   if(!_sb || !_sbUser) { saveToLocal(); return; }
   try {
     var data = collectAllData();
@@ -8094,6 +8657,8 @@ async function cloudLoad() {
       loadFromLocal();
     }
   } catch(e) {}
+  // Mark cloud load as complete — safe to auto-save now
+  _cloudLoaded = true;
 }
 
 function collectAllData() {
@@ -8139,6 +8704,74 @@ function collectAllData() {
     });
   });
   data['__leRows'] = JSON.stringify(leRows);
+  // Budget subscription rows
+  var budSubRows = [];
+  document.querySelectorAll('[id^="budSub_"]').forEach(function(row) {
+    var id = row.id.replace('budSub_','');
+    budSubRows.push({
+      name: document.getElementById('budSubName_'+id)?.value||'',
+      cost: document.getElementById('budSubCost_'+id)?.value||'',
+      annual: document.getElementById('budSubAnnual_'+id)?.value||''
+    });
+  });
+  data['__budSubRows'] = JSON.stringify(budSubRows);
+  // Vehicle rows
+  var vehicleRows = [];
+  document.querySelectorAll('[id^="vehicle_"]').forEach(function(row) {
+    var id = row.id.replace('vehicle_','');
+    if(!id || isNaN(id)) return;
+    vehicleRows.push({
+      name:    document.getElementById('vehicleName_'+id)?.value||'',
+      ins:     document.getElementById('vehicleIns_'+id)?.value||'',
+      maint:   document.getElementById('vehicleMaint_'+id)?.value||'',
+      wash:    document.getElementById('vehicleWash_'+id)?.value||'',
+      loan:    document.getElementById('vehicleLoan_'+id)?.value||'',
+      payoff:  document.getElementById('vehiclePayoff_'+id)?.value||'',
+      replace: document.getElementById('vehicleReplace_'+id)?.value||''
+    });
+  });
+  data['__vehicleRows'] = JSON.stringify(vehicleRows);
+  // Other assets
+  var otherAssetRows = [];
+  document.querySelectorAll('[id^="otherAsset_"]').forEach(function(row) {
+    var id = row.id.replace('otherAsset_','');
+    if(!id || isNaN(id)) return;
+    otherAssetRows.push({
+      name: document.getElementById('otherAssetName_'+id)?.value||'',
+      value: document.getElementById('otherAssetValue_'+id)?.value||''
+    });
+  });
+  data['__otherAssetRows'] = JSON.stringify(otherAssetRows);
+  // Credit cards
+  var ccRows = [];
+  document.querySelectorAll('[id^="ccRow_"]').forEach(function(row) {
+    var id = row.id.replace('ccRow_','');
+    if(!id || isNaN(id)) return;
+    ccRows.push({
+      name: document.getElementById('ccName_'+id)?.value||'',
+      payment: document.getElementById('ccPayment_'+id)?.value||'',
+      annual: document.getElementById('ccAnnual_'+id)?.value||'',
+      balance: document.getElementById('ccBalance_'+id)?.value||''
+    });
+  });
+  data['__ccRows'] = JSON.stringify(ccRows);
+  // Custom budget items per category
+  var customCats = ['housing','transport','food','health','profsvc','education','lifestyle','insurance'];
+  customCats.forEach(function(catId) {
+    var rows = [];
+    var list = document.getElementById('customList_'+catId);
+    if(list) {
+      list.querySelectorAll('[id^="customItem_"]').forEach(function(row) {
+        var id = row.id.replace('customItem_','');
+        rows.push({
+          name: document.getElementById('customName_'+id)?.value||'',
+          cost: document.getElementById('customCost_'+id)?.value||'',
+          annual: document.getElementById('customAnnual_'+id)?.value||''
+        });
+      });
+    }
+    data['__custom_'+catId] = JSON.stringify(rows);
+  });
   return data;
 }
 
@@ -8146,6 +8779,17 @@ function collectAllData() {
 var SAVE_KEY = 'myyolk_v1';
 // saveData is an alias
 function saveData() { saveToLocal(); }
+function dismissWelcome() {
+  var modal = document.getElementById('welcomeModal');
+  if(modal) modal.style.display = 'none';
+  localStorage.setItem('myyolk_welcomed', '1');
+}
+function manuallySave() {
+  saveToLocal();
+  if(typeof cloudSave === 'function') cloudSave();
+  var ind = document.getElementById('saveIndicator');
+  if(ind) { ind.textContent = '☁️ Saved'; ind.style.opacity = '1'; setTimeout(function(){ ind.style.opacity='0'; }, 2500); }
+}
 
 // Init Supabase on load
 window.addEventListener('load', function() { 
@@ -8342,6 +8986,115 @@ function loadFromLocal() {
         }
       } catch(e) {}
     }
+    // Restore budget subscription rows
+    if(data['__budSubRows']) {
+      try {
+        var budSubRows = JSON.parse(data['__budSubRows']);
+        var budSubContainer = document.getElementById('budgetSubList');
+        if(budSubContainer && budSubRows.length > 0) {
+          budSubContainer.innerHTML = '';
+          budSubCount = 0;
+          budSubRows.forEach(function(rd) {
+            addBudgetSub();
+            var id = budSubCount;
+            var nameEl = document.getElementById('budSubName_'+id);
+            var costEl = document.getElementById('budSubCost_'+id);
+            if(nameEl) nameEl.value = rd.name;
+            if(costEl) costEl.value = rd.cost;
+            var annualEl = document.getElementById('budSubAnnual_'+id);
+            if(annualEl && rd.annual) annualEl.value = rd.annual;
+          });
+          calcBudgetSubs();
+        }
+      } catch(e) {}
+    }
+    // Restore vehicle rows
+    if(data['__vehicleRows']) {
+      try {
+        var vehicleRows = JSON.parse(data['__vehicleRows']);
+        var vList = document.getElementById('vehicleList');
+        if(vList && vehicleRows.length > 0) {
+          vList.innerHTML = '';
+          vehicleCount = 0;
+          vehicleRows.forEach(function(rd) {
+            addVehicle();
+            var id = vehicleCount;
+            if(document.getElementById('vehicleName_'+id)) document.getElementById('vehicleName_'+id).value = rd.name;
+            if(document.getElementById('vehicleIns_'+id)) document.getElementById('vehicleIns_'+id).value = rd.ins;
+            if(document.getElementById('vehicleMaint_'+id)) document.getElementById('vehicleMaint_'+id).value = rd.maint;
+            if(document.getElementById('vehicleWash_'+id)) document.getElementById('vehicleWash_'+id).value = rd.wash;
+            if(document.getElementById('vehicleLoan_'+id)) document.getElementById('vehicleLoan_'+id).value = rd.loan;
+            if(document.getElementById('vehiclePayoff_'+id)) document.getElementById('vehiclePayoff_'+id).value = rd.payoff;
+            if(document.getElementById('vehicleReplace_'+id)) document.getElementById('vehicleReplace_'+id).value = rd.replace;
+          });
+        }
+      } catch(e) {}
+    }
+    // Restore other assets
+    if(data['__otherAssetRows']) {
+      try {
+        var oaRows = JSON.parse(data['__otherAssetRows']);
+        var oaList = document.getElementById('otherAssetList');
+        if(oaList && oaRows.length > 0) {
+          oaList.innerHTML = '';
+          otherAssetCount = 0;
+          oaRows.forEach(function(rd) {
+            addOtherAsset();
+            var id = otherAssetCount;
+            if(document.getElementById('otherAssetName_'+id)) document.getElementById('otherAssetName_'+id).value = rd.name;
+            if(document.getElementById('otherAssetValue_'+id)) document.getElementById('otherAssetValue_'+id).value = rd.value;
+          });
+          calcOtherAssets();
+        }
+      } catch(e) {}
+    }
+    // Restore credit cards
+    if(data['__ccRows']) {
+      try {
+        var ccRows = JSON.parse(data['__ccRows']);
+        var ccList = document.getElementById('creditCardRows');
+        if(ccList && ccRows.length > 0) {
+          ccList.innerHTML = '';
+          creditCardCount = 0;
+          ccRows.forEach(function(rd) {
+            addCreditCard();
+            var id = creditCardCount;
+            if(document.getElementById('ccName_'+id)) document.getElementById('ccName_'+id).value = rd.name;
+            if(document.getElementById('ccPayment_'+id)) document.getElementById('ccPayment_'+id).value = rd.payment;
+            if(document.getElementById('ccAnnual_'+id)) document.getElementById('ccAnnual_'+id).value = rd.annual;
+            if(document.getElementById('ccBalance_'+id) && rd.balance) document.getElementById('ccBalance_'+id).value = rd.balance;
+          });
+          calcBudget(_fakeInput());
+        }
+      } catch(e) {}
+    }
+    // Restore custom budget items
+    var customCats = ['housing','transport','food','health','profsvc','education','lifestyle','insurance'];
+    customCats.forEach(function(catId) {
+      var key = '__custom_'+catId;
+      if(data[key]) {
+        try {
+          var rows = JSON.parse(data[key]);
+          var list = document.getElementById('customList_'+catId);
+          if(list && rows.length > 0) {
+            list.innerHTML = '';
+            if(!customItemCounts[catId]) customItemCounts[catId] = 0;
+            rows.forEach(function(rd) {
+              addCustomBudgetItem(catId);
+              var id = catId + '_' + customItemCounts[catId];
+              var safeId = id.replace(/[^a-zA-Z0-9_]/g,'_');
+              var nameEl = document.getElementById('customName_'+safeId);
+              var costEl = document.getElementById('customCost_'+safeId);
+              var annualEl = document.getElementById('customAnnual_'+safeId);
+              if(nameEl) nameEl.value = rd.name;
+              if(costEl) costEl.value = rd.cost;
+              if(annualEl && rd.annual) annualEl.value = rd.annual;
+            });
+            calcBudget(_fakeInput());
+          }
+        } catch(e) {}
+      }
+    });
     if(data['__aiRows']) {
       try {
         var aiRows = JSON.parse(data['__aiRows']);
