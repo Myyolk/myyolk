@@ -9049,6 +9049,22 @@ async function cloudSave() {
     return;
   }
   if(!_sb || !_sbUser) { saveToLocal(); return; }
+
+  // Integrity check — if we previously had custom rows but now have none, abort save
+  var savedRaw = localStorage.getItem(SAVE_KEY);
+  if(savedRaw) {
+    try {
+      var prev = JSON.parse(savedRaw);
+      var hadSubs = (JSON.parse(prev.__budSubRows||'[]')).length > 0;
+      var nowSubs = document.querySelectorAll('[id^="budSub_"]').length;
+      var hadIns = (JSON.parse(prev.__insurancePolicies||'[]')).length > 0;
+      var nowIns = document.querySelectorAll('.ins-policy-row').length;
+      if((hadSubs && nowSubs === 0) || (hadIns && nowIns === 0)) {
+        console.warn('MyYolk: aborting cloud save — custom rows dropped to zero (possible race condition)');
+        return;
+      }
+    } catch(e) {}
+  }
   try {
     var data = collectAllData();
     // Check if row exists first
