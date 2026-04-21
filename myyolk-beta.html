@@ -7725,9 +7725,19 @@ function btBuildCheckinTable(planned, prefillActuals) {
   if (!tbody) return;
   var html = '';
   BT_CATS.forEach(function(cat) {
-    // Only render rows that have a planned value OR a prefilled actual
-    var catRows = cat.keys.filter(function(k) {
-      return (planned[k] || 0) > 0 || (parseFloat(prefillActuals[k]) || 0) > 0;
+    // Expand dynamic prefix keys (e.g. '__ins__', '__subs__') to all matching plan keys
+    var catRows = [];
+    cat.keys.forEach(function(k) {
+      if(k.startsWith('__')) {
+        // Dynamic prefix -- find all plan keys that start with this prefix
+        Object.keys(planned).forEach(function(pk) {
+          if(pk.startsWith(k) && ((planned[pk]||0) > 0 || (parseFloat(prefillActuals[pk])||0) > 0)) {
+            catRows.push(pk);
+          }
+        });
+      } else {
+        if((planned[k]||0) > 0 || (parseFloat(prefillActuals[k])||0) > 0) catRows.push(k);
+      }
     });
     if (catRows.length === 0) return;
 
@@ -7737,10 +7747,10 @@ function btBuildCheckinTable(planned, prefillActuals) {
       var act = parseFloat(prefillActuals[k]) || 0;
       var varVal = act - bud;
       var varClass = varVal > 0.5 ? 'bt-var-over' : varVal < -0.5 ? 'bt-var-under' : 'bt-var-zero';
-      var varStr = varVal > 0.5 ? '+' + btFmt(varVal) : varVal < -0.5 ? btFmt(varVal) : '—';
+      var varStr = varVal > 0.5 ? '+' + btFmt(varVal) : varVal < -0.5 ? btFmt(varVal) : 'OK';
       html += '<tr>' +
         '<td>' + (BT_KEY_LABELS[k] || k) + '</td>' +
-        '<td>' + (bud > 0 ? btFmt(bud) : '<span style="color:var(--mid)">—</span>') + '</td>' +
+        '<td>' + (bud > 0 ? btFmt(bud) : '<span style="color:var(--mid)">--</span>') + '</td>' +
         '<td><input type="number" class="bt-actual-input" data-btkey="' + k + '" value="' + (act || '') + '" placeholder="0" oninput="btUpdateVariances()">' +
         '</td>' +
         '<td class="' + varClass + '" id="btVar-' + k + '">' + varStr + '</td>' +
