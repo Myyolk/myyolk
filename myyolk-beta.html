@@ -2480,6 +2480,43 @@
         </div>
       </div>
 
+
+      <!-- BUDGET HEALTH CHECK -->
+      <div class="card" id="budgetHealthCard" style="margin-bottom:1.5rem">
+        <div class="card-title"><span class="dot"></span> 💡 Budget Health Check</div>
+        <p style="font-size:0.85rem;color:var(--mid);margin-bottom:1rem">How does your monthly budget compare to your estimated take-home pay?</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem">
+          <div style="text-align:center;padding:1rem;background:var(--warm-white);border-radius:10px">
+            <div style="font-size:0.75rem;color:var(--mid);margin-bottom:4px;font-weight:600">GROSS INCOME</div>
+            <div id="bhcGross" style="font-size:1.2rem;font-weight:700;color:var(--forest)">—</div>
+            <div style="font-size:0.72rem;color:var(--mid);margin-top:2px">per month</div>
+          </div>
+          <div style="text-align:center;padding:1rem;background:var(--warm-white);border-radius:10px">
+            <div style="font-size:0.75rem;color:var(--mid);margin-bottom:4px;font-weight:600">EST. TAKE-HOME</div>
+            <div id="bhcTakeHome" style="font-size:1.2rem;font-weight:700;color:var(--forest)">—</div>
+            <div id="bhcTaxRate" style="font-size:0.72rem;color:var(--mid);margin-top:2px">after fed + state tax</div>
+          </div>
+          <div style="text-align:center;padding:1rem;background:var(--warm-white);border-radius:10px">
+            <div style="font-size:0.75rem;color:var(--mid);margin-bottom:4px;font-weight:600">MONTHLY BUDGET</div>
+            <div id="bhcBudget" style="font-size:1.2rem;font-weight:700;color:var(--forest)">—</div>
+            <div style="font-size:0.72rem;color:var(--mid);margin-top:2px">current spending</div>
+          </div>
+        </div>
+        <div id="bhcBar" style="margin-bottom:1rem;display:none">
+          <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--mid);margin-bottom:4px">
+            <span>0%</span><span id="bhcPctLabel" style="font-weight:700">—</span><span>100%</span>
+          </div>
+          <div style="height:12px;background:#f0f0f0;border-radius:6px;overflow:hidden">
+            <div id="bhcBarFill" style="height:100%;border-radius:6px;transition:width 0.6s ease;width:0%"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--mid);margin-top:3px">
+            <span>Budget</span><span>Take-home</span>
+          </div>
+        </div>
+        <div id="bhcMessage" style="padding:0.85rem 1rem;border-radius:8px;font-size:0.87rem;font-weight:500;display:none"></div>
+        <div style="margin-top:0.75rem;font-size:0.75rem;color:var(--mid)">Tax estimate uses 2024 federal brackets + PA state flat tax (3.07%) with standard deduction. Married filing jointly when planning as a couple.</div>
+      </div>
+
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="showTab('profile')">← Back</button>
         <button class="btn btn-primary" onclick="showTab('accounts')">Next: Accounts →</button>
@@ -4769,12 +4806,12 @@ function calcSpouseSsBenefit() {
     } else {
       spouseFinal = halfOfDean;
       var spouseName = document.getElementById('spouseFirstName')?.value || 'Spouse';
-    spouseNote = spouseName + ': $' + Math.round(halfOfDean).toLocaleString() + '/mo (spousal — 50% of Dean’s $' + Math.round(deanOwn).toLocaleString() + ')';
+    spouseNote = spouseName + ': $' + Math.round(halfOfDean).toLocaleString() + '/mo (spousal — 50% of Dean\'s $' + Math.round(deanOwn).toLocaleString() + ')';
     }
   } else {
     spouseFinal = halfOfDean;
     var spouseName = document.getElementById('spouseFirstName')?.value || 'Spouse';
-    spouseNote = spouseName + ': $' + Math.round(halfOfDean).toLocaleString() + '/mo (spousal — 50% of Dean’s $' + Math.round(deanOwn).toLocaleString() + ')';
+    spouseNote = spouseName + ': $' + Math.round(halfOfDean).toLocaleString() + '/mo (spousal — 50% of Dean\'s $' + Math.round(deanOwn).toLocaleString() + ')';
   }
 
   var totalHousehold = deanFinal + spouseFinal;
@@ -5253,6 +5290,7 @@ showTab = function(name) {
 
       if(typeof calcProjections === 'function') calcProjections();
       if(typeof calcReadiness === 'function') calcReadiness();
+      if(typeof calcBudgetHealthCheck === 'function') calcBudgetHealthCheck();
       if(typeof updateSummary === 'function') updateSummary();
     }, 300);
   }
@@ -5273,6 +5311,115 @@ showTab = function(name) {
 
 
 // ── READINESS SCORE ──
+
+
+
+// ── BUDGET HEALTH CHECK ──────────────────────────────────────────────
+function calcBudgetHealthCheck() {
+  var grossAnnual = state.salary || 0;
+  var isCouple = document.getElementById('planCouple')?.checked;
+  var state2 = document.getElementById('stateTax')?.value || 'PA';
+
+  if(grossAnnual <= 0) {
+    document.getElementById('budgetHealthCard').style.display = 'none';
+    return;
+  }
+  document.getElementById('budgetHealthCard').style.display = '';
+
+  // Federal tax estimate (2024 brackets)
+  var standardDed = isCouple ? 29200 : 14600;
+  var taxableIncome = Math.max(0, grossAnnual - standardDed);
+  var fedTax = 0;
+  if(isCouple) {
+    // MFJ brackets
+    var brackets = [[23200,0.10],[94300,0.12],[201050,0.22],[383900,0.24],[487450,0.32],[731200,0.35],[Infinity,0.37]];
+    var prev = 0;
+    for(var i = 0; i < brackets.length; i++) {
+      var top = brackets[i][0], rate = brackets[i][1];
+      if(taxableIncome <= prev) break;
+      fedTax += (Math.min(taxableIncome, top) - prev) * rate;
+      prev = top;
+    }
+  } else {
+    // Single brackets
+    var bracketsS = [[11600,0.10],[47150,0.12],[100525,0.22],[191950,0.24],[243725,0.32],[609350,0.35],[Infinity,0.37]];
+    var prev2 = 0;
+    for(var j = 0; j < bracketsS.length; j++) {
+      var top2 = bracketsS[j][0], rate2 = bracketsS[j][1];
+      if(taxableIncome <= prev2) break;
+      fedTax += (Math.min(taxableIncome, top2) - prev2) * rate2;
+      prev2 = top2;
+    }
+  }
+
+  // PA state flat tax 3.07%
+  var stateTax = grossAnnual * 0.0307;
+  // FICA (Social Security 6.2% up to $168,600, Medicare 1.45%)
+  var fica = Math.min(grossAnnual, 168600) * 0.062 + grossAnnual * 0.0145;
+
+  var totalTax = fedTax + stateTax + fica;
+  var netAnnual = grossAnnual - totalTax;
+  var effectiveRate = (totalTax / grossAnnual * 100);
+
+  var grossMonthly = grossAnnual / 12;
+  var netMonthly = netAnnual / 12;
+
+  // Get budget total
+  var budgetEl = document.getElementById('budgetMonthlyTotal');
+  var budgetMonthly = parseFloat((budgetEl?.textContent||'0').replace(/[^0-9.]/g,'')) || 0;
+
+  // Format numbers
+  function fmtD(v) { return '$' + Math.round(v).toLocaleString(); }
+
+  document.getElementById('bhcGross').textContent = fmtD(grossMonthly);
+  document.getElementById('bhcTakeHome').textContent = fmtD(netMonthly);
+  document.getElementById('bhcTaxRate').textContent = 'eff. rate ' + effectiveRate.toFixed(1) + '% (fed + PA + FICA)';
+  document.getElementById('bhcBudget').textContent = budgetMonthly > 0 ? fmtD(budgetMonthly) : '—';
+
+  if(budgetMonthly <= 0) {
+    document.getElementById('bhcBar').style.display = 'none';
+    document.getElementById('bhcMessage').style.display = 'none';
+    return;
+  }
+
+  var pct = Math.round((budgetMonthly / netMonthly) * 100);
+  var barWidth = Math.min(pct, 100);
+  document.getElementById('bhcBar').style.display = '';
+  document.getElementById('bhcPctLabel').textContent = pct + '% of take-home';
+  document.getElementById('bhcBarFill').style.width = barWidth + '%';
+
+  // Color and message
+  var msg = document.getElementById('bhcMessage');
+  msg.style.display = '';
+  var surplus = netMonthly - budgetMonthly;
+
+  if(pct <= 70) {
+    document.getElementById('bhcBarFill').style.background = 'var(--sage)';
+    msg.style.background = 'var(--sage-pale)';
+    msg.style.color = 'var(--forest)';
+    msg.style.borderLeft = '4px solid var(--sage)';
+    msg.innerHTML = '✅ <strong>Healthy — your budget uses ' + pct + '% of your take-home.</strong> You have ' + fmtD(surplus) + '/mo of breathing room. That\'s a strong foundation for retirement saving.';
+  } else if(pct <= 90) {
+    document.getElementById('bhcBarFill').style.background = '#e5a800';
+    msg.style.background = '#fff8e1';
+    msg.style.color = '#856404';
+    msg.style.borderLeft = '4px solid #e5a800';
+    msg.innerHTML = '⚠️ <strong>Tight — your budget is ' + pct + '% of your take-home.</strong> Only ' + fmtD(surplus) + '/mo left over. That leaves little room for saving or unexpected expenses. Consider trimming discretionary spending.';
+  } else if(pct <= 100) {
+    document.getElementById('bhcBarFill').style.background = 'var(--clay)';
+    msg.style.background = '#fff0f0';
+    msg.style.color = 'var(--clay)';
+    msg.style.borderLeft = '4px solid var(--clay)';
+    msg.innerHTML = '🔴 <strong>Very tight — your budget is ' + pct + '% of your take-home.</strong> Only ' + fmtD(surplus) + '/mo remaining. Your retirement savings potential is severely limited until spending is brought down.';
+  } else {
+    document.getElementById('bhcBarFill').style.background = 'var(--clay)';
+    document.getElementById('bhcBarFill').style.width = '100%';
+    msg.style.background = '#fff0f0';
+    msg.style.color = 'var(--clay)';
+    msg.style.borderLeft = '4px solid var(--clay)';
+    msg.innerHTML = '🚨 <strong>Your budget exceeds your take-home by ' + fmtD(Math.abs(surplus)) + '/mo.</strong> At current spending you are going into debt each month. Retirement planning cannot be meaningful until this gap is closed.';
+  }
+}
 
 
 // ── FUTURE INCOME SCHEDULE (Vesting / Scheduled Income) ─────────────
