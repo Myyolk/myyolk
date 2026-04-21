@@ -5282,7 +5282,7 @@ function calcReadiness() {
 
   // Use projected portfolio from calcProjections, fallback to own calculation
   // Only count financial assets, not home equity, in portfolio
-  var financialPortfolio = bal401k + balRoth401 + balRothIRA + balTaxable + balHSA + balCash + spBal401k + spBalRoth + spBalIRA;
+  var financialPortfolio = bal401k + balRoth401 + balRothIRA + balTaxable + balHSA + balCash + (parseFloat(document.getElementById('spouseBal401k')?.value)||0) + (parseFloat(document.getElementById('spouseBalRoth401')?.value)||0) + (parseFloat(document.getElementById('spouseBalRothIRA')?.value)||0);
   var portfolio = state.portfolioAtRetirement || 0;
   if(!portfolio || portfolio === state._rdOwnPortfolio) {
     if(financialPortfolio > 0) {
