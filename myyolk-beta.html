@@ -5318,65 +5318,13 @@ showTab = function(name) {
 function calcBudgetHealthCheck() {
   var grossAnnual = state.salary || 0;
   var isCouple = document.getElementById('planCouple')?.checked;
-  var budgetEl = document.getElementById('budgetMonthlyTotal');
-  var budgetMonthly = parseFloat((budgetEl?.textContent||'0').replace(/[^0-9.]/g,'')) || 0;
-  function fmtD(v) { return '$' + Math.round(v).toLocaleString(); }
+  var state2 = document.getElementById('stateTax')?.value || 'PA';
 
   if(grossAnnual <= 0) {
-    document.getElementById('budgetHealthCard').style.display = '';
-    var ssMonthly = (state.ssMonthly || 0) + (state.spouseSsMonthly || 0);
-    var additionalIncome = state.additionalMonthly || 0;
-    var portfolioIncome = state.portfolioAtRetirement ? Math.round(state.portfolioAtRetirement * 0.04 / 12) : 0;
-    var totalRetirementIncome = ssMonthly + additionalIncome + portfolioIncome;
-
-    var grossCol = document.getElementById('bhcGross').previousElementSibling;
-    if(grossCol) grossCol.textContent = 'MONTHLY BUDGET';
-    var takeHomeCol = document.getElementById('bhcTakeHome').previousElementSibling;
-    if(takeHomeCol) takeHomeCol.textContent = 'RETIREMENT INCOME';
-    var budgetParent = document.getElementById('bhcBudget').parentElement;
-    if(budgetParent) budgetParent.style.display = 'none';
-    document.getElementById('bhcGross').textContent = budgetMonthly > 0 ? fmtD(budgetMonthly) : '---';
-    document.getElementById('bhcTakeHome').textContent = totalRetirementIncome > 0 ? fmtD(totalRetirementIncome) : '---';
-    document.getElementById('bhcTaxRate').textContent = 'projected retirement income/mo';
-    document.getElementById('bhcBudget').textContent = '---';
-
-    if(budgetMonthly <= 0 || totalRetirementIncome <= 0) {
-      document.getElementById('bhcBar').style.display = 'none';
-      document.getElementById('bhcMessage').style.display = 'none';
-      return;
-    }
-    var pct = Math.round((budgetMonthly / totalRetirementIncome) * 100);
-    document.getElementById('bhcBar').style.display = '';
-    document.getElementById('bhcPctLabel').textContent = pct + '% of retirement income';
-    document.getElementById('bhcBarFill').style.width = Math.min(pct,100) + '%';
-    var surplus = totalRetirementIncome - budgetMonthly;
-    var msg = document.getElementById('bhcMessage');
-    msg.style.display = '';
-    if(pct <= 80) {
-      document.getElementById('bhcBarFill').style.background = 'var(--sage)';
-      msg.style.background = 'var(--sage-pale)'; msg.style.color = 'var(--forest)'; msg.style.borderLeft = '4px solid var(--sage)';
-      msg.innerHTML = '<strong>Your budget uses ' + pct + '% of your projected retirement income.</strong> You have ' + fmtD(surplus) + '/mo of cushion -- you're in good shape.';
-    } else if(pct <= 100) {
-      document.getElementById('bhcBarFill').style.background = '#e5a800';
-      msg.style.background = '#fff8e1'; msg.style.color = '#856404'; msg.style.borderLeft = '4px solid #e5a800';
-      msg.innerHTML = '<strong>Your budget is ' + pct + '% of your projected retirement income.</strong> Only ' + fmtD(surplus) + '/mo of margin. Small changes could tip the balance.';
-    } else {
-      document.getElementById('bhcBarFill').style.background = 'var(--clay)';
-      document.getElementById('bhcBarFill').style.width = '100%';
-      msg.style.background = '#fff0f0'; msg.style.color = 'var(--clay)'; msg.style.borderLeft = '4px solid var(--clay)';
-      msg.innerHTML = '<strong>Your monthly budget exceeds projected retirement income by ' + fmtD(Math.abs(surplus)) + '.</strong> Use What-If Scenarios to explore options.';
-    }
+    document.getElementById('budgetHealthCard').style.display = 'none';
     return;
   }
-
-  // Employed mode -- reset labels
   document.getElementById('budgetHealthCard').style.display = '';
-  var gc = document.getElementById('bhcGross').previousElementSibling;
-  if(gc) gc.textContent = 'GROSS INCOME';
-  var thc = document.getElementById('bhcTakeHome').previousElementSibling;
-  if(thc) thc.textContent = 'EST. TAKE-HOME';
-  var bp = document.getElementById('bhcBudget').parentElement;
-  if(bp) bp.style.display = '';
 
   // Federal tax estimate (2024 brackets)
   var standardDed = isCouple ? 29200 : 14600;
