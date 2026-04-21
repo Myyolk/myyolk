@@ -2406,6 +2406,23 @@
         </div>
       </div>
 
+
+      <div class="card" id="vestingCard">
+        <div class="card-title"><span class="dot"></span> 📅 Future Income Schedule</div>
+        <p style="font-size:0.85rem;color:var(--mid);margin-bottom:1rem">Add income that vests, starts, or pays out at a specific point in time — RSUs, pension, deferred comp, part-time work, and more. Each entry flows automatically into your projections.</p>
+        <div id="vestingRows" style="display:flex;flex-direction:column;gap:0.75rem"></div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.75rem">
+          <button onclick="addVestingRow('rsu')" style="background:var(--sage-pale);color:var(--forest);border:1px solid var(--sage);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ RSU / Stock Vesting</button>
+          <button onclick="addVestingRow('pension')" style="background:var(--sage-pale);color:var(--forest);border:1px solid var(--sage);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Pension</button>
+          <button onclick="addVestingRow('deferred')" style="background:var(--sage-pale);color:var(--forest);border:1px solid var(--sage);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Deferred Comp</button>
+          <button onclick="addVestingRow('parttime')" style="background:var(--sage-pale);color:var(--forest);border:1px solid var(--sage);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Part-time / Consulting</button>
+          <button onclick="addVestingRow('other')" style="background:var(--sage-pale);color:var(--forest);border:1px solid var(--sage);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Other</button>
+        </div>
+        <div id="vestingTotal" style="display:none;margin-top:1rem;padding:0.75rem;background:var(--warm-white);border-radius:8px;font-size:0.85rem;color:var(--forest)">
+          <strong>Scheduled Income:</strong> <span id="vestingTotalAmt" style="color:var(--sage);font-weight:700"></span>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-title"><span class="dot"></span> Additional Income Sources</div>
         <p style="font-size:0.85rem;color:#666;margin-bottom:1rem">Other income streams that will continue into retirement.</p>
@@ -5020,6 +5037,14 @@ function calcProjections() {
 
   // Build life event lookup by age
   var lifeEventsByAge = {};
+  // Add vesting/future income one-time events
+  if(typeof getVestingLifeEvents === 'function') {
+    state._vestingRecurring = [];
+    var vestEvents = getVestingLifeEvents();
+    Object.keys(vestEvents).forEach(function(age) {
+      lifeEventsByAge[parseInt(age)] = (lifeEventsByAge[parseInt(age)] || 0) + vestEvents[age];
+    });
+  }
   document.querySelectorAll('.life-event-row').forEach(function(row) {
     var leAge = parseInt(row.querySelector('.le-age')?.value) || 0;
     var leAmount = parseFloat(row.querySelector('.le-amount')?.value) || 0;
@@ -5248,6 +5273,141 @@ showTab = function(name) {
 
 
 // ── READINESS SCORE ──
+
+
+// ── FUTURE INCOME SCHEDULE (Vesting / Scheduled Income) ─────────────
+var _vestingCount = 0;
+
+var _vestingTypes = {
+  rsu:      { label: 'RSU / Stock Vesting',    icon: '📈', recurring: false, placeholder: 'e.g. 25000', amtLabel: 'Vest Amount ($)', hint: 'One-time payout at vest date' },
+  pension:  { label: 'Pension',                icon: '🏛️', recurring: true,  placeholder: 'e.g. 24000', amtLabel: 'Annual Amount ($/yr)', hint: 'Starts at start year, continues until end year (blank = forever)' },
+  deferred: { label: 'Deferred Compensation',  icon: '💼', recurring: false, placeholder: 'e.g. 50000', amtLabel: 'Payout Amount ($)', hint: 'One-time payout in the specified year' },
+  parttime: { label: 'Part-time / Consulting', icon: '🕐', recurring: true,  placeholder: 'e.g. 30000', amtLabel: 'Annual Amount ($/yr)', hint: 'Earns from start year through end year' },
+  other:    { label: 'Other Income',           icon: '💰', recurring: null,  placeholder: 'e.g. 10000', amtLabel: 'Amount ($/yr or one-time)', hint: 'Choose recurring or one-time below' },
+};
+
+function addVestingRow(type, data) {
+  _vestingCount++;
+  var id = _vestingCount;
+  var t = _vestingTypes[type] || _vestingTypes.other;
+  var currentYear = new Date().getFullYear();
+
+  var recurringToggle = '';
+  if(t.recurring === null) {
+    recurringToggle = '<div class="field" style="margin:0"><label>Type</label><select class="vr-recur" onchange="calcVestingTotal()" style="width:100%"><option value="onetime">One-time</option><option value="recurring">Recurring</option></select></div>';
+  }
+
+  var endField = (t.recurring || t.recurring === null) ? 
+    '<div class="field" style="margin:0"><label>End Year</label><input type="number" class="vr-end" placeholder="∞" oninput="calcVestingTotal()" style="width:100%"></div>' : '';
+
+  var row = document.createElement('div');
+  row.className = 'vesting-row';
+  row.dataset.id = id;
+  row.dataset.type = type;
+  row.style.cssText = 'background:var(--warm-white);border-radius:10px;padding:0.85rem 1rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:0.6rem;align-items:end;position:relative';
+  row.innerHTML = 
+    '<div class="field" style="margin:0;grid-column:span 2"><label style="display:flex;align-items:center;gap:6px"><span>' + t.icon + '</span>' + t.label + '</label>' +
+    '<input type="text" class="vr-name" placeholder="Description (e.g. 2023 Grant)" oninput="calcVestingTotal()" style="width:100%" value="' + (data?.name||'') + '"></div>' +
+    '<div class="field" style="margin:0"><label>' + t.amtLabel + '</label><input type="number" class="vr-amount" placeholder="' + t.placeholder + '" oninput="calcVestingTotal()" value="' + (data?.amount||'') + '"></div>' +
+    '<div class="field" style="margin:0"><label>' + (t.recurring === false ? 'Vest Year' : 'Start Year') + '</label><input type="number" class="vr-start" placeholder="' + currentYear + '" oninput="calcVestingTotal()" value="' + (data?.start||'') + '"></div>' +
+    endField +
+    recurringToggle +
+    '<div class="field" style="margin:0"><label style="font-size:0.78rem;display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" class="vr-401k" onchange="calcVestingTotal()" ' + (data?.is401k?'checked':'') + '> 401k applies</label></div>' +
+    '<div style="padding-bottom:2px"><button onclick="removeVestingRow(this,' + id + ')" style="background:var(--clay);color:#fff;border:none;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:0.85rem;width:100%">✕</button></div>';
+
+  if(data?.recur) row.querySelector('.vr-recur') && (row.querySelector('.vr-recur').value = data.recur);
+
+  document.getElementById('vestingRows').appendChild(row);
+  calcVestingTotal();
+}
+
+function removeVestingRow(btn, id) {
+  var row = document.querySelector('.vesting-row[data-id="' + id + '"]');
+  if(row) row.remove();
+  calcVestingTotal();
+  saveVestingRows();
+}
+
+function calcVestingTotal() {
+  var rows = document.querySelectorAll('.vesting-row');
+  var total = 0;
+  rows.forEach(function(row) {
+    var amt = parseFloat(row.querySelector('.vr-amount')?.value) || 0;
+    var recur = row.querySelector('.vr-recur')?.value || (_vestingTypes[row.dataset.type]?.recurring ? 'recurring' : 'onetime');
+    if(recur === 'recurring' || _vestingTypes[row.dataset.type]?.recurring === true) total += amt;
+  });
+  var totalEl = document.getElementById('vestingTotal');
+  var totalAmt = document.getElementById('vestingTotalAmt');
+  if(rows.length > 0) {
+    totalEl.style.display = '';
+    totalAmt.textContent = '$' + Math.round(total).toLocaleString() + '/yr recurring + any one-time payouts';
+  } else {
+    totalEl.style.display = 'none';
+  }
+  saveVestingRows();
+  recalc();
+}
+
+function saveVestingRows() {
+  var rows = document.querySelectorAll('.vesting-row');
+  var data = [];
+  rows.forEach(function(row) {
+    data.push({
+      type: row.dataset.type,
+      name: row.querySelector('.vr-name')?.value || '',
+      amount: row.querySelector('.vr-amount')?.value || '',
+      start: row.querySelector('.vr-start')?.value || '',
+      end: row.querySelector('.vr-end')?.value || '',
+      recur: row.querySelector('.vr-recur')?.value || '',
+      is401k: row.querySelector('.vr-401k')?.checked || false,
+    });
+  });
+  var saved = JSON.parse(localStorage.getItem('myyolk_v1') || '{}');
+  saved.__vestingRows = JSON.stringify(data);
+  localStorage.setItem('myyolk_v1', JSON.stringify(saved));
+}
+
+function loadVestingRows() {
+  var saved = JSON.parse(localStorage.getItem('myyolk_v1') || '{}');
+  var rows = [];
+  try { rows = JSON.parse(saved.__vestingRows || '[]'); } catch(e) {}
+  document.getElementById('vestingRows').innerHTML = '';
+  _vestingCount = 0;
+  rows.forEach(function(r) { addVestingRow(r.type, r); });
+}
+
+// ── Inject vesting rows into calcProjections life events ─────────────
+function getVestingLifeEvents() {
+  var events = {}; // year -> net amount
+  document.querySelectorAll('.vesting-row').forEach(function(row) {
+    var amt = parseFloat(row.querySelector('.vr-amount')?.value) || 0;
+    if(!amt) return;
+    var startYear = parseInt(row.querySelector('.vr-start')?.value) || 0;
+    if(!startYear) return;
+    var endYear = parseInt(row.querySelector('.vr-end')?.value) || 0;
+    var type = row.dataset.type;
+    var recur = row.querySelector('.vr-recur')?.value || (_vestingTypes[type]?.recurring ? 'recurring' : 'onetime');
+    
+    if(recur === 'onetime' || _vestingTypes[type]?.recurring === false) {
+      // Convert year to age
+      var currentYear = new Date().getFullYear();
+      var age = parseInt(document.getElementById('age')?.value) || 56;
+      var ageAtEvent = age + (startYear - currentYear);
+      if(ageAtEvent > 0) events[ageAtEvent] = (events[ageAtEvent] || 0) + amt;
+    } else {
+      // Recurring — add to additional income tracking via state
+      var currentYear2 = new Date().getFullYear();
+      var age2 = parseInt(document.getElementById('age')?.value) || 56;
+      var startAge = age2 + (startYear - currentYear2);
+      var endAge = endYear ? age2 + (endYear - currentYear2) : 999;
+      // Store for readiness calc
+      if(!state._vestingRecurring) state._vestingRecurring = [];
+      state._vestingRecurring.push({startAge: startAge, endAge: endAge, annual: amt});
+    }
+  });
+  return events;
+}
+
 
 // ── MONTE CARLO SIMULATION ──────────────────────────────────────────
 function runMonteCarlo() {
@@ -8866,7 +9026,20 @@ function collectAllData() {
     });
   });
   data['__leRows'] = JSON.stringify(leRows);
-  // Budget subscription rows
+  // Vesting / future income rows
+  var vestSaveRows = [];
+  document.querySelectorAll('.vesting-row').forEach(function(row) {
+    vestSaveRows.push({
+      type: row.dataset.type,
+      name: row.querySelector('.vr-name')?.value||'',
+      amount: row.querySelector('.vr-amount')?.value||'',
+      start: row.querySelector('.vr-start')?.value||'',
+      end: row.querySelector('.vr-end')?.value||'',
+      recur: row.querySelector('.vr-recur')?.value||'',
+      is401k: row.querySelector('.vr-401k')?.checked||false,
+    });
+  });
+  data['__vestingRows'] = JSON.stringify(vestSaveRows);
   var budSubRows = [];
   document.querySelectorAll('[id^="budSub_"]').forEach(function(row) {
     var id = row.id.replace('budSub_','');
@@ -9068,6 +9241,20 @@ function saveToLocal() {
       });
     });
     data['__leRows'] = JSON.stringify(leRows);
+    // Save vesting / future income rows
+    var vestSaveRows2 = [];
+    document.querySelectorAll('.vesting-row').forEach(function(row) {
+      vestSaveRows2.push({
+        type: row.dataset.type,
+        name: row.querySelector('.vr-name')?.value||'',
+        amount: row.querySelector('.vr-amount')?.value||'',
+        start: row.querySelector('.vr-start')?.value||'',
+        end: row.querySelector('.vr-end')?.value||'',
+        recur: row.querySelector('.vr-recur')?.value||'',
+        is401k: row.querySelector('.vr-401k')?.checked||false,
+      });
+    });
+    data['__vestingRows'] = JSON.stringify(vestSaveRows2);
     // Save individual child ages
     for(var ci = 1; ci <= 5; ci++) {
       var cel = document.getElementById('childAge' + ci);
@@ -9301,6 +9488,18 @@ function loadFromLocal() {
       var estSection = document.getElementById('ss-method-estimate');
       if(estSection) estSection.style.display = 'none';
       if(typeof ssManualUpdate === 'function') ssManualUpdate();
+    }
+    // Restore vesting/future income rows
+    if(data['__vestingRows']) {
+      try {
+        var vestRows = JSON.parse(data['__vestingRows']);
+        var vestContainer = document.getElementById('vestingRows');
+        if(vestContainer && vestRows.length > 0) {
+          vestContainer.innerHTML = '';
+          _vestingCount = 0;
+          vestRows.forEach(function(rd) { addVestingRow(rd.type, rd); });
+        }
+      } catch(e) {}
     }
     if(typeof recalc === 'function') recalc();
     // Call ssManualUpdate again after recalc
