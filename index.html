@@ -1278,5 +1278,25 @@ function submitLandingFeedback() {
   setTimeout(function(){ toggleLandingFeedback(); landingNotes = []; renderLandingNotes(); }, 2500);
 }
 </script>
+
+<script>
+function setPricing(type) {
+  var priceEl = document.getElementById('lp-price');
+  var periodEl = document.getElementById('lp-period');
+  var mBtn = document.getElementById('lp-monthly-btn');
+  var aBtn = document.getElementById('lp-annual-btn');
+  if(type === 'annual') {
+    priceEl.textContent = '$8.25';
+    periodEl.innerHTML = 'per month · billed $99/yr · cancel anytime';
+    aBtn.style.background = '#2D4A35'; aBtn.style.color = '#fff';
+    mBtn.style.background = 'transparent'; mBtn.style.color = '#2D4A35';
+  } else {
+    priceEl.textContent = '$14.99';
+    periodEl.textContent = 'per month · cancel anytime';
+    mBtn.style.background = '#2D4A35'; mBtn.style.color = '#fff';
+    aBtn.style.background = 'transparent'; aBtn.style.color = '#2D4A35';
+  }
+}
+</script>
 </body>
 </html>
