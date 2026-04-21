@@ -5281,11 +5281,17 @@ function calcReadiness() {
   var annualContrib = (salary * contrib401k) + (salary * contribRoth401) + (salary * empMatch) + contribRothIRA + contribTaxable + contrib401kDollar + totalBonus401k + spouseAnnualContrib + spouseContrib401kDollar + totalSpouseBonus401k;
 
   // Use projected portfolio from calcProjections, fallback to own calculation
+  // Only count financial assets, not home equity, in portfolio
+  var financialPortfolio = bal401k + balRoth401 + balRothIRA + balTaxable + balHSA + balCash + spBal401k + spBalRoth + spBalIRA;
   var portfolio = state.portfolioAtRetirement || 0;
   if(!portfolio || portfolio === state._rdOwnPortfolio) {
-    portfolio = totalNow;
-    for(var i = 0; i < yearsToRetire; i++) {
-      portfolio = (portfolio + annualContrib) * (1 + growthRate);
+    if(financialPortfolio > 0) {
+      portfolio = financialPortfolio;
+      for(var i = 0; i < yearsToRetire; i++) {
+        portfolio = (portfolio + annualContrib) * (1 + growthRate);
+      }
+    } else {
+      portfolio = 0;
     }
   }
   // state.portfolioAtRetirement set by calcProjections
