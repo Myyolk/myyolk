@@ -5316,7 +5316,7 @@ showTab = function(name) {
 
 // ── BUDGET HEALTH CHECK ──────────────────────────────────────────────
 function calcBudgetHealthCheck() {
-  var grossAnnual = state.salary || 0;
+  var grossAnnual = (state.salary || 0) + (state.spouseIncome || 0);
   var isCouple = document.getElementById('planCouple')?.checked;
   var state2 = document.getElementById('stateTax')?.value || 'PA';
 
