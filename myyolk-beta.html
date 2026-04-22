@@ -9392,6 +9392,7 @@ async function cloudLoad() {
   // Mark cloud load as complete — safe to auto-save now
   _cloudLoaded = true;
   if(typeof calcBudgetHealthCheck === "function") calcBudgetHealthCheck();
+  if(typeof updateIncomeLabels === "function") updateIncomeLabels();
 }
 
 function collectAllData() {
