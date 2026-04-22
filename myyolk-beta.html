@@ -5106,6 +5106,15 @@ function calcProjections() {
   var _bPS401k = document.getElementById('bonusProfitShare401k')?.checked ? (parseFloat(document.getElementById('bonusProfitShare')?.value)||0) : 0;
   var _bRSU401k = document.getElementById('bonusRSU401k')?.checked ? (parseFloat(document.getElementById('bonusRSU')?.value)||0) : 0;
   var bonusContrib401k = _b401k + _bRet401k + _bSign401k + _bPS401k + _bRSU401k;
+  // Dean 403b contributions
+  var contrib403bP = Math.min((parseFloat(document.getElementById('contrib403b')?.value)||0)/100, 1);
+  var _b403b = document.getElementById('bonus403b')?.checked ? (parseFloat(document.getElementById('bonus')?.value)||0) : 0;
+  var _bRet403b = document.getElementById('bonusRetention403b')?.checked ? (parseFloat(document.getElementById('bonusRetention')?.value)||0) : 0;
+  var _bSign403b = document.getElementById('bonusSignOn403b')?.checked ? (parseFloat(document.getElementById('bonusSignOn')?.value)||0) : 0;
+  var _bPS403b = document.getElementById('bonusProfitShare403b')?.checked ? (parseFloat(document.getElementById('bonusProfitShare')?.value)||0) : 0;
+  var _bRSU403b = document.getElementById('bonusRSU403b')?.checked ? (parseFloat(document.getElementById('bonusRSU')?.value)||0) : 0;
+  var bonusContrib403b = _b403b + _bRet403b + _bSign403b + _bPS403b + _bRSU403b;
+  var totalContrib403b = (salary * contrib403bP) + bonusContrib403b;
   // Spouse bonus 401k
   var _sb401k = document.getElementById('spouseBonus401k')?.checked ? (parseFloat(document.getElementById('spouseBonus')?.value)||0) : 0;
   var _sbPS401k = document.getElementById('spouseBonusProfitShare401k')?.checked ? (parseFloat(document.getElementById('spouseBonusProfitShare')?.value)||0) : 0;
@@ -5113,7 +5122,14 @@ function calcProjections() {
   var _sbSign401k = document.getElementById('spouseBonusSignOn401k')?.checked ? (parseFloat(document.getElementById('spouseBonusSignOn')?.value)||0) : 0;
   var _sbRSU401k = document.getElementById('spouseBonusRSU401k')?.checked ? (parseFloat(document.getElementById('spouseBonusRSU')?.value)||0) : 0;
   var spouseBonusContrib401k = _sb401k + _sbPS401k + _sbRet401k + _sbSign401k + _sbRSU401k;
-  var annualContrib = (salary * contrib401k) + (salary * contribRoth401P) + (salary * Math.min(empMatch, matchCap || empMatch)) + contribRothIRA + contribTaxable + contrib401kDollarP + spouseContribP + spouseContrib401kDollarP + bonusContrib401k + spouseBonusContrib401k;
+  // Densie 403b contributions
+  var spouseContrib403bP = Math.min((parseFloat(document.getElementById('spouseContrib403b')?.value)||0)/100, 1);
+  var _sb403b = document.getElementById('spouseBonus403b')?.checked ? (parseFloat(document.getElementById('spouseBonus')?.value)||0) : 0;
+  var _sbPS403b = document.getElementById('spouseBonusProfitShare403b')?.checked ? (parseFloat(document.getElementById('spouseBonusProfitShare')?.value)||0) : 0;
+  var _sbRSU403b = document.getElementById('spouseBonusRSU403b')?.checked ? (parseFloat(document.getElementById('spouseBonusRSU')?.value)||0) : 0;
+  var spouseBonusContrib403b = _sb403b + _sbPS403b + _sbRSU403b;
+  var spouseTotalContrib403b = (spouseSalaryP * spouseContrib403bP) + spouseBonusContrib403b;
+  var annualContrib = (salary * contrib401k) + (salary * contribRoth401P) + (salary * Math.min(empMatch, matchCap || empMatch)) + contribRothIRA + contribTaxable + contrib401kDollarP + spouseContribP + spouseContrib401kDollarP + bonusContrib401k + spouseBonusContrib401k + totalContrib403b + spouseTotalContrib403b;
 
   var yearsToRetire = Math.max(retireAge - age, 0);
   var labels = [], values = [], contribLine = [];
