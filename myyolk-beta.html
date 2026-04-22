@@ -7198,6 +7198,7 @@ function recalc() {
   if(typeof updateSnapshot==="function") updateSnapshot();
   if(typeof calcAdditionalIncome==="function") calcAdditionalIncome();
   if(typeof calcReadiness==="function" && document.getElementById('tab-readiness')?.classList.contains('active')) calcReadiness();
+  if(typeof calcBudgetHealthCheck === 'function') calcBudgetHealthCheck();
 }
 
 // ── READINESS ──
