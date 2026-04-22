@@ -9392,7 +9392,12 @@ async function cloudLoad() {
   // Mark cloud load as complete — safe to auto-save now
   _cloudLoaded = true;
   if(typeof calcBudgetHealthCheck === "function") calcBudgetHealthCheck();
-  if(typeof updateIncomeLabels === "function") updateIncomeLabels();
+  var _fn = document.getElementById('firstName')?.value||'';
+  var _sn = document.getElementById('spouseFirstName')?.value||'';
+  var _cap = function(s){ return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase(); };
+  var _yl = document.getElementById('yourIncomeLabel'); if(_yl) _yl.textContent = _fn ? _cap(_fn)+"'s Income" : "Your Income";
+  var _sl = document.getElementById('spouseIncomeTitle'); if(_sl) _sl.textContent = _sn ? _cap(_sn)+"'s Income" : "Spouse / Partner Income";
+  var _tl = document.getElementById('spouseTotalLabel'); if(_tl) _tl.textContent = _sn ? _cap(_sn)+"'s Annual Income" : "Spouse Total Income";
 }
 
 function collectAllData() {
