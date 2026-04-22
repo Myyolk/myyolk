@@ -3038,68 +3038,31 @@
             💡 If your payment includes escrow (taxes &amp; insurance), check the boxes below and leave Property Taxes &amp; Home Insurance at $0
           </div>
 
-          <div class="budget-row">
-            <label>Car Loan 1</label>
-            <input type="number" class="bud-m" data-key="debtCar1" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0 0.25rem">
+            <span style="font-size:0.82rem;color:var(--mid)">Car Loans</span>
+            <button onclick="addDebtRow('car')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
           </div>
-          <div class="budget-row">
-            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
-            <input type="number" id="balCarLoan1" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
+          <div id="carLoanRows"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0 0.25rem">
+            <span style="font-size:0.82rem;color:var(--mid)">Student Loans</span>
+            <button onclick="addDebtRow('student')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
           </div>
-          <div class="budget-row">
-            <label style="font-size:0.78rem;color:var(--sage)">↳ Car Loan 1 Payoff</label>
-            <input type="month" id="carLoan1Payoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
-          </div>
-          <div class="budget-row">
-            <label>Car Loan 2</label>
-            <input type="number" class="bud-m" data-key="debtCar2" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
-          </div>
-          <div class="budget-row">
-            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
-            <input type="number" id="balCarLoan2" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
-          </div>
-          <div class="budget-row">
-            <label style="font-size:0.78rem;color:var(--sage)">↳ Car Loan 2 Payoff</label>
-            <input type="month" id="carLoan2Payoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
-          </div>
-          <div class="budget-row">
-            <label>Student Loans</label>
-            <input type="number" class="bud-m" data-key="debtStudent" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
-          </div>
-          <div class="budget-row">
-            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
-            <input type="number" id="balStudentLoan" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
-          </div>
-          <div class="budget-row">
-            <label style="font-size:0.78rem;color:var(--sage)">↳ Student Loan Payoff</label>
-            <input type="month" id="studentLoanPayoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
-          </div>
+          <div id="studentLoanRows"></div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0">
             <span style="font-size:0.82rem;color:var(--mid)">Credit Cards</span>
             <button onclick="addCreditCard()" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add Card</button>
           </div>
           <div id="creditCardRows"></div>
-          <div class="budget-row">
-            <label>Personal Loan</label>
-            <input type="number" class="bud-m" data-key="debtPersonal" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0 0.25rem">
+            <span style="font-size:0.82rem;color:var(--mid)">Personal Loans</span>
+            <button onclick="addDebtRow('personal')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
           </div>
-          <div class="budget-row">
-            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
-            <input type="number" id="balPersonalLoan" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
+          <div id="personalLoanRows"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0 0.25rem">
+            <span style="font-size:0.82rem;color:var(--mid)">Other Debt</span>
+            <button onclick="addDebtRow('other')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
           </div>
-          <div class="budget-row">
-            <label>Other Debt</label>
-            <input type="number" class="bud-m" data-key="debtOther" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
-          </div>
-          <div class="budget-row">
-            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
-            <input type="number" id="balOtherDebt" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
-          </div>
+          <div id="otherDebtRows"></div>
           <div style="padding:8px 0 4px;font-size:0.78rem;color:var(--sage);font-style:italic">
             💡 Debts with payoff dates will be removed from your retirement expense projections automatically
           </div>
@@ -4150,6 +4113,44 @@ function calcOtherAssets() {
 }
 
 // Credit Cards
+// ── DYNAMIC DEBT ROWS ──
+var debtRowCounts = {car:0, student:0, personal:0, other:0};
+var debtContainers = {car:'carLoanRows', student:'studentLoanRows', personal:'personalLoanRows', other:'otherDebtRows'};
+var debtLabels = {car:'Car Loan', student:'Student Loan', personal:'Personal Loan', other:'Other Debt'};
+var debtHasPayoff = {car:true, student:true, personal:false, other:false};
+
+function addDebtRow(type) {
+  debtRowCounts[type]++;
+  var id = debtRowCounts[type];
+  var div = document.createElement('div');
+  div.id = 'debtRow_'+type+'_'+id;
+  div.className = 'budget-row';
+  var payoffHtml = debtHasPayoff[type] ?
+    '<div style="grid-column:1/-1;display:flex;align-items:center;gap:0.5rem;margin-top:-0.25rem">' +
+    '<label style="font-size:0.75rem;color:var(--sage);white-space:nowrap">↳ Payoff Date</label>' +
+    '<input type="month" id="debtPayoff_'+type+'_'+id+'" onchange="recalc()" style="padding:0.2rem 0.5rem;border:1px solid #ddd;border-radius:6px;font-size:0.82rem">' +
+    '</div>' : '';
+  div.innerHTML =
+    '<label style="display:flex;align-items:center;gap:6px">' +
+      '<input type="text" id="debtName_'+type+'_'+id+'" placeholder="e.g. '+debtLabels[type]+'" style="padding:0.25rem 0.5rem;border:1.5px solid var(--border);border-radius:6px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%;min-width:0">' +
+      '<button onclick="removeDebtRow(''+type+'','+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.1rem;line-height:1;flex-shrink:0">×</button>' +
+    '</label>' +
+    '<input type="number" id="debtPayment_'+type+'_'+id+'" class="bud-m" placeholder="Monthly ($)" oninput="calcBudget(this);saveToLocal();" style="text-align:right">' +
+    '<input type="number" id="debtAnnual_'+type+'_'+id+'" class="bud-a" placeholder="0" oninput="calcBudget(this)" style="text-align:right">' +
+    '<div style="grid-column:1/-1;display:flex;align-items:center;gap:0.5rem;margin-top:-0.25rem">' +
+      '<label style="font-size:0.75rem;color:var(--mid);white-space:nowrap">↳ Balance Owed ($)</label>' +
+      '<input type="number" id="debtBalance_'+type+'_'+id+'" placeholder="0" oninput="recalc()" style="padding:0.2rem 0.5rem;border:1px solid #ddd;border-radius:6px;font-size:0.82rem;width:140px;text-align:right">' +
+    '</div>' +
+    payoffHtml;
+  document.getElementById(debtContainers[type]).appendChild(div);
+}
+
+function removeDebtRow(type, id) {
+  var el = document.getElementById('debtRow_'+type+'_'+id);
+  if(el) el.remove();
+  calcBudget({classList:{contains:function(){return false;}},value:'',parentNode:null});
+}
+
 var creditCardCount = 0;
 function addCreditCard() {
   creditCardCount++;
@@ -9571,6 +9572,20 @@ function collectAllData() {
     });
   });
   data['__ccRows'] = JSON.stringify(ccRows);
+  // Save dynamic debt rows
+  ['car','student','personal','other'].forEach(function(type){
+    var rows = [];
+    document.querySelectorAll('[id^="debtRow_'+type+'_"]').forEach(function(row){
+      var id = row.id.replace('debtRow_'+type+'_','');
+      rows.push({
+        name: document.getElementById('debtName_'+type+'_'+id)?.value||'',
+        payment: document.getElementById('debtPayment_'+type+'_'+id)?.value||'',
+        balance: document.getElementById('debtBalance_'+type+'_'+id)?.value||'',
+        payoff: document.getElementById('debtPayoff_'+type+'_'+id)?.value||''
+      });
+    });
+    data['__debtRows_'+type] = JSON.stringify(rows);
+  });
   // Custom budget items per category
   var customCats = ['housing','transport','food','health','profsvc','education','lifestyle','insurance'];
   customCats.forEach(function(catId) {
@@ -9905,6 +9920,29 @@ function loadFromLocal() {
         }
       } catch(e) {}
     }
+    // Restore dynamic debt rows
+    ['car','student','personal','other'].forEach(function(type){
+      var key = '__debtRows_'+type;
+      if(data[key]) {
+        try {
+          var rows = JSON.parse(data[key]);
+          var containers = {car:'carLoanRows',student:'studentLoanRows',personal:'personalLoanRows',other:'otherDebtRows'};
+          var container = document.getElementById(containers[type]);
+          if(container && rows.length > 0) {
+            container.innerHTML = '';
+            debtRowCounts[type] = 0;
+            rows.forEach(function(rd){
+              addDebtRow(type);
+              var id = debtRowCounts[type];
+              var n=document.getElementById('debtName_'+type+'_'+id); if(n) n.value=rd.name||'';
+              var p=document.getElementById('debtPayment_'+type+'_'+id); if(p) p.value=rd.payment||'';
+              var b=document.getElementById('debtBalance_'+type+'_'+id); if(b) b.value=rd.balance||'';
+              var o=document.getElementById('debtPayoff_'+type+'_'+id); if(o&&rd.payoff) o.value=rd.payoff;
+            });
+          }
+        } catch(e) {}
+      }
+    });
     // Restore custom budget items
     var customCats = ['housing','transport','food','health','profsvc','education','lifestyle','insurance'];
     customCats.forEach(function(catId) {
