@@ -4078,6 +4078,7 @@ function addVehicle() {
   div.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem"><span style="font-weight:600;font-size:0.85rem">Vehicle ' + id + '</span><button onclick="removeVehicle('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer">Remove</button></div>' +
     '<div class="form-grid">' +
     '<div class="field"><label>Year/Make/Model</label><input type="text" id="vehicleName_'+id+'" placeholder="e.g. 2022 Ford F-150" oninput="saveToLocal()"></div>' +
+    '<div class="field"><label>Current Value ($)</label><input type="number" id="vehicleValue_'+id+'" placeholder="e.g. 25000" oninput="recalc()"></div>' +
     '<div class="field"><label>Expected Replacement Year</label><input type="number" id="vehicleReplace_'+id+'" placeholder="e.g. 2030" oninput="recalc()"><div class="hint">We will flag this as a future expense</div></div>' +
     '</div>';
   document.getElementById('vehicleList').appendChild(div);
@@ -7111,7 +7112,9 @@ function updateSnapshot() {
       var pm = parseFloat(row.querySelector('.prop-mortgage')?.value)||0;
       _propEq += Math.max(0, pv - pm);
     });
-    var _trueNW = totalNow + _propEq;
+    var _vehTotal = 0;
+    document.querySelectorAll('[id^="vehicleValue_"]').forEach(function(el){ _vehTotal += parseFloat(el.value)||0; });
+    var _trueNW = totalNow + _propEq + _vehTotal;
     sbCurrentNW.textContent = _trueNW > 0 ? fmt(_trueNW) : '—';
   }
 }
@@ -9539,6 +9542,7 @@ function collectAllData() {
     if(!id || isNaN(id)) return;
     vehicleRows.push({
       name:    document.getElementById('vehicleName_'+id)?.value||'',
+      value:   document.getElementById('vehicleValue_'+id)?.value||'',
       ins:     document.getElementById('vehicleIns_'+id)?.value||'',
       maint:   document.getElementById('vehicleMaint_'+id)?.value||'',
       wash:    document.getElementById('vehicleWash_'+id)?.value||'',
@@ -9872,6 +9876,7 @@ function loadFromLocal() {
             addVehicle();
             var id = vehicleCount;
             if(document.getElementById('vehicleName_'+id)) document.getElementById('vehicleName_'+id).value = rd.name;
+            if(document.getElementById('vehicleValue_'+id)) document.getElementById('vehicleValue_'+id).value = rd.value||'';
             if(document.getElementById('vehicleIns_'+id)) document.getElementById('vehicleIns_'+id).value = rd.ins;
             if(document.getElementById('vehicleMaint_'+id)) document.getElementById('vehicleMaint_'+id).value = rd.maint;
             if(document.getElementById('vehicleWash_'+id)) document.getElementById('vehicleWash_'+id).value = rd.wash;
