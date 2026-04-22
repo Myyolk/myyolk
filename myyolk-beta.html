@@ -9987,12 +9987,8 @@ setTimeout(function() {
       var storedToken = parsed['__deviceToken'];
       // Only load if stored token matches this device's token
       // No token on either side = old/foreign data, clear it
-      if(storedToken && deviceToken && storedToken === deviceToken) {
-        loadFromLocal();
-      } else {
-        console.log('MyYolk: clearing data — no matching device token');
-        localStorage.removeItem(SAVE_KEY);
-      }
+      // Always load from local — never delete data based on device token
+      loadFromLocal();
     } catch(e) { localStorage.removeItem(SAVE_KEY); }
   }
   setTimeout(function(){ _appReady = true; }, 800);
