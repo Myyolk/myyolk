@@ -7067,7 +7067,15 @@ function updateSnapshot() {
 
   // Update new sidebar fields
   var sbHomeEquity = document.getElementById('sb-homeequity');
-  if(sbHomeEquity) sbHomeEquity.textContent = homeEquity > 0 ? fmt(homeEquity) : '—';
+  if(sbHomeEquity) {
+    var _totalPropEquity = 0;
+    document.querySelectorAll('.property-row').forEach(function(row){
+      var pv = parseFloat(row.querySelector('.prop-value')?.value)||0;
+      var pm = parseFloat(row.querySelector('.prop-mortgage')?.value)||0;
+      _totalPropEquity += Math.max(0, pv - pm);
+    });
+    sbHomeEquity.textContent = _totalPropEquity > 0 ? fmt(_totalPropEquity) : '—';
+  }
 
   var sbCurrentNW = document.getElementById('sb-currentnw');
   if(sbCurrentNW) sbCurrentNW.textContent = netWorth > 0 ? fmt(netWorth) : '—';
