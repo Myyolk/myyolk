@@ -9428,7 +9428,7 @@ async function cloudSave() {
     } else {
       result = await _sb.from('user_data').insert({ user_id: _sbUser.id, data: data });
     }
-    if(result.error) { console.warn('Cloud save error:', result.error); saveToLocal(); return; }
+    if(result.error) { console.warn('Cloud save error:', result.error); return; }
     var ind = document.getElementById('saveIndicator');
     if(ind) { ind.textContent = '☁️ Saved'; ind.style.opacity = '1'; setTimeout(function(){ ind.style.opacity='0'; }, 2000); }
   } catch(e) {
