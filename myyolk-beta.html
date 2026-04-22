@@ -7084,7 +7084,16 @@ function updateSnapshot() {
   }
 
   var sbCurrentNW = document.getElementById('sb-currentnw');
-  if(sbCurrentNW) sbCurrentNW.textContent = netWorth > 0 ? fmt(netWorth) : '—';
+  if(sbCurrentNW) {
+    var _propEq = 0;
+    document.querySelectorAll('.property-row').forEach(function(row){
+      var pv = parseFloat(row.querySelector('.prop-value')?.value)||0;
+      var pm = parseFloat(row.querySelector('.prop-mortgage')?.value)||0;
+      _propEq += Math.max(0, pv - pm);
+    });
+    var _trueNW = totalNow + _propEq;
+    sbCurrentNW.textContent = _trueNW > 0 ? fmt(_trueNW) : '—';
+  }
 }
 
 function recalc() {
