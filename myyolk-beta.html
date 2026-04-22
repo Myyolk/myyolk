@@ -2327,10 +2327,6 @@
               </select>
             </div>
             <div class="field">
-              <label>Annual Base Salary ($)</label>
-              <input type="number" id="spouseSalary" value="" placeholder="e.g. 80000" oninput="recalc()">
-            </div>
-            <div class="field">
               <label>Pay Frequency</label>
               <select id="spousePayFreq" onchange="recalc()">
                 <option value="biweekly">Biweekly (26x/yr)</option>
@@ -2338,6 +2334,12 @@
                 <option value="monthly">Monthly (12x/yr)</option>
                 <option value="weekly">Weekly (52x/yr)</option>
               </select>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label>Annual Base Salary ($)</label>
+              <input type="number" id="spouseSalary" value="" placeholder="e.g. 80000" oninput="recalc()">
             </div>
           </div>
 
