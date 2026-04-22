@@ -2484,7 +2484,7 @@
       <!-- BUDGET HEALTH CHECK -->
       <div class="card" id="budgetHealthCard" style="margin-bottom:1.5rem">
         <div class="card-title"><span class="dot"></span> 💡 Budget Health Check</div>
-        <p style="font-size:0.85rem;color:var(--mid);margin-bottom:1rem">How does your monthly budget compare to your estimated take-home pay?</p>
+        <p id="bhcSubtitle" style="font-size:0.85rem;color:var(--mid);margin-bottom:1rem">How does your monthly budget compare to your estimated take-home pay?</p>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem">
           <div style="text-align:center;padding:1rem;background:var(--warm-white);border-radius:10px">
             <div style="font-size:0.75rem;color:var(--mid);margin-bottom:4px;font-weight:600">GROSS INCOME</div>
@@ -5322,6 +5322,7 @@ function calcBudgetHealthCheck() {
 
   if(grossAnnual <= 0) {
     document.getElementById("budgetHealthCard").style.display = "";
+    var sub=document.getElementById("bhcSubtitle");if(sub)sub.textContent="How long can your savings sustain your current spending before retirement?";
     var budEl=document.getElementById("budgetMonthlyTotal");
     var budM=parseFloat((budEl?budEl.textContent:"0").replace(/[^0-9.]/g,""))||0;
     var cash=parseFloat((document.getElementById("balCash")||{value:0}).value)||0;
