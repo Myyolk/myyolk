@@ -5358,6 +5358,7 @@ function calcBudgetHealthCheck() {
     return;
   }
   document.getElementById('budgetHealthCard').style.display = '';
+  var subEl=document.getElementById('bhcSubtitle');if(subEl)subEl.textContent='Based on your salary, here\'s how your take-home pay compares to your budget.';
 
   // Federal tax estimate (2024 brackets)
   var standardDed = isCouple ? 29200 : 14600;
