@@ -1756,11 +1756,19 @@
     </div>
 
     <div class="quick-stat">
-      <div class="quick-stat-label">Current Portfolio</div>
+      <div class="quick-stat-label">Investments <span style="font-size:0.65rem;color:var(--mid);font-weight:400">(excl. home)</span></div>
       <div class="quick-stat-value positive" id="sb-portfolio">—</div>
     </div>
     <div class="quick-stat">
-      <div class="quick-stat-label">At Retirement (Age <span id="sb-age-label">65</span>)</div>
+      <div class="quick-stat-label">Home Equity</div>
+      <div class="quick-stat-value positive" id="sb-homeequity">—</div>
+    </div>
+    <div class="quick-stat">
+      <div class="quick-stat-label">Current Net Worth</div>
+      <div class="quick-stat-value positive" id="sb-currentnw">—</div>
+    </div>
+    <div class="quick-stat">
+      <div class="quick-stat-label">At Retirement (Age <span id="sb-age-label">65</span>) <span style="font-size:0.65rem;color:var(--mid);font-weight:400">(investments only)</span></div>
       <div class="quick-stat-value positive" id="sb-at-ret">—</div>
     </div>
     <div class="quick-stat">
@@ -7056,6 +7064,13 @@ function updateSnapshot() {
 
   var sbEquity = document.getElementById('sb-equity');
   if(sbEquity) sbEquity.textContent = homeEquity > 0 ? fmt(homeEquity) : homeValue > 0 ? fmt(homeEquity) : '—';
+
+  // Update new sidebar fields
+  var sbHomeEquity = document.getElementById('sb-homeequity');
+  if(sbHomeEquity) sbHomeEquity.textContent = homeEquity > 0 ? fmt(homeEquity) : '—';
+
+  var sbCurrentNW = document.getElementById('sb-currentnw');
+  if(sbCurrentNW) sbCurrentNW.textContent = netWorth > 0 ? fmt(netWorth) : '—';
 }
 
 function recalc() {
