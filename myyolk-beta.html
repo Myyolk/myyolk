@@ -7495,6 +7495,55 @@ function updateBudgetAnalysis() {
     else if (coveragePct >= 50) coverDesc.textContent = 'Meaningful gap - consider saving more or adjusting plans';
     else coverDesc.textContent = 'Significant gap - retirement planning adjustments recommended';
   }
+
+  // Build Spending Insights bullets
+  var insightsEl = document.getElementById('ba-insights');
+  if (insightsEl) {
+    var insights = [];
+    var fmt2 = function(v){ return '$' + Math.round(v).toLocaleString(); };
+
+    // Subscription insight
+    var subTotal = 0;
+    document.querySelectorAll('[id^="budSubCost_"]').forEach(function(el){ subTotal += parseFloat(el.value)||0; });
+    if (subTotal > 0) {
+      var subPct = Math.round((subTotal / monthly) * 100);
+      insights.push('📦 Your subscriptions total ' + fmt2(subTotal) + '/mo (' + subPct + '% of budget). Review annually for unused services.');
+    }
+
+    // Insurance insight
+    var insTotal = 0;
+    document.querySelectorAll('.ins-monthly').forEach(function(el){ insTotal += parseFloat(el.value)||0; });
+    if (insTotal > 0) {
+      var insPct = Math.round((insTotal / monthly) * 100);
+      insights.push('🛡️ Insurance policies cost ' + fmt2(insTotal) + '/mo (' + insPct + '% of budget). Some life insurance may not be needed in retirement.');
+    }
+
+    // Healthcare insight
+    var healthTotal = 0;
+    ['medPrem','rx','oop','therapy'].forEach(function(k){
+      var el = document.querySelector('[data-key="' + k + '"]');
+      if(el) healthTotal += parseFloat(el.value)||0;
+    });
+    if (healthTotal < 300) {
+      insights.push('🏥 Your healthcare budget is ' + fmt2(healthTotal) + '/mo. Healthcare costs typically rise 2-3x in retirement — consider increasing this.');
+    } else {
+      insights.push('🏥 Healthcare is budgeted at ' + fmt2(healthTotal) + '/mo. Good — this often increases significantly in retirement.');
+    }
+
+    // Gap insight
+    if (gap < 0) {
+      insights.push('⚠️ A ' + fmt2(Math.abs(gap)) + '/mo shortfall exists between your projected retirement income and inflation-adjusted expenses. Consider increasing contributions or adjusting your retirement age.');
+    } else {
+      insights.push('✅ Your projected retirement income exceeds your inflation-adjusted expenses by ' + fmt2(gap) + '/mo. You are on track.');
+    }
+
+    // Inflation insight
+    insights.push('📈 At ' + (inflRate*100).toFixed(1) + '% annual inflation, your current ' + fmt2(monthly) + '/mo budget grows to ' + fmt2(retireMonthly) + '/mo by age ' + retireAge + '.');
+
+    insightsEl.innerHTML = insights.map(function(i){
+      return '<div style="padding:0.5rem 0;border-bottom:1px solid var(--warm);font-size:0.88rem;line-height:1.5">' + i + '</div>';
+    }).join('');
+  }
   
   var fill = document.getElementById('ba-sustFill');
   if (fill) fill.style.width = Math.min(100, coveragePct * 0.67) + '%';
