@@ -3392,7 +3392,7 @@
         <div class="proj-stat">
           <div class="proj-stat-value" id="projFinalValue">—</div>
           <div class="proj-stat-label">Projected Portfolio at Retirement</div>
-            <div style="font-size:0.72rem;color:var(--mid);margin-top:2px">investments only — excludes home</div>
+            <div id="projPortNote" style="font-size:0.72rem;color:var(--mid);margin-top:2px">investments only — excludes home</div>
         </div>
         <div class="proj-stat">
           <div class="proj-stat-value" id="projMonthlyIncome">—</div>
@@ -3851,7 +3851,7 @@
         <div class="results-grid">
           <div class="result-card highlight">
             <div class="result-label">Portfolio at Retirement</div>
-            <div style="font-size:0.72rem;color:var(--mid);margin-top:2px">investments only — excludes home</div>
+            <div id="portAtRetNote" style="font-size:0.72rem;color:var(--mid);margin-top:2px">investments only — excludes home</div>
             <div class="result-value" id="sumPortfolio">$0</div>
           </div>
           <div class="result-card">
@@ -5115,6 +5115,10 @@ function calcProjections() {
   var monthlyIncome = Math.round((finalValue * 0.04) / 12);
   // Store in state so readiness uses same portfolio value
   state.portfolioAtRetirement = finalValue;
+  // Update portfolio note dynamically
+  var _vestCount = document.querySelectorAll('#vestingRows .vesting-row, #vestingRows > div').length;
+  var _portNote = _vestCount > 0 ? 'investments only — excludes home. Future income schedule included.' : 'investments only — excludes home';
+  ['portAtRetNote','projPortNote'].forEach(function(id){ var el = document.getElementById(id); if(el) el.textContent = _portNote; });
 
   // Update dynamic rate labels
   var _appRate = parseFloat(document.getElementById('homeApprecRate')?.value) || 3;
