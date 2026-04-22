@@ -1772,6 +1772,10 @@
       <div class="quick-stat-value positive" id="sb-at-ret">—</div>
     </div>
     <div class="quick-stat">
+      <div class="quick-stat-label">Net Worth at Retirement <span style="font-size:0.65rem;color:var(--mid);font-weight:400">(incl. home)</span></div>
+      <div class="quick-stat-value positive" id="sb-nw-ret">—</div>
+    </div>
+    <div class="quick-stat">
       <div class="quick-stat-label">Safe Withdrawal / yr</div>
       <div class="quick-stat-value" id="sb-withdrawal">—</div>
     </div>
@@ -7081,6 +7085,21 @@ function updateSnapshot() {
       _totalPropEquity += Math.max(0, pv - pm);
     });
     sbHomeEquity.textContent = _totalPropEquity > 0 ? fmt(_totalPropEquity) : '—';
+  }
+
+  // Net Worth at Retirement = portfolio + all properties appreciated
+  var sbNWRet = document.getElementById('sb-nw-ret');
+  if(sbNWRet && portfolio > 0) {
+    var _appRate = parseFloat(document.getElementById('homeApprecRate')?.value) || 3;
+    var _yrs = Math.max(0, retAge - age);
+    var _projPropEq = 0;
+    document.querySelectorAll('.property-row').forEach(function(row){
+      var pv = parseFloat(row.querySelector('.prop-value')?.value)||0;
+      var pm = parseFloat(row.querySelector('.prop-mortgage')?.value)||0;
+      var eq = Math.max(0, pv - pm);
+      _projPropEq += eq * Math.pow(1 + _appRate/100, _yrs);
+    });
+    sbNWRet.textContent = fmt(portfolio + _projPropEq);
   }
 
   var sbCurrentNW = document.getElementById('sb-currentnw');
