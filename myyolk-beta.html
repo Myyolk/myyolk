@@ -825,7 +825,7 @@
      MOBILE RESPONSIVE — 768px and below
   ══════════════════════════════════ */
   @media (max-width: 768px) {
-    #pdfBtn { display: none !important; }
+    #pdfBtn { display: flex !important; position: fixed !important; bottom: 140px !important; right: 12px !important; font-size: 0.75rem !important; padding: 6px 12px !important; z-index: 998 !important; flex-direction: row !important; }
 
     /* Header */
     header {
@@ -1056,6 +1056,7 @@
   @media (max-width: 480px) {
     .results-grid { grid-template-columns: 1fr !important; }
     .nav-item { min-width: 46px; font-size: 0.58rem !important; }
+    .mobile-pdf-btn { display: block !important; width: 100%; margin: 1rem 0 2rem 0; padding: 0.9rem; background: var(--forest); color: #fff; border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 600; font-family: DM Sans,sans-serif; cursor: pointer; text-align: center; }
   }
 
   /* ── PRO TOGGLE ── */
