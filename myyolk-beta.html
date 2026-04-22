@@ -962,7 +962,6 @@
 
     /* Hide PDF button on mobile, keep Feedback */
     /* #pdfBtn visible on mobile */
-    #pdfBtn { display: flex !important; bottom: 130px !important; right: 0.75rem !important; font-size: 0.78rem !important; padding: 8px 14px !important; }
     #feedbackBtn { bottom: 75px !important; right: 0.75rem !important; font-size: 0.75rem !important; padding: 8px 12px !important; z-index: 60 !important; }
 
     /* General overflow prevention */
@@ -2328,6 +2327,10 @@
               </select>
             </div>
             <div class="field">
+              <label>Annual Base Salary ($)</label>
+              <input type="number" id="spouseSalary" value="" placeholder="e.g. 80000" oninput="recalc()">
+            </div>
+            <div class="field">
               <label>Pay Frequency</label>
               <select id="spousePayFreq" onchange="recalc()">
                 <option value="biweekly">Biweekly (26x/yr)</option>
@@ -2335,12 +2338,6 @@
                 <option value="monthly">Monthly (12x/yr)</option>
                 <option value="weekly">Weekly (52x/yr)</option>
               </select>
-            </div>
-          </div>
-          <div class="form-grid">
-            <div class="field">
-              <label>Annual Base Salary ($)</label>
-              <input type="number" id="spouseSalary" value="" placeholder="e.g. 80000" oninput="recalc()">
             </div>
           </div>
 
@@ -2487,7 +2484,7 @@
       <!-- BUDGET HEALTH CHECK -->
       <div class="card" id="budgetHealthCard" style="margin-bottom:1.5rem">
         <div class="card-title"><span class="dot"></span> 💡 Budget Health Check</div>
-        <p id="bhcSubtitle" style="font-size:0.85rem;color:var(--mid);margin-bottom:1rem">How does your monthly budget compare to your estimated take-home pay?</p>
+        <p style="font-size:0.85rem;color:var(--mid);margin-bottom:1rem">How does your monthly budget compare to your estimated take-home pay?</p>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem">
           <div style="text-align:center;padding:1rem;background:var(--warm-white);border-radius:10px">
             <div style="font-size:0.75rem;color:var(--mid);margin-bottom:4px;font-weight:600">GROSS INCOME</div>
@@ -3393,7 +3390,6 @@
         <div class="proj-stat">
           <div class="proj-stat-value" id="projFinalValue">—</div>
           <div class="proj-stat-label">Projected Portfolio at Retirement</div>
-            <div id="projPortNote" style="font-size:0.72rem;color:var(--mid);margin-top:2px">investments only — excludes home</div>
         </div>
         <div class="proj-stat">
           <div class="proj-stat-value" id="projMonthlyIncome">—</div>
@@ -3827,7 +3823,7 @@
             <div class="result-sub">Everything you owe</div>
           </div>
           <div class="result-card highlight" style="background:var(--sage);color:#fff">
-            <div class="result-label" style="color:rgba(255,255,255,0.8)">Current Net Worth</div>
+            <div class="result-label" style="color:rgba(255,255,255,0.8)">Net Worth</div>
             <div class="result-value" id="sumNetWorth" style="color:#fff">$0</div>
             <div class="result-sub" style="color:rgba(255,255,255,0.7)">Assets minus liabilities</div>
           </div>
@@ -3852,7 +3848,6 @@
         <div class="results-grid">
           <div class="result-card highlight">
             <div class="result-label">Portfolio at Retirement</div>
-            <div id="portAtRetNote" style="font-size:0.72rem;color:var(--mid);margin-top:2px">investments only — excludes home</div>
             <div class="result-value" id="sumPortfolio">$0</div>
           </div>
           <div class="result-card">
@@ -5116,10 +5111,6 @@ function calcProjections() {
   var monthlyIncome = Math.round((finalValue * 0.04) / 12);
   // Store in state so readiness uses same portfolio value
   state.portfolioAtRetirement = finalValue;
-  // Update portfolio note dynamically
-  var _vestCount = document.querySelectorAll('#vestingRows .vesting-row, #vestingRows > div').length;
-  var _portNote = _vestCount > 0 ? 'investments only — excludes home. Future income schedule included.' : 'investments only — excludes home';
-  ['portAtRetNote','projPortNote'].forEach(function(id){ var el = document.getElementById(id); if(el) el.textContent = _portNote; });
 
   // Update dynamic rate labels
   var _appRate = parseFloat(document.getElementById('homeApprecRate')?.value) || 3;
@@ -5325,35 +5316,12 @@ showTab = function(name) {
 
 // ── BUDGET HEALTH CHECK ──────────────────────────────────────────────
 function calcBudgetHealthCheck() {
-  var grossAnnual = (state.salary || 0) + (state.spouseIncome || 0);
+  var grossAnnual = state.salary || 0;
   var isCouple = document.getElementById('planCouple')?.checked;
   var state2 = document.getElementById('stateTax')?.value || 'PA';
 
   if(grossAnnual <= 0) {
-    document.getElementById("budgetHealthCard").style.display = "";
-    var sub=document.getElementById("bhcSubtitle");if(sub)sub.textContent="How long can your savings sustain your current spending before retirement?";
-    var budEl=document.getElementById("budgetMonthlyTotal");
-    var budM=parseFloat((budEl?budEl.textContent:"0").replace(/[^0-9.]/g,""))||0;
-    var cash=parseFloat((document.getElementById("balCash")||{value:0}).value)||0;
-    var taxable=parseFloat((document.getElementById("balTaxable")||{value:0}).value)||0;
-    var accessible=cash+taxable;
-    var ageNow=parseInt((document.getElementById("age")||{value:56}).value)||56;
-    var retAge2=parseInt((document.getElementById("retAge")||{value:62}).value)||62;
-    var monthsToRetire=Math.max(0,(retAge2-ageNow)*12);
-    var runway=budM>0?Math.round(accessible/budM):0;
-    function fmtR(v){return "$"+Math.round(v).toLocaleString();}
-    var gcE=document.getElementById("bhcGross");if(gcE){gcE.textContent=fmtR(accessible);gcE.previousElementSibling.textContent="ACCESSIBLE SAVINGS";}
-    var thE=document.getElementById("bhcTakeHome");if(thE){thE.textContent=runway+" months";thE.previousElementSibling.textContent="RUNWAY";}
-    var trE=document.getElementById("bhcTaxRate");if(trE)trE.textContent="cash + taxable at "+fmtR(budM)+"/mo";
-    var bpE=document.getElementById("bhcBudget");if(bpE&&bpE.parentElement)bpE.parentElement.style.display="none";
-    document.getElementById("bhcBar").style.display="";
-    var pct=monthsToRetire>0?Math.round((runway/monthsToRetire)*100):0;
-    document.getElementById("bhcPctLabel").textContent=runway+" of "+monthsToRetire+" months covered";
-    document.getElementById("bhcBarFill").style.width=Math.min(pct,100)+"%";
-    var msg=document.getElementById("bhcMessage");msg.style.display="";
-    if(runway>=monthsToRetire){document.getElementById("bhcBarFill").style.background="var(--sage)";msg.style.background="var(--sage-pale)";msg.style.color="var(--forest)";msg.style.borderLeft="4px solid var(--sage)";msg.innerHTML="<strong>Your savings cover "+runway+" months</strong> -- enough to reach retirement at age "+retAge2+". You need "+monthsToRetire+" months.";}
-    else if(runway>=monthsToRetire*0.6){document.getElementById("bhcBarFill").style.background="#e5a800";msg.style.background="#fff8e1";msg.style.color="#856404";msg.style.borderLeft="4px solid #e5a800";msg.innerHTML="<strong>Your savings cover "+runway+" months</strong> but you need "+monthsToRetire+" to reach age "+retAge2+". Consider reducing spending or part-time income.";}
-    else{document.getElementById("bhcBarFill").style.background="var(--clay)";msg.style.background="#fff0f0";msg.style.color="var(--clay)";msg.style.borderLeft="4px solid var(--clay)";msg.innerHTML="<strong>Your savings cover only "+runway+" of "+monthsToRetire+" months needed.</strong> Reduce spending or explore income options.";}
+    document.getElementById('budgetHealthCard').style.display = 'none';
     return;
   }
   document.getElementById('budgetHealthCard').style.display = '';
@@ -6771,19 +6739,7 @@ function generatePDF() {
 
       // ── SAVE ──
       var filename = (firstName ? firstName.replace(/[^a-zA-Z0-9]/g,'_') : 'MyYolk') + '_Retirement_Report_' + new Date().toISOString().split('T')[0] + '.pdf';
-      // Mobile-friendly: open in new tab instead of auto-download
-      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      if (isMobile) {
-        var pdfData = doc.output('datauristring');
-        var newTab = window.open();
-        if (newTab) {
-          newTab.document.write('<iframe width="100%" height="100%" src="' + pdfData + '"></iframe>');
-        } else {
-          doc.save(filename);
-        }
-      } else {
-        doc.save(filename);
-      }
+      doc.save(filename);
       if(typeof gtag==='function') gtag('event','pdf_download',{name:reportName});
     } catch(err) {
       console.error('PDF error:', err);
@@ -6798,22 +6754,6 @@ function generatePDF() {
   updateSnapshot();
 
 function showTab(name) {
-  if (name === "budgettracker" && typeof btGetPlanned === "function") {
-    setTimeout(function() {
-      var plan = btGetPlanned();
-      var ms = btCurrentMonthStr();
-      var pf = (btData[ms] && btData[ms].actuals) ? btData[ms].actuals : {};
-      btBuildCheckinTable(plan, pf);
-    }, 300);
-  }
-  if (name === "budgettracker" && typeof btGetPlanned === "function") {
-    setTimeout(function() {
-      var plan = btGetPlanned();
-      var ms = btCurrentMonthStr();
-      var pf = (btData[ms] && btData[ms].actuals) ? btData[ms].actuals : {};
-      btBuildCheckinTable(plan, pf);
-    }, 300);
-  }
   var main = document.querySelector('main');
   if(main) main.scrollTop = 0;
   document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
@@ -7219,7 +7159,6 @@ function recalc() {
   if(typeof updateSnapshot==="function") updateSnapshot();
   if(typeof calcAdditionalIncome==="function") calcAdditionalIncome();
   if(typeof calcReadiness==="function" && document.getElementById('tab-readiness')?.classList.contains('active')) calcReadiness();
-  if(typeof calcBudgetHealthCheck === 'function') calcBudgetHealthCheck();
 }
 
 // ── READINESS ──
@@ -7449,9 +7388,11 @@ function updateEarly() {}
 
 // ── BUDGET ANALYSIS ──
 function updateBudgetAnalysis() {
-  // Read budget total from the planner total element (includes all dynamic rows)
-  var budEl = document.getElementById('budgetMonthlyTotal');
-  var monthly = parseFloat((budEl ? budEl.textContent : '0').replace(/[^0-9.]/g, '')) || 0;
+  // Sum all monthly budget inputs directly
+  var monthly = 0;
+  document.querySelectorAll('.bud-m').forEach(function(el) {
+    monthly += parseFloat(el.value) || 0;
+  });
   if (monthly === 0) return;
   
   var currentAge = getVal('age', 30);
@@ -7514,55 +7455,6 @@ function updateBudgetAnalysis() {
     else if (coveragePct >= 50) coverDesc.textContent = 'Meaningful gap - consider saving more or adjusting plans';
     else coverDesc.textContent = 'Significant gap - retirement planning adjustments recommended';
   }
-
-  // Build Spending Insights bullets
-  var insightsEl = document.getElementById('ba-insights');
-  if (insightsEl) {
-    var insights = [];
-    var fmt2 = function(v){ return '$' + Math.round(v).toLocaleString(); };
-
-    // Subscription insight
-    var subTotal = 0;
-    document.querySelectorAll('[id^="budSubCost_"]').forEach(function(el){ subTotal += parseFloat(el.value)||0; });
-    if (subTotal > 0) {
-      var subPct = Math.round((subTotal / monthly) * 100);
-      insights.push('📦 Your subscriptions total ' + fmt2(subTotal) + '/mo (' + subPct + '% of budget). Review annually for unused services.');
-    }
-
-    // Insurance insight
-    var insTotal = 0;
-    document.querySelectorAll('.ins-monthly').forEach(function(el){ insTotal += parseFloat(el.value)||0; });
-    if (insTotal > 0) {
-      var insPct = Math.round((insTotal / monthly) * 100);
-      insights.push('🛡️ Insurance policies cost ' + fmt2(insTotal) + '/mo (' + insPct + '% of budget). Some life insurance may not be needed in retirement.');
-    }
-
-    // Healthcare insight
-    var healthTotal = 0;
-    ['medPrem','rx','oop','therapy'].forEach(function(k){
-      var el = document.querySelector('[data-key="' + k + '"]');
-      if(el) healthTotal += parseFloat(el.value)||0;
-    });
-    if (healthTotal < 300) {
-      insights.push('🏥 Your healthcare budget is ' + fmt2(healthTotal) + '/mo. Healthcare costs typically rise 2-3x in retirement — consider increasing this.');
-    } else {
-      insights.push('🏥 Healthcare is budgeted at ' + fmt2(healthTotal) + '/mo. Good — this often increases significantly in retirement.');
-    }
-
-    // Gap insight
-    if (gap < 0) {
-      insights.push('⚠️ A ' + fmt2(Math.abs(gap)) + '/mo shortfall exists between your projected retirement income and inflation-adjusted expenses. Consider increasing contributions or adjusting your retirement age.');
-    } else {
-      insights.push('✅ Your projected retirement income exceeds your inflation-adjusted expenses by ' + fmt2(gap) + '/mo. You are on track.');
-    }
-
-    // Inflation insight
-    insights.push('📈 At ' + (inflRate*100).toFixed(1) + '% annual inflation, your current ' + fmt2(monthly) + '/mo budget grows to ' + fmt2(retireMonthly) + '/mo by age ' + retireAge + '.');
-
-    insightsEl.innerHTML = insights.map(function(i){
-      return '<div style="padding:0.5rem 0;border-bottom:1px solid var(--warm);font-size:0.88rem;line-height:1.5">' + i + '</div>';
-    }).join('');
-  }
   
   var fill = document.getElementById('ba-sustFill');
   if (fill) fill.style.width = Math.min(100, coveragePct * 0.67) + '%';
@@ -7601,17 +7493,13 @@ function updateBudgetAnalysis() {
 // Category map: matches the bud-m data-key attributes grouped by category
 var BT_CATS = [
   { label: '🏠 Housing', keys: ['rent','propTax','homeIns','electric','gasHeat','water','sewerage','trash','internet','cellPhone','homeMaint'] },
-  { label: '🚗 Transportation', keys: ['gas','carIns','carMaint','carWash'] },
+  { label: '🚗 Transportation', keys: ['gas','carIns','carMaint'] },
   { label: '🍽️ Food', keys: ['groceries','dining'] },
-  { label: '🏥 Health', keys: ['medPrem','rx','oop','therapy','massage'] },
+  { label: '🏥 Health', keys: ['medPrem','rx','oop'] },
   { label: '💼 Professional', keys: ['legal','accounting','finAdvisor'] },
   { label: '🎓 Education & Family', keys: ['tuition','edu529','k12','tutoring','childSupport','childcare','elderCare'] },
   { label: '🎭 Lifestyle', keys: ['subs','entertain','shopping','gym','therapy','vacation','hobbies','charity','lawn','cleaning','security','pets','gifts','other'] },
-  { label: '💳 Debt Payments', keys: ['debtCar1','debtCar2','debtStudent','debtCC1','debtCC2','debtCC3','debtPersonal','debtOther'] },
-  { label: '🛡️ Insurance & Life', keys: ['__ins__'] },
-  { label: '📦 Subscriptions', keys: ['__subs__'] },
-  { label: '🏠 Custom Housing', keys: ['__customHousing__'] },
-  { label: '🏥 Custom Health', keys: ['__customHealth__'] }
+  { label: '💳 Debt Payments', keys: ['debtCar1','debtCar2','debtStudent','debtCC1','debtCC2','debtCC3','debtPersonal','debtOther'] }
 ];
 
 // Key → human label map
@@ -7631,7 +7519,6 @@ var BT_KEY_LABELS = {
   hobbies:'Hobbies', charity:'Charitable Donations', lawn:'Lawn / Landscaping',
   cleaning:'Cleaning Service', security:'Security / Monitoring', pets:'Pets',
   gifts:'Gifts / Family', other:'Other',
-  carWash:'Car Wash', massage:'Massage / Wellness',
   debtCar1:'Car Loan 1', debtCar2:'Car Loan 2', debtStudent:'Student Loans',
   debtCC1:'Credit Card 1', debtCC2:'Credit Card 2', debtCC3:'Credit Card 3',
   debtPersonal:'Personal Loan', debtOther:'Other Debt'
@@ -7667,54 +7554,12 @@ function btMonthLabel(yyyymm) {
 }
 
 function btGetPlanned() {
+  // Read current planned budget from the bud-m inputs
   var plan = {};
   document.querySelectorAll('.bud-m[data-key]').forEach(function(el) {
     var key = el.getAttribute('data-key');
     var val = parseFloat(el.value) || 0;
     if (val > 0) plan[key] = val;
-  });
-  document.querySelectorAll('.ins-policy-row').forEach(function(row) {
-    var name = row.querySelector('.ins-name') ? row.querySelector('.ins-name').value : 'Insurance Policy';
-    var val = parseFloat(row.querySelector('.ins-monthly') ? row.querySelector('.ins-monthly').value : 0) || 0;
-    if (val > 0) {
-      var k = '__ins__' + name.replace(/[^a-zA-Z0-9]/g,'_');
-      plan[k] = val;
-      BT_KEY_LABELS[k] = name;
-    }
-  });
-  document.querySelectorAll('[id^="budSub_"]').forEach(function(row) {
-    var id = row.id.replace('budSub_','');
-    var nameEl = document.getElementById('budSubName_'+id);
-    var costEl = document.getElementById('budSubCost_'+id);
-    var name = nameEl ? nameEl.value : 'Subscription';
-    var val = parseFloat(costEl ? costEl.value : 0) || 0;
-    if (val > 0 && name) {
-      var k = '__subs__' + name.replace(/[^a-zA-Z0-9]/g,'_');
-      plan[k] = val;
-      BT_KEY_LABELS[k] = name;
-    }
-  });
-  document.querySelectorAll('#customList_housing .custom-budget-row').forEach(function(row) {
-    var nameEl = row.querySelector('input[type="text"]');
-    var valEl = row.querySelector('.bud-m');
-    var name = nameEl ? nameEl.value : 'Custom Housing';
-    var val = parseFloat(valEl ? valEl.value : 0) || 0;
-    if (val > 0) {
-      var k = '__customHousing__' + name.replace(/[^a-zA-Z0-9]/g,'_');
-      plan[k] = val;
-      BT_KEY_LABELS[k] = name;
-    }
-  });
-  document.querySelectorAll('#customList_health .custom-budget-row').forEach(function(row) {
-    var nameEl = row.querySelector('input[type="text"]');
-    var valEl = row.querySelector('.bud-m');
-    var name = nameEl ? nameEl.value : 'Custom Health';
-    var val = parseFloat(valEl ? valEl.value : 0) || 0;
-    if (val > 0) {
-      var k = '__customHealth__' + name.replace(/[^a-zA-Z0-9]/g,'_');
-      plan[k] = val;
-      BT_KEY_LABELS[k] = name;
-    }
   });
   return plan;
 }
@@ -7835,15 +7680,8 @@ function btBuildCheckinTable(planned, prefillActuals) {
   var html = '';
   BT_CATS.forEach(function(cat) {
     // Only render rows that have a planned value OR a prefilled actual
-    var catRows = [];
-    cat.keys.forEach(function(k) {
-      if (k.startsWith('__')) {
-        Object.keys(planned).forEach(function(pk) {
-          if (pk.startsWith(k) && ((planned[pk]||0) > 0 || (parseFloat(prefillActuals[pk])||0) > 0)) catRows.push(pk);
-        });
-      } else {
-        if ((planned[k]||0) > 0 || (parseFloat(prefillActuals[k])||0) > 0) catRows.push(k);
-      }
+    var catRows = cat.keys.filter(function(k) {
+      return (planned[k] || 0) > 0 || (parseFloat(prefillActuals[k]) || 0) > 0;
     });
     if (catRows.length === 0) return;
 
@@ -9359,16 +9197,20 @@ async function cloudSave() {
   }
   if(!_sb || !_sbUser) { saveToLocal(); return; }
 
-  // Integrity check — never save if custom rows drop significantly from known maximum
-  var nowSubs = document.querySelectorAll('[id^="budSub_"]').length;
-  var nowIns = document.querySelectorAll('.ins-policy-row').length;
-  if(typeof window._maxKnownSubCount === 'undefined') window._maxKnownSubCount = 0;
-  if(typeof window._maxKnownInsCount === 'undefined') window._maxKnownInsCount = 0;
-  if(nowSubs > window._maxKnownSubCount) window._maxKnownSubCount = nowSubs;
-  if(nowIns > window._maxKnownInsCount) window._maxKnownInsCount = nowIns;
-  if((window._maxKnownSubCount >= 3 && nowSubs === 0) || (window._maxKnownInsCount >= 1 && nowIns === 0)) {
-    console.warn('MyYolk: aborting cloud save — custom rows dropped to zero (data integrity protection)');
-    return;
+  // Integrity check — if we previously had custom rows but now have none, abort save
+  var savedRaw = localStorage.getItem(SAVE_KEY);
+  if(savedRaw) {
+    try {
+      var prev = JSON.parse(savedRaw);
+      var hadSubs = (JSON.parse(prev.__budSubRows||'[]')).length > 0;
+      var nowSubs = document.querySelectorAll('[id^="budSub_"]').length;
+      var hadIns = (JSON.parse(prev.__insurancePolicies||'[]')).length > 0;
+      var nowIns = document.querySelectorAll('.ins-policy-row').length;
+      if((hadSubs && nowSubs === 0) || (hadIns && nowIns === 0)) {
+        console.warn('MyYolk: aborting cloud save — custom rows dropped to zero (possible race condition)');
+        return;
+      }
+    } catch(e) {}
   }
   try {
     var data = collectAllData();
@@ -9401,7 +9243,6 @@ async function cloudLoad() {
   } catch(e) {}
   // Mark cloud load as complete — safe to auto-save now
   _cloudLoaded = true;
-  if(typeof calcBudgetHealthCheck === "function") calcBudgetHealthCheck();
 }
 
 function collectAllData() {
