@@ -6770,7 +6770,19 @@ function generatePDF() {
 
       // ── SAVE ──
       var filename = (firstName ? firstName.replace(/[^a-zA-Z0-9]/g,'_') : 'MyYolk') + '_Retirement_Report_' + new Date().toISOString().split('T')[0] + '.pdf';
-      doc.save(filename);
+      // Mobile-friendly: open in new tab instead of auto-download
+      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) {
+        var pdfData = doc.output('datauristring');
+        var newTab = window.open();
+        if (newTab) {
+          newTab.document.write('<iframe width="100%" height="100%" src="' + pdfData + '"></iframe>');
+        } else {
+          doc.save(filename);
+        }
+      } else {
+        doc.save(filename);
+      }
       if(typeof gtag==='function') gtag('event','pdf_download',{name:reportName});
     } catch(err) {
       console.error('PDF error:', err);
