@@ -3392,6 +3392,7 @@
         <div class="proj-stat">
           <div class="proj-stat-value" id="projFinalValue">—</div>
           <div class="proj-stat-label">Projected Portfolio at Retirement</div>
+            <div id="projPortNote" style="font-size:0.72rem;color:var(--mid);margin-top:2px">investments only — excludes home</div>
         </div>
         <div class="proj-stat">
           <div class="proj-stat-value" id="projMonthlyIncome">—</div>
@@ -3825,7 +3826,7 @@
             <div class="result-sub">Everything you owe</div>
           </div>
           <div class="result-card highlight" style="background:var(--sage);color:#fff">
-            <div class="result-label" style="color:rgba(255,255,255,0.8)">Net Worth</div>
+            <div class="result-label" style="color:rgba(255,255,255,0.8)">Current Net Worth</div>
             <div class="result-value" id="sumNetWorth" style="color:#fff">$0</div>
             <div class="result-sub" style="color:rgba(255,255,255,0.7)">Assets minus liabilities</div>
           </div>
@@ -3850,6 +3851,7 @@
         <div class="results-grid">
           <div class="result-card highlight">
             <div class="result-label">Portfolio at Retirement</div>
+            <div id="portAtRetNote" style="font-size:0.72rem;color:var(--mid);margin-top:2px">investments only — excludes home</div>
             <div class="result-value" id="sumPortfolio">$0</div>
           </div>
           <div class="result-card">
@@ -5113,6 +5115,10 @@ function calcProjections() {
   var monthlyIncome = Math.round((finalValue * 0.04) / 12);
   // Store in state so readiness uses same portfolio value
   state.portfolioAtRetirement = finalValue;
+  // Update portfolio note dynamically
+  var _vestCount = document.querySelectorAll('#vestingRows .vesting-row, #vestingRows > div').length;
+  var _portNote = _vestCount > 0 ? 'investments only — excludes home. Future income schedule included.' : 'investments only — excludes home';
+  ['portAtRetNote','projPortNote'].forEach(function(id){ var el = document.getElementById(id); if(el) el.textContent = _portNote; });
 
   // Update dynamic rate labels
   var _appRate = parseFloat(document.getElementById('homeApprecRate')?.value) || 3;
@@ -7430,11 +7436,9 @@ function updateEarly() {}
 
 // ── BUDGET ANALYSIS ──
 function updateBudgetAnalysis() {
-  // Sum all monthly budget inputs directly
-  var monthly = 0;
-  document.querySelectorAll('.bud-m').forEach(function(el) {
-    monthly += parseFloat(el.value) || 0;
-  });
+  // Read budget total from the planner total element (includes all dynamic rows)
+  var budEl = document.getElementById('budgetMonthlyTotal');
+  var monthly = parseFloat((budEl ? budEl.textContent : '0').replace(/[^0-9.]/g, '')) || 0;
   if (monthly === 0) return;
   
   var currentAge = getVal('age', 30);
@@ -7496,6 +7500,55 @@ function updateBudgetAnalysis() {
     else if (coveragePct >= 75) coverDesc.textContent = 'Almost there - small gap to close before retirement';
     else if (coveragePct >= 50) coverDesc.textContent = 'Meaningful gap - consider saving more or adjusting plans';
     else coverDesc.textContent = 'Significant gap - retirement planning adjustments recommended';
+  }
+
+  // Build Spending Insights bullets
+  var insightsEl = document.getElementById('ba-insights');
+  if (insightsEl) {
+    var insights = [];
+    var fmt2 = function(v){ return '$' + Math.round(v).toLocaleString(); };
+
+    // Subscription insight
+    var subTotal = 0;
+    document.querySelectorAll('[id^="budSubCost_"]').forEach(function(el){ subTotal += parseFloat(el.value)||0; });
+    if (subTotal > 0) {
+      var subPct = Math.round((subTotal / monthly) * 100);
+      insights.push('📦 Your subscriptions total ' + fmt2(subTotal) + '/mo (' + subPct + '% of budget). Review annually for unused services.');
+    }
+
+    // Insurance insight
+    var insTotal = 0;
+    document.querySelectorAll('.ins-monthly').forEach(function(el){ insTotal += parseFloat(el.value)||0; });
+    if (insTotal > 0) {
+      var insPct = Math.round((insTotal / monthly) * 100);
+      insights.push('🛡️ Insurance policies cost ' + fmt2(insTotal) + '/mo (' + insPct + '% of budget). Some life insurance may not be needed in retirement.');
+    }
+
+    // Healthcare insight
+    var healthTotal = 0;
+    ['medPrem','rx','oop','therapy'].forEach(function(k){
+      var el = document.querySelector('[data-key="' + k + '"]');
+      if(el) healthTotal += parseFloat(el.value)||0;
+    });
+    if (healthTotal < 300) {
+      insights.push('🏥 Your healthcare budget is ' + fmt2(healthTotal) + '/mo. Healthcare costs typically rise 2-3x in retirement — consider increasing this.');
+    } else {
+      insights.push('🏥 Healthcare is budgeted at ' + fmt2(healthTotal) + '/mo. Good — this often increases significantly in retirement.');
+    }
+
+    // Gap insight
+    if (gap < 0) {
+      insights.push('⚠️ A ' + fmt2(Math.abs(gap)) + '/mo shortfall exists between your projected retirement income and inflation-adjusted expenses. Consider increasing contributions or adjusting your retirement age.');
+    } else {
+      insights.push('✅ Your projected retirement income exceeds your inflation-adjusted expenses by ' + fmt2(gap) + '/mo. You are on track.');
+    }
+
+    // Inflation insight
+    insights.push('📈 At ' + (inflRate*100).toFixed(1) + '% annual inflation, your current ' + fmt2(monthly) + '/mo budget grows to ' + fmt2(retireMonthly) + '/mo by age ' + retireAge + '.');
+
+    insightsEl.innerHTML = insights.map(function(i){
+      return '<div style="padding:0.5rem 0;border-bottom:1px solid var(--warm);font-size:0.88rem;line-height:1.5">' + i + '</div>';
+    }).join('');
   }
   
   var fill = document.getElementById('ba-sustFill');
