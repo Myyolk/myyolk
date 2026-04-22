@@ -5321,7 +5321,29 @@ function calcBudgetHealthCheck() {
   var state2 = document.getElementById('stateTax')?.value || 'PA';
 
   if(grossAnnual <= 0) {
-    document.getElementById('budgetHealthCard').style.display = 'none';
+    document.getElementById("budgetHealthCard").style.display = "";
+    var budEl=document.getElementById("budgetMonthlyTotal");
+    var budM=parseFloat((budEl?budEl.textContent:"0").replace(/[^0-9.]/g,""))||0;
+    var cash=parseFloat((document.getElementById("balCash")||{value:0}).value)||0;
+    var taxable=parseFloat((document.getElementById("balTaxable")||{value:0}).value)||0;
+    var accessible=cash+taxable;
+    var ageNow=parseInt((document.getElementById("age")||{value:56}).value)||56;
+    var retAge2=parseInt((document.getElementById("retAge")||{value:62}).value)||62;
+    var monthsToRetire=Math.max(0,(retAge2-ageNow)*12);
+    var runway=budM>0?Math.round(accessible/budM):0;
+    function fmtR(v){return "$"+Math.round(v).toLocaleString();}
+    var gcE=document.getElementById("bhcGross");if(gcE){gcE.textContent=fmtR(accessible);gcE.previousElementSibling.textContent="ACCESSIBLE SAVINGS";}
+    var thE=document.getElementById("bhcTakeHome");if(thE){thE.textContent=runway+" months";thE.previousElementSibling.textContent="RUNWAY";}
+    var trE=document.getElementById("bhcTaxRate");if(trE)trE.textContent="cash + taxable at "+fmtR(budM)+"/mo";
+    var bpE=document.getElementById("bhcBudget");if(bpE&&bpE.parentElement)bpE.parentElement.style.display="none";
+    document.getElementById("bhcBar").style.display="";
+    var pct=monthsToRetire>0?Math.round((runway/monthsToRetire)*100):0;
+    document.getElementById("bhcPctLabel").textContent=runway+" of "+monthsToRetire+" months covered";
+    document.getElementById("bhcBarFill").style.width=Math.min(pct,100)+"%";
+    var msg=document.getElementById("bhcMessage");msg.style.display="";
+    if(runway>=monthsToRetire){document.getElementById("bhcBarFill").style.background="var(--sage)";msg.style.background="var(--sage-pale)";msg.style.color="var(--forest)";msg.style.borderLeft="4px solid var(--sage)";msg.innerHTML="<strong>Your savings cover "+runway+" months</strong> -- enough to reach retirement at age "+retAge2+". You need "+monthsToRetire+" months.";}
+    else if(runway>=monthsToRetire*0.6){document.getElementById("bhcBarFill").style.background="#e5a800";msg.style.background="#fff8e1";msg.style.color="#856404";msg.style.borderLeft="4px solid #e5a800";msg.innerHTML="<strong>Your savings cover "+runway+" months</strong> but you need "+monthsToRetire+" to reach age "+retAge2+". Consider reducing spending or part-time income.";}
+    else{document.getElementById("bhcBarFill").style.background="var(--clay)";msg.style.background="#fff0f0";msg.style.color="var(--clay)";msg.style.borderLeft="4px solid var(--clay)";msg.innerHTML="<strong>Your savings cover only "+runway+" of "+monthsToRetire+" months needed.</strong> Reduce spending or explore income options.";}
     return;
   }
   document.getElementById('budgetHealthCard').style.display = '';
@@ -6754,6 +6776,14 @@ function generatePDF() {
   updateSnapshot();
 
 function showTab(name) {
+  if (name === "budgettracker" && typeof btGetPlanned === "function") {
+    setTimeout(function() {
+      var plan = btGetPlanned();
+      var ms = btCurrentMonthStr();
+      var pf = (btData[ms] && btData[ms].actuals) ? btData[ms].actuals : {};
+      btBuildCheckinTable(plan, pf);
+    }, 300);
+  }
   if (name === "budgettracker" && typeof btGetPlanned === "function") {
     setTimeout(function() {
       var plan = btGetPlanned();
