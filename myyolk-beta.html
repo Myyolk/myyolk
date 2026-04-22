@@ -7430,11 +7430,9 @@ function updateEarly() {}
 
 // ── BUDGET ANALYSIS ──
 function updateBudgetAnalysis() {
-  // Sum all monthly budget inputs directly
-  var monthly = 0;
-  document.querySelectorAll('.bud-m').forEach(function(el) {
-    monthly += parseFloat(el.value) || 0;
-  });
+  // Read budget total from the planner total element (includes all dynamic rows)
+  var budEl = document.getElementById('budgetMonthlyTotal');
+  var monthly = parseFloat((budEl ? budEl.textContent : '0').replace(/[^0-9.]/g, '')) || 0;
   if (monthly === 0) return;
   
   var currentAge = getVal('age', 30);
