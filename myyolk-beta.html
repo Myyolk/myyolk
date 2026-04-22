@@ -6960,9 +6960,12 @@ function updateSnapshot() {
   var balTaxable = parseFloat(document.getElementById('balTaxable')?.value) || 0;
   var balHSA = parseFloat(document.getElementById('balHSA')?.value) || 0;
   var balCash = parseFloat(document.getElementById('balCash')?.value) || 0;
-  var totalNow = bal401k + balRoth401 + balRothIRA + balTaxable + balHSA + balCash;
+  var _sbAllIds = ['bal401k','balRoth401','balRothIRA','balTaxable','balHSA','balCash','balESPP','balRolloverIRA','balTradIRA','balDeferredComp','balPension','balAnnuity',
+    'spouseBal401k','spouseBalRoth401','spouseBalRothIRA','spouseBalTaxable','spouseBalHSA','spouseBalCash','spouseBalESPP','spouseBalRolloverIRA','spouseBalTradIRA','spouseBalDeferredComp','spouseBalPension','spouseBalAnnuity'];
+  var totalNow = 0;
+  _sbAllIds.forEach(function(id){ totalNow += parseFloat(document.getElementById(id)?.value)||0; });
 
-  // Spouse balances
+  // Spouse balances (kept for netWorth calc below)
   var spBal401k = parseFloat(document.getElementById('spouseBal401k')?.value) || 0;
   var spBalRoth = parseFloat(document.getElementById('spouseBalRoth401')?.value) || 0;
   var spBalIRA = parseFloat(document.getElementById('spouseBalRothIRA')?.value) || 0;
