@@ -9459,12 +9459,20 @@ async function cloudLoad() {
   } catch(e) {}
   // Mark cloud load as complete — safe to auto-save now
   _cloudLoaded = true;
-  // Seed integrity guard from DOM after cloud load
+  /// Seed integrity guard from DOM after cloud load -- covers all dynamic row types
   setTimeout(function(){
-    var _domSubs = document.querySelectorAll('[id^="budSub_"]').length;
-    var _domIns = document.querySelectorAll('.ins-policy-row').length;
-    if(_domSubs > 0) window._maxKnownSubCount = Math.max(window._maxKnownSubCount||0, _domSubs);
-    if(_domIns > 0) window._maxKnownInsCount = Math.max(window._maxKnownInsCount||0, _domIns);
+    var s=document.querySelectorAll('[id^="budSub_"]').length;
+    var ins=document.querySelectorAll('.ins-policy-row').length;
+    var cc=document.querySelectorAll('[id^="ccRow_"]').length;
+    var car=document.querySelectorAll('[id^="debtRow_car_"]').length;
+    var props=document.querySelectorAll('.property-row').length;
+    var veh=document.querySelectorAll('[id^="vehicle_"]').length;
+    if(s>0) window._maxKnownSubCount=Math.max(window._maxKnownSubCount||0,s);
+    if(ins>0) window._maxKnownInsCount=Math.max(window._maxKnownInsCount||0,ins);
+    if(cc>0) window._maxKnownCCCount=Math.max(window._maxKnownCCCount||0,cc);
+    if(car>0) window._maxKnownCarCount=Math.max(window._maxKnownCarCount||0,car);
+    if(props>0) window._maxKnownPropCount=Math.max(window._maxKnownPropCount||0,props);
+    if(veh>0) window._maxKnownVehCount=Math.max(window._maxKnownVehCount||0,veh);
   }, 1000);
   if(typeof calcBudgetHealthCheck === "function") calcBudgetHealthCheck();
   var _fn = document.getElementById('firstName')?.value||'';
