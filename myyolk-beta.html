@@ -9459,6 +9459,13 @@ async function cloudLoad() {
   } catch(e) {}
   // Mark cloud load as complete — safe to auto-save now
   _cloudLoaded = true;
+  // Seed integrity guard from Supabase data — never allow saving fewer subs than stored
+  try {
+    var _storedSubs = JSON.parse(data['__budSubRows']||'[]');
+    if(_storedSubs.length > 0) window._maxKnownSubCount = Math.max(window._maxKnownSubCount||0, _storedSubs.length);
+    var _storedIns = JSON.parse(data['__insurancePolicies']||'[]');
+    if(_storedIns.length > 0) window._maxKnownInsCount = Math.max(window._maxKnownInsCount||0, _storedIns.length);
+  } catch(e) {}
   if(typeof calcBudgetHealthCheck === "function") calcBudgetHealthCheck();
   var _fn = document.getElementById('firstName')?.value||'';
   var _sn = document.getElementById('spouseFirstName')?.value||'';
