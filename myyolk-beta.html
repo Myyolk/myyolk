@@ -5195,7 +5195,7 @@ function calcProjections() {
   var mi = document.getElementById('projMonthlyIncome');
   if(mi) mi.textContent = '$' + monthlyIncome.toLocaleString() + '/mo';
   // SS income at retirement
-  var ssAtRetirement = (state.ssMonthly || 0) + (state.spouseSsMonthly || 0);
+  var ssAtRetirement = (state.ssMonthly || 0) + (isCouple ? (state.spouseSsMonthly || 0) : 0);
   var projSS = document.getElementById('projSSIncome');
   if(projSS) {
     if(ssAtRetirement > 0) {
@@ -5768,7 +5768,7 @@ function runMonteCarlo() {
   }
 
   // Monthly SS + additional income
-  var ssMonthly = (state.ssMonthly || 0) + (state.spouseSsMonthly || 0);
+  var ssMonthly = (state.ssMonthly || 0) + (isCouple ? (state.spouseSsMonthly || 0) : 0);
   var additionalIncome = state.additionalMonthly || 0;
   var monthlyNonPortfolio = ssMonthly + additionalIncome;
   var monthlyDraw = Math.max(monthlyExpenses - monthlyNonPortfolio, 0);
@@ -7368,7 +7368,7 @@ function applyWiPreset(preset) {
 
   if(preset === 'retire2') { document.getElementById('wi-retAge').value = retAge + 2; }
   else if(preset === 'retire5') { document.getElementById('wi-retAge').value = retAge + 5; }
-  else if(preset === 'ss70') { document.getElementById('wi-retAge').value = 70; }
+  else if(preset === 'ss70') { /* Claim SS at 70 - keep retirement age, just delay SS claiming */ var _ssClaim = document.getElementById('ssClaimingAge'); if(_ssClaim) { _ssClaim.value = 70; _ssClaim.dispatchEvent(new Event('change')); } }
   else if(preset === 'save500') { document.getElementById('wi-extraSavings').value = 500; }
   else if(preset === 'spend20') { document.getElementById('wi-spending').value = Math.round(spending * 0.8); }
   else if(preset === 'parttime') { document.getElementById('wi-parttime').value = 2000; }
@@ -9398,6 +9398,9 @@ async function submitAuth() {
     } else if(_authMode === 'signup' && !result.data.session) {
       showAuthError('Check your email to confirm your account, then sign in.');
     } else {
+      // Clear password fields for security
+      var _pw = document.getElementById('authPassword'); if(_pw) _pw.value = '';
+      var _pwc = document.getElementById('authConfirmPassword'); if(_pwc) _pwc.value = '';
       toggleAuthModal();
     }
   } catch(e) {
@@ -9502,6 +9505,13 @@ async function cloudLoad() {
   // Mark cloud load as complete — safe to auto-save now
   _cloudLoaded = true;
   /// Seed integrity guard from DOM after cloud load -- covers all dynamic row types
+  // Initialize all counters to 0 for new accounts so saves aren't blocked
+  if(typeof window._maxKnownSubCount === 'undefined') window._maxKnownSubCount = 0;
+  if(typeof window._maxKnownInsCount === 'undefined') window._maxKnownInsCount = 0;
+  if(typeof window._maxKnownCCCount === 'undefined') window._maxKnownCCCount = 0;
+  if(typeof window._maxKnownCarCount === 'undefined') window._maxKnownCarCount = 0;
+  if(typeof window._maxKnownPropCount === 'undefined') window._maxKnownPropCount = 0;
+  if(typeof window._maxKnownVehCount === 'undefined') window._maxKnownVehCount = 0;
   setTimeout(function(){
     var s=document.querySelectorAll('[id^="budSub_"]').length;
     var ins=document.querySelectorAll('.ins-policy-row').length;
