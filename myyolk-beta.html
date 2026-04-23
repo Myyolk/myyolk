@@ -7369,7 +7369,7 @@ function applyWiPreset(preset) {
 
   if(preset === 'retire2') { document.getElementById('wi-retAge').value = retAge + 2; }
   else if(preset === 'retire5') { document.getElementById('wi-retAge').value = retAge + 5; }
-  else if(preset === 'ss70') { /* Claim SS at 70 - keep retirement age, just delay SS claiming */ var _ssClaim = document.getElementById('ssClaimingAge'); if(_ssClaim) { _ssClaim.value = 70; _ssClaim.dispatchEvent(new Event('change')); } }
+  else if(preset === 'ss70') { /* Claim SS at 70 - use age-70 benefit in What-If */ var _ss70val = parseFloat(document.getElementById('ss70')?.value) || parseFloat(document.getElementById('est-ss70')?.textContent?.replace(/[^0-9.]/g,'')) || 0; window._wiSsOverride = _ss70val; }
   else if(preset === 'save500') { document.getElementById('wi-extraSavings').value = 500; }
   else if(preset === 'spend20') { document.getElementById('wi-spending').value = Math.round(spending * 0.8); }
   else if(preset === 'parttime') { document.getElementById('wi-parttime').value = 2000; }
@@ -7378,6 +7378,7 @@ function applyWiPreset(preset) {
 }
 
 function resetWiScenario() {
+  window._wiSsOverride = 0;
   ['wi-retAge','wi-ror','wi-extraSavings','wi-spending','wi-parttime','wi-windfall'].forEach(function(id){
     var el = document.getElementById(id);
     if(el) el.value = '';
@@ -7428,8 +7429,9 @@ function calcWhatIf() {
     baseAnnualContrib += spSal * spContrib;
   }
 
-  // SS income
-  var ssIncome = (state.ssMonthly||0) + (state.spouseSsMonthly||0) + (state.childSsMonthly||0);
+  // SS income - check for What-If SS override (e.g. delay to 70)
+  var wiSsOverride = window._wiSsOverride || 0;
+  var ssIncome = (wiSsOverride > 0 ? wiSsOverride : (state.ssMonthly||0)) + (state.spouseSsMonthly||0) + (state.childSsMonthly||0);
 
   // ── CURRENT PLAN ──
   var curYears = Math.max(0, baseRetAge - currentAge);
