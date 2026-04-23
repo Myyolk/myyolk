@@ -9900,8 +9900,6 @@ function loadFromLocal() {
       var el = document.querySelector('[data-key="' + key.replace('bud__','') + '"]');
       if(el) el.value = data[key];
     });
-    // Restore all dynamic rows after delay to ensure DOM containers are ready
-    setTimeout(function(){
     // Restore property rows
     if(data['__propRows']) {
       try {
@@ -10137,6 +10135,7 @@ function loadFromLocal() {
       if(isCouple) row.classList.add('has-owner');
     });
   } catch(e) { console.warn('Load failed:', e); }
+  // cloudLoad end
 }
 
 function clearSavedData() {
