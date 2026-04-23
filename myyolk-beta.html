@@ -10028,7 +10028,8 @@ function loadFromLocal() {
         } catch(e) {}
       }
     });
-    // Restore custom budget items
+    // Restore custom budget items - delayed to ensure DOM containers are ready
+    setTimeout(function(){
     var customCats = ['housing','transport','food','health','profsvc','education','lifestyle','insurance'];
     customCats.forEach(function(catId) {
       var key = '__custom_'+catId;
@@ -10055,6 +10056,7 @@ function loadFromLocal() {
         } catch(e) {}
       }
     });
+    }, 1500);
     if(data['__aiRows']) {
       try {
         var aiRows = JSON.parse(data['__aiRows']);
