@@ -9900,6 +9900,8 @@ function loadFromLocal() {
       var el = document.querySelector('[data-key="' + key.replace('bud__','') + '"]');
       if(el) el.value = data[key];
     });
+    // Restore all dynamic rows after delay to ensure DOM containers are ready
+    setTimeout(function(){
     // Restore property rows
     if(data['__propRows']) {
       try {
@@ -10056,7 +10058,7 @@ function loadFromLocal() {
         } catch(e) {}
       }
     });
-    }, 1500);
+    }, 2000);
     if(data['__aiRows']) {
       try {
         var aiRows = JSON.parse(data['__aiRows']);
