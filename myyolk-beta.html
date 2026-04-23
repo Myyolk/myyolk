@@ -4874,7 +4874,7 @@ function calcSpouseSsBenefit() {
   var deanNoteEl = document.getElementById('deanSsNote');
   if(deanNoteEl) deanNoteEl.textContent = deanNote;
 
-  state.spouseSsMonthly = spouseFinal;
+  state.spouseSsMonthly = document.getElementById('planCouple')?.checked ? spouseFinal : 0;
   state.deanSsFinal = deanFinal;
 }
 
