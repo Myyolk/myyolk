@@ -1756,12 +1756,24 @@
     </div>
 
     <div class="quick-stat">
-      <div class="quick-stat-label">Current Portfolio</div>
+      <div class="quick-stat-label">Investments <span style="font-size:0.65rem;color:var(--mid);font-weight:400">(excl. home)</span></div>
       <div class="quick-stat-value positive" id="sb-portfolio">—</div>
     </div>
     <div class="quick-stat">
-      <div class="quick-stat-label">At Retirement (Age <span id="sb-age-label">65</span>)</div>
+      <div class="quick-stat-label">Home Equity</div>
+      <div class="quick-stat-value positive" id="sb-homeequity">—</div>
+    </div>
+    <div class="quick-stat">
+      <div class="quick-stat-label">Current Net Worth</div>
+      <div class="quick-stat-value positive" id="sb-currentnw">—</div>
+    </div>
+    <div class="quick-stat">
+      <div class="quick-stat-label">At Retirement (Age <span id="sb-age-label">65</span>) <span style="font-size:0.65rem;color:var(--mid);font-weight:400">(investments only)</span></div>
       <div class="quick-stat-value positive" id="sb-at-ret">—</div>
+    </div>
+    <div class="quick-stat">
+      <div class="quick-stat-label">Net Worth at Retirement <span style="font-size:0.65rem;color:var(--mid);font-weight:400">(incl. home)</span></div>
+      <div class="quick-stat-value positive" id="sb-nw-ret">—</div>
     </div>
     <div class="quick-stat">
       <div class="quick-stat-label">Safe Withdrawal / yr</div>
@@ -2220,6 +2232,9 @@
               <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
                 <input type="checkbox" id="bonus401k" checked onchange="recalc()"> 401k applies
               </label>
+              <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
+                <input type="checkbox" id="bonus403b" onchange="recalc()"> 403b applies
+              </label>
               <label style="font-size:0.78rem;color:var(--sage);font-weight:500">Recurring · projected forward</label>
             </div>
           </div>
@@ -2229,6 +2244,9 @@
             <div style="display:flex;gap:1rem;margin-top:4px;flex-wrap:wrap">
               <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
                 <input type="checkbox" id="bonusRetention401k" onchange="recalc()"> 401k applies
+              </label>
+              <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
+                <input type="checkbox" id="bonusRetention403b" onchange="recalc()"> 403b applies
               </label>
               <label style="font-size:0.78rem;color:#c96a3a;font-weight:500">One-time · NOT projected forward</label>
             </div>
@@ -2240,6 +2258,9 @@
               <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
                 <input type="checkbox" id="bonusSignOn401k" onchange="recalc()"> 401k applies
               </label>
+              <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
+                <input type="checkbox" id="bonusSignOn403b" onchange="recalc()"> 403b applies
+              </label>
               <label style="font-size:0.78rem;color:#c96a3a;font-weight:500">One-time · NOT projected forward</label>
             </div>
           </div>
@@ -2250,6 +2271,9 @@
               <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
                 <input type="checkbox" id="bonusProfitShare401k" checked onchange="recalc()"> 401k applies
               </label>
+              <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
+                <input type="checkbox" id="bonusProfitShare403b" onchange="recalc()"> 403b applies
+              </label>
               <label style="font-size:0.78rem;color:var(--sage);font-weight:500">Recurring · projected forward</label>
             </div>
           </div>
@@ -2259,6 +2283,9 @@
             <div style="display:flex;gap:1rem;margin-top:4px;flex-wrap:wrap">
               <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
                 <input type="checkbox" id="bonusRSU401k" onchange="recalc()"> 401k applies
+              </label>
+              <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
+                <input type="checkbox" id="bonusRSU403b" onchange="recalc()"> 403b applies
               </label>
               <label style="font-size:0.78rem;color:#c96a3a;font-weight:500">One-time · NOT projected forward</label>
             </div>
@@ -2351,7 +2378,10 @@
               <label>Performance / Annual Bonus ($)</label>
               <input type="number" id="spouseBonus" value="" placeholder="e.g. 10000" oninput="recalc()">
               <div style="display:flex;gap:1rem;margin-top:4px;flex-wrap:wrap">
-                <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px"><input type="checkbox" id="spouseBonus401k" checked onchange="recalc()"> 401k applies</label>
+                <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px"><input type="checkbox" id="spouseBonus401k" checked onchange="recalc()"> 401k applies
+              </label>
+              <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
+                <input type="checkbox" id="spouseBonus403b" onchange="recalc()"> 403b applies</label>
                 <label style="font-size:0.78rem;color:var(--sage);font-weight:500">Recurring</label>
               </div>
             </div>
@@ -2375,7 +2405,10 @@
               <label>Profit Sharing / Commission ($)</label>
               <input type="number" id="spouseBonusProfitShare" value="" placeholder="e.g. 5000" oninput="recalc()">
               <div style="display:flex;gap:1rem;margin-top:4px;flex-wrap:wrap">
-                <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px"><input type="checkbox" id="spouseBonusProfitShare401k" checked onchange="recalc()"> 401k applies</label>
+                <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px"><input type="checkbox" id="spouseBonusProfitShare401k" checked onchange="recalc()"> 401k applies
+              </label>
+              <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
+                <input type="checkbox" id="spouseBonusProfitShare403b" onchange="recalc()"> 403b applies</label>
                 <label style="font-size:0.78rem;color:var(--sage);font-weight:500">Recurring</label>
               </div>
             </div>
@@ -2383,7 +2416,10 @@
               <label>RSU / Stock Vesting (current year, $)</label>
               <input type="number" id="spouseBonusRSU" value="" placeholder="e.g. 15000" oninput="recalc()">
               <div style="display:flex;gap:1rem;margin-top:4px;flex-wrap:wrap">
-                <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px"><input type="checkbox" id="spouseBonusRSU401k" onchange="recalc()"> 401k applies</label>
+                <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px"><input type="checkbox" id="spouseBonusRSU401k" onchange="recalc()"> 401k applies
+              </label>
+              <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px">
+                <input type="checkbox" id="spouseBonusRSU403b" onchange="recalc()"> 403b applies</label>
                 <label style="font-size:0.78rem;color:#c96a3a;font-weight:500">One-time</label>
               </div>
             </div>
@@ -2538,6 +2574,7 @@
         <div class="form-grid">
           <div class="field"><label>Traditional 401(k) ($)</label><input type="number" id="bal401k" value="" placeholder="0" oninput="recalc()"></div>
           <div class="field"><label>Roth 401(k) ($)</label><input type="number" id="balRoth401" value="" placeholder="0" oninput="recalc()"></div>
+          <div class="field"><label>403(b) ($)</label><input type="number" id="bal403b" value="" placeholder="0" oninput="recalc()"><div class="hint">Common in education, healthcare &amp; nonprofits</div></div>
           <div class="field"><label>Roth IRA ($)</label><input type="number" id="balRothIRA" value="" placeholder="0" oninput="recalc()"></div>
           <div class="field"><label>Taxable Investments ($)</label><input type="number" id="balTaxable" value="" placeholder="0" oninput="recalc()"></div>
           <div class="field"><label>HSA ($)</label><input type="number" id="balHSA" value="" placeholder="0" oninput="recalc()"></div>
@@ -2563,6 +2600,7 @@
             <div class="field"><label>Employer Match %</label><input type="number" id="empMatch" value="" placeholder="e.g. 5" oninput="recalc()"></div>
             <div class="field"><label>Match Cap %</label><input type="number" id="matchCap" value="" placeholder="e.g. 6" oninput="recalc()"></div>
             <div class="field"><label>Roth 401(k) Contribution %</label><input type="number" id="contribRoth401" value="" placeholder="e.g. 3" oninput="recalc()"></div>
+            <div class="field"><label>403(b) Contribution %</label><input type="number" id="contrib403b" value="" placeholder="e.g. 5" oninput="recalc()"></div>
             <div class="field"><label>Roth IRA ($/yr)</label><input type="number" id="contribRothIRA" value="" placeholder="e.g. 7000" oninput="recalc()"></div>
 
             <div class="field"><label>Taxable Investments ($/yr)</label><input type="number" id="contribTaxable" value="" placeholder="e.g. 5000" oninput="recalc()"></div>
@@ -2577,6 +2615,7 @@
           <div class="form-grid">
             <div class="field"><label>Traditional 401(k) ($)</label><input type="number" id="spouseBal401k" value="" placeholder="0" oninput="recalc()"></div>
             <div class="field"><label>Roth 401(k) ($)</label><input type="number" id="spouseBalRoth401" value="" placeholder="0" oninput="recalc()"></div>
+            <div class="field"><label>403(b) ($)</label><input type="number" id="spouseBal403b" value="" placeholder="0" oninput="recalc()"><div class="hint">Common in education, healthcare &amp; nonprofits</div></div>
             <div class="field"><label>Roth IRA ($)</label><input type="number" id="spouseBalRothIRA" value="" placeholder="0" oninput="recalc()"></div>
             <div class="field"><label>Taxable Investments ($)</label><input type="number" id="spouseBalTaxable" value="" placeholder="0" oninput="recalc()"></div>
             <div class="field"><label>HSA ($)</label><input type="number" id="spouseBalHSA" value="" placeholder="0" oninput="recalc()"></div>
@@ -2602,6 +2641,7 @@
               <div class="field"><label>Employer Match %</label><input type="number" id="spouseEmpMatch" value="" placeholder="e.g. 5" oninput="recalc()"></div>
               <div class="field"><label>Match Cap %</label><input type="number" id="spouseMatchCap" value="" placeholder="e.g. 6" oninput="recalc()"></div>
               <div class="field"><label>Roth 401(k) Contribution %</label><input type="number" id="spouseContribRoth401" value="" placeholder="e.g. 3" oninput="recalc()"></div>
+              <div class="field"><label>403(b) Contribution %</label><input type="number" id="spouseContrib403b" value="" placeholder="e.g. 5" oninput="recalc()"></div>
               <div class="field"><label>Roth IRA ($/yr)</label><input type="number" id="spouseContribRothIRA" value="" placeholder="e.g. 7000" oninput="recalc()"></div>
 
               <div class="field"><label>Taxable Investments ($/yr)</label><input type="number" id="spouseContribTaxable" value="" placeholder="e.g. 5000" oninput="recalc()"></div>
@@ -3026,68 +3066,31 @@
             💡 If your payment includes escrow (taxes &amp; insurance), check the boxes below and leave Property Taxes &amp; Home Insurance at $0
           </div>
 
-          <div class="budget-row">
-            <label>Car Loan 1</label>
-            <input type="number" class="bud-m" data-key="debtCar1" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0 0.25rem">
+            <span style="font-size:0.82rem;color:var(--mid)">Car Loans</span>
+            <button onclick="addDebtRow('car')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
           </div>
-          <div class="budget-row">
-            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
-            <input type="number" id="balCarLoan1" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
+          <div id="carLoanRows"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0 0.25rem">
+            <span style="font-size:0.82rem;color:var(--mid)">Student Loans</span>
+            <button onclick="addDebtRow('student')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
           </div>
-          <div class="budget-row">
-            <label style="font-size:0.78rem;color:var(--sage)">↳ Car Loan 1 Payoff</label>
-            <input type="month" id="carLoan1Payoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
-          </div>
-          <div class="budget-row">
-            <label>Car Loan 2</label>
-            <input type="number" class="bud-m" data-key="debtCar2" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
-          </div>
-          <div class="budget-row">
-            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
-            <input type="number" id="balCarLoan2" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
-          </div>
-          <div class="budget-row">
-            <label style="font-size:0.78rem;color:var(--sage)">↳ Car Loan 2 Payoff</label>
-            <input type="month" id="carLoan2Payoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
-          </div>
-          <div class="budget-row">
-            <label>Student Loans</label>
-            <input type="number" class="bud-m" data-key="debtStudent" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
-          </div>
-          <div class="budget-row">
-            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
-            <input type="number" id="balStudentLoan" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
-          </div>
-          <div class="budget-row">
-            <label style="font-size:0.78rem;color:var(--sage)">↳ Student Loan Payoff</label>
-            <input type="month" id="studentLoanPayoff" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%" onchange="recalc()">
-          </div>
+          <div id="studentLoanRows"></div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0">
             <span style="font-size:0.82rem;color:var(--mid)">Credit Cards</span>
-            <button onclick="addCreditCard()" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add Card</button>
+            <button onclick="addCreditCard()" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
           </div>
           <div id="creditCardRows"></div>
-          <div class="budget-row">
-            <label>Personal Loan</label>
-            <input type="number" class="bud-m" data-key="debtPersonal" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0 0.25rem">
+            <span style="font-size:0.82rem;color:var(--mid)">Personal Loans</span>
+            <button onclick="addDebtRow('personal')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
           </div>
-          <div class="budget-row">
-            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
-            <input type="number" id="balPersonalLoan" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
+          <div id="personalLoanRows"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0 0.25rem">
+            <span style="font-size:0.82rem;color:var(--mid)">Other Debt</span>
+            <button onclick="addDebtRow('other')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
           </div>
-          <div class="budget-row">
-            <label>Other Debt</label>
-            <input type="number" class="bud-m" data-key="debtOther" placeholder="0" oninput="calcBudget(this)">
-            <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
-          </div>
-          <div class="budget-row">
-            <label style="font-size:0.78rem;color:var(--mid)">↳ Balance Owed ($)</label>
-            <input type="number" id="balOtherDebt" placeholder="0" oninput="recalc()" style="font-size:0.85rem;padding:6px;border:1px solid #ddd;border-radius:6px;width:100%">
-          </div>
+          <div id="otherDebtRows"></div>
           <div style="padding:8px 0 4px;font-size:0.78rem;color:var(--sage);font-style:italic">
             💡 Debts with payoff dates will be removed from your retirement expense projections automatically
           </div>
@@ -3893,9 +3896,9 @@
         <div style="font-size:2rem;margin-bottom:0.5rem">🥚</div>
         <div style="font-weight:700;font-size:1.1rem;color:var(--forest);margin-bottom:0.5rem">Your MyYolk Plan is Ready</div>
         <div style="font-size:0.85rem;color:#666;margin-bottom:1.5rem">Download your complete retirement plan as a PDF to save, print, or share with a financial advisor.</div>
-        <button onclick="generatePDF(this)" style="padding:12px 32px;background:var(--gold);color:#fff;border:none;border-radius:12px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">📄 Download My Plan</button>
+        <button onclick="generatePDF(this)" style="padding:12px 32px;background:#C8860A;color:#fff;border:none;border-radius:12px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">📄 Download My Plan</button>
         <div style="font-size:0.75rem;color:#999;margin-top:0.75rem">One-time purchase · Instant download · Your data stays private</div>
-        <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid #eee"><button onclick="clearData()" style="background:none;border:none;color:#c96a3a;font-family:DM Sans,sans-serif;font-size:0.8rem;cursor:pointer;text-decoration:underline">🗑️ Clear all my saved data</button></div>
+        <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid #eee"><button onclick="if(confirm('This will permanently delete all your saved data. Are you sure?')) clearData();" style="background:none;border:none;color:#c96a3a;font-family:DM Sans,sans-serif;font-size:0.8rem;cursor:pointer;text-decoration:underline">🗑️ Clear all my saved data</button></div>
       </div>
 
       <div class="btn-row">
@@ -4103,6 +4106,7 @@ function addVehicle() {
   div.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem"><span style="font-weight:600;font-size:0.85rem">Vehicle ' + id + '</span><button onclick="removeVehicle('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer">Remove</button></div>' +
     '<div class="form-grid">' +
     '<div class="field"><label>Year/Make/Model</label><input type="text" id="vehicleName_'+id+'" placeholder="e.g. 2022 Ford F-150" oninput="saveToLocal()"></div>' +
+    '<div class="field"><label>Current Value ($)</label><input type="number" id="vehicleValue_'+id+'" placeholder="e.g. 25000" oninput="recalc()"><div class="hint">Used for today\'s net worth only — excluded from retirement projections</div></div>' +
     '<div class="field"><label>Expected Replacement Year</label><input type="number" id="vehicleReplace_'+id+'" placeholder="e.g. 2030" oninput="recalc()"><div class="hint">We will flag this as a future expense</div></div>' +
     '</div>';
   document.getElementById('vehicleList').appendChild(div);
@@ -4138,6 +4142,44 @@ function calcOtherAssets() {
 }
 
 // Credit Cards
+// ── DYNAMIC DEBT ROWS ──
+var debtRowCounts = {car:0, student:0, personal:0, other:0};
+var debtContainers = {car:'carLoanRows', student:'studentLoanRows', personal:'personalLoanRows', other:'otherDebtRows'};
+var debtLabels = {car:'Car Loan', student:'Student Loan', personal:'Personal Loan', other:'Other Debt'};
+var debtHasPayoff = {car:true, student:true, personal:false, other:false};
+
+function addDebtRow(type) {
+  debtRowCounts[type]++;
+  var id = debtRowCounts[type];
+  var div = document.createElement('div');
+  div.id = 'debtRow_'+type+'_'+id;
+  div.className = 'budget-row';
+  var payoffHtml = debtHasPayoff[type] ?
+    '<div style="grid-column:1/-1;display:flex;align-items:center;gap:0.5rem;margin-top:-0.25rem">' +
+    '<label style="font-size:0.75rem;color:var(--sage);white-space:nowrap">↳ Payoff Date</label>' +
+    '<input type="month" id="debtPayoff_'+type+'_'+id+'" onchange="recalc()" style="padding:0.2rem 0.5rem;border:1px solid #ddd;border-radius:6px;font-size:0.82rem">' +
+    '</div>' : '';
+  div.innerHTML =
+    '<label style="display:flex;align-items:center;gap:6px">' +
+      '<input type="text" id="debtName_'+type+'_'+id+'" placeholder="e.g. '+debtLabels[type]+'" style="padding:0.25rem 0.5rem;border:1.5px solid var(--border);border-radius:6px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%;min-width:0">' +
+      '<button onclick="removeDebtRow(\''+type+'\','+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.1rem;line-height:1;flex-shrink:0">×</button>' +
+    '</label>' +
+    '<input type="number" id="debtPayment_'+type+'_'+id+'" class="bud-m" placeholder="Monthly ($)" oninput="calcBudget(this);saveToLocal();" style="text-align:right">' +
+    '<input type="number" id="debtAnnual_'+type+'_'+id+'" class="bud-a" placeholder="0" oninput="calcBudget(this)" style="text-align:right">' +
+    '<div style="grid-column:1/-1;display:flex;align-items:center;gap:0.5rem;margin-top:-0.25rem">' +
+      '<label style="font-size:0.75rem;color:var(--mid);white-space:nowrap">↳ Balance Owed ($)</label>' +
+      '<input type="number" id="debtBalance_'+type+'_'+id+'" placeholder="0" oninput="recalc()" style="padding:0.2rem 0.5rem;border:1px solid #ddd;border-radius:6px;font-size:0.82rem;width:140px;text-align:right">' +
+    '</div>' +
+    payoffHtml;
+  document.getElementById(debtContainers[type]).appendChild(div);
+}
+
+function removeDebtRow(type, id) {
+  var el = document.getElementById('debtRow_'+type+'_'+id);
+  if(el) el.remove();
+  calcBudget({classList:{contains:function(){return false;}},value:'',parentNode:null});
+}
+
 var creditCardCount = 0;
 function addCreditCard() {
   creditCardCount++;
@@ -4194,7 +4236,7 @@ function addBudgetSub() {
       '<input type="text" id="budSubName_'+id+'" placeholder="e.g. Netflix" style="padding:0.25rem 0.5rem;border:1.5px solid var(--border);border-radius:6px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%;min-width:0">' +
       '<button onclick="removeBudgetSub('+id+')" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.1rem;line-height:1;flex-shrink:0">×</button>' +
     '</label>' +
-    '<input type="number" id="budSubCost_'+id+'" class="bud-m" placeholder="0" oninput="calcBudget(this);saveToLocal();if(typeof cloudSave===\'function\')cloudSave();" style="text-align:right">' +
+    '<input type="number" id="budSubCost_'+id+'" class="bud-m" placeholder="0" oninput="calcBudget(this);saveToLocal();if(typeof cloudSaveDebounced===\'function\')cloudSaveDebounced();" style="text-align:right">' +
     '<input type="number" id="budSubAnnual_'+id+'" class="bud-a" placeholder="0" oninput="calcBudget(this)" style="text-align:right">';
   document.getElementById('budgetSubList').appendChild(div);
   calcBudget(_fakeInput());
@@ -4214,7 +4256,7 @@ function addCustomBudgetItem(catId) {
       '<input type="text" id="customName_'+safeId+'" placeholder="Item name" style="padding:0.25rem 0.5rem;border:1.5px solid var(--border);border-radius:6px;font-size:0.83rem;font-family:DM Sans,sans-serif;width:100%;min-width:0">' +
       '<button data-cat="'+catId+'" data-itemid="'+safeId+'" onclick="removeCustomByCat(this)" style="background:none;border:none;color:#c96a3a;cursor:pointer;font-size:1.1rem;line-height:1;flex-shrink:0">×</button>' +
     '</label>' +
-    '<input type="number" id="customCost_'+safeId+'" class="bud-m" data-cat="'+catId+'" placeholder="0" oninput="calcBudget(this);saveToLocal();if(typeof cloudSave===\'function\')cloudSave();" style="text-align:right">' +
+    '<input type="number" id="customCost_'+safeId+'" class="bud-m" data-cat="'+catId+'" placeholder="0" oninput="calcBudget(this);saveToLocal();if(typeof cloudSaveDebounced===\'function\')cloudSaveDebounced();" style="text-align:right">' +
     '<input type="number" id="customAnnual_'+safeId+'" class="bud-a" placeholder="0" oninput="calcBudget(this)" style="text-align:right">';
   document.getElementById('customList_'+catId).appendChild(div);
 }
@@ -4832,7 +4874,7 @@ function calcSpouseSsBenefit() {
   var deanNoteEl = document.getElementById('deanSsNote');
   if(deanNoteEl) deanNoteEl.textContent = deanNote;
 
-  state.spouseSsMonthly = spouseFinal;
+  state.spouseSsMonthly = document.getElementById('planCouple')?.checked ? spouseFinal : 0;
   state.deanSsFinal = deanFinal;
 }
 
@@ -5064,6 +5106,15 @@ function calcProjections() {
   var _bPS401k = document.getElementById('bonusProfitShare401k')?.checked ? (parseFloat(document.getElementById('bonusProfitShare')?.value)||0) : 0;
   var _bRSU401k = document.getElementById('bonusRSU401k')?.checked ? (parseFloat(document.getElementById('bonusRSU')?.value)||0) : 0;
   var bonusContrib401k = _b401k + _bRet401k + _bSign401k + _bPS401k + _bRSU401k;
+  // Dean 403b contributions
+  var contrib403bP = Math.min((parseFloat(document.getElementById('contrib403b')?.value)||0)/100, 1);
+  var _b403b = document.getElementById('bonus403b')?.checked ? (parseFloat(document.getElementById('bonus')?.value)||0) : 0;
+  var _bRet403b = document.getElementById('bonusRetention403b')?.checked ? (parseFloat(document.getElementById('bonusRetention')?.value)||0) : 0;
+  var _bSign403b = document.getElementById('bonusSignOn403b')?.checked ? (parseFloat(document.getElementById('bonusSignOn')?.value)||0) : 0;
+  var _bPS403b = document.getElementById('bonusProfitShare403b')?.checked ? (parseFloat(document.getElementById('bonusProfitShare')?.value)||0) : 0;
+  var _bRSU403b = document.getElementById('bonusRSU403b')?.checked ? (parseFloat(document.getElementById('bonusRSU')?.value)||0) : 0;
+  var bonusContrib403b = _b403b + _bRet403b + _bSign403b + _bPS403b + _bRSU403b;
+  var totalContrib403b = (salary * contrib403bP) + bonusContrib403b;
   // Spouse bonus 401k
   var _sb401k = document.getElementById('spouseBonus401k')?.checked ? (parseFloat(document.getElementById('spouseBonus')?.value)||0) : 0;
   var _sbPS401k = document.getElementById('spouseBonusProfitShare401k')?.checked ? (parseFloat(document.getElementById('spouseBonusProfitShare')?.value)||0) : 0;
@@ -5071,7 +5122,14 @@ function calcProjections() {
   var _sbSign401k = document.getElementById('spouseBonusSignOn401k')?.checked ? (parseFloat(document.getElementById('spouseBonusSignOn')?.value)||0) : 0;
   var _sbRSU401k = document.getElementById('spouseBonusRSU401k')?.checked ? (parseFloat(document.getElementById('spouseBonusRSU')?.value)||0) : 0;
   var spouseBonusContrib401k = _sb401k + _sbPS401k + _sbRet401k + _sbSign401k + _sbRSU401k;
-  var annualContrib = (salary * contrib401k) + (salary * contribRoth401P) + (salary * Math.min(empMatch, matchCap || empMatch)) + contribRothIRA + contribTaxable + contrib401kDollarP + spouseContribP + spouseContrib401kDollarP + bonusContrib401k + spouseBonusContrib401k;
+  // Densie 403b contributions
+  var spouseContrib403bP = Math.min((parseFloat(document.getElementById('spouseContrib403b')?.value)||0)/100, 1);
+  var _sb403b = document.getElementById('spouseBonus403b')?.checked ? (parseFloat(document.getElementById('spouseBonus')?.value)||0) : 0;
+  var _sbPS403b = document.getElementById('spouseBonusProfitShare403b')?.checked ? (parseFloat(document.getElementById('spouseBonusProfitShare')?.value)||0) : 0;
+  var _sbRSU403b = document.getElementById('spouseBonusRSU403b')?.checked ? (parseFloat(document.getElementById('spouseBonusRSU')?.value)||0) : 0;
+  var spouseBonusContrib403b = _sb403b + _sbPS403b + _sbRSU403b;
+  var spouseTotalContrib403b = (spouseSalaryP * spouseContrib403bP) + spouseBonusContrib403b;
+  var annualContrib = (salary * contrib401k) + (salary * contribRoth401P) + (salary * Math.min(empMatch, matchCap || empMatch)) + contribRothIRA + contribTaxable + contrib401kDollarP + spouseContribP + spouseContrib401kDollarP + bonusContrib401k + spouseBonusContrib401k + totalContrib403b + spouseTotalContrib403b;
 
   var yearsToRetire = Math.max(retireAge - age, 0);
   var labels = [], values = [], contribLine = [];
@@ -5137,7 +5195,7 @@ function calcProjections() {
   var mi = document.getElementById('projMonthlyIncome');
   if(mi) mi.textContent = '$' + monthlyIncome.toLocaleString() + '/mo';
   // SS income at retirement
-  var ssAtRetirement = (state.ssMonthly || 0) + (state.spouseSsMonthly || 0);
+  var ssAtRetirement = (state.ssMonthly || 0) + (isCouple ? (state.spouseSsMonthly || 0) : 0);
   var projSS = document.getElementById('projSSIncome');
   if(projSS) {
     if(ssAtRetirement > 0) {
@@ -5691,6 +5749,7 @@ function loadInsurancePolicies(data) {
 
 // ── MONTE CARLO SIMULATION ──────────────────────────────────────────
 function runMonteCarlo() {
+  var isCouple = document.getElementById('planCouple')?.checked || false;
   var portfolio = state.portfolioAtRetirement || 0;
   if(portfolio <= 0) {
     document.getElementById('mcCard').style.display = 'none';
@@ -5710,7 +5769,7 @@ function runMonteCarlo() {
   }
 
   // Monthly SS + additional income
-  var ssMonthly = (state.ssMonthly || 0) + (state.spouseSsMonthly || 0);
+  var ssMonthly = (state.ssMonthly || 0) + (isCouple ? (state.spouseSsMonthly || 0) : 0);
   var additionalIncome = state.additionalMonthly || 0;
   var monthlyNonPortfolio = ssMonthly + additionalIncome;
   var monthlyDraw = Math.max(monthlyExpenses - monthlyNonPortfolio, 0);
@@ -5838,7 +5897,10 @@ function calcReadiness() {
   var balCash = parseFloat(document.getElementById('balCash')?.value) || 0;
   var savingsRate = (parseFloat(document.getElementById('savingsRate')?.value) || 4.5) / 100;
   var balCashGrown = balCash * Math.pow(1 + savingsRate, yearsToRetire);
-  var totalNow = bal401k + balRoth401 + balRothIRA + balTaxable + balHSA + balCash; // current net worth includes cash
+  var _allInvIds = ['bal401k','balRoth401','bal403b','balRothIRA','balTaxable','balHSA','balCash','balESPP','balRolloverIRA','balTradIRA','balDeferredComp','balPension','balAnnuity',
+    'spouseBal401k','spouseBalRoth401','spouseBal403b','spouseBalRothIRA','spouseBalTaxable','spouseBalHSA','spouseBalCash','spouseBalESPP','spouseBalRolloverIRA','spouseBalTradIRA','spouseBalDeferredComp','spouseBalPension','spouseBalAnnuity'];
+  var totalNow = 0;
+  _allInvIds.forEach(function(id){ totalNow += parseFloat(document.getElementById(id)?.value)||0; }); // all investment accounts
 
   var salary = parseFloat(document.getElementById('salary')?.value) || state.salary || 0;
   if(!salary) {
@@ -6949,9 +7011,12 @@ function updateSnapshot() {
   var balTaxable = parseFloat(document.getElementById('balTaxable')?.value) || 0;
   var balHSA = parseFloat(document.getElementById('balHSA')?.value) || 0;
   var balCash = parseFloat(document.getElementById('balCash')?.value) || 0;
-  var totalNow = bal401k + balRoth401 + balRothIRA + balTaxable + balHSA + balCash;
+  var _sbAllIds = ['bal401k','balRoth401','bal403b','balRothIRA','balTaxable','balHSA','balCash','balESPP','balRolloverIRA','balTradIRA','balDeferredComp','balPension','balAnnuity',
+    'spouseBal401k','spouseBalRoth401','spouseBal403b','spouseBalRothIRA','spouseBalTaxable','spouseBalHSA','spouseBalCash','spouseBalESPP','spouseBalRolloverIRA','spouseBalTradIRA','spouseBalDeferredComp','spouseBalPension','spouseBalAnnuity'];
+  var totalNow = 0;
+  _sbAllIds.forEach(function(id){ totalNow += parseFloat(document.getElementById(id)?.value)||0; });
 
-  // Spouse balances
+  // Spouse balances (kept for netWorth calc below)
   var spBal401k = parseFloat(document.getElementById('spouseBal401k')?.value) || 0;
   var spBalRoth = parseFloat(document.getElementById('spouseBalRoth401')?.value) || 0;
   var spBalIRA = parseFloat(document.getElementById('spouseBalRothIRA')?.value) || 0;
@@ -7023,7 +7088,7 @@ function updateSnapshot() {
   // Net Worth = investable portfolio + spouse portfolio + home equity + vehicles + other assets - debts
   var homeValue = parseFloat(document.getElementById('homeValue')?.value) || 0;
   var mortgage = parseFloat(document.getElementById('mortgageBalance')?.value) || 0;
-  var vehicle = parseFloat(document.getElementById('vehicleValue')?.value) || 0;
+  var vehicle = 0; document.querySelectorAll('[id^="vehicleValue_"]').forEach(function(el){ vehicle += parseFloat(el.value)||0; });
   var otherAssets = parseFloat(document.getElementById('otherAssets')?.value) || 0;
   var homeEquity = homeValue - mortgage;
   var secondHomeValue = parseFloat(document.getElementById('secondHomeValue')?.value) || 0;
@@ -7056,6 +7121,47 @@ function updateSnapshot() {
 
   var sbEquity = document.getElementById('sb-equity');
   if(sbEquity) sbEquity.textContent = homeEquity > 0 ? fmt(homeEquity) : homeValue > 0 ? fmt(homeEquity) : '—';
+
+  // Update new sidebar fields
+  var sbHomeEquity = document.getElementById('sb-homeequity');
+  if(sbHomeEquity) {
+    var _totalPropEquity = 0;
+    document.querySelectorAll('.property-row').forEach(function(row){
+      var pv = parseFloat(row.querySelector('.prop-value')?.value)||0;
+      var pm = parseFloat(row.querySelector('.prop-mortgage')?.value)||0;
+      _totalPropEquity += Math.max(0, pv - pm);
+    });
+    sbHomeEquity.textContent = _totalPropEquity > 0 ? fmt(_totalPropEquity) : '—';
+  }
+
+  // Net Worth at Retirement = portfolio + all properties appreciated
+  var sbNWRet = document.getElementById('sb-nw-ret');
+  if(sbNWRet && portfolio > 0) {
+    var _appRate = parseFloat(document.getElementById('homeApprecRate')?.value) || 3;
+    var _yrs = Math.max(0, retAge - age);
+    var _projPropEq = 0;
+    document.querySelectorAll('.property-row').forEach(function(row){
+      var pv = parseFloat(row.querySelector('.prop-value')?.value)||0;
+      var pm = parseFloat(row.querySelector('.prop-mortgage')?.value)||0;
+      var eq = Math.max(0, pv - pm);
+      _projPropEq += eq * Math.pow(1 + _appRate/100, _yrs);
+    });
+    sbNWRet.textContent = fmt(portfolio + _projPropEq);
+  }
+
+  var sbCurrentNW = document.getElementById('sb-currentnw');
+  if(sbCurrentNW) {
+    var _propEq = 0;
+    document.querySelectorAll('.property-row').forEach(function(row){
+      var pv = parseFloat(row.querySelector('.prop-value')?.value)||0;
+      var pm = parseFloat(row.querySelector('.prop-mortgage')?.value)||0;
+      _propEq += Math.max(0, pv - pm);
+    });
+    var _vehTotal = 0;
+    document.querySelectorAll('[id^="vehicleValue_"]').forEach(function(el){ _vehTotal += parseFloat(el.value)||0; });
+    var _trueNW = totalNow + _propEq + _vehTotal;
+    sbCurrentNW.textContent = _trueNW > 0 ? fmt(_trueNW) : '—';
+  }
 }
 
 function recalc() {
@@ -7263,7 +7369,7 @@ function applyWiPreset(preset) {
 
   if(preset === 'retire2') { document.getElementById('wi-retAge').value = retAge + 2; }
   else if(preset === 'retire5') { document.getElementById('wi-retAge').value = retAge + 5; }
-  else if(preset === 'ss70') { document.getElementById('wi-retAge').value = 70; }
+  else if(preset === 'ss70') { /* Claim SS at 70 - use age-70 benefit in What-If */ var _ss70val = parseFloat(document.getElementById('ss70')?.value) || parseFloat(document.getElementById('est-ss70')?.textContent?.replace(/[^0-9.]/g,'')) || 0; window._wiSsOverride = _ss70val; }
   else if(preset === 'save500') { document.getElementById('wi-extraSavings').value = 500; }
   else if(preset === 'spend20') { document.getElementById('wi-spending').value = Math.round(spending * 0.8); }
   else if(preset === 'parttime') { document.getElementById('wi-parttime').value = 2000; }
@@ -7272,6 +7378,7 @@ function applyWiPreset(preset) {
 }
 
 function resetWiScenario() {
+  window._wiSsOverride = 0;
   ['wi-retAge','wi-ror','wi-extraSavings','wi-spending','wi-parttime','wi-windfall'].forEach(function(id){
     var el = document.getElementById(id);
     if(el) el.value = '';
@@ -7322,8 +7429,9 @@ function calcWhatIf() {
     baseAnnualContrib += spSal * spContrib;
   }
 
-  // SS income
-  var ssIncome = (state.ssMonthly||0) + (state.spouseSsMonthly||0) + (state.childSsMonthly||0);
+  // SS income - check for What-If SS override (e.g. delay to 70)
+  var wiSsOverride = window._wiSsOverride || 0;
+  var ssIncome = (wiSsOverride > 0 ? wiSsOverride : (state.ssMonthly||0)) + (state.spouseSsMonthly||0) + (state.childSsMonthly||0);
 
   // ── CURRENT PLAN ──
   var curYears = Math.max(0, baseRetAge - currentAge);
@@ -8527,7 +8635,7 @@ function updateSummary() {
     totalMortgages += mort;
   });
 
-  var assetVehicles = getVal('vehicleValue') || 0;
+  var assetVehicles = 0; document.querySelectorAll('[id^="vehicleValue_"]').forEach(function(el){ assetVehicles += parseFloat(el.value)||0; });
   var otherAssets = getVal('otherAssets') || 0;
   var personalProp = assetVehicles + otherAssets;
 
@@ -9218,6 +9326,9 @@ function updateAuthUI() {
 }
 
 function toggleAuthModal() {
+  // Clear password fields for security on every modal close
+  var _pw = document.getElementById('authPassword'); if(_pw) _pw.value = '';
+  var _pwc = document.getElementById('authConfirmPassword'); if(_pwc) _pwc.value = '';
   var modal = document.getElementById('authModal');
   if(!modal) return;
   var isOpen = modal.style.display === 'flex';
@@ -9293,6 +9404,9 @@ async function submitAuth() {
     } else if(_authMode === 'signup' && !result.data.session) {
       showAuthError('Check your email to confirm your account, then sign in.');
     } else {
+      // Clear password fields for security
+      var _pw = document.getElementById('authPassword'); if(_pw) _pw.value = '';
+      var _pwc = document.getElementById('authConfirmPassword'); if(_pwc) _pwc.value = '';
       toggleAuthModal();
     }
   } catch(e) {
@@ -9338,6 +9452,11 @@ async function signOut() {
   location.reload();
 }
 
+var _cloudSaveTimer = null;
+function cloudSaveDebounced() {
+  if(_cloudSaveTimer) clearTimeout(_cloudSaveTimer);
+  _cloudSaveTimer = setTimeout(function(){ cloudSave(); }, 2000);
+}
 async function cloudSave() {
   if(!_pageLoadedClean) {
     console.warn('MyYolk: skipping cloud save — page did not load cleanly');
@@ -9356,8 +9475,8 @@ async function cloudSave() {
   if(typeof window._maxKnownInsCount === 'undefined') window._maxKnownInsCount = 0;
   if(nowSubs > window._maxKnownSubCount) window._maxKnownSubCount = nowSubs;
   if(nowIns > window._maxKnownInsCount) window._maxKnownInsCount = nowIns;
-  if((window._maxKnownSubCount >= 3 && nowSubs === 0) || (window._maxKnownInsCount >= 1 && nowIns === 0)) {
-    console.warn('MyYolk: aborting cloud save — custom rows dropped to zero (data integrity protection)');
+  if((window._maxKnownSubCount >= 3 && nowSubs < window._maxKnownSubCount) || (window._maxKnownInsCount >= 1 && nowIns < window._maxKnownInsCount)) {
+    console.warn('MyYolk: aborting cloud save — row count dropped from known maximum (data integrity protection)');
     return;
   }
   try {
@@ -9370,7 +9489,7 @@ async function cloudSave() {
     } else {
       result = await _sb.from('user_data').insert({ user_id: _sbUser.id, data: data });
     }
-    if(result.error) { console.warn('Cloud save error:', result.error); saveToLocal(); return; }
+    if(result.error) { console.warn('Cloud save error:', result.error); return; }
     var ind = document.getElementById('saveIndicator');
     if(ind) { ind.textContent = '☁️ Saved'; ind.style.opacity = '1'; setTimeout(function(){ ind.style.opacity='0'; }, 2000); }
   } catch(e) {
@@ -9391,6 +9510,28 @@ async function cloudLoad() {
   } catch(e) {}
   // Mark cloud load as complete — safe to auto-save now
   _cloudLoaded = true;
+  /// Seed integrity guard from DOM after cloud load -- covers all dynamic row types
+  // Initialize all counters to 0 for new accounts so saves aren't blocked
+  if(typeof window._maxKnownSubCount === 'undefined') window._maxKnownSubCount = 0;
+  if(typeof window._maxKnownInsCount === 'undefined') window._maxKnownInsCount = 0;
+  if(typeof window._maxKnownCCCount === 'undefined') window._maxKnownCCCount = 0;
+  if(typeof window._maxKnownCarCount === 'undefined') window._maxKnownCarCount = 0;
+  if(typeof window._maxKnownPropCount === 'undefined') window._maxKnownPropCount = 0;
+  if(typeof window._maxKnownVehCount === 'undefined') window._maxKnownVehCount = 0;
+  setTimeout(function(){
+    var s=document.querySelectorAll('[id^="budSub_"]').length;
+    var ins=document.querySelectorAll('.ins-policy-row').length;
+    var cc=document.querySelectorAll('[id^="ccRow_"]').length;
+    var car=document.querySelectorAll('[id^="debtRow_car_"]').length;
+    var props=document.querySelectorAll('.property-row').length;
+    var veh=document.querySelectorAll('[id^="vehicle_"]').length;
+    if(s>0) window._maxKnownSubCount=Math.max(window._maxKnownSubCount||0,s);
+    if(ins>0) window._maxKnownInsCount=Math.max(window._maxKnownInsCount||0,ins);
+    if(cc>0) window._maxKnownCCCount=Math.max(window._maxKnownCCCount||0,cc);
+    if(car>0) window._maxKnownCarCount=Math.max(window._maxKnownCarCount||0,car);
+    if(props>0) window._maxKnownPropCount=Math.max(window._maxKnownPropCount||0,props);
+    if(veh>0) window._maxKnownVehCount=Math.max(window._maxKnownVehCount||0,veh);
+  }, 1000);
   if(typeof calcBudgetHealthCheck === "function") calcBudgetHealthCheck();
   var _fn = document.getElementById('firstName')?.value||'';
   var _sn = document.getElementById('spouseFirstName')?.value||'';
@@ -9481,6 +9622,7 @@ function collectAllData() {
     if(!id || isNaN(id)) return;
     vehicleRows.push({
       name:    document.getElementById('vehicleName_'+id)?.value||'',
+      value:   document.getElementById('vehicleValue_'+id)?.value||'',
       ins:     document.getElementById('vehicleIns_'+id)?.value||'',
       maint:   document.getElementById('vehicleMaint_'+id)?.value||'',
       wash:    document.getElementById('vehicleWash_'+id)?.value||'',
@@ -9514,6 +9656,20 @@ function collectAllData() {
     });
   });
   data['__ccRows'] = JSON.stringify(ccRows);
+  // Save dynamic debt rows
+  ['car','student','personal','other'].forEach(function(type){
+    var rows = [];
+    document.querySelectorAll('[id^="debtRow_'+type+'_"]').forEach(function(row){
+      var id = row.id.replace('debtRow_'+type+'_','');
+      rows.push({
+        name: document.getElementById('debtName_'+type+'_'+id)?.value||'',
+        payment: document.getElementById('debtPayment_'+type+'_'+id)?.value||'',
+        balance: document.getElementById('debtBalance_'+type+'_'+id)?.value||'',
+        payoff: document.getElementById('debtPayoff_'+type+'_'+id)?.value||''
+      });
+    });
+    data['__debtRows_'+type] = JSON.stringify(rows);
+  });
   // Custom budget items per category
   var customCats = ['housing','transport','food','health','profsvc','education','lifestyle','insurance'];
   customCats.forEach(function(catId) {
@@ -9800,6 +9956,7 @@ function loadFromLocal() {
             addVehicle();
             var id = vehicleCount;
             if(document.getElementById('vehicleName_'+id)) document.getElementById('vehicleName_'+id).value = rd.name;
+            if(document.getElementById('vehicleValue_'+id)) document.getElementById('vehicleValue_'+id).value = rd.value||'';
             if(document.getElementById('vehicleIns_'+id)) document.getElementById('vehicleIns_'+id).value = rd.ins;
             if(document.getElementById('vehicleMaint_'+id)) document.getElementById('vehicleMaint_'+id).value = rd.maint;
             if(document.getElementById('vehicleWash_'+id)) document.getElementById('vehicleWash_'+id).value = rd.wash;
@@ -9848,6 +10005,29 @@ function loadFromLocal() {
         }
       } catch(e) {}
     }
+    // Restore dynamic debt rows
+    ['car','student','personal','other'].forEach(function(type){
+      var key = '__debtRows_'+type;
+      if(data[key]) {
+        try {
+          var rows = JSON.parse(data[key]);
+          var containers = {car:'carLoanRows',student:'studentLoanRows',personal:'personalLoanRows',other:'otherDebtRows'};
+          var container = document.getElementById(containers[type]);
+          if(container && rows.length > 0) {
+            container.innerHTML = '';
+            debtRowCounts[type] = 0;
+            rows.forEach(function(rd){
+              addDebtRow(type);
+              var id = debtRowCounts[type];
+              var n=document.getElementById('debtName_'+type+'_'+id); if(n) n.value=rd.name||'';
+              var p=document.getElementById('debtPayment_'+type+'_'+id); if(p) p.value=rd.payment||'';
+              var b=document.getElementById('debtBalance_'+type+'_'+id); if(b) b.value=rd.balance||'';
+              var o=document.getElementById('debtPayoff_'+type+'_'+id); if(o&&rd.payoff) o.value=rd.payoff;
+            });
+          }
+        } catch(e) {}
+      }
+    });
     // Restore custom budget items
     var customCats = ['housing','transport','food','health','profsvc','education','lifestyle','insurance'];
     customCats.forEach(function(catId) {
@@ -9955,6 +10135,7 @@ function loadFromLocal() {
       if(isCouple) row.classList.add('has-owner');
     });
   } catch(e) { console.warn('Load failed:', e); }
+  // cloudLoad end
 }
 
 function clearSavedData() {
