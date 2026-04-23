@@ -106,7 +106,7 @@
   }
 
   .hero-badge {
-    margin-top: 1rem;
+    margin-top: 1.75rem;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -831,8 +831,11 @@
   <div class="hero-inner">
     <div class="hero-left">
       <div class="hero-badge">🥚 Retirement Planning for Real Life</div>
-      <h1>Protect<br><em>the good stuff.</em></h1>
-      <p class="hero-sub">Know exactly where you stand today — so you can get to where you want to be tomorrow. Built for people whose compensation is more than just a salary.</p>
+      <h1>You've worked hard<br><em>for everything you have.</em></h1>
+      <p class="hero-sub">MyYolk is the only retirement planning engine with a full budget tracker built in — so your spending, your income, and your retirement number all live in one place. Whether your compensation is simple or complex, MyYolk shows you exactly where you stand and what it takes to protect the good stuff.</p>
+      <div style="background:#fff8e1;border:1px solid #C8860A;border-radius:12px;padding:1rem 1.5rem;margin:1.5rem 0;max-width:600px;font-size:0.95rem;color:#2D4A35;line-height:1.6">
+        <strong>📊 Budget tracking built right in.</strong> Most people juggle a budgeting app AND a retirement calculator — and they never talk to each other. MyYolk connects both. Your real spending feeds your real retirement number. Change one, see the other update instantly.
+      </div>
       <div class="hero-buttons">
         <a href="myyolk-app.html" class="btn-hero-primary">Start for free →</a>
         <a href="#features" class="btn-hero-secondary">See how it works</a>
@@ -899,6 +902,15 @@
 </section>
 
 <!-- FEATURES -->
+<section style="background:#2D4A35;color:#fff;padding:3.5rem 1.5rem;text-align:center">
+  <div style="max-width:700px;margin:0 auto">
+    <p style="font-size:1.2rem;font-weight:700;color:#F5A623;margin-bottom:0.75rem;font-style:italic">MyYolk doesn't connect to your bank. It connects to your brain.</p>
+    <h2 style="font-size:1.6rem;font-weight:800;margin-bottom:1rem;color:#fff">We don't connect to your bank.<br>Here's why that makes us better.</h2>
+    <p style="font-size:1rem;line-height:1.7;color:#c8d8c0;margin-bottom:1rem">Mint connected to your accounts and showed you what <em>already happened</em>. MyYolk shows you what <em>will</em> happen — retirement projections, Social Security optimization, income scenario modeling, and budget tracking that no transaction feed can give you. Your data stays in your hands, on your terms. No Plaid. No breach risk. No surprises.</p>
+    <p style="font-size:1.05rem;color:#F5A623;font-weight:700;font-style:italic">Mint shut down. Your plan shouldn't.</p>
+  </div>
+</section>
+
 <section class="features" id="features">
   <div class="section-header fade-in">
     <div class="section-label">Features</div>
@@ -908,7 +920,7 @@
   <div class="features-grid">
     <div class="feature-card fade-in">
       <div class="feature-icon">💰</div>
-      <div class="feature-title">Complex Pay, Simplified</div>
+      <div class="feature-title">Built for the Income Calculators Ignore</div>
       <p class="feature-desc">Handles bonuses, stock plans, 401k matching, and every other piece of your compensation — the stuff other tools ignore.</p>
     </div>
     <div class="feature-card fade-in">
@@ -933,8 +945,23 @@
     </div>
     <div class="feature-card fade-in">
       <div class="feature-icon">☁️</div>
-      <div class="feature-title">Saves to the Cloud</div>
-      <p class="feature-desc">Create a free account and your plan syncs across every device. Phone, tablet, laptop — always in sync.</p>
+      <div class="feature-title">Budget Tracker Built Right In</div>
+      <p class="feature-desc">Not a separate app. Your real monthly spending feeds your real retirement number. Change one, see the other update instantly.</p>
+    </div>
+    <div class="feature-card fade-in">
+      <div class="feature-icon">🎲</div>
+      <div class="feature-title">Monte Carlo Probability Engine</div>
+      <p class="feature-desc">Most calculators give you one number. MyYolk runs 1,000 market scenarios to show your real probability of retirement success — because markets don't move in straight lines.</p>
+    </div>
+    <div class="feature-card fade-in">
+      <div class="feature-icon">👫</div>
+      <div class="feature-title">Spouse & Household Planning</div>
+      <p class="feature-desc">Two incomes, two Social Securities, one unified plan. Model your household retirement together — not as two separate people.</p>
+    </div>
+    <div class="feature-card fade-in">
+      <div class="feature-icon">📄</div>
+      <div class="feature-title">PDF Retirement Report</div>
+      <p class="feature-desc">Your complete retirement plan in one downloadable document. Share it, save it, or bring it to a conversation with an advisor.</p>
     </div>
   </div>
 </section>
@@ -944,7 +971,7 @@
   <div class="audience-inner">
     <div class="fade-in">
       <div class="section-label">Built For You</div>
-      <h2>Whether you're 25 and getting a head start, or 45 and getting serious — this was built for you.</h2>
+      <h2>Your retirement plan is only as good as the income and budget it's built on. Most tools get one or the other. MyYolk gets both — and connects them.</h2>
       <ul class="audience-list">
         <li>Whether your compensation is simple or complicated, this handles it</li>
         <li>You're 45–60 and starting to think seriously about retirement</li>
@@ -1061,7 +1088,7 @@
     <div class="pricing-card">
       <div class="pricing-tier">Free Forever</div>
       <div class="pricing-price">$0</div>
-      <div class="pricing-period">No credit card needed</div>
+      <div class="pricing-period">No credit card needed — most retirement calculators stop here. MyYolk goes further.</div>
       <ul class="pricing-features">
         <li><span>✓</span> Full retirement projection</li>
         <li><span>✓</span> Readiness score</li>
@@ -1082,7 +1109,7 @@
   <button onclick="setPricing('annual')" id="lp-annual-btn" style="padding:0.35rem 1rem;border-radius:20px;border:1.5px solid #fff;background:transparent;color:#fff;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:inherit">Annual <span style="background:#C8860A;color:#fff;font-size:0.7rem;padding:1px 6px;border-radius:10px;margin-left:4px">Save 45%</span></button>
 </div>
 <div class="pricing-price" id="lp-price">$14.99</div>
-      <div class="pricing-period"><span id="lp-period">per month · cancel anytime</span></div>
+      <div class="pricing-period"><span id="lp-period">per month · cancel anytime — a financial advisor charges $2,000–$5,000/yr</span></div>
       <ul class="pricing-features">
         <li><span>✓</span> Full retirement projection</li>
         <li><span>✓</span> Readiness score</li>
@@ -1166,7 +1193,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-copy">© 2025 MyYolk™ — Protect the Good Stuff. All rights reserved.</div>
+  <div class="footer-copy">© 2026 MyYolk™ — Protect the Good Stuff. All rights reserved.</div>
   <div class="footer-links" style="padding-right:3rem">
     <a href="myyolk-app.html">Open App</a>
     <a href="mailto:support@myyolk.com">Contact</a>
