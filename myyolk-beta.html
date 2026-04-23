@@ -3898,7 +3898,7 @@
         <div style="font-size:0.85rem;color:#666;margin-bottom:1.5rem">Download your complete retirement plan as a PDF to save, print, or share with a financial advisor.</div>
         <button onclick="generatePDF(this)" style="padding:12px 32px;background:#C8860A;color:#fff;border:none;border-radius:12px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">📄 Download My Plan</button>
         <div style="font-size:0.75rem;color:#999;margin-top:0.75rem">One-time purchase · Instant download · Your data stays private</div>
-        <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid #eee"><button onclick="clearData()" style="background:none;border:none;color:#c96a3a;font-family:DM Sans,sans-serif;font-size:0.8rem;cursor:pointer;text-decoration:underline">🗑️ Clear all my saved data</button></div>
+        <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid #eee"><button onclick="if(confirm('This will permanently delete all your saved data. Are you sure?')) clearData();" style="background:none;border:none;color:#c96a3a;font-family:DM Sans,sans-serif;font-size:0.8rem;cursor:pointer;text-decoration:underline">🗑️ Clear all my saved data</button></div>
       </div>
 
       <div class="btn-row">
@@ -5749,6 +5749,7 @@ function loadInsurancePolicies(data) {
 
 // ── MONTE CARLO SIMULATION ──────────────────────────────────────────
 function runMonteCarlo() {
+  var isCouple = document.getElementById('planCouple')?.checked || false;
   var portfolio = state.portfolioAtRetirement || 0;
   if(portfolio <= 0) {
     document.getElementById('mcCard').style.display = 'none';
@@ -9323,6 +9324,9 @@ function updateAuthUI() {
 }
 
 function toggleAuthModal() {
+  // Clear password fields for security on every modal close
+  var _pw = document.getElementById('authPassword'); if(_pw) _pw.value = '';
+  var _pwc = document.getElementById('authConfirmPassword'); if(_pwc) _pwc.value = '';
   var modal = document.getElementById('authModal');
   if(!modal) return;
   var isOpen = modal.style.display === 'flex';
