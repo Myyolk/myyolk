@@ -1581,7 +1581,7 @@
     <button id="authBtn" onclick="toggleAuthModal()" style="font-size:0.8rem;font-weight:600;background:none;border:1.5px solid rgba(255,255,255,0.6);border-radius:8px;padding:5px 14px;cursor:pointer;color:#fff;font-family:DM Sans,sans-serif">Sign In</button>
   </div>
 </header>
-<div id="testerBanner" style="background:#2D4A35;color:#fff;text-align:center;padding:8px 1rem;font-family:sans-serif;font-size:0.78rem;width:100%;box-sizing:border-box;position:fixed;top:80px;z-index:98;left:0;right:0">&#x1F9EA; <strong>Tester Mode</strong> - All Pro features unlocked. After launch some features require Pro subscription. <a href="#" onclick="document.getElementById('testerBanner').style.display='none';return false;" style="color:#F0A500;margin-left:1rem">Dismiss x</a></div>
+<div id="testerBanner" style="background:#2D4A35;color:#fff;text-align:center;padding:8px 1rem;font-family:sans-serif;font-size:0.78rem;width:100%;box-sizing:border-box;position:sticky;top:56px;z-index:98">&#x1F9EA; <strong>Tester Mode</strong> - All Pro features unlocked. After launch some features require Pro subscription. <a href="#" onclick="document.getElementById('testerBanner').style.display='none';return false;" style="color:#F0A500;margin-left:1rem">Dismiss x</a></div>
 
 
 <!-- WELCOME MODAL -->
@@ -1701,7 +1701,7 @@
   </div>
 </div>
 
-<div class="app" style="padding-top:36px;margin-top:0">
+<div class="app" style="padding-top:36px">
 
   <!-- SIDEBAR -->
   <nav class="sidebar">
@@ -3396,7 +3396,7 @@
       <div class="proj-summary">
         <div class="proj-stat">
           <div class="proj-stat-value" id="projFinalValue">—</div>
-          <div class="proj-stat-label">Projected Portfolio at Retirement <span style="font-size:0.72rem;color:var(--mid);font-style:italic;font-weight:400">(investments & savings only)</span></div>
+          <div class="proj-stat-label">Projected Portfolio at Retirement</div>
             <div id="projPortNote" style="font-size:0.72rem;color:var(--mid);margin-top:2px">investments only — excludes home</div>
         </div>
         <div class="proj-stat">
@@ -3625,6 +3625,25 @@
       </div>
 
       <!-- Side by side: Adjust + Results -->
+
+      <!-- LIFE EVENTS -->
+      <div class="card" style="margin-top:1.5rem">
+        <div class="card-title"><span class="dot"></span> 🎯 Life Events</div>
+        <p style="font-size:0.88rem;color:var(--mid);margin-bottom:1.25rem">Model one-time or multi-year events that will impact your finances — weddings, inheritance, medical costs, career changes, and more. Each event adjusts your retirement projection automatically.</p>
+
+        <div id="lifeEventRows">
+          <!-- populated by JS -->
+        </div>
+
+        <button onclick="addLifeEvent()" style="background:var(--sage-pale);color:var(--forest);border:1px solid var(--sage);border-radius:8px;padding:0.5rem 1rem;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;margin-top:0.25rem">+ Add Life Event</button>
+
+        <div id="lifeEventImpact" style="margin-top:1rem;padding:0.75rem;background:var(--warm-white);border-radius:8px;font-size:0.85rem;color:var(--forest);display:none">
+          <strong>Portfolio impact from life events:</strong> <span id="lifeEventTotal" style="color:var(--clay);font-weight:700">$0</span>
+          <div style="font-size:0.78rem;color:var(--mid);margin-top:4px">Negative = money out · Positive = windfall in. These are applied as lump sums in the projection year they occur.</div>
+        </div>
+      </div>
+
+
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
         <!-- Left: Inputs -->
         <div class="card" style="margin-bottom:0">
@@ -3704,7 +3723,6 @@
           </div>
 
           <div id="wi-assessment" style="font-size:0.82rem;color:var(--mid);text-align:center"></div>
-          <div id="wi-le-note" style="display:none;font-size:0.78rem;color:var(--mid);text-align:center;margin-top:0.5rem;font-style:italic">* Life event impacts included in What-If results</div>
         </div>
       </div>
 
@@ -3713,23 +3731,6 @@
         <div id="wi-shareText" style="font-size:1rem;font-weight:600;text-align:center;line-height:1.6"></div>
       </div>
 
-
-      <!-- LIFE EVENTS -->
-      <div class="card" style="margin-top:1.5rem">
-        <div class="card-title"><span class="dot"></span> 🎯 Life Events</div>
-        <p style="font-size:0.88rem;color:var(--mid);margin-bottom:1.25rem">Model one-time or multi-year events that will impact your finances — weddings, inheritance, medical costs, career changes, and more. Each event adjusts your retirement projection automatically.</p>
-
-        <div id="lifeEventRows">
-          <!-- populated by JS -->
-        </div>
-
-        <button onclick="addLifeEvent()" style="background:var(--sage-pale);color:var(--forest);border:1px solid var(--sage);border-radius:8px;padding:0.5rem 1rem;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;margin-top:0.25rem">+ Add Life Event</button>
-
-        <div id="lifeEventImpact" style="margin-top:1rem;padding:0.75rem;background:var(--warm-white);border-radius:8px;font-size:0.85rem;color:var(--forest);display:none">
-          <strong>Portfolio impact from life events:</strong> <span id="lifeEventTotal" style="color:var(--clay);font-weight:700">$0</span>
-          <div style="font-size:0.78rem;color:var(--mid);margin-top:4px">Negative = money out · Positive = windfall in. These are applied as lump sums in the projection year they occur.</div>
-        </div>
-      </div>
 
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="showTab('readiness')">&#8592; Back</button>
@@ -3784,7 +3785,7 @@
           <div class="result-sub">From portfolio + severance</div>
         </div>
         <div class="result-card highlight">
-          <div class="result-label">Est. Portfolio at Retirement <span style="font-size:0.72rem;color:var(--mid);font-style:italic;font-weight:400">(investments & savings only)</span></div>
+          <div class="result-label">Est. Portfolio at Retirement</div>
           <div class="result-value" id="er-portAtRet">$—</div>
           <div class="result-sub">Market growth, no new contributions</div>
         </div>
@@ -3856,7 +3857,7 @@
         <div class="card-title"><span class="dot"></span> Retirement Readiness</div>
         <div class="results-grid">
           <div class="result-card highlight">
-            <div class="result-label">Portfolio at Retirement <span style="font-size:0.72rem;color:var(--mid);font-style:italic;font-weight:400">(investments & savings only)</span></div>
+            <div class="result-label">Portfolio at Retirement</div>
             <div id="portAtRetNote" style="font-size:0.72rem;color:var(--mid);margin-top:2px">investments only — excludes home</div>
             <div class="result-value" id="sumPortfolio">$0</div>
           </div>
@@ -7402,10 +7403,8 @@ function calcWhatIf() {
   var extraSavingsMo = parseFloat(document.getElementById('wi-extraSavings')?.value)||0;
   var parttime = parseFloat(document.getElementById('wi-parttime')?.value)||0;
   var windfall = parseFloat(document.getElementById('wi-windfall')?.value)||0;
-  // Read life event net impact and apply to What-If portfolio
   var leImpactText = document.getElementById('lifeEventTotal')?.textContent || '$0';
   var leImpact = parseFloat(leImpactText.replace(/[$,]/g,'')) || 0;
-  if(isNaN(leImpact)) leImpact = 0;
 
   // Get base spending
   var baseSpending = 0;
@@ -7441,7 +7440,6 @@ function calcWhatIf() {
 
   // ── CURRENT PLAN ──
   var curYears = Math.max(0, baseRetAge - currentAge);
-  // Use state.portfolioAtRetirement if available — it's the authoritative projection
   var curPortfolio = (state.portfolioAtRetirement && state.portfolioAtRetirement > 0)
     ? state.portfolioAtRetirement
     : (function(){ var p = bal; for(var i=0;i<curYears;i++) p=(p+baseAnnualContrib)*(1+baseRor); return p; })();
@@ -7451,7 +7449,6 @@ function calcWhatIf() {
   // ── WHAT-IF PLAN ──
   var wiYears = Math.max(0, wiRetAge - currentAge);
   var wiAnnualContrib = baseAnnualContrib + (extraSavingsMo * 12);
-  // Start from same authoritative base as current plan, grow for additional years
   var wiBasePlan = (state.portfolioAtRetirement && state.portfolioAtRetirement > 0)
     ? state.portfolioAtRetirement
     : curPortfolio;
@@ -7459,7 +7456,7 @@ function calcWhatIf() {
   var wiPortfolio = wiBasePlan;
   for(var j = 0; j < extraYears; j++) wiPortfolio = (wiPortfolio + wiAnnualContrib) * (1 + wiRor);
   wiPortfolio += windfall;
-  wiPortfolio += leImpact; // apply life events net impact
+  wiPortfolio += leImpact;
   // Part-time income reduces draw for first 5 years
   var wiSpendingAdj = wiSpending || baseSpending;
   var wiDraw = (wiPortfolio * 0.04) / 12;
