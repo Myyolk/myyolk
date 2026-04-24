@@ -5195,6 +5195,7 @@ function calcProjections() {
   var mi = document.getElementById('projMonthlyIncome');
   if(mi) mi.textContent = '$' + monthlyIncome.toLocaleString() + '/mo';
   // SS income at retirement
+  var isCouple = document.getElementById('planCouple')?.checked;
   var ssAtRetirement = (state.ssMonthly || 0) + (isCouple ? (state.spouseSsMonthly || 0) : 0);
   var projSS = document.getElementById('projSSIncome');
   if(projSS) {
