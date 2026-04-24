@@ -7505,6 +7505,16 @@ function calcWhatIf() {
   if(el('wi-cur-portfolio')) el('wi-cur-portfolio').textContent = fmt(curPortfolio);
   if(el('wi-cur-draw')) el('wi-cur-draw').textContent = fmtMo(curDraw);
   if(el('wi-cur-lasts')) { el('wi-cur-lasts').textContent = curLasts >= 120 ? 'Age 120+' : 'Age ' + curLasts; el('wi-cur-lasts').style.color = curLasts >= 90 ? 'var(--sage)' : curLasts >= 80 ? '#e67e22' : 'var(--clay)'; }
+  // Only populate What-If column if a scenario is active
+  var hasChanges = window._wiSsOverride || document.getElementById('wi-retAge')?.value || document.getElementById('wi-ror')?.value ||
+    document.getElementById('wi-extraSavings')?.value || document.getElementById('wi-spending')?.value ||
+    document.getElementById('wi-parttime')?.value || document.getElementById('wi-windfall')?.value;
+  if(!hasChanges) {
+    ['wi-new-portfolio','wi-new-draw','wi-new-lasts','wi-delta-portfolio','wi-delta-draw','wi-delta-lasts'].forEach(function(id){
+      var e = document.getElementById(id); if(e) e.textContent = '—';
+    });
+    return;
+  }
   if(el('wi-new-portfolio')) el('wi-new-portfolio').textContent = fmt(wiPortfolio);
   if(el('wi-new-draw')) el('wi-new-draw').textContent = fmtMo(wiDraw);
   if(el('wi-new-lasts')) { el('wi-new-lasts').textContent = wiLasts >= 120 ? 'Age 120+' : 'Age ' + wiLasts; el('wi-new-lasts').style.color = wiLasts >= 90 ? 'var(--sage)' : wiLasts >= 80 ? '#e67e22' : 'var(--clay)'; }
