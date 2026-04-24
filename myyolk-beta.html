@@ -7533,12 +7533,27 @@ function calcWhatIf() {
     if(leImpact !== 0) parts.push((leImpact < 0 ? '-' : '+') + '$' + Math.abs(leImpact).toLocaleString() + ' in life events');
     var scenario = parts.length > 0 ? 'By ' + parts.join(', ') + ', ' : '';
     var drawDiff = Math.round(wiDraw - curDraw);
+    // For spend/parttime: actual spending in retirement changes, not portfolio draw
+    var spendingReduction = Math.round(baseSpending - wiSpendingAdj);
     var outcome;
-    if(deltaPortfolio === 0 && drawDiff === 0 && deltaLasts === 0) {
+    if(deltaPortfolio === 0 && spendingReduction > 0) {
+      // Spending less — show the real retirement impact
+      outcome = wiLasts >= 120 && curLasts >= 120
+        ? 'your retirement spending drops by $' + spendingReduction.toLocaleString() + '/mo — your portfolio already outlives any scenario.'
+        : (deltaLasts > 0 ? 'your money lasts ' + deltaLasts + (deltaLasts === 1 ? ' year longer.' : ' years longer.') : 'your retirement spending drops by $' + spendingReduction.toLocaleString() + '/mo.');
+    } else if(deltaPortfolio === 0 && parttime > 0) {
+      // Part-time income offsets draws
+      outcome = wiLasts >= 120 && curLasts >= 120
+        ? 'part-time income offsets $2,000/mo of draws — your portfolio already outlives any scenario.'
+        : (deltaLasts > 0 ? 'your money lasts ' + deltaLasts + (deltaLasts === 1 ? ' year longer.' : ' years longer.') : 'part-time income reduces your portfolio draws for 5 years.');
+    } else if(deltaPortfolio === 0 && wiSsOverride > 0) {
+      // SS at 70 — higher income means less portfolio draw needed
+      var ssIncrease = Math.round(wiSsOverride - (state.ssMonthly||0));
+      outcome = wiLasts >= 120 && curLasts >= 120
+        ? 'your SS income rises by $' + ssIncrease.toLocaleString() + '/mo — your portfolio already outlives any scenario.'
+        : (deltaLasts > 0 ? 'your money lasts ' + deltaLasts + (deltaLasts === 1 ? ' year longer.' : ' years longer.') : 'higher SS reduces your portfolio draw needs.');
+    } else if(deltaPortfolio === 0 && drawDiff === 0 && deltaLasts === 0) {
       outcome = 'results are the same as your current plan.';
-    } else if(deltaPortfolio === 0 && drawDiff <= 0) {
-      // Spend less / parttime / ss70 — show draw reduction
-      outcome = 'your monthly draw drops by $' + Math.abs(drawDiff).toLocaleString() + '/mo' + (wiLasts >= 120 && curLasts >= 120 ? ', and your money outlives any scenario.' : (deltaLasts > 0 ? ', giving you ' + deltaLasts + (deltaLasts === 1 ? ' year longer.' : ' years longer.') : '.'));
     } else if(deltaPortfolio >= 0) {
       outcome = 'you gain ' + fmt(deltaPortfolio) + ' and ' + (wiLasts >= 120 && curLasts >= 120 ? 'your money outlives any scenario.' : (deltaLasts > 0 ? 'your money lasts ' + deltaLasts + (deltaLasts === 1 ? ' year longer.' : ' years longer.') : 'your money lasts just as long.'));
     } else {
