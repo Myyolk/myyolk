@@ -424,6 +424,9 @@
   .btn-clay:hover { opacity: 0.9; }
 
   .btn-row { display: flex; gap: 0.75rem; margin-top: 1.25rem; flex-wrap: wrap; }
+  .wi-preset-btn { background:var(--sage-pale);border:1px solid var(--sage);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;cursor:pointer;font-weight:600;color:var(--forest);transition:all 0.15s; }
+  .wi-preset-btn:hover { background:var(--sage);color:#fff; }
+  .wi-preset-btn.wi-preset-active { background:var(--forest);color:#fff;border-color:var(--forest); }
 
   /* ── ALERT / CALLOUT ── */
   .callout {
@@ -1573,7 +1576,7 @@
   <div style="display:flex;align-items:center;gap:0.5rem;">
     <span id="saveIndicator" style="font-size:0.75rem;color:#2d6a4f;opacity:0;transition:opacity 0.5s">☁️ Saved</span>
     <button onclick="manuallySave()" title="Save your data to the cloud" style="font-size:0.75rem;font-weight:600;background:#2D4A35;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;color:#fff;font-family:DM Sans,sans-serif">💾 Save</button>
-    <button onclick="clearSavedData()" title="Clear all saved data" style="font-size:0.75rem;background:none;border:1px solid #ddd;border-radius:6px;padding:3px 8px;cursor:pointer;color:#888">Clear Data</button>
+    <button onclick="if(confirm('Clear all saved data? This cannot be undone.')) clearSavedData();" title="Clear all saved data" style="font-size:0.75rem;background:transparent;border:1px solid rgba(255,255,255,0.5);border-radius:6px;padding:4px 10px;cursor:pointer;color:rgba(255,255,255,0.85);font-weight:500">🗑️ Clear Data</button>
   </div>
   <div style="display:flex;align-items:center;gap:0.5rem;margin-left:auto">
 
@@ -1581,7 +1584,7 @@
     <button id="authBtn" onclick="toggleAuthModal()" style="font-size:0.8rem;font-weight:600;background:none;border:1.5px solid rgba(255,255,255,0.6);border-radius:8px;padding:5px 14px;cursor:pointer;color:#fff;font-family:DM Sans,sans-serif">Sign In</button>
   </div>
 </header>
-<div id="testerBanner" style="background:#2D4A35;color:#fff;text-align:center;padding:8px 1rem;font-family:sans-serif;font-size:0.78rem;width:100%;box-sizing:border-box;position:sticky;top:56px;z-index:98">&#x1F9EA; <strong>Tester Mode</strong> - All Pro features unlocked. After launch some features require Pro subscription. <a href="#" onclick="document.getElementById('testerBanner').style.display='none';return false;" style="color:#F0A500;margin-left:1rem">Dismiss x</a></div>
+<div id="testerBanner" style="background:#2D4A35;color:#fff;text-align:center;padding:8px 1rem;font-family:sans-serif;font-size:0.78rem;width:100%;box-sizing:border-box;position:fixed;top:80px;z-index:98;left:0;right:0">&#x1F9EA; <strong>Tester Mode</strong> - All Pro features unlocked. After launch some features require Pro subscription. <a href="#" onclick="document.getElementById('testerBanner').style.display='none';return false;" style="color:#F0A500;margin-left:1rem">Dismiss x</a></div>
 
 
 <!-- WELCOME MODAL -->
@@ -1701,7 +1704,7 @@
   </div>
 </div>
 
-<div class="app">
+<div class="app" style="padding-top:36px">
 
   <!-- SIDEBAR -->
   <nav class="sidebar">
@@ -3613,18 +3616,40 @@
         <div class="card-title"><span class="dot"></span> ⚡ Quick Scenarios</div>
         <p style="font-size:0.85rem;color:var(--mid);margin-bottom:0.75rem">Click any scenario to instantly see the impact vs your current plan.</p>
         <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
-          <button class="wi-preset-btn" onclick="applyWiPreset('retire2')" style="background:var(--sage-pale);border:1px solid var(--sage);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;cursor:pointer;font-weight:600;color:var(--forest)">⏳ Work 2 More Years</button>
-          <button class="wi-preset-btn" onclick="applyWiPreset('retire5')" style="background:var(--sage-pale);border:1px solid var(--sage);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;cursor:pointer;font-weight:600;color:var(--forest)">⏳ Work 5 More Years</button>
-          <button class="wi-preset-btn" onclick="applyWiPreset('ss70')" style="background:#fff8e1;border:1px solid var(--gold);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;cursor:pointer;font-weight:600;color:#856404">💰 Claim SS at 70</button>
-          <button class="wi-preset-btn" onclick="applyWiPreset('save500')" style="background:var(--sage-pale);border:1px solid var(--sage);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;cursor:pointer;font-weight:600;color:var(--forest)">📈 Save $500 More/mo</button>
-          <button class="wi-preset-btn" onclick="applyWiPreset('spend20')" style="background:var(--sage-pale);border:1px solid var(--sage);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;cursor:pointer;font-weight:600;color:var(--forest)">✂️ Spend 20% Less</button>
-          <button class="wi-preset-btn" onclick="applyWiPreset('parttime')" style="background:#f0f4ff;border:1px solid #7c9fd4;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;cursor:pointer;font-weight:600;color:#1e3a5f)">💼 Part-Time 5 Years</button>
-          <button class="wi-preset-btn" onclick="applyWiPreset('windfall')" style="background:#fff8e1;border:1px solid var(--gold);border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;cursor:pointer;font-weight:600;color:#856404">🎁 $100K Windfall</button>
+          <button class="wi-preset-btn" data-preset="retire2" onclick="applyWiPreset('retire2')">⏳ Work 2 More Years</button>
+          <button class="wi-preset-btn" data-preset="retire5" onclick="applyWiPreset('retire5')">⏳ Work 5 More Years</button>
+          <button class="wi-preset-btn" data-preset="ss70" onclick="applyWiPreset('ss70')">💰 Claim SS at 70</button>
+          <button class="wi-preset-btn" data-preset="save500" onclick="applyWiPreset('save500')">📈 Save $500 More/mo</button>
+          <button class="wi-preset-btn" data-preset="spend20" onclick="applyWiPreset('spend20')">✂️ Spend 20% Less</button>
+          <button class="wi-preset-btn" data-preset="parttime" onclick="applyWiPreset('parttime')">💼 Part-Time 5 Years</button>
+          <button class="wi-preset-btn" data-preset="windfall" onclick="applyWiPreset('windfall')">🎁 $100K Inheritance/Bonus</button>
+          <button class="wi-preset-btn" data-preset="retire1" onclick="applyWiPreset('retire1')">⏳ Work 1 More Year</button>
+          <button class="wi-preset-btn" data-preset="save1000" onclick="applyWiPreset('save1000')">📈 Save $1,000 More/mo</button>
+          <button class="wi-preset-btn" data-preset="spend10" onclick="applyWiPreset('spend10')">✂️ Spend 10% Less</button>
           <button onclick="resetWiScenario()" style="background:#f5f5f5;border:1px solid #ddd;border-radius:8px;padding:0.4rem 0.85rem;font-size:0.82rem;cursor:pointer;color:#888">↺ Reset</button>
         </div>
       </div>
 
       <!-- Side by side: Adjust + Results -->
+
+      <!-- LIFE EVENTS -->
+      <div class="card" style="margin-top:1.5rem">
+        <div class="card-title"><span class="dot"></span> 🎯 Life Events</div>
+        <p style="font-size:0.88rem;color:var(--mid);margin-bottom:1.25rem">Model one-time or multi-year events that will impact your finances — weddings, inheritance, medical costs, career changes, and more. Each event adjusts your retirement projection automatically.</p>
+
+        <div id="lifeEventRows">
+          <!-- populated by JS -->
+        </div>
+
+        <button onclick="addLifeEvent()" style="background:var(--sage-pale);color:var(--forest);border:1px solid var(--sage);border-radius:8px;padding:0.5rem 1rem;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;margin-top:0.25rem">+ Add Life Event</button>
+
+        <div id="lifeEventImpact" style="margin-top:1rem;padding:0.75rem;background:var(--warm-white);border-radius:8px;font-size:0.85rem;color:var(--forest);display:none">
+          <strong>Portfolio impact from life events:</strong> <span id="lifeEventTotal" style="color:var(--clay);font-weight:700">$0</span>
+          <div style="font-size:0.78rem;color:var(--mid);margin-top:4px">Negative = money out · Positive = windfall in. These are applied as lump sums in the projection year they occur.</div>
+        </div>
+      </div>
+
+
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
         <!-- Left: Inputs -->
         <div class="card" style="margin-bottom:0">
@@ -3657,7 +3682,7 @@
           <div class="field">
             <label>One-Time Windfall ($)</label>
             <input type="number" id="wi-windfall" placeholder="e.g. 100000" min="0" oninput="calcWhatIf()">
-            <div class="hint">Inheritance, home sale, bonus added at retirement</div>
+            <div class="hint">One-time lump sum added to your portfolio at retirement (inheritance, home sale, bonus, etc.)</div>
           </div>
         </div>
 
@@ -3712,23 +3737,6 @@
         <div id="wi-shareText" style="font-size:1rem;font-weight:600;text-align:center;line-height:1.6"></div>
       </div>
 
-
-      <!-- LIFE EVENTS -->
-      <div class="card" style="margin-top:1.5rem">
-        <div class="card-title"><span class="dot"></span> 🎯 Life Events</div>
-        <p style="font-size:0.88rem;color:var(--mid);margin-bottom:1.25rem">Model one-time or multi-year events that will impact your finances — weddings, inheritance, medical costs, career changes, and more. Each event adjusts your retirement projection automatically.</p>
-
-        <div id="lifeEventRows">
-          <!-- populated by JS -->
-        </div>
-
-        <button onclick="addLifeEvent()" style="background:var(--sage-pale);color:var(--forest);border:1px solid var(--sage);border-radius:8px;padding:0.5rem 1rem;font-family:DM Sans,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;margin-top:0.25rem">+ Add Life Event</button>
-
-        <div id="lifeEventImpact" style="margin-top:1rem;padding:0.75rem;background:var(--warm-white);border-radius:8px;font-size:0.85rem;color:var(--forest);display:none">
-          <strong>Portfolio impact from life events:</strong> <span id="lifeEventTotal" style="color:var(--clay);font-weight:700">$0</span>
-          <div style="font-size:0.78rem;color:var(--mid);margin-top:4px">Negative = money out · Positive = windfall in. These are applied as lump sums in the projection year they occur.</div>
-        </div>
-      </div>
 
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="showTab('readiness')">&#8592; Back</button>
@@ -3805,6 +3813,7 @@
 
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="showTab('whatif')">← Back</button>
+        <button onclick="document.getElementById('er-stopAge').value='';document.getElementById('er-retAge').value='';document.getElementById('er-severance').value=0;document.getElementById('er-unemp').value=0;document.getElementById('er-unempMonths').value=6;document.getElementById('er-budget').value='';calcEarly();" style="background:transparent;border:1px solid var(--mid);border-radius:8px;padding:0.5rem 1rem;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.85rem;color:var(--mid)">↺ Reset</button>
         <button class="btn btn-primary" onclick="showTab('summary')">Next: Summary →</button>
       </div>
     </div>
@@ -3898,7 +3907,7 @@
         <div style="font-size:0.85rem;color:#666;margin-bottom:1.5rem">Download your complete retirement plan as a PDF to save, print, or share with a financial advisor.</div>
         <button onclick="generatePDF(this)" style="padding:12px 32px;background:#C8860A;color:#fff;border:none;border-radius:12px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">📄 Download My Plan</button>
         <div style="font-size:0.75rem;color:#999;margin-top:0.75rem">One-time purchase · Instant download · Your data stays private</div>
-        <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid #eee"><button onclick="if(confirm('This will permanently delete all your saved data. Are you sure?')) clearData();" style="background:none;border:none;color:#c96a3a;font-family:DM Sans,sans-serif;font-size:0.8rem;cursor:pointer;text-decoration:underline">🗑️ Clear all my saved data</button></div>
+        <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid #eee"><button onclick="if(confirm('This will permanently delete all your saved data. Are you sure?')) clearData();" style="background:#fff3f0;border:1px solid #c96a3a;color:#c96a3a;font-family:DM Sans,sans-serif;font-size:0.85rem;cursor:pointer;padding:0.4rem 0.9rem;border-radius:6px;font-weight:600">🗑️ Clear All My Data</button></div>
       </div>
 
       <div class="btn-row">
@@ -6880,6 +6889,8 @@ function showTab(name) {
   });
   window.scrollTo(0,0);
   recalc();
+  if(name === 'whatif') setTimeout(calcWhatIf, 100);
+  if(name === 'early') setTimeout(calcEarly, 100);
 }
 
 // ── SLIDER INIT - force all lifestyle sliders to neutral (100) on load ──
@@ -7363,6 +7374,10 @@ function updateWhatIf() {}
 
 function applyWiPreset(preset) {
   resetWiScenario();
+  // Highlight selected button
+  document.querySelectorAll('.wi-preset-btn').forEach(function(b){ b.classList.remove('wi-preset-active'); });
+  var activeBtn = document.querySelector('[data-preset="' + preset + '"]');
+  if(activeBtn) activeBtn.classList.add('wi-preset-active');
   var retAge = parseInt(document.getElementById('retAge')?.value) || 65;
   var spending = 0;
   var budM = document.querySelectorAll('.bud-m');
@@ -7375,15 +7390,33 @@ function applyWiPreset(preset) {
   else if(preset === 'spend20') { document.getElementById('wi-spending').value = Math.round(spending * 0.8); }
   else if(preset === 'parttime') { document.getElementById('wi-parttime').value = 2000; }
   else if(preset === 'windfall') { document.getElementById('wi-windfall').value = 100000; }
+  else if(preset === 'retire1') { document.getElementById('wi-retAge').value = retAge + 1; }
+  else if(preset === 'save1000') { document.getElementById('wi-extraSavings').value = 1000; }
+  else if(preset === 'spend10') { document.getElementById('wi-spending').value = Math.round(spending * 0.9); }
   calcWhatIf();
 }
 
 function resetWiScenario() {
   window._wiSsOverride = 0;
+  document.querySelectorAll('.wi-preset-btn').forEach(function(b){ b.classList.remove('wi-preset-active'); });
   ['wi-retAge','wi-ror','wi-extraSavings','wi-spending','wi-parttime','wi-windfall'].forEach(function(id){
     var el = document.getElementById(id);
     if(el) el.value = '';
   });
+  // Clear What-If plan column only, not current plan
+  ['wi-new-portfolio','wi-new-draw','wi-new-lasts'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.textContent = '—';
+  });
+  ['wi-delta-portfolio','wi-delta-draw','wi-delta-lasts'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.textContent = '—';
+  });
+  var sum = document.getElementById('wi-summary');
+  if(sum) sum.textContent = 'Adjust the scenario to see results.';
+  var share = document.getElementById('wi-shareCard');
+  if(share) share.style.display = 'none';
+  // Recalc current plan only
   calcWhatIf();
 }
 
@@ -7401,6 +7434,8 @@ function calcWhatIf() {
   var extraSavingsMo = parseFloat(document.getElementById('wi-extraSavings')?.value)||0;
   var parttime = parseFloat(document.getElementById('wi-parttime')?.value)||0;
   var windfall = parseFloat(document.getElementById('wi-windfall')?.value)||0;
+  var leImpactText = document.getElementById('lifeEventTotal')?.textContent || '$0';
+  var leImpact = parseFloat(leImpactText.replace(/[$,]/g,'')) || 0;
 
   // Get base spending
   var baseSpending = 0;
@@ -7436,17 +7471,48 @@ function calcWhatIf() {
 
   // ── CURRENT PLAN ──
   var curYears = Math.max(0, baseRetAge - currentAge);
-  var curPortfolio = bal;
-  for(var i = 0; i < curYears; i++) curPortfolio = (curPortfolio + baseAnnualContrib) * (1 + baseRor);
+  var curPortfolio = (state.portfolioAtRetirement && state.portfolioAtRetirement > 0)
+    ? state.portfolioAtRetirement
+    : (function(){ var p = bal; for(var i=0;i<curYears;i++) p=(p+baseAnnualContrib)*(1+baseRor); return p; })();
   var curDraw = (curPortfolio * 0.04) / 12;
   var curLasts = simDepletionAge(curPortfolio, baseSpending, ssIncome, baseRetAge, baseRor * 0.5);
 
   // ── WHAT-IF PLAN ──
   var wiYears = Math.max(0, wiRetAge - currentAge);
   var wiAnnualContrib = baseAnnualContrib + (extraSavingsMo * 12);
-  var wiPortfolio = bal;
-  for(var j = 0; j < wiYears; j++) wiPortfolio = (wiPortfolio + wiAnnualContrib) * (1 + wiRor);
+  var wiBasePlan = (state.portfolioAtRetirement && state.portfolioAtRetirement > 0)
+    ? state.portfolioAtRetirement
+    : curPortfolio;
+  var extraYears = wiRetAge - baseRetAge; // can be negative (earlier retirement)
+  var baseYears = Math.max(0, baseRetAge - currentAge);
+  var extraSavingsBoost = extraSavingsMo * 12 * baseYears * (1 + wiRor);
+  var wiPortfolio = wiBasePlan + extraSavingsBoost;
+  if(extraYears > 0) {
+    // Retiring later — grow portfolio for extra years
+    for(var j = 0; j < extraYears; j++) wiPortfolio = (wiPortfolio + wiAnnualContrib) * (1 + wiRor);
+  } else if(extraYears < 0) {
+    // Retiring earlier — need to recalculate from scratch with fewer years
+    var wiYearsTotal = Math.max(0, wiRetAge - currentAge);
+    wiPortfolio = 0;
+    var startBal = 0;
+    ['bal401k','balRoth401','balRothIRA','balTaxable','balHSA','balCash'].forEach(function(id){
+      startBal += parseFloat(document.getElementById(id)?.value)||0;
+    });
+    if(document.getElementById('planCouple')?.checked) {
+      ['spouseBal401k','spouseBalRoth401','spouseBalRothIRA','spouseBalTaxable','spouseBalHSA'].forEach(function(id){
+        startBal += parseFloat(document.getElementById(id)?.value)||0;
+      });
+    }
+    // Use state.portfolioAtRetirement scaled back for fewer years
+    var scaleFactor = wiYearsTotal / Math.max(1, baseYears);
+    // Simpler: reverse-discount from portfolioAtRetirement
+    wiPortfolio = wiBasePlan / Math.pow(1 + wiRor, Math.abs(extraYears));
+    // Also subtract contributions that won't happen
+    var missedContribs = baseAnnualContrib * Math.abs(extraYears);
+    wiPortfolio = Math.max(0, wiPortfolio - missedContribs * (1 + wiRor));
+  }
   wiPortfolio += windfall;
+  wiPortfolio += leImpact;
   // Part-time income reduces draw for first 5 years
   var wiSpendingAdj = wiSpending || baseSpending;
   var wiDraw = (wiPortfolio * 0.04) / 12;
@@ -7464,6 +7530,16 @@ function calcWhatIf() {
   if(el('wi-cur-portfolio')) el('wi-cur-portfolio').textContent = fmt(curPortfolio);
   if(el('wi-cur-draw')) el('wi-cur-draw').textContent = fmtMo(curDraw);
   if(el('wi-cur-lasts')) { el('wi-cur-lasts').textContent = curLasts >= 120 ? 'Age 120+' : 'Age ' + curLasts; el('wi-cur-lasts').style.color = curLasts >= 90 ? 'var(--sage)' : curLasts >= 80 ? '#e67e22' : 'var(--clay)'; }
+  // Only populate What-If column if a scenario is active
+  var hasChanges = window._wiSsOverride || document.getElementById('wi-retAge')?.value || document.getElementById('wi-ror')?.value ||
+    document.getElementById('wi-extraSavings')?.value || document.getElementById('wi-spending')?.value ||
+    document.getElementById('wi-parttime')?.value || document.getElementById('wi-windfall')?.value;
+  if(!hasChanges) {
+    ['wi-new-portfolio','wi-new-draw','wi-new-lasts','wi-delta-portfolio','wi-delta-draw','wi-delta-lasts'].forEach(function(id){
+      var e = document.getElementById(id); if(e) e.textContent = '—';
+    });
+    return;
+  }
   if(el('wi-new-portfolio')) el('wi-new-portfolio').textContent = fmt(wiPortfolio);
   if(el('wi-new-draw')) el('wi-new-draw').textContent = fmtMo(wiDraw);
   if(el('wi-new-lasts')) { el('wi-new-lasts').textContent = wiLasts >= 120 ? 'Age 120+' : 'Age ' + wiLasts; el('wi-new-lasts').style.color = wiLasts >= 90 ? 'var(--sage)' : wiLasts >= 80 ? '#e67e22' : 'var(--clay)'; }
@@ -7487,26 +7563,52 @@ function calcWhatIf() {
     el('wi-delta-draw').style.color = deltaDraw >= 0 ? 'var(--sage)' : 'var(--clay)';
   }
   if(el('wi-delta-lasts')) {
-    el('wi-delta-lasts').textContent = deltaLasts >= 0 ? '+' + deltaLasts + ' yrs' : deltaLasts + ' yrs';
+    el('wi-delta-lasts').textContent = (wiLasts >= 120 && curLasts >= 120) ? 'Both 120+' : (deltaLasts >= 0 ? '+' + deltaLasts + ' yrs' : deltaLasts + ' yrs');
     el('wi-delta-lasts').style.color = deltaLasts >= 0 ? 'var(--sage)' : 'var(--clay)';
   }
 
   // Summary sentence
-  var hasChanges = document.getElementById('wi-retAge')?.value || document.getElementById('wi-ror')?.value ||
+  var hasChanges = window._wiSsOverride || document.getElementById('wi-retAge')?.value || document.getElementById('wi-ror')?.value ||
     document.getElementById('wi-extraSavings')?.value || document.getElementById('wi-spending')?.value ||
     document.getElementById('wi-parttime')?.value || document.getElementById('wi-windfall')?.value;
 
   if(hasChanges && el('wi-summary')) {
     var parts = [];
     if(wiRetAge !== baseRetAge) parts.push('retiring at ' + wiRetAge + ' instead of ' + baseRetAge);
+    if(wiSsOverride > 0) parts.push('claiming SS at 70 ($' + Math.round(wiSsOverride).toLocaleString() + '/mo)');
     if(extraSavingsMo > 0) parts.push('saving $' + extraSavingsMo.toLocaleString() + '/mo more');
     if(wiSpending < baseSpending && document.getElementById('wi-spending')?.value) parts.push('spending $' + Math.round(baseSpending - wiSpending).toLocaleString() + '/mo less');
     if(parttime > 0) parts.push('earning $' + parttime.toLocaleString() + '/mo part-time for 5 years');
-    if(windfall > 0) parts.push('a $' + windfall.toLocaleString() + ' windfall');
+    if(windfall > 0) parts.push('a $' + windfall.toLocaleString() + ' inheritance/bonus');
+    if(leImpact !== 0) parts.push((leImpact < 0 ? '-' : '+') + '$' + Math.abs(leImpact).toLocaleString() + ' in life events');
     var scenario = parts.length > 0 ? 'By ' + parts.join(', ') + ', ' : '';
-    var outcome = deltaPortfolio >= 0
-      ? 'you gain ' + fmt(deltaPortfolio) + ' and your money lasts ' + (deltaLasts > 0 ? deltaLasts + ' years longer' : 'just as long') + '.'
-      : 'your portfolio decreases by ' + fmt(Math.abs(deltaPortfolio)) + '.';
+    var drawDiff = Math.round(wiDraw - curDraw);
+    // For spend/parttime: actual spending in retirement changes, not portfolio draw
+    var spendingReduction = Math.round(baseSpending - wiSpendingAdj);
+    var outcome;
+    if(deltaPortfolio === 0 && spendingReduction > 0) {
+      // Spending less — show the real retirement impact
+      outcome = wiLasts >= 120 && curLasts >= 120
+        ? 'your retirement spending drops by $' + spendingReduction.toLocaleString() + '/mo — your portfolio already outlives any scenario.'
+        : (deltaLasts > 0 ? 'your money lasts ' + deltaLasts + (deltaLasts === 1 ? ' year longer.' : ' years longer.') : 'your retirement spending drops by $' + spendingReduction.toLocaleString() + '/mo.');
+    } else if(deltaPortfolio === 0 && parttime > 0) {
+      // Part-time income offsets draws
+      outcome = wiLasts >= 120 && curLasts >= 120
+        ? 'part-time income offsets $2,000/mo of draws — your portfolio already outlives any scenario.'
+        : (deltaLasts > 0 ? 'your money lasts ' + deltaLasts + (deltaLasts === 1 ? ' year longer.' : ' years longer.') : 'part-time income reduces your portfolio draws for 5 years.');
+    } else if(deltaPortfolio === 0 && wiSsOverride > 0) {
+      // SS at 70 — higher income means less portfolio draw needed
+      var ssIncrease = Math.round(wiSsOverride - (state.ssMonthly||0));
+      outcome = wiLasts >= 120 && curLasts >= 120
+        ? 'your SS income rises by $' + ssIncrease.toLocaleString() + '/mo — your portfolio already outlives any scenario.'
+        : (deltaLasts > 0 ? 'your money lasts ' + deltaLasts + (deltaLasts === 1 ? ' year longer.' : ' years longer.') : 'higher SS reduces your portfolio draw needs.');
+    } else if(deltaPortfolio === 0 && drawDiff === 0 && deltaLasts === 0) {
+      outcome = 'results are the same as your current plan.';
+    } else if(deltaPortfolio >= 0) {
+      outcome = 'you gain ' + fmt(deltaPortfolio) + ' and ' + (wiLasts >= 120 && curLasts >= 120 ? 'your money outlives any scenario.' : (deltaLasts > 0 ? 'your money lasts ' + deltaLasts + (deltaLasts === 1 ? ' year longer.' : ' years longer.') : 'your money lasts just as long.'));
+    } else {
+      outcome = 'your portfolio decreases by ' + fmt(Math.abs(deltaPortfolio)) + '.';
+    }
     el('wi-summary').textContent = scenario + outcome;
     // Show share card
     if(el('wi-shareCard')) { el('wi-shareCard').style.display = 'block'; }
