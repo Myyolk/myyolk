@@ -1581,7 +1581,7 @@
     <button id="authBtn" onclick="toggleAuthModal()" style="font-size:0.8rem;font-weight:600;background:none;border:1.5px solid rgba(255,255,255,0.6);border-radius:8px;padding:5px 14px;cursor:pointer;color:#fff;font-family:DM Sans,sans-serif">Sign In</button>
   </div>
 </header>
-<div id="testerBanner" style="background:#2D4A35;color:#fff;text-align:center;padding:8px 1rem;font-family:sans-serif;font-size:0.78rem;width:100%;box-sizing:border-box;position:sticky;top:56px;z-index:98">&#x1F9EA; <strong>Tester Mode</strong> - All Pro features unlocked. After launch some features require Pro subscription. <a href="#" onclick="document.getElementById('testerBanner').style.display='none';return false;" style="color:#F0A500;margin-left:1rem">Dismiss x</a></div>
+<div id="testerBanner" style="background:#2D4A35;color:#fff;text-align:center;padding:8px 1rem;font-family:sans-serif;font-size:0.78rem;width:100%;box-sizing:border-box;position:fixed;top:56px;z-index:98;left:0;right:0">&#x1F9EA; <strong>Tester Mode</strong> - All Pro features unlocked. After launch some features require Pro subscription. <a href="#" onclick="document.getElementById('testerBanner').style.display='none';return false;" style="color:#F0A500;margin-left:1rem">Dismiss x</a></div>
 
 
 <!-- WELCOME MODAL -->
@@ -1701,7 +1701,7 @@
   </div>
 </div>
 
-<div class="app">
+<div class="app" style="padding-top:36px">
 
   <!-- SIDEBAR -->
   <nav class="sidebar">
@@ -7436,8 +7436,10 @@ function calcWhatIf() {
 
   // ── CURRENT PLAN ──
   var curYears = Math.max(0, baseRetAge - currentAge);
-  var curPortfolio = bal;
-  for(var i = 0; i < curYears; i++) curPortfolio = (curPortfolio + baseAnnualContrib) * (1 + baseRor);
+  // Use state.portfolioAtRetirement if available — it's the authoritative projection
+  var curPortfolio = (state.portfolioAtRetirement && state.portfolioAtRetirement > 0)
+    ? state.portfolioAtRetirement
+    : (function(){ var p = bal; for(var i=0;i<curYears;i++) p=(p+baseAnnualContrib)*(1+baseRor); return p; })();
   var curDraw = (curPortfolio * 0.04) / 12;
   var curLasts = simDepletionAge(curPortfolio, baseSpending, ssIncome, baseRetAge, baseRor * 0.5);
 
