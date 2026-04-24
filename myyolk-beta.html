@@ -3622,7 +3622,7 @@
           <button class="wi-preset-btn" data-preset="save500" onclick="applyWiPreset('save500')">📈 Save $500 More/mo</button>
           <button class="wi-preset-btn" data-preset="spend20" onclick="applyWiPreset('spend20')">✂️ Spend 20% Less</button>
           <button class="wi-preset-btn" data-preset="parttime" onclick="applyWiPreset('parttime')">💼 Part-Time 5 Years</button>
-          <button class="wi-preset-btn" data-preset="windfall" onclick="applyWiPreset('windfall')">🎁 $100K Windfall</button>
+          <button class="wi-preset-btn" data-preset="windfall" onclick="applyWiPreset('windfall')">🎁 $100K Inheritance/Bonus</button>
           <button class="wi-preset-btn" data-preset="retire1" onclick="applyWiPreset('retire1')">⏳ Work 1 More Year</button>
           <button class="wi-preset-btn" data-preset="save1000" onclick="applyWiPreset('save1000')">📈 Save $1,000 More/mo</button>
           <button class="wi-preset-btn" data-preset="spend10" onclick="applyWiPreset('spend10')">✂️ Spend 10% Less</button>
@@ -3682,7 +3682,7 @@
           <div class="field">
             <label>One-Time Windfall ($)</label>
             <input type="number" id="wi-windfall" placeholder="e.g. 100000" min="0" oninput="calcWhatIf()">
-            <div class="hint">Inheritance, home sale, bonus added at retirement</div>
+            <div class="hint">One-time lump sum added to your portfolio at retirement (inheritance, home sale, bonus, etc.)</div>
           </div>
         </div>
 
@@ -7577,7 +7577,7 @@ function calcWhatIf() {
     if(extraSavingsMo > 0) parts.push('saving $' + extraSavingsMo.toLocaleString() + '/mo more');
     if(wiSpending < baseSpending && document.getElementById('wi-spending')?.value) parts.push('spending $' + Math.round(baseSpending - wiSpending).toLocaleString() + '/mo less');
     if(parttime > 0) parts.push('earning $' + parttime.toLocaleString() + '/mo part-time for 5 years');
-    if(windfall > 0) parts.push('a $' + windfall.toLocaleString() + ' windfall');
+    if(windfall > 0) parts.push('a $' + windfall.toLocaleString() + ' inheritance/bonus');
     if(leImpact !== 0) parts.push((leImpact < 0 ? '-' : '+') + '$' + Math.abs(leImpact).toLocaleString() + ' in life events');
     var scenario = parts.length > 0 ? 'By ' + parts.join(', ') + ', ' : '';
     var drawDiff = Math.round(wiDraw - curDraw);
