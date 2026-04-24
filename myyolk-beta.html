@@ -1576,7 +1576,7 @@
   <div style="display:flex;align-items:center;gap:0.5rem;">
     <span id="saveIndicator" style="font-size:0.75rem;color:#2d6a4f;opacity:0;transition:opacity 0.5s">☁️ Saved</span>
     <button onclick="manuallySave()" title="Save your data to the cloud" style="font-size:0.75rem;font-weight:600;background:#2D4A35;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;color:#fff;font-family:DM Sans,sans-serif">💾 Save</button>
-    <button onclick="clearSavedData()" title="Clear all saved data" style="font-size:0.75rem;background:none;border:1px solid #ddd;border-radius:6px;padding:3px 8px;cursor:pointer;color:#888">Clear Data</button>
+    <button onclick="if(confirm('Clear all saved data? This cannot be undone.')) clearSavedData();" title="Clear all saved data" style="font-size:0.75rem;background:transparent;border:1px solid rgba(255,255,255,0.5);border-radius:6px;padding:4px 10px;cursor:pointer;color:rgba(255,255,255,0.85);font-weight:500">🗑️ Clear Data</button>
   </div>
   <div style="display:flex;align-items:center;gap:0.5rem;margin-left:auto">
 
@@ -3906,7 +3906,7 @@
         <div style="font-size:0.85rem;color:#666;margin-bottom:1.5rem">Download your complete retirement plan as a PDF to save, print, or share with a financial advisor.</div>
         <button onclick="generatePDF(this)" style="padding:12px 32px;background:#C8860A;color:#fff;border:none;border-radius:12px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">📄 Download My Plan</button>
         <div style="font-size:0.75rem;color:#999;margin-top:0.75rem">One-time purchase · Instant download · Your data stays private</div>
-        <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid #eee"><button onclick="if(confirm('This will permanently delete all your saved data. Are you sure?')) clearData();" style="background:none;border:none;color:#c96a3a;font-family:DM Sans,sans-serif;font-size:0.8rem;cursor:pointer;text-decoration:underline">🗑️ Clear all my saved data</button></div>
+        <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid #eee"><button onclick="if(confirm('This will permanently delete all your saved data. Are you sure?')) clearData();" style="background:#fff3f0;border:1px solid #c96a3a;color:#c96a3a;font-family:DM Sans,sans-serif;font-size:0.85rem;cursor:pointer;padding:0.4rem 0.9rem;border-radius:6px;font-weight:600">🗑️ Clear All My Data</button></div>
       </div>
 
       <div class="btn-row">
