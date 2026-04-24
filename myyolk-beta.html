@@ -7525,6 +7525,7 @@ function calcWhatIf() {
   if(hasChanges && el('wi-summary')) {
     var parts = [];
     if(wiRetAge !== baseRetAge) parts.push('retiring at ' + wiRetAge + ' instead of ' + baseRetAge);
+    if(wiSsOverride > 0) parts.push('claiming SS at 70 ($' + Math.round(wiSsOverride).toLocaleString() + '/mo)');
     if(extraSavingsMo > 0) parts.push('saving $' + extraSavingsMo.toLocaleString() + '/mo more');
     if(wiSpending < baseSpending && document.getElementById('wi-spending')?.value) parts.push('spending $' + Math.round(baseSpending - wiSpending).toLocaleString() + '/mo less');
     if(parttime > 0) parts.push('earning $' + parttime.toLocaleString() + '/mo part-time for 5 years');
@@ -7532,7 +7533,7 @@ function calcWhatIf() {
     if(leImpact !== 0) parts.push((leImpact < 0 ? '-' : '+') + '$' + Math.abs(leImpact).toLocaleString() + ' in life events');
     var scenario = parts.length > 0 ? 'By ' + parts.join(', ') + ', ' : '';
     var outcome = deltaPortfolio >= 0
-      ? 'you gain ' + fmt(deltaPortfolio) + ' and your money lasts ' + (deltaLasts > 0 ? deltaLasts + ' years longer' : 'just as long') + '.'
+      ? 'you gain ' + fmt(deltaPortfolio) + ' and ' + (wiLasts >= 120 && curLasts >= 120 ? 'your money outlives any scenario.' : (deltaLasts > 0 ? 'your money lasts ' + deltaLasts + (deltaLasts === 1 ? ' year longer.' : ' years longer.') : 'your money lasts just as long.'))  
       : 'your portfolio decreases by ' + fmt(Math.abs(deltaPortfolio)) + '.';
     el('wi-summary').textContent = scenario + outcome;
     // Show share card
