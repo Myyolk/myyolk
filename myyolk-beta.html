@@ -7532,9 +7532,18 @@ function calcWhatIf() {
     if(windfall > 0) parts.push('a $' + windfall.toLocaleString() + ' windfall');
     if(leImpact !== 0) parts.push((leImpact < 0 ? '-' : '+') + '$' + Math.abs(leImpact).toLocaleString() + ' in life events');
     var scenario = parts.length > 0 ? 'By ' + parts.join(', ') + ', ' : '';
-    var outcome = deltaPortfolio >= 0
-      ? 'you gain ' + fmt(deltaPortfolio) + ' and ' + (wiLasts >= 120 && curLasts >= 120 ? 'your money outlives any scenario.' : (deltaLasts > 0 ? 'your money lasts ' + deltaLasts + (deltaLasts === 1 ? ' year longer.' : ' years longer.') : 'your money lasts just as long.'))  
-      : 'your portfolio decreases by ' + fmt(Math.abs(deltaPortfolio)) + '.';
+    var drawDiff = Math.round(wiDraw - curDraw);
+    var outcome;
+    if(deltaPortfolio === 0 && drawDiff === 0 && deltaLasts === 0) {
+      outcome = 'results are the same as your current plan.';
+    } else if(deltaPortfolio === 0 && drawDiff <= 0) {
+      // Spend less / parttime / ss70 — show draw reduction
+      outcome = 'your monthly draw drops by $' + Math.abs(drawDiff).toLocaleString() + '/mo' + (wiLasts >= 120 && curLasts >= 120 ? ', and your money outlives any scenario.' : (deltaLasts > 0 ? ', giving you ' + deltaLasts + (deltaLasts === 1 ? ' year longer.' : ' years longer.') : '.'));
+    } else if(deltaPortfolio >= 0) {
+      outcome = 'you gain ' + fmt(deltaPortfolio) + ' and ' + (wiLasts >= 120 && curLasts >= 120 ? 'your money outlives any scenario.' : (deltaLasts > 0 ? 'your money lasts ' + deltaLasts + (deltaLasts === 1 ? ' year longer.' : ' years longer.') : 'your money lasts just as long.'));
+    } else {
+      outcome = 'your portfolio decreases by ' + fmt(Math.abs(deltaPortfolio)) + '.';
+    }
     el('wi-summary').textContent = scenario + outcome;
     // Show share card
     if(el('wi-shareCard')) { el('wi-shareCard').style.display = 'block'; }
