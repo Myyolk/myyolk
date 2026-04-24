@@ -3396,7 +3396,7 @@
       <div class="proj-summary">
         <div class="proj-stat">
           <div class="proj-stat-value" id="projFinalValue">—</div>
-          <div class="proj-stat-label">Projected Portfolio at Retirement</div>
+          <div class="proj-stat-label">Projected Portfolio at Retirement <span style="font-size:0.72rem;color:var(--mid);font-style:italic;font-weight:400">(investments & savings only)</span></div>
             <div id="projPortNote" style="font-size:0.72rem;color:var(--mid);margin-top:2px">investments only — excludes home</div>
         </div>
         <div class="proj-stat">
@@ -3704,6 +3704,7 @@
           </div>
 
           <div id="wi-assessment" style="font-size:0.82rem;color:var(--mid);text-align:center"></div>
+          <div id="wi-le-note" style="display:none;font-size:0.78rem;color:var(--mid);text-align:center;margin-top:0.5rem;font-style:italic">* Life event impacts included in What-If results</div>
         </div>
       </div>
 
@@ -3783,7 +3784,7 @@
           <div class="result-sub">From portfolio + severance</div>
         </div>
         <div class="result-card highlight">
-          <div class="result-label">Est. Portfolio at Retirement</div>
+          <div class="result-label">Est. Portfolio at Retirement <span style="font-size:0.72rem;color:var(--mid);font-style:italic;font-weight:400">(investments & savings only)</span></div>
           <div class="result-value" id="er-portAtRet">$—</div>
           <div class="result-sub">Market growth, no new contributions</div>
         </div>
@@ -3855,7 +3856,7 @@
         <div class="card-title"><span class="dot"></span> Retirement Readiness</div>
         <div class="results-grid">
           <div class="result-card highlight">
-            <div class="result-label">Portfolio at Retirement</div>
+            <div class="result-label">Portfolio at Retirement <span style="font-size:0.72rem;color:var(--mid);font-style:italic;font-weight:400">(investments & savings only)</span></div>
             <div id="portAtRetNote" style="font-size:0.72rem;color:var(--mid);margin-top:2px">investments only — excludes home</div>
             <div class="result-value" id="sumPortfolio">$0</div>
           </div>
@@ -7401,6 +7402,10 @@ function calcWhatIf() {
   var extraSavingsMo = parseFloat(document.getElementById('wi-extraSavings')?.value)||0;
   var parttime = parseFloat(document.getElementById('wi-parttime')?.value)||0;
   var windfall = parseFloat(document.getElementById('wi-windfall')?.value)||0;
+  // Read life event net impact and apply to What-If portfolio
+  var leImpactText = document.getElementById('lifeEventTotal')?.textContent || '$0';
+  var leImpact = parseFloat(leImpactText.replace(/[$,]/g,'')) || 0;
+  if(isNaN(leImpact)) leImpact = 0;
 
   // Get base spending
   var baseSpending = 0;
@@ -7454,6 +7459,7 @@ function calcWhatIf() {
   var wiPortfolio = wiBasePlan;
   for(var j = 0; j < extraYears; j++) wiPortfolio = (wiPortfolio + wiAnnualContrib) * (1 + wiRor);
   wiPortfolio += windfall;
+  wiPortfolio += leImpact; // apply life events net impact
   // Part-time income reduces draw for first 5 years
   var wiSpendingAdj = wiSpending || baseSpending;
   var wiDraw = (wiPortfolio * 0.04) / 12;
@@ -7494,7 +7500,7 @@ function calcWhatIf() {
     el('wi-delta-draw').style.color = deltaDraw >= 0 ? 'var(--sage)' : 'var(--clay)';
   }
   if(el('wi-delta-lasts')) {
-    el('wi-delta-lasts').textContent = deltaLasts >= 0 ? '+' + deltaLasts + ' yrs' : deltaLasts + ' yrs';
+    el('wi-delta-lasts').textContent = (wiLasts >= 120 && curLasts >= 120) ? 'Both 120+' : (deltaLasts >= 0 ? '+' + deltaLasts + ' yrs' : deltaLasts + ' yrs');
     el('wi-delta-lasts').style.color = deltaLasts >= 0 ? 'var(--sage)' : 'var(--clay)';
   }
 
@@ -7510,6 +7516,7 @@ function calcWhatIf() {
     if(wiSpending < baseSpending && document.getElementById('wi-spending')?.value) parts.push('spending $' + Math.round(baseSpending - wiSpending).toLocaleString() + '/mo less');
     if(parttime > 0) parts.push('earning $' + parttime.toLocaleString() + '/mo part-time for 5 years');
     if(windfall > 0) parts.push('a $' + windfall.toLocaleString() + ' windfall');
+    if(leImpact !== 0) parts.push((leImpact < 0 ? '-' : '+') + '$' + Math.abs(leImpact).toLocaleString() + ' in life events');
     var scenario = parts.length > 0 ? 'By ' + parts.join(', ') + ', ' : '';
     var outcome = deltaPortfolio >= 0
       ? 'you gain ' + fmt(deltaPortfolio) + ' and your money lasts ' + (deltaLasts > 0 ? deltaLasts + ' years longer' : 'just as long') + '.'
