@@ -7481,11 +7481,34 @@ function calcWhatIf() {
   var wiBasePlan = (state.portfolioAtRetirement && state.portfolioAtRetirement > 0)
     ? state.portfolioAtRetirement
     : curPortfolio;
-  var extraYears = Math.max(0, wiRetAge - baseRetAge);
+  var extraYears = wiRetAge - baseRetAge; // can be negative (earlier retirement)
   var baseYears = Math.max(0, baseRetAge - currentAge);
   var extraSavingsBoost = extraSavingsMo * 12 * baseYears * (1 + wiRor);
   var wiPortfolio = wiBasePlan + extraSavingsBoost;
-  for(var j = 0; j < extraYears; j++) wiPortfolio = (wiPortfolio + wiAnnualContrib) * (1 + wiRor);
+  if(extraYears > 0) {
+    // Retiring later — grow portfolio for extra years
+    for(var j = 0; j < extraYears; j++) wiPortfolio = (wiPortfolio + wiAnnualContrib) * (1 + wiRor);
+  } else if(extraYears < 0) {
+    // Retiring earlier — need to recalculate from scratch with fewer years
+    var wiYearsTotal = Math.max(0, wiRetAge - currentAge);
+    wiPortfolio = 0;
+    var startBal = 0;
+    ['bal401k','balRoth401','balRothIRA','balTaxable','balHSA','balCash'].forEach(function(id){
+      startBal += parseFloat(document.getElementById(id)?.value)||0;
+    });
+    if(document.getElementById('planCouple')?.checked) {
+      ['spouseBal401k','spouseBalRoth401','spouseBalRothIRA','spouseBalTaxable','spouseBalHSA'].forEach(function(id){
+        startBal += parseFloat(document.getElementById(id)?.value)||0;
+      });
+    }
+    // Use state.portfolioAtRetirement scaled back for fewer years
+    var scaleFactor = wiYearsTotal / Math.max(1, baseYears);
+    // Simpler: reverse-discount from portfolioAtRetirement
+    wiPortfolio = wiBasePlan / Math.pow(1 + wiRor, Math.abs(extraYears));
+    // Also subtract contributions that won't happen
+    var missedContribs = baseAnnualContrib * Math.abs(extraYears);
+    wiPortfolio = Math.max(0, wiPortfolio - missedContribs * (1 + wiRor));
+  }
   wiPortfolio += windfall;
   wiPortfolio += leImpact;
   // Part-time income reduces draw for first 5 years
