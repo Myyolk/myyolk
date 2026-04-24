@@ -6888,6 +6888,7 @@ function showTab(name) {
   });
   window.scrollTo(0,0);
   recalc();
+  if(name === 'whatif') setTimeout(calcWhatIf, 100);
 }
 
 // ── SLIDER INIT - force all lifestyle sliders to neutral (100) on load ──
@@ -7400,6 +7401,20 @@ function resetWiScenario() {
     var el = document.getElementById(id);
     if(el) el.value = '';
   });
+  // Clear What-If plan column only, not current plan
+  ['wi-new-portfolio','wi-new-draw','wi-new-lasts'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.textContent = '—';
+  });
+  ['wi-delta-portfolio','wi-delta-draw','wi-delta-lasts'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.textContent = '—';
+  });
+  var sum = document.getElementById('wi-summary');
+  if(sum) sum.textContent = 'Adjust the scenario to see results.';
+  var share = document.getElementById('wi-shareCard');
+  if(share) share.style.display = 'none';
+  // Recalc current plan only
   calcWhatIf();
 }
 
