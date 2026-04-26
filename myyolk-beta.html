@@ -552,6 +552,9 @@
   .adj-row input[type=range] { width: 80px; accent-color: var(--sage); }
   .adj-row .adj-val { font-weight: 700; color: var(--sage); font-size: 0.9rem; min-width: 40px; text-align: right; }
 
+  @media (max-width: 768px) {
+    .whatif-two-col { grid-template-columns: 1fr !important; }
+  }
   .inflation-note {
     display: inline-flex; align-items: center; gap: 6px;
     font-size: 0.78rem; color: var(--mid);
@@ -3708,7 +3711,7 @@
       </div>
 
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+      <div class="whatif-two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
         <!-- Left: Inputs -->
         <div class="card" style="margin-bottom:0">
           <div class="card-title"><span class="dot"></span> 🎛️ Adjust the Scenario</div>
