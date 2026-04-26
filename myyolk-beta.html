@@ -3646,7 +3646,7 @@
         <div id="mcFanChart" style="margin-bottom:1rem"></div>
         <div id="mcInsight" style="font-size:0.85rem;padding:0.75rem 1rem;border-radius:8px;border-left:4px solid var(--sage);background:var(--sage-pale)"></div>
         <div style="margin-top:0.75rem;font-size:0.75rem;color:var(--mid)">
-          Assumes mean annual return of <strong id="mcMeanReturn">—</strong> with standard deviation of 12% (historical stock market volatility). Each simulation varies returns randomly year by year.
+          Assumes mean annual return of <strong id="mcMeanReturn">—</strong> with volatility of <strong id="mcStdDev">—</strong> (scaled to your portfolio mix). Each simulation varies returns randomly year by year and grows expenses with inflation (<strong id="mcInflLabel">—</strong>/yr).
         </div>
       </div>
 
@@ -5845,7 +5845,13 @@ function runMonteCarlo() {
 
   var growthRate = parseFloat(document.getElementById('growthRate')?.value) || 0.07;
   var meanReturn = growthRate;
-  var stdDev = 0.12; // historical stock market std dev
+  // Volatility scales with allocation — conservative=less swing, aggressive=more swing
+  var stdDev;
+  if(growthRate <= 0.04)      stdDev = 0.05;  // Conservative ~bonds
+  else if(growthRate <= 0.06) stdDev = 0.08;  // Moderate
+  else if(growthRate <= 0.07) stdDev = 0.10;  // Balanced
+  else if(growthRate <= 0.08) stdDev = 0.12;  // Growth
+  else                        stdDev = 0.15;  // Aggressive ~equities
   var simCount = 1000;
   var successes = 0;
   var finalValues = [];
@@ -5858,11 +5864,16 @@ function runMonteCarlo() {
     return mean + sd * z;
   }
 
+  // Pull inflation rate to grow the annual draw each year (real-world correctness)
+  var inflRate = (parseFloat(document.getElementById('inflationRate')?.value) || 3) / 100;
+
   for(var s = 0; s < simCount; s++) {
     var bal = portfolio;
+    var draw = annualDraw;
     for(var y = 0; y < yearsInRetirement; y++) {
       var annualReturn = randNormal(meanReturn, stdDev);
-      bal = bal * (1 + annualReturn) - annualDraw;
+      bal = bal * (1 + annualReturn) - draw;
+      draw = draw * (1 + inflRate); // inflate next year's draw
       if(bal <= 0) { bal = 0; break; }
     }
     finalValues.push(bal);
@@ -5888,6 +5899,8 @@ function runMonteCarlo() {
   document.getElementById('mcBar').style.width = successRate + '%';
   document.getElementById('mcBarLabel').textContent = successRate + '%';
   document.getElementById('mcMeanReturn').textContent = Math.round(meanReturn * 100) + '%';
+  var sdEl = document.getElementById('mcStdDev'); if(sdEl) sdEl.textContent = Math.round(stdDev * 100) + '%';
+  var ilEl = document.getElementById('mcInflLabel'); if(ilEl) ilEl.textContent = (inflRate * 100).toFixed(1) + '%';
 
   // Color success rate
   var scoreEl = document.getElementById('mcSuccessRate');
@@ -5906,11 +5919,11 @@ function runMonteCarlo() {
   svg += '<path d="M' + px(0) + ',' + py(portfolio);
   for(var y2=1; y2<=yearsInRetirement; y2++) {
     var frac = y2/yearsInRetirement;
-    var topV = portfolio * Math.pow(1 + meanReturn + stdDev*1.28, y2) - annualDraw * (Math.pow(1+meanReturn,y2)-1)/meanReturn;
+    var topV = portfolio * Math.pow(1 + meanReturn + stdDev*1.645, y2) - annualDraw * (Math.pow(1+meanReturn+stdDev*1.645,y2)-1)/(meanReturn+stdDev*1.645);
     svg += ' L' + px(y2) + ',' + py(Math.max(topV,0));
   }
   for(var y3=yearsInRetirement; y3>=0; y3--) {
-    var botV = portfolio * Math.pow(1 + meanReturn - stdDev*1.28, y3) - annualDraw * (Math.pow(1+meanReturn,y3)-1)/meanReturn;
+    var botV = portfolio * Math.pow(1 + meanReturn - stdDev*1.645, y3) - annualDraw * (Math.pow(1+Math.max(meanReturn-stdDev*1.645,0.001),y3)-1)/Math.max(meanReturn-stdDev*1.645,0.001);
     svg += ' L' + px(y3) + ',' + py(Math.max(botV,0));
   }
   svg += ' Z" fill="rgba(95,158,120,0.15)" />';
