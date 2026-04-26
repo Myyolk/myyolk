@@ -3503,6 +3503,32 @@
         <div id="readinessSubtitle" style="font-size:0.85rem;color:var(--mid)"></div>
       </div>
 
+      <!-- HOW WE CALCULATED THIS -->
+      <details class="card" id="howCalcCard" style="cursor:pointer">
+        <summary style="font-weight:700;color:var(--forest);font-size:0.95rem;list-style:none;display:flex;align-items:center;gap:0.5rem;-webkit-appearance:none">
+          <span id="hcArrow" style="display:inline-block;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #F5A623;transition:transform 0.2s"></span> How we calculated this
+        </summary>
+        <style>#howCalcCard summary::-webkit-details-marker{display:none}#howCalcCard[open] #hcArrow{transform:rotate(90deg)}</style>
+        <div style="margin-top:1rem;font-size:0.85rem;line-height:1.6;color:var(--ink)">
+          <div style="font-weight:700;color:var(--forest);margin-bottom:0.5rem">Score breakdown</div>
+          <div style="background:var(--sage-pale);border-radius:8px;padding:0.75rem;margin-bottom:1rem">
+            <div style="display:flex;justify-content:space-between"><span>Income Coverage <span style="color:var(--mid);font-size:0.78rem">(40% weight)</span></span><span style="font-weight:700"><span id="hcCoverage">—</span>%</span></div>
+            <div style="display:flex;justify-content:space-between"><span>Portfolio Longevity <span style="color:var(--mid);font-size:0.78rem">(40% weight)</span></span><span style="font-weight:700"><span id="hcLongevity">—</span>%</span></div>
+            <div style="display:flex;justify-content:space-between"><span>Savings Rate <span style="color:var(--mid);font-size:0.78rem">(20% weight)</span></span><span style="font-weight:700"><span id="hcSavings">—</span>%</span></div>
+            <div style="border-top:1px solid var(--sage);margin-top:0.5rem;padding-top:0.5rem;display:flex;justify-content:space-between;font-weight:800;color:var(--forest)"><span>Total Readiness</span><span><span id="hcTotal">—</span>%</span></div>
+          </div>
+          <div style="font-weight:700;color:var(--forest);margin-bottom:0.5rem">Assumptions used</div>
+          <ul style="margin:0;padding-left:1.2rem">
+            <li>Pre-retirement growth: <strong id="hcGrowth">—</strong> (from Accounts tab)</li>
+            <li>In-retirement growth: <strong id="hcRetGrowth">—</strong> (50% of pre-retirement — we assume a more conservative allocation in retirement)</li>
+            <li>Inflation: <strong id="hcInfl">—</strong> (from your input)</li>
+            <li>Safe withdrawal rate: <strong>4%</strong> (industry standard)</li>
+            <li>Retirement age: <strong id="hcRetAge">—</strong> → Life expectancy: <strong id="hcLifeExp">—</strong></li>
+          </ul>
+          <div style="margin-top:0.75rem;font-size:0.78rem;color:var(--mid)">MyYolk weighs balance — income, portfolio longevity, and savings habits — not just portfolio size. Other tools may emphasize one factor more than others, which is why scores can differ.</div>
+        </div>
+      </details>
+
       <!-- INCOME vs EXPENSES -->
       <div class="card">
         <div class="card-title"><span class="dot"></span> Monthly Income at Retirement</div>
@@ -6185,6 +6211,20 @@ function calcReadiness() {
   var scoreEl = document.getElementById('readinessScore');
   if(scoreEl) scoreEl.textContent = score + '%';
   state.readinessScore = score;
+
+  // Populate "How we calculated this" card
+  try {
+    var hcCov = document.getElementById('hcCoverage'); if(hcCov) hcCov.textContent = scoreCoverage;
+    var hcLong = document.getElementById('hcLongevity'); if(hcLong) hcLong.textContent = scoreLongevity;
+    var hcSav = document.getElementById('hcSavings'); if(hcSav) hcSav.textContent = scoreSavings;
+    var hcTot = document.getElementById('hcTotal'); if(hcTot) hcTot.textContent = score;
+    var hcGr = document.getElementById('hcGrowth'); if(hcGr) hcGr.textContent = (growthRate * 100).toFixed(1) + '%';
+    var hcRG = document.getElementById('hcRetGrowth'); if(hcRG) hcRG.textContent = (growthRate * 50).toFixed(1) + '%';
+    var _inflPct = parseFloat(document.getElementById('inflationRate')?.value) || 3;
+    var hcIn = document.getElementById('hcInfl'); if(hcIn) hcIn.textContent = _inflPct + '%';
+    var hcRA = document.getElementById('hcRetAge'); if(hcRA) hcRA.textContent = scoreRetireAge;
+    var hcLE = document.getElementById('hcLifeExp'); if(hcLE) hcLE.textContent = scoreLifeExp;
+  } catch(e) {}
 
   var verdictEl = document.getElementById('readinessVerdict');
   var subtitleEl = document.getElementById('readinessSubtitle');
