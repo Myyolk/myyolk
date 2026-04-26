@@ -3874,7 +3874,7 @@
 
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="showTab('whatif')">← Back</button>
-        <button onclick="document.getElementById('er-stopAge').value='';document.getElementById('er-retAge').value='';document.getElementById('er-severance').value=0;document.getElementById('er-unemp').value=0;document.getElementById('er-unempMonths').value=6;document.getElementById('er-budget').value='';calcEarly();" style="background:transparent;border:1px solid var(--mid);border-radius:8px;padding:0.5rem 1rem;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.85rem;color:var(--mid)">↺ Reset</button>
+        <button onclick="document.getElementById('er-stopAge').value='';document.getElementById('er-retAge').value='';document.getElementById('er-severance').value=0;document.getElementById('er-unemp').value=0;document.getElementById('er-unempMonths').value=6;document.getElementById('er-budget').value='';var ids=['er-portfolioAtStop','er-runway','er-portfolioAtRet','er-withdrawal','er-assessment'];ids.forEach(function(id){var el=document.getElementById(id);if(el){el.textContent=(id==='er-runway'?'— yrs':'$—');}});var a=document.getElementById('er-assessment');if(a)a.textContent='—';calcEarly();" style="background:transparent;border:1px solid var(--mid);border-radius:8px;padding:0.5rem 1rem;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.85rem;color:var(--mid)">↺ Reset</button>
         <button class="btn btn-primary" onclick="showTab('summary')">Next: Summary →</button>
       </div>
     </div>
