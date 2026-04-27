@@ -6984,7 +6984,87 @@ function generatePDF() {
 // ── SHOW TAB ──
   updateSnapshot();
 
+
+// ── READINESS SNAPSHOT CAPTURE (Phase 1.5) ────────────────────────
+// Silent monthly capture of 7 progress metrics. Fires on Summary tab visit.
+// Requires: signed-in user, 25+ days since last snapshot, populated core fields.
+function captureSnapshotIfDue() {
+  try {
+    // Gate 1: must be signed in
+    if (!_sbUser || !_sb) return;
+
+    // Helper: parse "$695,000" / "100%" / "—" into number; returns null if unparseable
+    function parseNum(id) {
+      var el = document.getElementById(id);
+      if (!el) return null;
+      var t = (el.textContent || '').trim();
+      if (!t || t === '—' || t === '$0') return 0;
+      var n = parseFloat(t.replace(/[$,%\s]/g, ''));
+      return isNaN(n) ? null : n;
+    }
+
+    // Gate 2: read the 7 metrics from the Summary DOM
+    var metrics = {
+      readiness_score: parseNum('sumReadiness'),
+      net_worth:       parseNum('sumNetWorth'),
+      portfolio:       parseNum('sumPortfolio'),
+      total_debt:      parseNum('sumTotalLiabilities'),
+      monthly_budget:  parseNum('budgetMonthlyTotal'),
+      years_to_ret:    null,
+      mc_success_rate: parseNum('mcSuccessRate')
+    };
+
+    // Compute years to retirement from inputs
+    var retAge = parseFloat(document.getElementById('retAge')?.value);
+    var curAge = parseFloat(document.getElementById('age')?.value);
+    if (!isNaN(retAge) && !isNaN(curAge)) metrics.years_to_ret = Math.max(retAge - curAge, 0);
+
+    // Gate 3: plan must be "real" — portfolio + budget populated
+    if (!metrics.portfolio || metrics.portfolio <= 0) return;
+    if (!metrics.monthly_budget || metrics.monthly_budget <= 0) return;
+
+    // Gate 4: check most-recent snapshot — only capture if 25+ days old (or no prior)
+    _sb.from('readiness_snapshots')
+      .select('snapshot_date')
+      .eq('user_id', _sbUser.id)
+      .order('snapshot_date', { ascending: false })
+      .limit(1)
+      .then(function(r) {
+        if (r.error) { console.warn('[snapshot] read error', r.error); return; }
+        var rows = r.data || [];
+        if (rows.length > 0) {
+          var lastDate = new Date(rows[0].snapshot_date);
+          var daysSince = (Date.now() - lastDate.getTime()) / (1000 * 60 * 60 * 24);
+          if (daysSince < 25) {
+            console.log('[snapshot] skipped — last snapshot was ' + Math.round(daysSince) + ' days ago');
+            return;
+          }
+        }
+
+        // Insert new snapshot
+        _sb.from('readiness_snapshots').insert([{
+          user_id: _sbUser.id,
+          readiness_score: metrics.readiness_score,
+          net_worth: metrics.net_worth,
+          portfolio: metrics.portfolio,
+          total_debt: metrics.total_debt,
+          monthly_budget: metrics.monthly_budget,
+          years_to_ret: metrics.years_to_ret,
+          mc_success_rate: metrics.mc_success_rate
+        }]).then(function(ins) {
+          if (ins.error) console.warn('[snapshot] insert error', ins.error);
+          else console.log('[snapshot] captured', metrics);
+        });
+      });
+  } catch(e) {
+    console.warn('[snapshot] unexpected error', e);
+  }
+}
+
 function showTab(name) {
+  if (name === "summary" && typeof captureSnapshotIfDue === "function") {
+    setTimeout(captureSnapshotIfDue, 800); // wait for Summary values to render
+  }
   if (name === "budgettracker" && typeof btGetPlanned === "function") {
     setTimeout(function() {
       var plan = btGetPlanned();
