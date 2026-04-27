@@ -1751,6 +1751,9 @@
     <button class="nav-item" onclick="showTab('income')" data-label="Income">
       <span class="icon">💼</span><span class="nav-label"> Income & Pay</span>
     </button>
+    <button class="nav-item" id="nav-employer" onclick="showTab('employer')" data-label="Employer" style="display:none;position:relative">
+      <span class="icon">🏢</span><span class="nav-label"> My Employer Plan</span><span style="font-size:0.55rem;background:#C8860A;color:#fff;border-radius:4px;padding:1px 5px;position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:DM Sans,sans-serif;font-weight:700;letter-spacing:0.3px">DEMO</span>
+    </button>
     <button class="nav-item" onclick="showTab('accounts')" data-label="Accounts">
       <span class="icon">🏦</span><span class="nav-label"> Accounts & Savings</span>
     </button>
@@ -3880,6 +3883,129 @@
     </div>
 
     <!-- ══ SUMMARY TAB ══ -->
+    <!-- ===== EMPLOYER DEMO TAB (hidden — toggled via ?demo=employer) ===== -->
+    <div class="tab-panel" id="tab-employer">
+      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00">
+        <strong>🧪 Demo Mode</strong> — This is a preview of what your personalized employer benefits page would look like. The numbers below are sample data based on a fictional Acme Corp benefits package.
+      </div>
+
+      <h1 class="page-title">🏢 My Acme Corp Plan</h1>
+      <p class="page-subtitle">Your employer-sponsored benefits, explained in plain English. When your employer signs up with MyYolk, this tab populates automatically with YOUR real plan details.</p>
+
+      <!-- 401(k) MATCH -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> 💼 Your Acme Corp 401(k) Match</div>
+        <div class="results-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="result-card">
+            <div class="result-label">You Contribute</div>
+            <div class="result-value">6%</div>
+            <div class="result-sub">$600/mo</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Acme Matches</div>
+            <div class="result-value" style="color:var(--sage)">$600/mo</div>
+            <div class="result-sub">100% up to 6%</div>
+          </div>
+          <div class="result-card highlight" style="background:var(--sage);color:#fff">
+            <div class="result-label" style="color:rgba(255,255,255,0.85)">Status</div>
+            <div class="result-value" style="color:#fff;font-size:1.4rem">Fully Matched ✅</div>
+            <div class="result-sub" style="color:rgba(255,255,255,0.75)">$0/mo left on table</div>
+          </div>
+        </div>
+        <div style="margin-top:1rem;padding:0.75rem;background:#fef3e0;border-radius:8px;font-size:0.85rem;color:#7A4F00">
+          <strong>💡 Did you know?</strong> If you contributed only 4% instead of 6%, you'd be leaving <strong>$1,440/year</strong> of employer match on the table. Many workers under-contribute simply because they don't realize the gap.
+        </div>
+      </div>
+
+      <!-- ESPP -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> 📈 Acme Corp Employee Stock Purchase Plan (ESPP)</div>
+        <div class="results-grid">
+          <div class="result-card">
+            <div class="result-label">Next Enrollment Window</div>
+            <div class="result-value" style="font-size:1.3rem">Jun 1 – Jun 30, 2026</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Discount</div>
+            <div class="result-value" style="color:var(--sage)">10%</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Max Contribution</div>
+            <div class="result-value">$18,000</div>
+            <div class="result-sub">at your salary</div>
+          </div>
+          <div class="result-card highlight">
+            <div class="result-label">Estimated Annual Benefit</div>
+            <div class="result-value">~$1,800/yr</div>
+            <div class="result-sub">free money at max contribution</div>
+          </div>
+        </div>
+        <div style="margin-top:1rem;font-size:0.85rem;color:var(--mid);font-style:italic">📋 ESPP shares are typically best held 12–18 months for favorable tax treatment.</div>
+      </div>
+
+      <!-- RSU -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> 📅 Acme Corp RSU Vesting Schedule</div>
+        <table style="width:100%;border-collapse:collapse;font-size:0.9rem;margin-top:0.5rem">
+          <thead>
+            <tr style="border-bottom:2px solid var(--forest);color:var(--forest)">
+              <th style="text-align:left;padding:0.5rem 0.6rem;font-weight:700">Vesting Date</th>
+              <th style="text-align:right;padding:0.5rem 0.6rem;font-weight:700">Shares</th>
+              <th style="text-align:right;padding:0.5rem 0.6rem;font-weight:700">Estimated Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #f0e8d8"><td style="padding:0.55rem 0.6rem;font-weight:600">Aug 15, 2026</td><td style="text-align:right;padding:0.55rem 0.6rem">250</td><td style="text-align:right;padding:0.55rem 0.6rem">$12,500</td></tr>
+            <tr style="border-bottom:1px solid #f0e8d8"><td style="padding:0.55rem 0.6rem;font-weight:600">Aug 15, 2027</td><td style="text-align:right;padding:0.55rem 0.6rem">250</td><td style="text-align:right;padding:0.55rem 0.6rem">$13,000</td></tr>
+            <tr style="border-bottom:1px solid #f0e8d8"><td style="padding:0.55rem 0.6rem;font-weight:600">Aug 15, 2028</td><td style="text-align:right;padding:0.55rem 0.6rem">250</td><td style="text-align:right;padding:0.55rem 0.6rem">$13,500</td></tr>
+            <tr style="border-bottom:1px solid #f0e8d8"><td style="padding:0.55rem 0.6rem;font-weight:600">Aug 15, 2029</td><td style="text-align:right;padding:0.55rem 0.6rem">250</td><td style="text-align:right;padding:0.55rem 0.6rem">$14,000</td></tr>
+            <tr style="background:#fef3e0;color:var(--forest);font-weight:700"><td style="padding:0.55rem 0.6rem">Total Unvested</td><td style="text-align:right;padding:0.55rem 0.6rem">1,000</td><td style="text-align:right;padding:0.55rem 0.6rem">~$53,000</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:1rem;font-size:0.85rem;color:var(--mid);font-style:italic">⚠️ RSUs are taxed as income on vest date. Plan for withholding (~$3,750 expected on Aug 15, 2026 vest).</div>
+      </div>
+
+      <!-- PROFIT SHARING -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> 💰 Acme Corp Profit Sharing (P-Shares)</div>
+        <div class="results-grid">
+          <div class="result-card">
+            <div class="result-label">2025 Payout (% of salary)</div>
+            <div class="result-value">6.5%</div>
+          </div>
+          <div class="result-card highlight">
+            <div class="result-label">At Your Salary</div>
+            <div class="result-value">~$7,800</div>
+            <div class="result-sub">approximate gross</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Tax-Deferral</div>
+            <div class="result-value" style="font-size:1.3rem">Available</div>
+            <div class="result-sub">talk to HR by Nov 15</div>
+          </div>
+        </div>
+        <div style="margin-top:1rem;font-size:0.85rem;color:var(--mid);font-style:italic">📅 Acme P-Share payouts typically land in February. Deferral elections must be made the prior November.</div>
+      </div>
+
+      <!-- RECOMMENDED ACTIONS -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> ✅ Recommended Actions</div>
+        <ol style="font-size:0.95rem;line-height:1.8;padding-left:1.5rem;margin:0.5rem 0">
+          <li><strong>You're maxing your 401(k) match</strong> — $7,200/year captured. Keep going. ✅</li>
+          <li><strong>Mark June 1 on your calendar</strong> — ESPP enrollment opens. Consider maxing out for the 10% discount.</li>
+          <li><strong>Plan for August 15 RSU vest</strong> — set aside ~$3,750 for tax withholding.</li>
+          <li><strong>Talk to HR about P-Share deferral</strong> — Nov 15 election deadline.</li>
+          <li><strong>Consider increasing 401(k) above match</strong> — your current 6% covers the match, but tax-deferred space is still available up to the IRS limit ($23,500 for 2026).</li>
+        </ol>
+      </div>
+
+      <!-- FOOTER -->
+      <div style="margin-top:1.5rem;padding:1rem 1.25rem;background:#fef3e0;border:1px solid #C8860A;border-radius:10px;font-size:0.85rem;color:#7A4F00;line-height:1.55">
+        <strong>💡 How this works:</strong> When your employer signs up with MyYolk, this tab populates automatically with YOUR real plan details — no manual entry, no sharing of confidential plan documents required from you. Your employer provides the plan terms once at signup; every employee sees their personalized version.
+      </div>
+    </div>
+    <!-- ===== END EMPLOYER DEMO TAB ===== -->
+
     <div class="tab-panel" id="tab-summary">
       <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($14.99/mo or $99/yr).</div>
       
@@ -3945,6 +4071,43 @@
         </div>
       </div>
 
+      <!-- YOUR PROGRESS (Coming Soon preview) -->
+      <div class="card" id="progressCard">
+        <div class="card-title">
+          <span class="dot"></span> 📈 Your Progress
+          <span style="font-size:0.7rem;background:#fef3e0;color:#7A4F00;padding:2px 8px;border-radius:20px;margin-left:8px;font-weight:600;border:1px solid #C8860A">🔒 Sample preview</span>
+        </div>
+        <div style="font-size:0.85rem;color:var(--mid);margin-bottom:1rem">Coming soon — your real history will populate here over time.</div>
+
+        <div style="overflow-x:auto;opacity:0.65;filter:grayscale(0.3)">
+          <table style="width:100%;border-collapse:collapse;font-size:0.88rem;min-width:560px">
+            <thead>
+              <tr style="border-bottom:2px solid var(--forest);color:var(--forest)">
+                <th style="text-align:left;padding:0.5rem 0.6rem;font-weight:700">Metric</th>
+                <th style="text-align:right;padding:0.5rem 0.6rem;font-weight:700">Q2 2026<div style="font-size:0.7rem;color:var(--mid);font-weight:400">Now</div></th>
+                <th style="text-align:right;padding:0.5rem 0.6rem;font-weight:700">Q1 2026<div style="font-size:0.7rem;color:var(--mid);font-weight:400">3 mo ago</div></th>
+                <th style="text-align:right;padding:0.5rem 0.6rem;font-weight:700">Q4 2025<div style="font-size:0.7rem;color:var(--mid);font-weight:400">6 mo ago</div></th>
+                <th style="text-align:right;padding:0.5rem 0.6rem;font-weight:700">Q2 2025<div style="font-size:0.7rem;color:var(--mid);font-weight:400">1 yr ago</div></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid #f0e8d8"><td style="padding:0.55rem 0.6rem;font-weight:600">Readiness Score</td><td style="text-align:right;padding:0.55rem 0.6rem">88%</td><td style="text-align:right;padding:0.55rem 0.6rem">82% <span style="color:var(--sage)">↑6</span></td><td style="text-align:right;padding:0.55rem 0.6rem">76% <span style="color:var(--sage)">↑12</span></td><td style="text-align:right;padding:0.55rem 0.6rem;color:var(--mid)">—</td></tr>
+              <tr style="border-bottom:1px solid #f0e8d8"><td style="padding:0.55rem 0.6rem;font-weight:600">Net Worth</td><td style="text-align:right;padding:0.55rem 0.6rem">$695K</td><td style="text-align:right;padding:0.55rem 0.6rem">$642K <span style="color:var(--sage)">↑8%</span></td><td style="text-align:right;padding:0.55rem 0.6rem">$598K <span style="color:var(--sage)">↑16%</span></td><td style="text-align:right;padding:0.55rem 0.6rem;color:var(--mid)">—</td></tr>
+              <tr style="border-bottom:1px solid #f0e8d8"><td style="padding:0.55rem 0.6rem;font-weight:600">Portfolio</td><td style="text-align:right;padding:0.55rem 0.6rem">$612K</td><td style="text-align:right;padding:0.55rem 0.6rem">$568K <span style="color:var(--sage)">↑8%</span></td><td style="text-align:right;padding:0.55rem 0.6rem">$521K <span style="color:var(--sage)">↑17%</span></td><td style="text-align:right;padding:0.55rem 0.6rem;color:var(--mid)">—</td></tr>
+              <tr style="border-bottom:1px solid #f0e8d8"><td style="padding:0.55rem 0.6rem;font-weight:600">Total Debt</td><td style="text-align:right;padding:0.55rem 0.6rem">$42K</td><td style="text-align:right;padding:0.55rem 0.6rem">$58K <span style="color:var(--sage)">↓28%</span></td><td style="text-align:right;padding:0.55rem 0.6rem">$71K <span style="color:var(--sage)">↓41%</span></td><td style="text-align:right;padding:0.55rem 0.6rem;color:var(--mid)">—</td></tr>
+              <tr style="border-bottom:1px solid #f0e8d8"><td style="padding:0.55rem 0.6rem;font-weight:600">Monthly Budget</td><td style="text-align:right;padding:0.55rem 0.6rem">$5,960</td><td style="text-align:right;padding:0.55rem 0.6rem">$5,830</td><td style="text-align:right;padding:0.55rem 0.6rem">$5,720</td><td style="text-align:right;padding:0.55rem 0.6rem;color:var(--mid)">—</td></tr>
+              <tr style="border-bottom:1px solid #f0e8d8"><td style="padding:0.55rem 0.6rem;font-weight:600">Years to Retirement</td><td style="text-align:right;padding:0.55rem 0.6rem">6</td><td style="text-align:right;padding:0.55rem 0.6rem">6</td><td style="text-align:right;padding:0.55rem 0.6rem">6</td><td style="text-align:right;padding:0.55rem 0.6rem;color:var(--mid)">—</td></tr>
+              <tr><td style="padding:0.55rem 0.6rem;font-weight:600">Success Rate</td><td style="text-align:right;padding:0.55rem 0.6rem">94%</td><td style="text-align:right;padding:0.55rem 0.6rem">89% <span style="color:var(--sage)">↑5</span></td><td style="text-align:right;padding:0.55rem 0.6rem">84% <span style="color:var(--sage)">↑10</span></td><td style="text-align:right;padding:0.55rem 0.6rem;color:var(--mid)">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top:1rem;padding:0.75rem;background:#fef3e0;border-radius:8px;font-size:0.8rem;color:#7A4F00;line-height:1.55">
+          <p style="margin:0 0 0.5rem 0"><strong>📋 About this card:</strong> Quarterly snapshots are based on the most recent saved plan in each quarter. Your real history will appear here as you continue using MyYolk over time — each quarter you visit your Summary, we capture a snapshot of these metrics so you can see your progress over months and years.</p>
+          <p style="margin:0"><strong>🔐 Heads up:</strong> Tracking history requires a free MyYolk account so your snapshots persist across sessions and devices. Without an account, your data only exists in your current browser session.</p>
+        </div>
+      </div>
+
       <!-- KEY MILESTONES -->
       <div class="card">
         <div class="card-title"><span class="dot"></span> Key Milestones</div>
@@ -3968,7 +4131,7 @@
         <div style="font-size:0.85rem;color:#666;margin-bottom:1.5rem">Download your complete retirement plan as a PDF to save, print, or share with a financial advisor.</div>
         <button onclick="generatePDF(this)" style="padding:12px 32px;background:#C8860A;color:#fff;border:none;border-radius:12px;font-family:DM Sans,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">📄 Download My Plan</button>
         <div style="font-size:0.75rem;color:#999;margin-top:0.75rem">One-time purchase · Instant download · Your data stays private</div>
-        <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid #eee"><button onclick="if(confirm('This will permanently delete all your saved data. Are you sure?')) clearData();" style="background:#fff3f0;border:1px solid #c96a3a;color:#c96a3a;font-family:DM Sans,sans-serif;font-size:0.85rem;cursor:pointer;padding:0.4rem 0.9rem;border-radius:6px;font-weight:600">🗑️ Clear All My Data</button></div>
+        <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid #eee"><button onclick="if(confirm('This will permanently delete all your saved data. Are you sure?')) clearData();" style="background:#c96a3a;border:1px solid #a8542c;color:#fff;font-family:DM Sans,sans-serif;font-size:0.85rem;cursor:pointer;padding:0.4rem 0.9rem;border-radius:6px;font-weight:600">🗑️ Clear All My Data</button></div>
       </div>
 
       <div class="btn-row">
@@ -6947,7 +7110,87 @@ function generatePDF() {
 // ── SHOW TAB ──
   updateSnapshot();
 
+
+// ── READINESS SNAPSHOT CAPTURE (Phase 1.5) ────────────────────────
+// Silent monthly capture of 7 progress metrics. Fires on Summary tab visit.
+// Requires: signed-in user, 25+ days since last snapshot, populated core fields.
+function captureSnapshotIfDue() {
+  try {
+    // Gate 1: must be signed in
+    if (!_sbUser || !_sb) return;
+
+    // Helper: parse "$695,000" / "100%" / "—" into number; returns null if unparseable
+    function parseNum(id) {
+      var el = document.getElementById(id);
+      if (!el) return null;
+      var t = (el.textContent || '').trim();
+      if (!t || t === '—' || t === '$0') return 0;
+      var n = parseFloat(t.replace(/[$,%\s]/g, ''));
+      return isNaN(n) ? null : n;
+    }
+
+    // Gate 2: read the 7 metrics from the Summary DOM
+    var metrics = {
+      readiness_score: parseNum('sumReadiness'),
+      net_worth:       parseNum('sumNetWorth'),
+      portfolio:       parseNum('sumPortfolio'),
+      total_debt:      parseNum('sumTotalLiabilities'),
+      monthly_budget:  parseNum('budgetMonthlyTotal'),
+      years_to_ret:    null,
+      mc_success_rate: parseNum('mcSuccessRate')
+    };
+
+    // Compute years to retirement from inputs
+    var retAge = parseFloat(document.getElementById('retAge')?.value);
+    var curAge = parseFloat(document.getElementById('age')?.value);
+    if (!isNaN(retAge) && !isNaN(curAge)) metrics.years_to_ret = Math.max(retAge - curAge, 0);
+
+    // Gate 3: plan must be "real" — portfolio + budget populated
+    if (!metrics.portfolio || metrics.portfolio <= 0) return;
+    if (!metrics.monthly_budget || metrics.monthly_budget <= 0) return;
+
+    // Gate 4: check most-recent snapshot — only capture if 25+ days old (or no prior)
+    _sb.from('readiness_snapshots')
+      .select('snapshot_date')
+      .eq('user_id', _sbUser.id)
+      .order('snapshot_date', { ascending: false })
+      .limit(1)
+      .then(function(r) {
+        if (r.error) { console.warn('[snapshot] read error', r.error); return; }
+        var rows = r.data || [];
+        if (rows.length > 0) {
+          var lastDate = new Date(rows[0].snapshot_date);
+          var daysSince = (Date.now() - lastDate.getTime()) / (1000 * 60 * 60 * 24);
+          if (daysSince < 25) {
+            console.log('[snapshot] skipped — last snapshot was ' + Math.round(daysSince) + ' days ago');
+            return;
+          }
+        }
+
+        // Insert new snapshot
+        _sb.from('readiness_snapshots').insert([{
+          user_id: _sbUser.id,
+          readiness_score: metrics.readiness_score,
+          net_worth: metrics.net_worth,
+          portfolio: metrics.portfolio,
+          total_debt: metrics.total_debt,
+          monthly_budget: metrics.monthly_budget,
+          years_to_ret: metrics.years_to_ret,
+          mc_success_rate: metrics.mc_success_rate
+        }]).then(function(ins) {
+          if (ins.error) console.warn('[snapshot] insert error', ins.error);
+          else console.log('[snapshot] captured', metrics);
+        });
+      });
+  } catch(e) {
+    console.warn('[snapshot] unexpected error', e);
+  }
+}
+
 function showTab(name) {
+  if (name === "summary" && typeof captureSnapshotIfDue === "function") {
+    setTimeout(captureSnapshotIfDue, 800); // wait for Summary values to render
+  }
   if (name === "budgettracker" && typeof btGetPlanned === "function") {
     setTimeout(function() {
       var plan = btGetPlanned();
@@ -10399,6 +10642,22 @@ setTimeout(function() {
   <!-- PDF EXPORT BUTTON -->
   <button id="pdfBtn" onclick="if(!IS_PRO){proGate('pdf','📄 PDF Report');}else{generatePDF();}">📄 Download Report</button>
 
+<script>
+(function() {
+  // Demo gate: ?demo=employer enables the My Employer Plan tab in side nav
+  // Persists for the session (sessionStorage) so URL stays clean
+  try {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('demo') === 'employer') {
+      sessionStorage.setItem('myyolk_demo_employer', '1');
+    }
+    if (sessionStorage.getItem('myyolk_demo_employer') === '1') {
+      var navBtn = document.getElementById('nav-employer');
+      if (navBtn) navBtn.style.display = '';
+    }
+  } catch(e) { /* fail silent */ }
+})();
+</script>
 </body>
 </html> 
  
