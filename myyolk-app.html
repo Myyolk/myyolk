@@ -7983,27 +7983,21 @@ function btGetPlanned() {
       BT_KEY_LABELS[k] = name;
     }
   });
-  document.querySelectorAll('#customList_housing .custom-budget-row').forEach(function(row) {
-    var nameEl = row.querySelector('input[type="text"]');
-    var valEl = row.querySelector('.bud-m');
-    var name = nameEl ? nameEl.value : 'Custom Housing';
-    var val = parseFloat(valEl ? valEl.value : 0) || 0;
-    if (val > 0) {
-      var k = '__customHousing__' + name.replace(/[^a-zA-Z0-9]/g,'_');
-      plan[k] = val;
-      BT_KEY_LABELS[k] = name;
-    }
-  });
-  document.querySelectorAll('#customList_health .custom-budget-row').forEach(function(row) {
-    var nameEl = row.querySelector('input[type="text"]');
-    var valEl = row.querySelector('.bud-m');
-    var name = nameEl ? nameEl.value : 'Custom Health';
-    var val = parseFloat(valEl ? valEl.value : 0) || 0;
-    if (val > 0) {
-      var k = '__customHealth__' + name.replace(/[^a-zA-Z0-9]/g,'_');
-      plan[k] = val;
-      BT_KEY_LABELS[k] = name;
-    }
+  // Scan ALL custom-list containers (not just hardcoded ones) so any category's custom rows count
+  document.querySelectorAll('[id^="customList_"]').forEach(function(list) {
+    var cat = list.id.replace('customList_','');
+    var catLabel = cat.charAt(0).toUpperCase() + cat.slice(1);
+    list.querySelectorAll('.custom-budget-row').forEach(function(row) {
+      var nameEl = row.querySelector('input[type="text"]');
+      var valEl = row.querySelector('.bud-m');
+      var name = nameEl && nameEl.value ? nameEl.value : 'Custom ' + catLabel;
+      var val = parseFloat(valEl ? valEl.value : 0) || 0;
+      if (val > 0) {
+        var k = '__custom' + catLabel + '__' + name.replace(/[^a-zA-Z0-9]/g,'_');
+        plan[k] = val;
+        BT_KEY_LABELS[k] = name;
+      }
+    });
   });
   return plan;
 }
