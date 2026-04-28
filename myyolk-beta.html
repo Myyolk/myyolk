@@ -9525,6 +9525,8 @@ function calcLifeEventImpact() {
     el.style.color = total >= 0 ? 'var(--sage)' : 'var(--clay)';
   }
   if(panel) panel.style.display = rows.length > 0 ? 'block' : 'none';
+  // Trigger What-If recalc so Current Plan portfolio reflects the new life event impact
+  if(typeof calcWhatIf === 'function') calcWhatIf();
   return total;
 }
 
