@@ -7805,6 +7805,8 @@ function calcWhatIf() {
   var curPortfolio = (state.portfolioAtRetirement && state.portfolioAtRetirement > 0)
     ? state.portfolioAtRetirement
     : (function(){ var p = bal; for(var i=0;i<curYears;i++) p=(p+baseAnnualContrib)*(1+baseRor); return p; })();
+  // Life events affect both Current and What-If plans equally — they're real expenses regardless of strategy
+  curPortfolio += leImpact;
   var curDraw = (curPortfolio * 0.04) / 12;
   var curLasts = simDepletionAge(curPortfolio, baseSpending, ssIncome, baseRetAge, baseRor * 0.5);
 
