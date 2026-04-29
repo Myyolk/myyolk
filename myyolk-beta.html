@@ -4340,6 +4340,7 @@ function addVehicle() {
     '<div class="form-grid">' +
     '<div class="field"><label>Year/Make/Model</label><input type="text" id="vehicleName_'+id+'" placeholder="e.g. 2022 Ford F-150" oninput="saveToLocal()"></div>' +
     '<div class="field"><label>Current Value ($)</label><input type="number" id="vehicleValue_'+id+'" placeholder="e.g. 25000" oninput="recalc()"><div class="hint">Used for today\'s net worth only — excluded from retirement projections</div></div>' +
+    '<div class="field"><label>Monthly Payment ($)</label><input type="number" id="vehiclePayment_'+id+'" placeholder="e.g. 580" oninput="recalc()"><div class="hint">Leave blank if paid off · feeds Budget Tracker</div></div>' +
     '<div class="field"><label>Expected Replacement Year</label><input type="number" id="vehicleReplace_'+id+'" placeholder="e.g. 2030" oninput="recalc()"><div class="hint">We will flag this as a future expense</div></div>' +
     '</div>';
   document.getElementById('vehicleList').appendChild(div);
@@ -8134,8 +8135,8 @@ function updateBudgetAnalysis() {
 
 // Category map: matches the bud-m data-key attributes grouped by category
 var BT_CATS = [
-  { label: '🏠 Housing', keys: ['rent','propTax','homeIns','electric','gasHeat','water','sewerage','trash','internet','cellPhone','homeMaint'] },
-  { label: '🚗 Transportation', keys: ['gas','carIns','carMaint','carWash'] },
+  { label: '🏠 Housing', keys: ['rent','mortgage','propTax','homeIns','electric','gasHeat','water','sewerage','trash','internet','cellPhone','homeMaint'] },
+  { label: '🚗 Transportation', keys: ['vehiclePmt','gas','carIns','carMaint','carWash'] },
   { label: '🍽️ Food', keys: ['groceries','dining'] },
   { label: '🏥 Health', keys: ['medPrem','rx','oop','therapy','massage'] },
   { label: '💼 Professional', keys: ['legal','accounting','finAdvisor'] },
@@ -8150,10 +8151,11 @@ var BT_CATS = [
 
 // Key → human label map
 var BT_KEY_LABELS = {
-  rent:'Rent', propTax:'Property Taxes', homeIns:'Home Insurance', electric:'Electric',
+  rent:'Rent', mortgage:'Mortgage Payment', propTax:'Property Taxes', homeIns:'Home Insurance', electric:'Electric',
   gasHeat:'Gas / Heating Oil', water:'Water', sewerage:'Sewerage', trash:'Trash / Recycling',
   internet:'Internet', cellPhone:'Telephone', homeMaint:'Home Maintenance',
   gas:'Gas', carIns:'Car Insurance', carMaint:'Maintenance / Repairs',
+  vehiclePmt:'Vehicle Payments',
   groceries:'Groceries', dining:'Dining Out',
   medPrem:'Medical Premiums', rx:'Prescriptions', oop:'Out-of-Pocket',
   legal:'Legal / Attorney', accounting:'Accounting / Tax Prep', finAdvisor:'Financial Advisor',
@@ -8244,6 +8246,22 @@ function btGetPlanned() {
       }
     });
   });
+  // Auto-populate mortgage from property rows (sum of monthly payments)
+  var totalMortgage = 0;
+  document.querySelectorAll('.property-row').forEach(function(row) {
+    var pmtEl = row.querySelector('.prop-payment');
+    var pmt = parseFloat(pmtEl && pmtEl.value) || 0;
+    if (pmt > 0) totalMortgage += pmt;
+  });
+  if (totalMortgage > 0) plan['mortgage'] = totalMortgage;
+
+  // Auto-populate vehicle payments from vehicle rows (sum of monthly payments)
+  var totalVehPmt = 0;
+  document.querySelectorAll('[id^="vehiclePayment_"]').forEach(function(el) {
+    var pmt = parseFloat(el.value) || 0;
+    if (pmt > 0) totalVehPmt += pmt;
+  });
+  if (totalVehPmt > 0) plan['vehiclePmt'] = totalVehPmt;
   return plan;
 }
 
@@ -10063,6 +10081,7 @@ function collectAllData() {
       wash:    document.getElementById('vehicleWash_'+id)?.value||'',
       loan:    document.getElementById('vehicleLoan_'+id)?.value||'',
       payoff:  document.getElementById('vehiclePayoff_'+id)?.value||'',
+      payment: document.getElementById('vehiclePayment_'+id)?.value||'',
       replace: document.getElementById('vehicleReplace_'+id)?.value||''
     });
   });
@@ -10397,6 +10416,7 @@ function loadFromLocal() {
             if(document.getElementById('vehicleWash_'+id)) document.getElementById('vehicleWash_'+id).value = rd.wash;
             if(document.getElementById('vehicleLoan_'+id)) document.getElementById('vehicleLoan_'+id).value = rd.loan;
             if(document.getElementById('vehiclePayoff_'+id)) document.getElementById('vehiclePayoff_'+id).value = rd.payoff;
+            if(document.getElementById('vehiclePayment_'+id)) document.getElementById('vehiclePayment_'+id).value = rd.payment||'';
             if(document.getElementById('vehicleReplace_'+id)) document.getElementById('vehicleReplace_'+id).value = rd.replace;
           });
         }
