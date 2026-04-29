@@ -3013,6 +3013,7 @@
           <div class="budget-row"><label>Out-of-Pocket</label><input type="number" class="bud-m" data-key="oop" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Therapy / Counseling</label><input type="number" class="bud-m" data-key="therapy" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Massage / Wellness</label><input type="number" class="bud-m" data-key="massage" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Personal Care / Grooming</label><input type="number" class="bud-m" data-key="personalCare" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div style="margin-top:0.4rem">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
               <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
@@ -7021,7 +7022,7 @@ function generatePDF() {
           ['Housing (utilities, maintenance)', ['electric','gasHeat','water','sewerage','trash','internet','cellPhone','homeMaint','propTax','homeIns']],
           ['Transportation', ['gas','carIns','carMaint','carWash']],
           ['Food & Dining', ['groceries','dining']],
-          ['Health & Wellness', ['medPrem','rx','oop','therapy','massage']],
+          ['Health & Wellness', ['medPrem','rx','oop','therapy','massage','personalCare']],
           ['Insurance & Life', []], // dynamic policy rows handled separately
           ['Lifestyle & Subscriptions', ['subs','entertain','shopping','gym','hobbies','charity','pets','gifts','vacation']],
         ];
@@ -8138,7 +8139,7 @@ var BT_CATS = [
   { label: '🏠 Housing', keys: ['rent','mortgage','propTax','homeIns','electric','gasHeat','water','sewerage','trash','internet','cellPhone','homeMaint'] },
   { label: '🚗 Transportation', keys: ['vehiclePmt','gas','carIns','carMaint','carWash'] },
   { label: '🍽️ Food', keys: ['groceries','dining'] },
-  { label: '🏥 Health', keys: ['medPrem','rx','oop','therapy','massage'] },
+  { label: '🏥 Health', keys: ['medPrem','rx','oop','therapy','massage','personalCare'] },
   { label: '💼 Professional', keys: ['legal','accounting','finAdvisor'] },
   { label: '🎓 Education & Family', keys: ['tuition','edu529','k12','tutoring','childSupport','childcare','elderCare'] },
   { label: '🎭 Lifestyle', keys: ['subs','entertain','shopping','gym','therapy','vacation','hobbies','charity','lawn','cleaning','security','pets','gifts','other'] },
@@ -8167,7 +8168,7 @@ var BT_KEY_LABELS = {
   hobbies:'Hobbies', charity:'Charitable Donations', lawn:'Lawn / Landscaping',
   cleaning:'Cleaning Service', security:'Security / Monitoring', pets:'Pets',
   gifts:'Gifts / Family', other:'Other',
-  carWash:'Car Wash', massage:'Massage / Wellness',
+  carWash:'Car Wash', massage:'Massage / Wellness', personalCare:'Personal Care / Grooming',
   debtCar1:'Car Loan 1', debtCar2:'Car Loan 2', debtStudent:'Student Loans',
   debtCC1:'Credit Card 1', debtCC2:'Credit Card 2', debtCC3:'Credit Card 3',
   debtPersonal:'Personal Loan', debtOther:'Other Debt'
