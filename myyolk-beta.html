@@ -2984,6 +2984,8 @@
           <div class="budget-row"><label>Car Insurance</label><input type="number" class="bud-m" data-key="carIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Maintenance / Repairs</label><input type="number" class="bud-m" data-key="carMaint" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Car Wash</label><input type="number" class="bud-m" data-key="carWash" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Rideshare / Transit</label><input type="number" class="bud-m" data-key="rideshare" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Parking</label><input type="number" class="bud-m" data-key="parking" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div style="margin-top:0.4rem">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
               <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
@@ -7020,7 +7022,7 @@ function generatePDF() {
         y += 5;
         var budgetKeys = [
           ['Housing (utilities, maintenance)', ['electric','gasHeat','water','sewerage','trash','internet','cellPhone','homeMaint','propTax','homeIns']],
-          ['Transportation', ['gas','carIns','carMaint','carWash']],
+          ['Transportation', ['gas','carIns','carMaint','carWash','rideshare','parking']],
           ['Food & Dining', ['groceries','dining']],
           ['Health & Wellness', ['medPrem','rx','oop','therapy','massage','personalCare']],
           ['Insurance & Life', []], // dynamic policy rows handled separately
@@ -8137,7 +8139,7 @@ function updateBudgetAnalysis() {
 // Category map: matches the bud-m data-key attributes grouped by category
 var BT_CATS = [
   { label: '🏠 Housing', keys: ['rent','mortgage','propTax','homeIns','electric','gasHeat','water','sewerage','trash','internet','cellPhone','homeMaint'] },
-  { label: '🚗 Transportation', keys: ['vehiclePmt','gas','carIns','carMaint','carWash'] },
+  { label: '🚗 Transportation', keys: ['vehiclePmt','gas','carIns','carMaint','carWash','rideshare','parking'] },
   { label: '🍽️ Food', keys: ['groceries','dining'] },
   { label: '🏥 Health', keys: ['medPrem','rx','oop','therapy','massage','personalCare'] },
   { label: '💼 Professional', keys: ['legal','accounting','finAdvisor'] },
@@ -8169,6 +8171,7 @@ var BT_KEY_LABELS = {
   cleaning:'Cleaning Service', security:'Security / Monitoring', pets:'Pets',
   gifts:'Gifts / Family', other:'Other',
   carWash:'Car Wash', massage:'Massage / Wellness', personalCare:'Personal Care / Grooming',
+  rideshare:'Rideshare / Transit', parking:'Parking',
   debtCar1:'Car Loan 1', debtCar2:'Car Loan 2', debtStudent:'Student Loans',
   debtCC1:'Credit Card 1', debtCC2:'Credit Card 2', debtCC3:'Credit Card 3',
   debtPersonal:'Personal Loan', debtOther:'Other Debt'
