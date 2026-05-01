@@ -3519,10 +3519,19 @@
               </table>
             </div>
 
+            <!-- Unmatched items (need user category) -->
+            <div id="btImportUnmatched" style="margin-top:1rem;display:none">
+              <div style="font-weight:700;font-size:0.95rem;color:#a85b00;margin-bottom:0.5rem">
+                ⚠️ <span id="btImportUnmatchedCount">0</span> transactions need a category
+              </div>
+              <div style="font-size:0.82rem;color:var(--mid);margin-bottom:0.5rem">We couldn't auto-categorize these. Pick a category for each, and check "Remember" to teach the system for next time.</div>
+              <div id="btImportUnmatchedBody" style="border:1px solid var(--border);border-radius:8px;max-height:300px;overflow-y:auto;background:#fff"></div>
+            </div>
+
             <!-- Flagged items -->
             <div id="btImportFlagged" style="margin-top:1rem;display:none">
-              <div style="font-weight:700;font-size:0.95rem;color:#a85b00;margin-bottom:0.5rem">⚠️ Items flagged for your review</div>
-              <div style="font-size:0.82rem;color:var(--mid);margin-bottom:0.5rem">Paper checks, Zelles to people, and other items that need a human eye. Skipping them is fine — you can re-classify later.</div>
+              <div style="font-weight:700;font-size:0.95rem;color:#a85b00;margin-bottom:0.5rem">📝 Paper checks — log manually</div>
+              <div style="font-size:0.82rem;color:var(--mid);margin-bottom:0.5rem">Bank statements don't show payees for paper checks. Use Monthly Check-In to add these to the right category.</div>
               <div id="btImportFlaggedBody" style="font-size:0.85rem;border:1px solid var(--border);border-radius:8px;max-height:200px;overflow-y:auto"></div>
             </div>
 
@@ -8573,17 +8582,33 @@ async function btImportSubmitOtherBank() {
   var sent = document.getElementById('btImportOtherSent');
   if (!input || !input.value.trim()) return;
   var bankName = input.value.trim();
-  // Save to Supabase as feedback (we'll harvest this for prioritization)
+  var ts = new Date().toISOString();
+  var userEmail = (typeof _sbUser !== 'undefined' && _sbUser) ? (_sbUser.email || '') : '(not signed in)';
+
+  // Try writing to a public bank_requests table (works even for anonymous users via RLS)
   try {
-    if (typeof _sb !== 'undefined' && _sbUser) {
-      await _sb.from('user_data').upsert({
-        user_id: _sbUser.id,
-        data: Object.assign({}, collectAllData(), { __bankRequest: bankName + ' (' + new Date().toISOString() + ')' }),
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'user_id' });
+    if (typeof _sb !== 'undefined') {
+      await _sb.from('bank_requests').insert({
+        bank_name: bankName,
+        user_email: userEmail,
+        requested_at: ts
+      });
     }
-  } catch(e) { console.warn('feedback save failed', e); }
-  if (sent) { sent.style.display = 'inline'; setTimeout(function(){ sent.style.display='none'; input.value=''; }, 3000); }
+  } catch(e) { console.warn('bank_requests insert failed (table may not exist yet)', e); }
+
+  // ALWAYS also offer a mailto fallback so the request reliably reaches Dean
+  var subject = encodeURIComponent('MyYolk — Bank request: ' + bankName);
+  var body = encodeURIComponent('Bank/card requested: ' + bankName + '\n\nFrom: ' + userEmail + '\nTime: ' + ts + '\n\n(Sent from MyYolk Statement Import — bank not yet supported)');
+  var mailtoLink = 'mailto:dean@myyolk.com?subject=' + subject + '&body=' + body;
+
+  if (sent) {
+    sent.innerHTML = '✓ Logged. <a href="' + mailtoLink + '" style="color:#2D4A35;text-decoration:underline;font-weight:600">Also send us an email →</a>';
+    sent.style.display = 'inline-block';
+    setTimeout(function(){
+      sent.style.display='none';
+      input.value='';
+    }, 8000);
+  }
 }
 
 function btImportParseCSV(filename, text, bankHint) {
@@ -8912,24 +8937,38 @@ function btImportFinishParse(rows) {
 
   if (!rows.length) {
     status.style.background = '#fde8e8'; status.style.borderColor = '#f5b3b3'; status.style.color = '#a02020';
-    status.textContent = '⚠️ Could not parse any transactions. Make sure the CSV is from PNC Checking or PNC Credit Card.';
+    status.textContent = '⚠️ Could not parse any transactions. Make sure the CSV is from one of the supported banks.';
     return;
   }
 
-  // Group by month and category
+  // Group by month and category. Track unmatched separately.
   var byMonth = {};
-  var flagged = [];
+  var flaggedChecks = [];
+  var unmatched = [];
   var skipped = 0;
+
+  // Apply user's saved personal rules first (if any)
+  var personalRules = btImportLoadPersonalRules();
 
   for (var i = 0; i < rows.length; i++) {
     var r = rows[i];
     var month = (r.date || '').substring(0, 7);
     if (!month) continue;
 
-    var cat = btImportClassify(r.desc);
+    // Check personal rules first (exact-or-prefix match on description)
+    var cat = null;
+    var descLower = r.desc.toLowerCase();
+    for (var pr in personalRules) {
+      if (descLower.indexOf(pr.toLowerCase()) >= 0) { cat = personalRules[pr]; break; }
+    }
+    // Then standard rules
+    if (!cat) cat = btImportClassify(r.desc);
+
     if (cat === '_skip') { skipped++; continue; }
-    if (cat === '_flag') {
-      flagged.push(r);
+    if (cat === '_flag') { flaggedChecks.push(r); continue; }
+    // 'other' = unmatched, route to user-review queue
+    if (cat === 'other') {
+      unmatched.push({ row: r, month: month, suggestedCat: 'other', userCat: null });
       continue;
     }
 
@@ -8937,14 +8976,92 @@ function btImportFinishParse(rows) {
     byMonth[month][cat] = Math.round(((byMonth[month][cat] || 0) + r.amount) * 100) / 100;
   }
 
-  _btImportPending = { byMonth: byMonth, flagged: flagged, totalRows: rows.length, skipped: skipped };
+  _btImportPending = {
+    byMonth: byMonth,
+    flaggedChecks: flaggedChecks,
+    unmatched: unmatched,
+    totalRows: rows.length,
+    skipped: skipped
+  };
 
   status.style.background = '#f0f7f3'; status.style.borderColor = '#c8e0d3'; status.style.color = '#2D4A35';
   var monthCount = Object.keys(byMonth).length;
-  status.textContent = '✅ Parsed ' + rows.length + ' transactions across ' + monthCount + ' month(s). ' + skipped + ' skipped (transfers/CC payments). ' + flagged.length + ' flagged for review.';
+  var matched = rows.length - skipped - flaggedChecks.length - unmatched.length;
+  status.innerHTML = '✅ Parsed <strong>' + rows.length + '</strong> transactions across <strong>' + monthCount + '</strong> month(s). ' +
+    '<strong>' + matched + '</strong> auto-categorized · ' +
+    '<strong>' + unmatched.length + '</strong> need your category · ' +
+    '<strong>' + flaggedChecks.length + '</strong> paper checks flagged · ' +
+    skipped + ' skipped (transfers/payments).';
 
   btImportRenderReview();
 }
+
+// ── Personal rules (saved per user) ──
+function btImportLoadPersonalRules() {
+  try {
+    if (typeof window.__myyolkImportRules === 'string') {
+      return JSON.parse(window.__myyolkImportRules);
+    }
+  } catch(e) {}
+  return {};
+}
+
+// Categories for the unmatched-item dropdown
+var BT_CATEGORY_OPTIONS = [
+  ['Skip this transaction','_skip'],
+  ['─── Housing ───','_separator'],
+  ['Mortgage','mortgage'],
+  ['Rent','rent'],
+  ['Property Tax','propTax'],
+  ['Home Insurance','homeIns'],
+  ['Electric','electric'],
+  ['Gas / Heat','gasHeat'],
+  ['Internet','internet'],
+  ['Cell Phone','cellPhone'],
+  ['Home Maintenance','homeMaint'],
+  ['─── Transportation ───','_separator'],
+  ['Vehicle Payment','vehiclePayment'],
+  ['Car Insurance','carIns'],
+  ['Car Maintenance','carMaint'],
+  ['Gas (vehicle)','gas'],
+  ['Car Wash','carWash'],
+  ['Rideshare/Transit','rideshare'],
+  ['Parking','parking'],
+  ['─── Food ───','_separator'],
+  ['Groceries','groceries'],
+  ['Dining Out','dining'],
+  ['─── Health ───','_separator'],
+  ['Medical Premium','medicalPremium'],
+  ['Prescriptions','rx'],
+  ['Out-of-Pocket Medical','oop'],
+  ['Personal Care','personalCare'],
+  ['Massage / Wellness','massage'],
+  ['Gym / Fitness','gym'],
+  ['Therapy','therapy'],
+  ['─── Family ───','_separator'],
+  ['K-12 / School','k12'],
+  ['Tuition','tuition'],
+  ['529 Savings','college529'],
+  ['Childcare','childcare'],
+  ['Elder Care','elderCare'],
+  ['─── Lifestyle ───','_separator'],
+  ['Entertainment','entertain'],
+  ['Subscriptions','subs'],
+  ['Shopping','shopping'],
+  ['Hobbies','hobbies'],
+  ['Vacation','vacation'],
+  ['Gifts','gifts'],
+  ['Pets','pets'],
+  ['Charity','charity'],
+  ['─── Services ───','_separator'],
+  ['Lawn','lawn'],
+  ['Cleaning','cleaning'],
+  ['Security','security'],
+  ['Legal','legal'],
+  ['Accounting','accounting'],
+  ['─── Other ───','_separator'],
+  ['Other','other']
+];
 
 function btImportRenderReview() {
   if (!_btImportPending) return;
@@ -8977,23 +9094,85 @@ function btImportRenderReview() {
   }
 
   document.getElementById('btImportReviewSummary').textContent =
-    '$' + grandParsed.toFixed(2) + ' across ' + months.length + ' month(s). Choose how to apply each month — merge adds new amounts to existing categories; replace overwrites the month entirely.';
+    '$' + grandParsed.toFixed(2) + ' across ' + months.length + ' month(s) auto-categorized. Choose how to apply each month — merge adds to existing categories; replace overwrites the month entirely.';
 
-  // Render flagged items (paper checks etc.)
+  // Render unmatched items with category dropdowns
+  var unmatchedWrap = document.getElementById('btImportUnmatched');
+  var unmatchedBody = document.getElementById('btImportUnmatchedBody');
+  if (_btImportPending.unmatched && _btImportPending.unmatched.length > 0) {
+    unmatchedWrap.style.display = 'block';
+    document.getElementById('btImportUnmatchedCount').textContent = _btImportPending.unmatched.length;
+
+    // Build a single dropdown HTML once, reuse via cloning
+    var dropdownHTML = '<select class="bt-unmatched-cat" data-um-idx="__IDX__" style="padding:0.35rem 0.5rem;font-size:0.82rem;border:1px solid var(--border);border-radius:4px;background:#fff;font-family:DM Sans,sans-serif">';
+    for (var co = 0; co < BT_CATEGORY_OPTIONS.length; co++) {
+      var opt = BT_CATEGORY_OPTIONS[co];
+      if (opt[1] === '_separator') {
+        dropdownHTML += '<option disabled>' + opt[0] + '</option>';
+      } else {
+        dropdownHTML += '<option value="' + opt[1] + '">' + opt[0] + '</option>';
+      }
+    }
+    dropdownHTML += '</select>';
+
+    unmatchedBody.innerHTML = '';
+
+    // Group by description so user can fix once for repeated merchants
+    var byDesc = {};
+    for (var u = 0; u < _btImportPending.unmatched.length; u++) {
+      var item = _btImportPending.unmatched[u];
+      var key = item.row.desc;
+      if (!byDesc[key]) byDesc[key] = { items: [], total: 0 };
+      byDesc[key].items.push({ item: item, idx: u });
+      byDesc[key].total += item.row.amount;
+    }
+
+    var sortedDescs = Object.keys(byDesc).sort(function(a,b){ return byDesc[b].total - byDesc[a].total; });
+
+    for (var d = 0; d < sortedDescs.length; d++) {
+      var desc = sortedDescs[d];
+      var group = byDesc[desc];
+      var idxList = group.items.map(function(g){return g.idx;}).join(',');
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0.75rem;border-bottom:1px solid var(--border);font-size:0.85rem';
+      row.innerHTML =
+        '<div style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><strong>' + desc + '</strong>' +
+          (group.items.length > 1 ? '<span style="color:var(--mid);font-size:0.78rem">  (' + group.items.length + ' charges)</span>' : '') + '</div>' +
+        '<div style="font-weight:600;color:#2D4A35;min-width:80px;text-align:right">$' + group.total.toFixed(2) + '</div>' +
+        '<div style="min-width:160px"><select class="bt-unmatched-cat" data-um-idxlist="' + idxList + '" style="width:100%;padding:0.35rem 0.5rem;font-size:0.82rem;border:1px solid var(--border);border-radius:4px;background:#fff;font-family:DM Sans,sans-serif"></select></div>' +
+        '<label style="font-size:0.78rem;color:var(--mid);cursor:pointer;white-space:nowrap"><input type="checkbox" class="bt-unmatched-remember" data-um-idxlist="' + idxList + '" data-um-desc="' + desc.replace(/"/g, '&quot;') + '"> Remember</label>';
+      unmatchedBody.appendChild(row);
+      // Populate dropdown
+      var sel = row.querySelector('select');
+      for (var co2 = 0; co2 < BT_CATEGORY_OPTIONS.length; co2++) {
+        var opt2 = BT_CATEGORY_OPTIONS[co2];
+        var optEl = document.createElement('option');
+        optEl.value = opt2[1];
+        optEl.textContent = opt2[0];
+        if (opt2[1] === '_separator') optEl.disabled = true;
+        if (opt2[1] === 'other') optEl.selected = true;
+        sel.appendChild(optEl);
+      }
+    }
+  } else {
+    unmatchedWrap.style.display = 'none';
+  }
+
+  // Render flagged paper checks (separate from unmatched)
   var flagWrap = document.getElementById('btImportFlagged');
   var flagBody = document.getElementById('btImportFlaggedBody');
-  if (_btImportPending.flagged.length > 0) {
+  if (_btImportPending.flaggedChecks && _btImportPending.flaggedChecks.length > 0) {
     flagWrap.style.display = 'block';
     flagBody.innerHTML = '';
-    for (var f = 0; f < _btImportPending.flagged.length; f++) {
-      var flg = _btImportPending.flagged[f];
+    for (var f = 0; f < _btImportPending.flaggedChecks.length; f++) {
+      var flg = _btImportPending.flaggedChecks[f];
       var div = document.createElement('div');
       div.style.padding = '0.5rem 0.75rem';
       div.style.borderBottom = '1px solid var(--border)';
       div.innerHTML = '<span style="color:var(--mid)">' + flg.date + '</span> &nbsp; ' +
         '<strong>$' + flg.amount.toFixed(2) + '</strong> &nbsp; ' +
         '<span>' + flg.desc + '</span> &nbsp; ' +
-        '<span style="font-size:0.78rem;color:#a85b00;background:#fff3e0;padding:1px 6px;border-radius:8px">flagged</span>';
+        '<span style="font-size:0.78rem;color:#a85b00;background:#fff3e0;padding:1px 6px;border-radius:8px">paper check — log manually</span>';
       flagBody.appendChild(div);
     }
   } else {
@@ -9003,8 +9182,37 @@ function btImportRenderReview() {
 
 async function btImportApply() {
   if (!_btImportPending) return;
-  var byMonth = _btImportPending.byMonth;
+  var byMonth = JSON.parse(JSON.stringify(_btImportPending.byMonth)); // clone so we can mutate
   var months = Object.keys(byMonth);
+
+  // Apply user's category picks for unmatched items
+  var rememberedRules = {};
+  if (_btImportPending.unmatched && _btImportPending.unmatched.length > 0) {
+    var selects = document.querySelectorAll('.bt-unmatched-cat[data-um-idxlist]');
+    for (var s = 0; s < selects.length; s++) {
+      var sel = selects[s];
+      var idxList = (sel.dataset.umIdxlist || '').split(',').filter(Boolean).map(Number);
+      var cat = sel.value;
+      if (cat === '_skip') continue;
+
+      // Apply each unmatched index in this group
+      for (var i = 0; i < idxList.length; i++) {
+        var um = _btImportPending.unmatched[idxList[i]];
+        if (!um) continue;
+        var m = um.month;
+        if (!byMonth[m]) byMonth[m] = {};
+        byMonth[m][cat] = Math.round(((byMonth[m][cat] || 0) + um.row.amount) * 100) / 100;
+        if (months.indexOf(m) < 0) months.push(m);
+      }
+
+      // If the user checked "Remember", save a personal rule
+      var remember = document.querySelector('input.bt-unmatched-remember[data-um-idxlist="' + sel.dataset.umIdxlist + '"]');
+      if (remember && remember.checked && remember.dataset.umDesc) {
+        rememberedRules[remember.dataset.umDesc.toLowerCase()] = cat;
+      }
+    }
+  }
+
   var applied = 0;
   var skipped = 0;
 
@@ -9030,13 +9238,23 @@ async function btImportApply() {
     applied++;
   }
 
+  // Save personal rules if any were remembered
+  if (Object.keys(rememberedRules).length > 0) {
+    try {
+      var existingRules = btImportLoadPersonalRules();
+      Object.assign(existingRules, rememberedRules);
+      window.__myyolkImportRules = JSON.stringify(existingRules);
+    } catch(e){}
+  }
+
   // Save
   if (typeof cloudSave === 'function') { try { await cloudSave(); } catch(e){} }
   if (typeof saveToLocal === 'function') { try { saveToLocal(); } catch(e){} }
 
   var status = document.getElementById('btImportStatus');
   status.style.background = '#f0f7f3'; status.style.borderColor = '#c8e0d3'; status.style.color = '#2D4A35';
-  status.textContent = '✅ Applied to ' + applied + ' month(s). ' + (skipped > 0 ? skipped + ' skipped.' : '') + ' Switch to Spending History to review.';
+  var ruleCount = Object.keys(rememberedRules).length;
+  status.textContent = '✅ Applied to ' + applied + ' month(s). ' + (skipped > 0 ? skipped + ' skipped. ' : '') + (ruleCount > 0 ? 'Saved ' + ruleCount + ' personal rule(s) for next time. ' : '') + 'Switch to Spending History to review.';
 
   btImportReset(true);
 }
@@ -10871,6 +11089,10 @@ function collectAllData() {
     }
     data['__custom_'+catId] = JSON.stringify(rows);
   });
+  // Personal import rules (from Statement Import feature)
+  if (typeof window.__myyolkImportRules === 'string') {
+    data['__importRules'] = window.__myyolkImportRules;
+  }
   return data;
 }
 
@@ -11312,6 +11534,10 @@ function loadFromLocal() {
     // Restore budget tracking data
     if(data['__budgetTracking']) {
       try { btData = JSON.parse(data['__budgetTracking']); } catch(e) { btData = {}; }
+    }
+    // Restore personal import rules
+    if(data['__importRules']) {
+      try { window.__myyolkImportRules = data['__importRules']; } catch(e) {}
     }
     // Strip old inline styles from income rows so CSS class takes over
     document.querySelectorAll('.additional-income-row').forEach(function(row) {
