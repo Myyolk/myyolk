@@ -2958,7 +2958,11 @@
             <input type="number" class="bud-m" data-key="rent" placeholder="0" oninput="calcBudget(this)">
             <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
           </div>
-          <div style="font-size:0.75rem;color:#888;font-style:italic;padding:0 0 6px">🏠 Homeowners: enter your mortgage in the Debt Payments section below</div>
+          <div class="budget-row">
+            <label>Mortgage <span style="font-size:0.7rem;color:#888;font-weight:400" id="mortgageAutoNote">(auto-filled from Accounts &amp; Savings)</span></label>
+            <input type="number" class="bud-m" data-key="mortgage" id="bud_mortgage" placeholder="0" readonly style="background:#f5f5f5;cursor:not-allowed" oninput="calcBudget(this)">
+            <input type="number" class="bud-a" id="bud_mortgage_annual" placeholder="0" readonly style="background:#f5f5f5;cursor:not-allowed" oninput="calcBudget(this)">
+          </div>
           <div class="budget-row"><label>Property Taxes</label><input type="number" class="bud-m" data-key="propTax" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Home Insurance</label><input type="number" class="bud-m" data-key="homeIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Electric</label><input type="number" class="bud-m" data-key="electric" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
@@ -2980,6 +2984,11 @@
 
         <div class="budget-category">
           <div class="budget-cat-header">🚗 Transportation</div>
+          <div class="budget-row">
+            <label>Vehicle Payment <span style="font-size:0.7rem;color:#888;font-weight:400" id="vehiclePaymentAutoNote">(auto-filled from Accounts &amp; Savings)</span></label>
+            <input type="number" class="bud-m" data-key="vehiclePayment" id="bud_vehiclePayment" placeholder="0" readonly style="background:#f5f5f5;cursor:not-allowed" oninput="calcBudget(this)">
+            <input type="number" class="bud-a" id="bud_vehiclePayment_annual" placeholder="0" readonly style="background:#f5f5f5;cursor:not-allowed" oninput="calcBudget(this)">
+          </div>
           <div class="budget-row"><label>Gas</label><input type="number" class="bud-m" data-key="gas" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Car Insurance</label><input type="number" class="bud-m" data-key="carIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Maintenance / Repairs</label><input type="number" class="bud-m" data-key="carMaint" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
@@ -3103,18 +3112,10 @@
 
         <div class="budget-category">
           <div class="budget-cat-header">💳 Debt Payments</div>
-          <div id="budgetMortgageRows">
-            <div style="font-size:0.8rem;color:var(--mid);font-style:italic;padding:4px 0 8px">Add properties in Accounts &amp; Savings to populate mortgage payments here.</div>
-          </div>
-          <div style="font-size:0.75rem;color:#888;font-style:italic;padding:2px 0 6px">
-            💡 If your payment includes escrow (taxes &amp; insurance), check the boxes below and leave Property Taxes &amp; Home Insurance at $0
+          <div style="font-size:0.78rem;color:var(--mid);font-style:italic;padding:2px 0 8px">
+            🏠 Mortgage payments are auto-filled in Housing above. 🚗 Vehicle payments are auto-filled in Transportation above. Both pull from <strong>Accounts &amp; Savings</strong>.
           </div>
 
-          <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0 0.25rem">
-            <span style="font-size:0.82rem;color:var(--mid)">Car Loans</span>
-            <button onclick="addDebtRow('car')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
-          </div>
-          <div id="carLoanRows"></div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0 0.25rem">
             <span style="font-size:0.82rem;color:var(--mid)">Student Loans</span>
             <button onclick="addDebtRow('student')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
@@ -3135,6 +3136,10 @@
             <button onclick="addDebtRow('other')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
           </div>
           <div id="otherDebtRows"></div>
+          <!-- Hidden legacy car loan container — keep for backward compat with addDebtRow('car') if referenced elsewhere -->
+          <div id="carLoanRows" style="display:none"></div>
+          <!-- Hidden legacy mortgage container — keep for backward compat -->
+          <div id="budgetMortgageRows" style="display:none"></div>
           <div style="padding:8px 0 4px;font-size:0.78rem;color:var(--sage);font-style:italic">
             💡 Debts with payoff dates will be removed from your retirement expense projections automatically
           </div>
@@ -4458,12 +4463,18 @@ function addVehicle() {
     '<div class="form-grid">' +
     '<div class="field"><label>Year/Make/Model</label><input type="text" id="vehicleName_'+id+'" placeholder="e.g. 2022 Ford F-150" oninput="saveToLocal()"></div>' +
     '<div class="field"><label>Current Value ($)</label><input type="number" id="vehicleValue_'+id+'" placeholder="e.g. 25000" oninput="recalc()"><div class="hint">Used for today\'s net worth only — excluded from retirement projections</div></div>' +
-    '<div class="field"><label>Monthly Payment ($)</label><input type="number" id="vehiclePayment_'+id+'" placeholder="e.g. 580" oninput="recalc()"><div class="hint">Leave blank if paid off · feeds Budget Tracker</div></div>' +
+    '<div class="field"><label>Monthly Payment ($)</label><input type="number" id="vehiclePayment_'+id+'" placeholder="e.g. 580" oninput="recalc();syncBudgetVehiclePayments()"><div class="hint">Leave blank if paid off · feeds Budget Tracker</div></div>' +
     '<div class="field"><label>Expected Replacement Year</label><input type="number" id="vehicleReplace_'+id+'" placeholder="e.g. 2030" oninput="recalc()"><div class="hint">We will flag this as a future expense</div></div>' +
     '</div>';
   document.getElementById('vehicleList').appendChild(div);
+  if (typeof syncBudgetVehiclePayments === 'function') syncBudgetVehiclePayments();
 }
-function removeVehicle(id) { var el = document.getElementById('vehicle_'+id); if(el) el.remove(); recalc(); }
+function removeVehicle(id) {
+  var el = document.getElementById('vehicle_'+id);
+  if(el) el.remove();
+  recalc();
+  if (typeof syncBudgetVehiclePayments === 'function') syncBudgetVehiclePayments();
+}
 
 // Other Assets
 var otherAssetCount = 0;
@@ -10403,45 +10414,71 @@ function removePropertyRow(btn) {
 }
 
 function syncBudgetMortgages() {
-  var container = document.getElementById('budgetMortgageRows');
-  if(!container) return;
+  // ─── 1. Sum all active mortgage payments from Accounts & Savings property rows ───
   var rows = document.querySelectorAll('.property-row');
   var currentYear = new Date().getFullYear();
-  
-  if(rows.length === 0) {
-    container.innerHTML = '<div style="font-size:0.8rem;color:var(--mid);font-style:italic;padding:4px 0 8px">Add properties in Accounts & Savings to populate mortgage payments here.</div>';
-    return;
-  }
-  
-  var html = '';
-  rows.forEach(function(row, i) {
-    var type = row.querySelector('.prop-type')?.value || 'primary';
-    var mortgage = parseFloat(row.querySelector('.prop-mortgage')?.value) || 0;
+  var totalMonthly = 0;
+  var activeCount = 0;
+  var paidOffCount = 0;
+  rows.forEach(function(row) {
     var payment = parseFloat(row.querySelector('.prop-payment')?.value) || 0;
     var payoff = parseInt(row.querySelector('.prop-payoff')?.value) || 0;
-    var typeLabels = {primary:'Primary Home', rental:'Rental Property', vacation:'Vacation Home', investment:'Investment Property'};
-    var label = typeLabels[type] || 'Property';
-    
-    if(mortgage <= 0 && payment <= 0) return; // skip if no mortgage
-    
     var isPaidOff = payoff > 0 && payoff <= currentYear;
-    var payoffNote = payoff > 0 ? ' · Payoff: ' + payoff : '';
-    
-    html += '<div class="budget-row" style="' + (isPaidOff ? 'opacity:0.5' : '') + '">' +
-      '<label>' + label + ' Mortgage' + payoffNote + (isPaidOff ? ' ✓ Paid Off' : '') + '</label>' +
-      '<input type="number" class="bud-m prop-budget-payment-' + i + '" data-key="propMortgage' + i + '" ' +
-        'placeholder="0" value="' + (isPaidOff ? '0' : payment) + '" ' +
-        'oninput="calcBudget(this)" ' + (isPaidOff ? 'disabled' : '') + '>' +
-      '<input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">' +
-      '</div>';
+    if (isPaidOff) { paidOffCount++; return; }
+    if (payment > 0) { totalMonthly += payment; activeCount++; }
   });
-  
-  if(!html) html = '<div style="font-size:0.8rem;color:var(--mid);font-style:italic;padding:4px 0 8px">No mortgages entered.</div>';
-  container.innerHTML = html;
-  
-  // Trigger budget recalc
-  if(typeof calcBudget === 'function') {
-    document.querySelectorAll('.bud-m').forEach(function(el){ calcBudget(el); });
+
+  // ─── 2. Write into the new Housing → Mortgage field ───
+  var mEl = document.getElementById('bud_mortgage');
+  var aEl = document.getElementById('bud_mortgage_annual');
+  var noteEl = document.getElementById('mortgageAutoNote');
+  if (mEl) {
+    mEl.value = totalMonthly > 0 ? totalMonthly.toFixed(2) : '';
+    if (aEl) aEl.value = totalMonthly > 0 ? (totalMonthly * 12).toFixed(2) : '';
+    if (noteEl) {
+      if (rows.length === 0) {
+        noteEl.textContent = '(add a property in Accounts & Savings to auto-fill)';
+      } else if (activeCount === 0 && paidOffCount > 0) {
+        noteEl.textContent = '(all properties paid off — no mortgage)';
+      } else {
+        noteEl.textContent = '(auto-filled from ' + activeCount + ' propert' + (activeCount === 1 ? 'y' : 'ies') + ' in Accounts & Savings)';
+      }
+    }
+    if (typeof calcBudget === 'function') calcBudget(mEl);
+  }
+
+  // ─── 3. Legacy: also keep the hidden budgetMortgageRows in sync (in case anything reads it) ───
+  var container = document.getElementById('budgetMortgageRows');
+  if (container) container.innerHTML = '';
+}
+
+function syncBudgetVehiclePayments() {
+  // Sum all vehicle payments from Accounts & Savings vehicle rows
+  var els = document.querySelectorAll('[id^="vehiclePayment_"]');
+  var totalMonthly = 0;
+  var activeCount = 0;
+  els.forEach(function(el) {
+    var pmt = parseFloat(el.value) || 0;
+    if (pmt > 0) { totalMonthly += pmt; activeCount++; }
+  });
+
+  var mEl = document.getElementById('bud_vehiclePayment');
+  var aEl = document.getElementById('bud_vehiclePayment_annual');
+  var noteEl = document.getElementById('vehiclePaymentAutoNote');
+  if (mEl) {
+    mEl.value = totalMonthly > 0 ? totalMonthly.toFixed(2) : '';
+    if (aEl) aEl.value = totalMonthly > 0 ? (totalMonthly * 12).toFixed(2) : '';
+    if (noteEl) {
+      var totalVehicleCount = document.querySelectorAll('[id^="vehiclePayment_"]').length;
+      if (totalVehicleCount === 0) {
+        noteEl.textContent = '(add a vehicle in Accounts & Savings to auto-fill)';
+      } else if (activeCount === 0) {
+        noteEl.textContent = '(all vehicles paid off — no payment)';
+      } else {
+        noteEl.textContent = '(auto-filled from ' + activeCount + ' vehicle' + (activeCount === 1 ? '' : 's') + ' in Accounts & Savings)';
+      }
+    }
+    if (typeof calcBudget === 'function') calcBudget(mEl);
   }
 }
 
@@ -10973,6 +11010,11 @@ async function cloudLoad() {
     if(veh>0) window._maxKnownVehCount=Math.max(window._maxKnownVehCount||0,veh);
   }, 1000);
   if(typeof calcBudgetHealthCheck === "function") calcBudgetHealthCheck();
+  // Sync auto-filled Budget Planner fields from Accounts data
+  setTimeout(function() {
+    if (typeof syncBudgetMortgages === 'function') syncBudgetMortgages();
+    if (typeof syncBudgetVehiclePayments === 'function') syncBudgetVehiclePayments();
+  }, 1100);
   var _fn = document.getElementById('firstName')?.value||'';
   var _sn = document.getElementById('spouseFirstName')?.value||'';
   var _cap = function(s){ return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase(); };
@@ -11411,6 +11453,8 @@ function loadFromLocal() {
             if(document.getElementById('vehicleReplace_'+id)) document.getElementById('vehicleReplace_'+id).value = rd.replace;
           });
         }
+        // Sync vehicle payments to Budget Planner
+        if (typeof syncBudgetVehiclePayments === 'function') syncBudgetVehiclePayments();
       } catch(e) {}
     }
     // Restore other assets
