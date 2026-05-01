@@ -1791,7 +1791,7 @@
     </div>
 
     <!-- What's New (beta release notes) -->
-    <div id="whatsNewPill" onclick="openWhatsNew()" style="background:linear-gradient(135deg,#fff8e1 0%,#ffe9b8 100%);border:1.5px solid #C8860A;border-radius:10px;padding:0.7rem 0.85rem;margin-bottom:0.85rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:transform 0.1s">
+    <div id="whatsNewPill" class="whats-new-desktop-pill" onclick="openWhatsNew()" style="background:linear-gradient(135deg,#fff8e1 0%,#ffe9b8 100%);border:1.5px solid #C8860A;border-radius:10px;padding:0.7rem 0.85rem;margin-bottom:0.85rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:transform 0.1s">
       <div>
         <div style="font-size:0.78rem;font-weight:700;color:#7a5400">📣 What's New</div>
         <div style="font-size:0.7rem;color:#8a6a2a;margin-top:1px" id="whatsNewSubtitle">Tap to see recent updates</div>
@@ -11735,6 +11735,21 @@ setTimeout(function() {
 })();
 </script>
 
+
+<!-- Mobile-only What's New floating button -->
+<button id="whatsNewMobileBtn" onclick="openWhatsNew()" style="display:none;position:fixed;top:130px;right:14px;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#C8860A 0%,#a06f00 100%);color:#fff;border:none;font-size:1.2rem;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.25);z-index:97;align-items:center;justify-content:center" aria-label="What's New">
+  📣
+  <span id="whatsNewMobileBadge" style="display:none;position:absolute;top:-3px;right:-3px;background:#c0392b;color:#fff;font-size:0.55rem;font-weight:800;padding:2px 5px;border-radius:8px;border:1.5px solid #fff;letter-spacing:0.3px">NEW</span>
+</button>
+
+<style>
+  /* Hide desktop pill on narrow screens, show floating button instead */
+  @media (max-width: 900px) {
+    .whats-new-desktop-pill { display: none !important; }
+    #whatsNewMobileBtn { display: flex !important; }
+  }
+</style>
+
 <!-- ══════════════════════════════════════════ -->
 <!-- WHAT'S NEW MODAL                            -->
 <!-- ══════════════════════════════════════════ -->
@@ -11857,16 +11872,18 @@ function closeWhatsNew() {
 function updateWhatsNewBadge() {
   var badge = document.getElementById('whatsNewBadge');
   var subtitle = document.getElementById('whatsNewSubtitle');
-  if (!badge || !window.WHATS_NEW || window.WHATS_NEW.length === 0) return;
+  var mobileBadge = document.getElementById('whatsNewMobileBadge');
+  if (!window.WHATS_NEW || window.WHATS_NEW.length === 0) return;
   var latestDate = window.WHATS_NEW[0].date;
   var lastSeen = '';
   try { lastSeen = localStorage.getItem('myyolk_whatsnew_seen') || ''; } catch(e) {}
-  if (latestDate > lastSeen) {
-    badge.style.display = 'inline-block';
-    if (subtitle) subtitle.textContent = window.WHATS_NEW[0].items.length + ' new updates · tap to view';
-  } else {
-    badge.style.display = 'none';
-    if (subtitle) subtitle.textContent = 'Tap to see recent updates';
+  var hasNew = latestDate > lastSeen;
+  if (badge) badge.style.display = hasNew ? 'inline-block' : 'none';
+  if (mobileBadge) mobileBadge.style.display = hasNew ? 'block' : 'none';
+  if (subtitle) {
+    subtitle.textContent = hasNew
+      ? (window.WHATS_NEW[0].items.length + ' new updates · tap to view')
+      : 'Tap to see recent updates';
   }
 }
 
