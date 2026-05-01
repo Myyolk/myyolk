@@ -3257,57 +3257,9 @@
       </div>
       </div><!-- end budgetAnalysisSection -->
 
-      <div class="card">
-        <div class="card-title"><span class="dot"></span> Debt & Liabilities</div>
-        <p style="font-size:0.85rem;color:#666;margin-bottom:1rem">Knowing when your debts end helps project your true retirement cash flow.</p>
-
-        <div class="form-grid">
-          <div class="field">
-            <label>Car Loan 1 - Monthly Payment ($)</label>
-            <input type="number" id="carLoan1Payment" value="" placeholder="e.g. 450" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Car Loan 1 - Payoff Year</label>
-            <input type="number" id="carLoan1PayoffYear" value="" placeholder="e.g. 2027" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Car Loan 2 - Monthly Payment ($)</label>
-            <input type="number" id="carLoan2Payment" value="" placeholder="e.g. 350" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Car Loan 2 - Payoff Year</label>
-            <input type="number" id="carLoan2PayoffYear" value="" placeholder="e.g. 2028" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Student Loans - Monthly Payment ($)</label>
-            <input type="number" id="studentLoanPayment" value="" placeholder="e.g. 300" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Student Loans - Payoff Year</label>
-            <input type="number" id="studentLoanPayoffYear" value="" placeholder="e.g. 2030" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>2nd Mortgage / HELOC Balance ($)</label>
-            <input type="number" id="mortgage2Balance" value="" placeholder="e.g. 50000" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Credit Cards - Total Balance ($)</label>
-            <input type="number" id="creditCardBalance" value="" placeholder="e.g. 5000" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Credit Cards - Monthly Payment ($)</label>
-            <input type="number" id="creditCardPayment" value="" placeholder="e.g. 200" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Other Debt - Monthly Payment ($)</label>
-            <input type="number" id="otherDebtPayment" value="" placeholder="e.g. 150" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Other Debt - Payoff Year</label>
-            <input type="number" id="otherDebtPayoffYear" value="" placeholder="e.g. 2029" oninput="recalc()">
-          </div>
-        </div>
-        <div id="debtFreeMsg" style="margin-top:1rem;padding:0.75rem 1rem;background:var(--sage-pale);border-radius:8px;font-size:0.85rem;color:var(--sage);font-weight:600;display:none"></div>
+      <!-- Hidden legacy fields kept for backward-compat with calc logic (creditCardBalance is read by recalc) -->
+      <div style="display:none">
+        <input type="number" id="creditCardBalance" value="">
       </div>
 
       <div class="btn-row">
@@ -11021,6 +10973,56 @@ async function cloudLoad() {
   var _yl = document.getElementById('yourIncomeLabel'); if(_yl) _yl.textContent = _fn ? _cap(_fn)+"'s Income" : "Your Income";
   var _sl = document.getElementById('spouseIncomeTitle'); if(_sl) _sl.textContent = _sn ? _cap(_sn)+"'s Income" : "Spouse / Partner Income";
   var _tl = document.getElementById('spouseTotalLabel'); if(_tl) _tl.textContent = _sn ? _cap(_sn)+"'s Annual Income" : "Spouse Total Income";
+  // Check for orphaned debt fields from old "Debt & Liabilities" card (deprecated May 2026)
+  setTimeout(checkDeprecatedDebtFields, 1500);
+}
+
+// One-time migration check: detect old debt fields & show banner
+function checkDeprecatedDebtFields() {
+  // Skip if already dismissed in this browser
+  try { if (localStorage.getItem('myyolk_debt_migration_dismissed_v1')) return; } catch(e){}
+
+  // Pull saved data and look for orphan keys
+  var orphanKeys = ['carLoan1Payment','carLoan1PayoffYear','carLoan2Payment','carLoan2PayoffYear',
+                    'studentLoanPayment','studentLoanPayoffYear','mortgage2Balance',
+                    'creditCardPayment','otherDebtPayment','otherDebtPayoffYear'];
+  var found = [];
+  try {
+    var saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
+    for (var i = 0; i < orphanKeys.length; i++) {
+      var v = saved[orphanKeys[i]];
+      if (v && parseFloat(v) > 0) {
+        found.push({key: orphanKeys[i], value: v});
+      }
+    }
+  } catch(e) {}
+
+  if (found.length === 0) return;
+
+  // Show one-time migration banner
+  var banner = document.createElement('div');
+  banner.id = 'debtMigrationBanner';
+  banner.style.cssText = 'position:fixed;bottom:20px;right:20px;max-width:420px;background:#fff;border:2px solid #C8860A;border-radius:12px;padding:1.2rem;box-shadow:0 8px 24px rgba(0,0,0,0.15);z-index:9999;font-family:DM Sans,sans-serif;font-size:0.88rem;line-height:1.5';
+  var labels = {
+    'carLoan1Payment':'Car Loan 1 payment','carLoan1PayoffYear':'Car Loan 1 payoff year',
+    'carLoan2Payment':'Car Loan 2 payment','carLoan2PayoffYear':'Car Loan 2 payoff year',
+    'studentLoanPayment':'Student loan payment','studentLoanPayoffYear':'Student loan payoff year',
+    'mortgage2Balance':'2nd mortgage / HELOC balance','creditCardPayment':'Credit card payment',
+    'otherDebtPayment':'Other debt payment','otherDebtPayoffYear':'Other debt payoff year'
+  };
+  var listHTML = found.map(function(f) {
+    return '<li style="margin-bottom:2px"><strong>' + (labels[f.key] || f.key) + ':</strong> ' + f.value + '</li>';
+  }).join('');
+
+  banner.innerHTML =
+    '<div style="font-weight:700;color:#2D4A35;margin-bottom:0.5rem;font-size:0.95rem">📋 We\'ve simplified debt entry</div>' +
+    '<div style="color:#444;margin-bottom:0.6rem">The old "Debt & Liabilities" section was redundant. We consolidated everything into one place. We found data you had previously entered there:</div>' +
+    '<ul style="margin:0 0 0.8rem 1.2rem;color:#666;font-size:0.85rem">' + listHTML + '</ul>' +
+    '<div style="color:#444;margin-bottom:0.8rem">Please re-enter these in the new <strong>"💳 Debt Payments"</strong> section in Budget Planner (use the <strong>+ Add</strong> buttons). Vehicle and mortgage payments now auto-fill from <strong>Accounts & Savings</strong>.</div>' +
+    '<div style="display:flex;gap:0.5rem;justify-content:flex-end">' +
+      '<button onclick="document.getElementById(\'debtMigrationBanner\').remove();try{localStorage.setItem(\'myyolk_debt_migration_dismissed_v1\',\'1\')}catch(e){}" style="background:#2D4A35;color:#fff;border:none;border-radius:6px;padding:0.5rem 1rem;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">Got it</button>' +
+    '</div>';
+  document.body.appendChild(banner);
 }
 
 function collectAllData() {
