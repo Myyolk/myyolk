@@ -8227,18 +8227,16 @@ function updateBudgetAnalysis() {
 
 // Category map: matches the bud-m data-key attributes grouped by category
 var BT_CATS = [
-  { label: '🏠 Housing', keys: ['rent','mortgage','propTax','homeIns','electric','gasHeat','water','sewerage','trash','internet','cellPhone','homeMaint'] },
-  { label: '🚗 Transportation', keys: ['vehiclePmt','gas','carIns','carMaint','carWash','rideshare','parking'] },
-  { label: '🍽️ Food', keys: ['groceries','dining'] },
-  { label: '🏥 Health', keys: ['medPrem','rx','oop','therapy','massage','personalCare'] },
-  { label: '💼 Professional', keys: ['legal','accounting','finAdvisor'] },
-  { label: '🎓 Education & Family', keys: ['tuition','edu529','k12','tutoring','childSupport','childcare','elderCare'] },
-  { label: '🎭 Lifestyle', keys: ['subs','entertain','shopping','gym','therapy','vacation','hobbies','charity','lawn','cleaning','security','pets','gifts','other'] },
+  { label: '🏠 Housing', keys: ['rent','mortgage','propTax','homeIns','electric','gasHeat','water','sewerage','trash','internet','cellPhone','homeMaint','__customHousing__'] },
+  { label: '🚗 Transportation', keys: ['vehiclePmt','gas','carIns','carMaint','carWash','rideshare','parking','__customTransport__'] },
+  { label: '🍽️ Food', keys: ['groceries','dining','__customFood__'] },
+  { label: '🏥 Health', keys: ['medPrem','rx','oop','therapy','massage','personalCare','__customHealth__'] },
+  { label: '💼 Professional', keys: ['legal','accounting','finAdvisor','__customProfsvc__'] },
+  { label: '🎓 Education & Family', keys: ['tuition','edu529','k12','tutoring','childSupport','childcare','elderCare','__customEducation__'] },
+  { label: '🎭 Lifestyle', keys: ['subs','entertain','shopping','gym','therapy','vacation','hobbies','charity','lawn','cleaning','security','pets','gifts','other','__customLifestyle__'] },
   { label: '💳 Debt Payments', keys: ['debtCar1','debtCar2','debtStudent','debtCC1','debtCC2','debtCC3','debtPersonal','debtOther'] },
-  { label: '🛡️ Insurance & Life', keys: ['__ins__'] },
-  { label: '📦 Subscriptions', keys: ['__subs__'] },
-  { label: '🏠 Custom Housing', keys: ['__customHousing__'] },
-  { label: '🏥 Custom Health', keys: ['__customHealth__'] }
+  { label: '🛡️ Insurance & Life', keys: ['__ins__','__customInsurance__'] },
+  { label: '📦 Subscriptions', keys: ['__subs__'] }
 ];
 
 // Key → human label map
