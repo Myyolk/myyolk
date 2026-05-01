@@ -10968,6 +10968,8 @@ async function cloudLoad() {
   setTimeout(function() {
     if (typeof syncBudgetMortgages === 'function') syncBudgetMortgages();
     if (typeof syncBudgetVehiclePayments === 'function') syncBudgetVehiclePayments();
+    // Re-check the unlogged-month reminder once btData has actually loaded from Supabase
+    if (typeof btCheckUnlogged === 'function') btCheckUnlogged();
   }, 1100);
   var _fn = document.getElementById('firstName')?.value||'';
   var _sn = document.getElementById('spouseFirstName')?.value||'';
