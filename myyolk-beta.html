@@ -8438,9 +8438,9 @@ var BT_IMPORT_RULES = [
   ['__subs__Amazon_Prime', /amazon prime|prime video/i],
   ['subs', /netflix|hulu|disney plus|spotify|paramount|peacock/i],
   // Fuel
-  ['gas', /\b(shell|exxon|mobil|bp|sunoco|gulf|chevron|speedway|sheetz|wawa|gettygo|costco gas|sam's gas)\b/i],
-  // Groceries
-  ['groceries', /giant eagle|aldi|trader joe|whole foods|wegmans|kroger|walmart.*neighborhood|safeway|publix|costco whse|sam's club|target.*grocer/i],
+  ['gas', /\b(shell|exxon|mobil|bp|sunoco|gulf|chevron|speedway|sheetz|wawa|gettygo|costco gas|sam'?s.*gas|sam'?sclub.*gas)\b/i],
+  // Groceries — Walmart is always groceries; Sam's Club is groceries unless "gas" appears in the description (caught by the gas rule above)
+  ['groceries', /giant eagle|aldi|trader joe|whole foods|wegmans|kroger|walmart|wal-mart|wal mart|wm supercenter|safeway|publix|costco whse|sam'?s club|samsclub|target.*grocer/i],
   // Dining
   ['dining', /starbucks|dunkin|chipotle|panera|subway|mcdonald|burger king|wendy|chick-fil|taco bell|olive garden|red lobster|texas roadhouse|outback|cheesecake|ihop|denny|applebee|dq\*|tst\*|sq \*|toast tab|gianni|pizza|restaurant|cafe|grill|kitchen|tavern|bistro|chipotle/i],
   // Auto / vehicle
