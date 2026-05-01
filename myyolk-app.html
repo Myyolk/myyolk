@@ -1790,6 +1790,15 @@
       <div style="font-size:0.75rem;color:#6b6b6b;line-height:1.4" id="btReminderText">Log last month's spending</div>
     </div>
 
+    <!-- What's New (beta release notes) -->
+    <div id="whatsNewPill" onclick="openWhatsNew()" style="background:linear-gradient(135deg,#fff8e1 0%,#ffe9b8 100%);border:1.5px solid #C8860A;border-radius:10px;padding:0.7rem 0.85rem;margin-bottom:0.85rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:transform 0.1s">
+      <div>
+        <div style="font-size:0.78rem;font-weight:700;color:#7a5400">📣 What's New</div>
+        <div style="font-size:0.7rem;color:#8a6a2a;margin-top:1px" id="whatsNewSubtitle">Tap to see recent updates</div>
+      </div>
+      <div id="whatsNewBadge" style="display:none;background:#c0392b;color:#fff;font-size:0.65rem;font-weight:700;padding:2px 7px;border-radius:10px;letter-spacing:0.3px">NEW</div>
+    </div>
+
     <div class="sidebar-label">Live Snapshot</div>
     <div class="quick-stat" style="background:#C8860A;border-color:#C8860A">
       <div class="quick-stat-label" style="color:#fff;font-weight:500">Planning for</div>
@@ -2958,7 +2967,11 @@
             <input type="number" class="bud-m" data-key="rent" placeholder="0" oninput="calcBudget(this)">
             <input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">
           </div>
-          <div style="font-size:0.75rem;color:#888;font-style:italic;padding:0 0 6px">🏠 Homeowners: enter your mortgage in the Debt Payments section below</div>
+          <div class="budget-row">
+            <label>Mortgage <span style="font-size:0.7rem;color:#888;font-weight:400" id="mortgageAutoNote">(auto-filled from Accounts &amp; Savings)</span></label>
+            <input type="number" class="bud-m" data-key="mortgage" id="bud_mortgage" placeholder="0" readonly style="background:#f5f5f5;cursor:not-allowed" oninput="calcBudget(this)">
+            <input type="number" class="bud-a" id="bud_mortgage_annual" placeholder="0" readonly style="background:#f5f5f5;cursor:not-allowed" oninput="calcBudget(this)">
+          </div>
           <div class="budget-row"><label>Property Taxes</label><input type="number" class="bud-m" data-key="propTax" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Home Insurance</label><input type="number" class="bud-m" data-key="homeIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Electric</label><input type="number" class="bud-m" data-key="electric" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
@@ -2980,10 +2993,17 @@
 
         <div class="budget-category">
           <div class="budget-cat-header">🚗 Transportation</div>
+          <div class="budget-row">
+            <label>Vehicle Payment <span style="font-size:0.7rem;color:#888;font-weight:400" id="vehiclePaymentAutoNote">(auto-filled from Accounts &amp; Savings)</span></label>
+            <input type="number" class="bud-m" data-key="vehiclePayment" id="bud_vehiclePayment" placeholder="0" readonly style="background:#f5f5f5;cursor:not-allowed" oninput="calcBudget(this)">
+            <input type="number" class="bud-a" id="bud_vehiclePayment_annual" placeholder="0" readonly style="background:#f5f5f5;cursor:not-allowed" oninput="calcBudget(this)">
+          </div>
           <div class="budget-row"><label>Gas</label><input type="number" class="bud-m" data-key="gas" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Car Insurance</label><input type="number" class="bud-m" data-key="carIns" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Maintenance / Repairs</label><input type="number" class="bud-m" data-key="carMaint" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Car Wash</label><input type="number" class="bud-m" data-key="carWash" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Rideshare / Transit</label><input type="number" class="bud-m" data-key="rideshare" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Parking</label><input type="number" class="bud-m" data-key="parking" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div style="margin-top:0.4rem">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
               <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
@@ -3013,6 +3033,7 @@
           <div class="budget-row"><label>Out-of-Pocket</label><input type="number" class="bud-m" data-key="oop" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Therapy / Counseling</label><input type="number" class="bud-m" data-key="therapy" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Massage / Wellness</label><input type="number" class="bud-m" data-key="massage" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Personal Care / Grooming</label><input type="number" class="bud-m" data-key="personalCare" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div style="margin-top:0.4rem">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
               <span style="font-size:0.78rem;color:var(--mid)">Custom items</span>
@@ -3038,7 +3059,8 @@
 
         <div class="budget-category">
           <div class="budget-cat-header">🎓 Education & Family</div>
-          <div class="budget-row"><label>College / Tuition</label><input type="number" class="bud-m" data-key="tuition" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Current Tuition <span style="font-size:0.7rem;color:#888;font-weight:400">(currently paying)</span></label><input type="number" class="bud-m" data-key="tuition" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="font-size:0.72rem;color:#888;font-style:italic;padding:0 0 6px">💡 Paying down past student loans? Use <strong>Student Loans</strong> in 💳 Debt Payments below.</div>
           <div class="budget-row"><label>529 / Education Savings</label><input type="number" class="bud-m" data-key="edu529" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>K-12 / Private School</label><input type="number" class="bud-m" data-key="k12" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Tutoring / Activities</label><input type="number" class="bud-m" data-key="tutoring" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
@@ -3100,22 +3122,15 @@
 
         <div class="budget-category">
           <div class="budget-cat-header">💳 Debt Payments</div>
-          <div id="budgetMortgageRows">
-            <div style="font-size:0.8rem;color:var(--mid);font-style:italic;padding:4px 0 8px">Add properties in Accounts &amp; Savings to populate mortgage payments here.</div>
-          </div>
-          <div style="font-size:0.75rem;color:#888;font-style:italic;padding:2px 0 6px">
-            💡 If your payment includes escrow (taxes &amp; insurance), check the boxes below and leave Property Taxes &amp; Home Insurance at $0
+          <div style="font-size:0.78rem;color:var(--mid);font-style:italic;padding:2px 0 8px">
+            🏠 Mortgage payments are auto-filled in Housing above. 🚗 Vehicle payments are auto-filled in Transportation above. Both pull from <strong>Accounts &amp; Savings</strong>.
           </div>
 
           <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0 0.25rem">
-            <span style="font-size:0.82rem;color:var(--mid)">Car Loans</span>
-            <button onclick="addDebtRow('car')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
-          </div>
-          <div id="carLoanRows"></div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0 0.25rem">
-            <span style="font-size:0.82rem;color:var(--mid)">Student Loans</span>
+            <span style="font-size:0.82rem;color:var(--mid)">Student Loans <span style="font-size:0.7rem;color:#888;font-weight:400">(paying down past education debt)</span></span>
             <button onclick="addDebtRow('student')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
           </div>
+          <div style="font-size:0.72rem;color:#888;font-style:italic;padding:0 0 6px">💡 For tuition you're <em>currently</em> paying, use <strong>Current Tuition</strong> in 🎓 Education & Family above.</div>
           <div id="studentLoanRows"></div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0">
             <span style="font-size:0.82rem;color:var(--mid)">Credit Cards</span>
@@ -3132,6 +3147,10 @@
             <button onclick="addDebtRow('other')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
           </div>
           <div id="otherDebtRows"></div>
+          <!-- Hidden legacy car loan container — keep for backward compat with addDebtRow('car') if referenced elsewhere -->
+          <div id="carLoanRows" style="display:none"></div>
+          <!-- Hidden legacy mortgage container — keep for backward compat -->
+          <div id="budgetMortgageRows" style="display:none"></div>
           <div style="padding:8px 0 4px;font-size:0.78rem;color:var(--sage);font-style:italic">
             💡 Debts with payoff dates will be removed from your retirement expense projections automatically
           </div>
@@ -3249,57 +3268,9 @@
       </div>
       </div><!-- end budgetAnalysisSection -->
 
-      <div class="card">
-        <div class="card-title"><span class="dot"></span> Debt & Liabilities</div>
-        <p style="font-size:0.85rem;color:#666;margin-bottom:1rem">Knowing when your debts end helps project your true retirement cash flow.</p>
-
-        <div class="form-grid">
-          <div class="field">
-            <label>Car Loan 1 - Monthly Payment ($)</label>
-            <input type="number" id="carLoan1Payment" value="" placeholder="e.g. 450" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Car Loan 1 - Payoff Year</label>
-            <input type="number" id="carLoan1PayoffYear" value="" placeholder="e.g. 2027" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Car Loan 2 - Monthly Payment ($)</label>
-            <input type="number" id="carLoan2Payment" value="" placeholder="e.g. 350" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Car Loan 2 - Payoff Year</label>
-            <input type="number" id="carLoan2PayoffYear" value="" placeholder="e.g. 2028" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Student Loans - Monthly Payment ($)</label>
-            <input type="number" id="studentLoanPayment" value="" placeholder="e.g. 300" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Student Loans - Payoff Year</label>
-            <input type="number" id="studentLoanPayoffYear" value="" placeholder="e.g. 2030" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>2nd Mortgage / HELOC Balance ($)</label>
-            <input type="number" id="mortgage2Balance" value="" placeholder="e.g. 50000" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Credit Cards - Total Balance ($)</label>
-            <input type="number" id="creditCardBalance" value="" placeholder="e.g. 5000" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Credit Cards - Monthly Payment ($)</label>
-            <input type="number" id="creditCardPayment" value="" placeholder="e.g. 200" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Other Debt - Monthly Payment ($)</label>
-            <input type="number" id="otherDebtPayment" value="" placeholder="e.g. 150" oninput="recalc()">
-          </div>
-          <div class="field">
-            <label>Other Debt - Payoff Year</label>
-            <input type="number" id="otherDebtPayoffYear" value="" placeholder="e.g. 2029" oninput="recalc()">
-          </div>
-        </div>
-        <div id="debtFreeMsg" style="margin-top:1rem;padding:0.75rem 1rem;background:var(--sage-pale);border-radius:8px;font-size:0.85rem;color:var(--sage);font-weight:600;display:none"></div>
+      <!-- Hidden legacy fields kept for backward-compat with calc logic (creditCardBalance is read by recalc) -->
+      <div style="display:none">
+        <input type="number" id="creditCardBalance" value="">
       </div>
 
       <div class="btn-row">
@@ -3318,6 +3289,7 @@
       <div class="bt-pills">
         <button class="bt-pill active" onclick="btShowPanel('checkin')" id="btPill-checkin">✏️ Monthly Check-In</button>
         <button class="bt-pill" onclick="btShowPanel('history')" id="btPill-history">📈 Spending History</button>
+        <button class="bt-pill" onclick="btShowPanel('import')" id="btPill-import">📥 Import Statements <span style="display:inline-block;margin-left:4px;padding:1px 6px;font-size:0.65rem;background:#2D4A35;color:#fff;border-radius:8px;letter-spacing:0.5px">PRO</span></button>
       </div>
 
       <!-- ── CHECK-IN PANEL ── -->
@@ -3425,6 +3397,120 @@
           </div>
         </div>
       </div>
+
+      <!-- ── IMPORT STATEMENTS PANEL ── -->
+      <div id="btPanel-import" style="display:none">
+        <div class="card">
+          <div style="background:#fff9e6;border:1px solid #f5c14a;border-radius:8px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.88rem;color:#6b5510">
+            <strong>📥 Bulk import from your bank or credit card.</strong> Drop in a CSV and we'll auto-categorize transactions and merge them into your monthly tracker. Files are processed in your browser — nothing is uploaded.
+          </div>
+
+          <!-- Bank selector -->
+          <div style="margin-bottom:1rem">
+            <label style="display:block;font-size:0.82rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px">Which bank or card?</label>
+            <select id="btImportBank" onchange="btImportOnBankChange()" style="width:100%;padding:0.6rem 0.85rem;font-size:0.95rem;border:1px solid var(--border);border-radius:8px;background:#fff;font-family:DM Sans,sans-serif">
+              <option value="auto">Auto-detect (try this first)</option>
+              <option value="chase">Chase (checking, credit card)</option>
+              <option value="bofa">Bank of America</option>
+              <option value="wells">Wells Fargo</option>
+              <option value="capone">Capital One (credit card or 360)</option>
+              <option value="amex">American Express</option>
+              <option value="citi">Citi</option>
+              <option value="discover">Discover</option>
+              <option value="apple">Apple Card</option>
+              <option value="usaa">USAA</option>
+              <option value="pnc-cc">PNC Credit Card</option>
+              <option value="pnc-chk">PNC Checking</option>
+              <option value="hd">Home Depot Card</option>
+              <option value="lowes">Lowe's Card</option>
+              <option value="other">Don't see my bank — let us know</option>
+            </select>
+            <div style="margin-top:8px;padding:8px 12px;background:#f0f7f3;border:1px solid #c8e0d3;border-radius:6px;font-size:0.82rem;color:#2D4A35;line-height:1.5">
+              <strong>What's a CSV?</strong> It's a simple spreadsheet file (<code style="background:#fff;padding:1px 5px;border-radius:3px;font-family:Menlo,monospace;font-size:0.78rem">.csv</code>) that every major bank lets you download from your online account. Look for a <em>Download</em>, <em>Export</em>, or <em>Activity Download</em> link near your transaction history. Don't upload PDFs or screenshots — those won't work.
+            </div>
+          </div>
+
+          <!-- Drop zone -->
+          <div id="btImportDrop" style="border:2px dashed var(--border);border-radius:10px;padding:2.5rem 1rem;text-align:center;cursor:pointer;background:#fafafa;transition:all 0.15s">
+            <div style="font-size:2.5rem;margin-bottom:0.5rem">📂</div>
+            <div style="font-weight:600;color:var(--charcoal);margin-bottom:0.25rem">Drop your CSV here, or click to browse</div>
+            <div style="font-size:0.82rem;color:var(--mid);margin-bottom:0.75rem" id="btImportDropHint">Auto-detection will try common formats</div>
+            <input type="file" id="btImportFile" accept=".csv" style="display:none" multiple>
+            <button class="btn btn-secondary" onclick="document.getElementById('btImportFile').click()" style="padding:0.5rem 1.25rem">Choose file(s)</button>
+          </div>
+
+          <!-- "Other bank" feedback prompt -->
+          <div id="btImportOtherPrompt" style="display:none;margin-top:1rem;padding:1rem;background:#fff9e6;border:1px solid #f5c14a;border-radius:8px;font-size:0.9rem">
+            <strong>We don't support that bank yet — but we'd like to.</strong>
+            <div style="margin-top:0.5rem;color:var(--charcoal)">Tell us which bank, and we'll add it. Or upload your CSV anyway and we'll do our best to auto-detect.</div>
+            <input type="text" id="btImportOtherBank" placeholder="e.g. Navy Federal, Fidelity, Schwab, Truist..." style="width:100%;margin-top:0.6rem;padding:0.5rem 0.75rem;font-size:0.9rem;border:1px solid var(--border);border-radius:6px;font-family:DM Sans,sans-serif">
+            <button onclick="btImportSubmitOtherBank()" style="margin-top:0.6rem;padding:0.4rem 1rem;font-size:0.82rem;background:#2D4A35;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif">Send to MyYolk team</button>
+            <span id="btImportOtherSent" style="display:none;margin-left:0.5rem;color:#2D4A35;font-size:0.85rem">✓ Thanks! We'll add it.</span>
+          </div>
+
+          <!-- Help link -->
+          <details style="margin-top:0.75rem;font-size:0.85rem;color:var(--mid)">
+            <summary style="cursor:pointer;font-weight:600">📋 How to download your CSV</summary>
+            <div style="padding:0.75rem 0 0 1rem;line-height:1.7">
+              <div><strong>Chase:</strong> Account → Statements & Activity → Download → CSV</div>
+              <div><strong>Bank of America:</strong> Activity → Download → Comma-Separated Values</div>
+              <div><strong>Wells Fargo:</strong> Account Activity → Download → CSV</div>
+              <div><strong>Capital One:</strong> Transactions → Download → CSV</div>
+              <div><strong>American Express:</strong> Activity → Download → CSV</div>
+              <div><strong>Citi:</strong> Account → Download Activity → CSV</div>
+              <div><strong>Discover:</strong> Account Activity → Download → CSV</div>
+              <div><strong>Apple Card:</strong> Wallet App → Card Balance → Statements → Export Transactions</div>
+              <div><strong>PNC:</strong> Online Banking → Account Activity → Export → CSV</div>
+              <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--mid)">Need a different format? Pick "Don't see my bank" above.</div>
+            </div>
+          </details>
+
+          <!-- Parse status -->
+          <div id="btImportStatus" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:#f0f7f3;border:1px solid #c8e0d3;border-radius:8px;font-size:0.88rem;color:#2D4A35"></div>
+
+          <!-- Review section -->
+          <div id="btImportReview" style="display:none;margin-top:1.25rem">
+            <div style="font-weight:700;font-size:1rem;color:var(--charcoal);margin-bottom:0.5rem">Review &amp; Apply</div>
+            <div style="font-size:0.85rem;color:var(--mid);margin-bottom:0.75rem" id="btImportReviewSummary"></div>
+
+            <div class="table-wrap" style="max-height:400px;overflow-y:auto">
+              <table class="bt-checkin-grid" id="btImportTable">
+                <thead>
+                  <tr>
+                    <th>Month</th>
+                    <th style="text-align:right">Total parsed</th>
+                    <th style="text-align:right">Currently in tracker</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="btImportTableBody"></tbody>
+              </table>
+            </div>
+
+            <!-- Unmatched items (need user category) -->
+            <div id="btImportUnmatched" style="margin-top:1rem;display:none">
+              <div style="font-weight:700;font-size:0.95rem;color:#a85b00;margin-bottom:0.5rem">
+                ⚠️ <span id="btImportUnmatchedCount">0</span> transactions need a category
+              </div>
+              <div style="font-size:0.82rem;color:var(--mid);margin-bottom:0.5rem">We couldn't auto-categorize these. Pick a category for each, and check "Remember" to teach the system for next time.</div>
+              <div id="btImportUnmatchedBody" style="border:1px solid var(--border);border-radius:8px;max-height:300px;overflow-y:auto;background:#fff"></div>
+            </div>
+
+            <!-- Flagged items -->
+            <div id="btImportFlagged" style="margin-top:1rem;display:none">
+              <div style="font-weight:700;font-size:0.95rem;color:#a85b00;margin-bottom:0.5rem">📝 Paper checks — log manually</div>
+              <div style="font-size:0.82rem;color:var(--mid);margin-bottom:0.5rem">Bank statements don't show payees for paper checks. Use Monthly Check-In to add these to the right category.</div>
+              <div id="btImportFlaggedBody" style="font-size:0.85rem;border:1px solid var(--border);border-radius:8px;max-height:200px;overflow-y:auto"></div>
+            </div>
+
+            <div style="margin-top:1.25rem;display:flex;gap:0.75rem;align-items:center">
+              <button class="btn btn-primary" onclick="btImportApply()" style="padding:0.65rem 1.5rem">✅ Apply to Tracker</button>
+              <button onclick="btImportReset()" style="background:none;border:none;font-size:0.85rem;color:var(--mid);cursor:pointer;font-family:DM Sans,sans-serif;text-decoration:underline">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ── END IMPORT PANEL ── -->
     </div>
     <!-- ══ END TRACKING TAB ══ -->
 
@@ -4340,11 +4426,18 @@ function addVehicle() {
     '<div class="form-grid">' +
     '<div class="field"><label>Year/Make/Model</label><input type="text" id="vehicleName_'+id+'" placeholder="e.g. 2022 Ford F-150" oninput="saveToLocal()"></div>' +
     '<div class="field"><label>Current Value ($)</label><input type="number" id="vehicleValue_'+id+'" placeholder="e.g. 25000" oninput="recalc()"><div class="hint">Used for today\'s net worth only — excluded from retirement projections</div></div>' +
+    '<div class="field"><label>Monthly Payment ($)</label><input type="number" id="vehiclePayment_'+id+'" placeholder="e.g. 580" oninput="recalc();syncBudgetVehiclePayments()"><div class="hint">Leave blank if paid off · feeds Budget Tracker</div></div>' +
     '<div class="field"><label>Expected Replacement Year</label><input type="number" id="vehicleReplace_'+id+'" placeholder="e.g. 2030" oninput="recalc()"><div class="hint">We will flag this as a future expense</div></div>' +
     '</div>';
   document.getElementById('vehicleList').appendChild(div);
+  if (typeof syncBudgetVehiclePayments === 'function') syncBudgetVehiclePayments();
 }
-function removeVehicle(id) { var el = document.getElementById('vehicle_'+id); if(el) el.remove(); recalc(); }
+function removeVehicle(id) {
+  var el = document.getElementById('vehicle_'+id);
+  if(el) el.remove();
+  recalc();
+  if (typeof syncBudgetVehiclePayments === 'function') syncBudgetVehiclePayments();
+}
 
 // Other Assets
 var otherAssetCount = 0;
@@ -7018,9 +7111,9 @@ function generatePDF() {
         y += 5;
         var budgetKeys = [
           ['Housing (utilities, maintenance)', ['electric','gasHeat','water','sewerage','trash','internet','cellPhone','homeMaint','propTax','homeIns']],
-          ['Transportation', ['gas','carIns','carMaint','carWash']],
+          ['Transportation', ['gas','carIns','carMaint','carWash','rideshare','parking']],
           ['Food & Dining', ['groceries','dining']],
-          ['Health & Wellness', ['medPrem','rx','oop','therapy','massage']],
+          ['Health & Wellness', ['medPrem','rx','oop','therapy','massage','personalCare']],
           ['Insurance & Life', []], // dynamic policy rows handled separately
           ['Lifestyle & Subscriptions', ['subs','entertain','shopping','gym','hobbies','charity','pets','gifts','vacation']],
         ];
@@ -8134,30 +8227,29 @@ function updateBudgetAnalysis() {
 
 // Category map: matches the bud-m data-key attributes grouped by category
 var BT_CATS = [
-  { label: '🏠 Housing', keys: ['rent','propTax','homeIns','electric','gasHeat','water','sewerage','trash','internet','cellPhone','homeMaint'] },
-  { label: '🚗 Transportation', keys: ['gas','carIns','carMaint','carWash'] },
-  { label: '🍽️ Food', keys: ['groceries','dining'] },
-  { label: '🏥 Health', keys: ['medPrem','rx','oop','therapy','massage'] },
-  { label: '💼 Professional', keys: ['legal','accounting','finAdvisor'] },
-  { label: '🎓 Education & Family', keys: ['tuition','edu529','k12','tutoring','childSupport','childcare','elderCare'] },
-  { label: '🎭 Lifestyle', keys: ['subs','entertain','shopping','gym','therapy','vacation','hobbies','charity','lawn','cleaning','security','pets','gifts','other'] },
+  { label: '🏠 Housing', keys: ['rent','mortgage','propTax','homeIns','electric','gasHeat','water','sewerage','trash','internet','cellPhone','homeMaint','__customHousing__'] },
+  { label: '🚗 Transportation', keys: ['vehiclePmt','gas','carIns','carMaint','carWash','rideshare','parking','__customTransport__'] },
+  { label: '🍽️ Food', keys: ['groceries','dining','__customFood__'] },
+  { label: '🏥 Health', keys: ['medPrem','rx','oop','therapy','massage','personalCare','__customHealth__'] },
+  { label: '💼 Professional', keys: ['legal','accounting','finAdvisor','__customProfsvc__'] },
+  { label: '🎓 Education & Family', keys: ['tuition','edu529','k12','tutoring','childSupport','childcare','elderCare','__customEducation__'] },
+  { label: '🎭 Lifestyle', keys: ['subs','entertain','shopping','gym','therapy','vacation','hobbies','charity','lawn','cleaning','security','pets','gifts','other','__customLifestyle__'] },
   { label: '💳 Debt Payments', keys: ['debtCar1','debtCar2','debtStudent','debtCC1','debtCC2','debtCC3','debtPersonal','debtOther'] },
-  { label: '🛡️ Insurance & Life', keys: ['__ins__'] },
-  { label: '📦 Subscriptions', keys: ['__subs__'] },
-  { label: '🏠 Custom Housing', keys: ['__customHousing__'] },
-  { label: '🏥 Custom Health', keys: ['__customHealth__'] }
+  { label: '🛡️ Insurance & Life', keys: ['__ins__','__customInsurance__'] },
+  { label: '📦 Subscriptions', keys: ['__subs__'] }
 ];
 
 // Key → human label map
 var BT_KEY_LABELS = {
-  rent:'Rent', propTax:'Property Taxes', homeIns:'Home Insurance', electric:'Electric',
+  rent:'Rent', mortgage:'Mortgage Payment', propTax:'Property Taxes', homeIns:'Home Insurance', electric:'Electric',
   gasHeat:'Gas / Heating Oil', water:'Water', sewerage:'Sewerage', trash:'Trash / Recycling',
   internet:'Internet', cellPhone:'Telephone', homeMaint:'Home Maintenance',
   gas:'Gas', carIns:'Car Insurance', carMaint:'Maintenance / Repairs',
+  vehiclePmt:'Vehicle Payments',
   groceries:'Groceries', dining:'Dining Out',
   medPrem:'Medical Premiums', rx:'Prescriptions', oop:'Out-of-Pocket',
   legal:'Legal / Attorney', accounting:'Accounting / Tax Prep', finAdvisor:'Financial Advisor',
-  tuition:'College / Tuition', edu529:'529 Savings', k12:'K-12 / Private School',
+  tuition:'Current Tuition', edu529:'529 Savings', k12:'K-12 / Private School',
   tutoring:'Tutoring / Activities', childSupport:'Child Support', childcare:'Childcare',
   elderCare:'Elder Care',
   subs:'Subscriptions', entertain:'Entertainment', shopping:'Shopping / Clothing',
@@ -8165,7 +8257,8 @@ var BT_KEY_LABELS = {
   hobbies:'Hobbies', charity:'Charitable Donations', lawn:'Lawn / Landscaping',
   cleaning:'Cleaning Service', security:'Security / Monitoring', pets:'Pets',
   gifts:'Gifts / Family', other:'Other',
-  carWash:'Car Wash', massage:'Massage / Wellness',
+  carWash:'Car Wash', massage:'Massage / Wellness', personalCare:'Personal Care / Grooming',
+  rideshare:'Rideshare / Transit', parking:'Parking',
   debtCar1:'Car Loan 1', debtCar2:'Car Loan 2', debtStudent:'Student Loans',
   debtCC1:'Credit Card 1', debtCC2:'Credit Card 2', debtCC3:'Credit Card 3',
   debtPersonal:'Personal Loan', debtOther:'Other Debt'
@@ -8244,6 +8337,22 @@ function btGetPlanned() {
       }
     });
   });
+  // Auto-populate mortgage from property rows (sum of monthly payments)
+  var totalMortgage = 0;
+  document.querySelectorAll('.property-row').forEach(function(row) {
+    var pmtEl = row.querySelector('.prop-payment');
+    var pmt = parseFloat(pmtEl && pmtEl.value) || 0;
+    if (pmt > 0) totalMortgage += pmt;
+  });
+  if (totalMortgage > 0) plan['mortgage'] = totalMortgage;
+
+  // Auto-populate vehicle payments from vehicle rows (sum of monthly payments)
+  var totalVehPmt = 0;
+  document.querySelectorAll('[id^="vehiclePayment_"]').forEach(function(el) {
+    var pmt = parseFloat(el.value) || 0;
+    if (pmt > 0) totalVehPmt += pmt;
+  });
+  if (totalVehPmt > 0) plan['vehiclePmt'] = totalVehPmt;
   return plan;
 }
 
@@ -8278,7 +8387,7 @@ collectAllData = function() {
 // ── Panel toggle ──
 
 function btShowPanel(name) {
-  ['checkin','history'].forEach(function(p) {
+  ['checkin','history','import'].forEach(function(p) {
     var panel = document.getElementById('btPanel-' + p);
     var pill = document.getElementById('btPill-' + p);
     if (panel) panel.style.display = p === name ? 'block' : 'none';
@@ -8287,6 +8396,848 @@ function btShowPanel(name) {
     }
   });
   if (name === 'history') btRenderHistory();
+  if (name === 'import') btImportInit();
+}
+
+// ══════════════════════════════════════════════════════════════
+// STATEMENT IMPORT (Pro feature)
+// ══════════════════════════════════════════════════════════════
+
+// Pending review state — populated after parse, applied on confirm
+var _btImportPending = null;
+
+// Categorization rules. Order matters — first match wins.
+var BT_IMPORT_RULES = [
+  // Skip rules (transfers, CC payments, brokerage moves)
+  ['_skip', /capital one mobile|chase credit crd (autopay|epay)|applecard gsbank|home depot (auto|online) p|lowes syf paymnt|online credit card pmt|mobile payment to|online payment|online transfer|schwab brokerage|schwab moneylink|best buy auto pymt|capital one crcard|returned mobile ach|domestic self serve wire pnc|^withdrawal|cash app\*dean sheppard/i],
+  // Mortgage
+  ['mortgage', /pnc mortgage|mortgage|wells fargo home/i],
+  // Insurance — recognized policies route to specific keys, others to subs bucket
+  ['__ins__Dean___Ameritas_Term__T00081989A_', /ameritas.*38\.67|ameritas.*8234|ameritas.*6570|ameritas.*2259|ameritas.*7749/i],
+  ['__ins__Ameritas_Permanent__Dean__175___Densie__200_', /ameritas.*375|ameritas.*5423|ameritas.*5897|ameritas.*9139|ameritas.*3409/i],
+  ['__ins__Dean___Northwestern_Mutual_Term', /northwestern mu/i],
+  ['__ins__UnitedHealth___Medical__UHCONE_', /uhcone|unitedhealth.*medical|unitedhealth ins prem.*646/i],
+  ['__ins__UnitedHealth___Dental__DentalWise_Max_2000_', /dentalwise|unitedhealth.*dental|unitedhealth ins prem.*164\.65/i],
+  ['carIns', /erie ins|geico|progressive|state farm|allstate|usaa.*ins|farmers.*ins|liberty mutual/i],
+  // Utilities
+  ['electric', /duquesne light|peoples gas|first energy|elec(tric)?(\s|co)|pa power/i],
+  ['gasHeat', /peoples natural|columbia gas|nat gas|natural gas/i],
+  ['internet', /comcast|xfinity|verizon fios|spectrum|at&t internet/i],
+  ['cellPhone', /verizon wireless|t-mobile|at&t.*mobil|sprint|cricket|cellphone|cell phone/i],
+  // Subscriptions — named line items
+  ['__subs__Claude_Max', /anthropic|claude\.ai/i],
+  ['__subs__Cinemark', /cinemark/i],
+  ['__subs__XM_Radio', /sxm\*siriusxm|sirius xm|siriusxm/i],
+  ['__subs__HP_Ink', /hp \*?instant|hpinst/i],
+  ['__subs__Apple', /apple\.com\/?bill|apple services|apple\.com/i],
+  ['__subs__Webroot', /webroot/i],
+  ['__subs__Simply_Guitar', /google \*?simply|simply guitar/i],
+  ['__subs__MagicJack___Mom_and_Dad', /magicjack|magic jack/i],
+  ['__subs__Microsoft_365_Premium_w__CoPilot', /microsoft\*microsoft|microsoft 36|microsoft store/i],
+  ['__subs__Infinity_TV', /cash app\*christine/i],
+  ['__subs__Amazon_Prime', /amazon prime|prime video/i],
+  ['subs', /netflix|hulu|disney plus|spotify|paramount|peacock/i],
+  // Fuel
+  ['gas', /\b(shell|exxon|mobil|bp|sunoco|gulf|chevron|speedway|sheetz|wawa|gettygo|costco gas|sam'?s.*gas|sam'?sclub.*gas)\b/i],
+  // Groceries — Walmart is always groceries; Sam's Club is groceries unless "gas" appears in the description (caught by the gas rule above)
+  ['groceries', /giant eagle|aldi|trader joe|whole foods|wegmans|kroger|walmart|wal-mart|wal mart|wm supercenter|safeway|publix|costco whse|sam'?s club|samsclub|target.*grocer/i],
+  // Dining
+  ['dining', /starbucks|dunkin|chipotle|panera|subway|mcdonald|burger king|wendy|chick-fil|taco bell|olive garden|red lobster|texas roadhouse|outback|cheesecake|ihop|denny|applebee|dq\*|tst\*|sq \*|toast tab|gianni|pizza|restaurant|cafe|grill|kitchen|tavern|bistro|chipotle/i],
+  // Auto / vehicle
+  ['carMaint', /pep boys|pepboys|monro|jiffy lube|valvoline|vioc|auto\s?zone|advance auto|napa|firestone|midas|toyota|ford service|chevy service|brewer airport|judy dewey|notary|pa driver|window tint|mint window|tire/i],
+  ['carWash', /car wash|carwash|magic wand|mr clean.*car/i],
+  // Home
+  ['homeMaint', /home depot|lowe's|lowes|menards|ace hardware|true value|harbor freight|tru foam|vip heating|plumber|hvac|electrician/i],
+  // Pharmacy
+  ['rx', /cvs.*pharm|walgreens.*pharm|rite aid.*pharm|pharmacy/i],
+  // Personal care
+  ['personalCare', /great clips|supercuts|sport clips|hair|salon|spa|barber|gloss|jayme/i],
+  // Entertainment
+  ['entertain', /amc theatre|regal cinema|movie tavern|fandango/i],
+  // Shopping
+  ['shopping', /amzn mktp|amazon\.com|target\.com|tj maxx|marshalls|ross|kohl's|macy|nordstrom|best buy|bed bath/i],
+  // Pets
+  ['pets', /chewy|petsmart|petco|vet|veterinar/i],
+  // ATM cash
+  ['other', /atm withdraw|atm cash/i],
+  // Zelle/Venmo/PayPal — to "other" bucket (user must reclassify)
+  ['other', /zel(le)? to|venmo payment|paypal inst xfer|paypal_credit/i],
+  // Checks — flag for manual review
+  ['_flag', /^check \d/i],
+];
+
+function btImportInit() {
+  var drop = document.getElementById('btImportDrop');
+  var input = document.getElementById('btImportFile');
+  if (!drop || !input || drop.dataset.bound) return;
+  drop.dataset.bound = '1';
+
+  // File chooser
+  input.addEventListener('change', function(e) { btImportHandleFiles(e.target.files); });
+
+  // Drag & drop
+  drop.addEventListener('dragover', function(e) { e.preventDefault(); drop.style.borderColor = '#C8860A'; drop.style.background = '#fff8e6'; });
+  drop.addEventListener('dragleave', function(e) { drop.style.borderColor = ''; drop.style.background = '#fafafa'; });
+  drop.addEventListener('drop', function(e) {
+    e.preventDefault();
+    drop.style.borderColor = ''; drop.style.background = '#fafafa';
+    btImportHandleFiles(e.dataTransfer.files);
+  });
+  drop.addEventListener('click', function(e) {
+    if (e.target.tagName !== 'BUTTON') input.click();
+  });
+}
+
+function btImportHandleFiles(files) {
+  if (!files || !files.length) return;
+  var status = document.getElementById('btImportStatus');
+  status.style.display = 'block';
+  status.textContent = '⏳ Reading ' + files.length + ' file(s)...';
+
+  var bankSel = document.getElementById('btImportBank');
+  var bankHint = bankSel ? bankSel.value : 'auto';
+
+  var allRows = [];
+  var pending = files.length;
+
+  for (var i = 0; i < files.length; i++) {
+    (function(f) {
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        try {
+          var rows = btImportParseCSV(f.name, ev.target.result, bankHint);
+          allRows = allRows.concat(rows);
+        } catch (err) {
+          console.warn('Parse error in ' + f.name + ':', err);
+        }
+        pending--;
+        if (pending === 0) btImportFinishParse(allRows);
+      };
+      reader.onerror = function() {
+        pending--;
+        if (pending === 0) btImportFinishParse(allRows);
+      };
+      reader.readAsText(f);
+    })(files[i]);
+  }
+}
+
+function btImportOnBankChange() {
+  var sel = document.getElementById('btImportBank');
+  var hint = document.getElementById('btImportDropHint');
+  var otherPrompt = document.getElementById('btImportOtherPrompt');
+  if (!sel) return;
+  var v = sel.value;
+  var hints = {
+    'auto':     'Auto-detection will try common formats',
+    'chase':    'Chase CSV — date, description, amount columns',
+    'bofa':     'Bank of America CSV — date, description, amount columns',
+    'wells':    'Wells Fargo CSV',
+    'capone':   'Capital One CSV — works for credit card and 360 checking',
+    'amex':     'American Express activity CSV',
+    'citi':     'Citi credit card CSV',
+    'discover': 'Discover credit card CSV',
+    'apple':    'Apple Card transactions CSV from Wallet app',
+    'usaa':     'USAA CSV',
+    'pnc-cc':   'PNC Credit Card export',
+    'pnc-chk':  'PNC Checking export',
+    'hd':       'Home Depot card CSV',
+    'lowes':    "Lowe's card CSV",
+    'other':    "We'll try our best — see message below"
+  };
+  if (hint) hint.textContent = hints[v] || hints['auto'];
+  if (otherPrompt) otherPrompt.style.display = v === 'other' ? 'block' : 'none';
+}
+
+async function btImportSubmitOtherBank() {
+  var input = document.getElementById('btImportOtherBank');
+  var sent = document.getElementById('btImportOtherSent');
+  if (!input || !input.value.trim()) return;
+  var bankName = input.value.trim();
+  var ts = new Date().toISOString();
+  var userEmail = (typeof _sbUser !== 'undefined' && _sbUser) ? (_sbUser.email || '') : '(not signed in)';
+
+  // Try writing to a public bank_requests table (works even for anonymous users via RLS)
+  try {
+    if (typeof _sb !== 'undefined') {
+      await _sb.from('bank_requests').insert({
+        bank_name: bankName,
+        user_email: userEmail,
+        requested_at: ts
+      });
+    }
+  } catch(e) { console.warn('bank_requests insert failed (table may not exist yet)', e); }
+
+  // ALWAYS also offer a mailto fallback so the request reliably reaches Dean
+  var subject = encodeURIComponent('MyYolk — Bank request: ' + bankName);
+  var body = encodeURIComponent('Bank/card requested: ' + bankName + '\n\nFrom: ' + userEmail + '\nTime: ' + ts + '\n\n(Sent from MyYolk Statement Import — bank not yet supported)');
+  var mailtoLink = 'mailto:dean@myyolk.com?subject=' + subject + '&body=' + body;
+
+  if (sent) {
+    sent.innerHTML = '✓ Logged. <a href="' + mailtoLink + '" style="color:#2D4A35;text-decoration:underline;font-weight:600">Also send us an email →</a>';
+    sent.style.display = 'inline-block';
+    setTimeout(function(){
+      sent.style.display='none';
+      input.value='';
+    }, 8000);
+  }
+}
+
+function btImportParseCSV(filename, text, bankHint) {
+  // bankHint can be: auto, chase, bofa, wells, capone, amex, citi, discover, apple, usaa, pnc-cc, pnc-chk, hd, lowes, other
+  bankHint = bankHint || 'auto';
+  var lines = text.split(/\r?\n/);
+  var firstLine = lines[0] || '';
+  var rows = [];
+
+  // ───────── HELPERS ─────────
+  function parseAmt(s) {
+    if (!s) return NaN;
+    s = String(s).replace(/[\$,\s"]/g,'').replace(/[()]/g,'-');  // (123.45) → -123.45
+    return parseFloat(s);
+  }
+  function splitCSVLine(line) {
+    // Simple CSV splitter that handles quoted fields with commas
+    var result = []; var cur = ''; var inQ = false;
+    for (var i = 0; i < line.length; i++) {
+      var c = line[i];
+      if (c === '"') { inQ = !inQ; continue; }
+      if (c === ',' && !inQ) { result.push(cur); cur = ''; continue; }
+      cur += c;
+    }
+    result.push(cur);
+    return result.map(function(s) { return s.trim(); });
+  }
+
+  // ───────── FORMAT-SPECIFIC PARSERS ─────────
+
+  // Chase: "Transaction Date","Post Date","Description","Category","Type","Amount","Memo"
+  // Negative = charge
+  function parseChase() {
+    var hdr = splitCSVLine(firstLine).map(function(h){return h.toLowerCase();});
+    var iDate = hdr.indexOf('transaction date'); if (iDate<0) iDate = hdr.indexOf('date');
+    var iDesc = hdr.indexOf('description');
+    var iAmt = hdr.indexOf('amount');
+    if (iDate<0||iDesc<0||iAmt<0) return [];
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      var amt = parseAmt(f[iAmt]);
+      if (isNaN(amt) || amt >= 0) continue;  // skip credits
+      out.push({ date: btImportNormalizeDate(f[iDate]), desc: f[iDesc], amount: Math.abs(amt), source: 'Chase ' + filename });
+    }
+    return out;
+  }
+
+  // Bank of America: Date, Description, Amount, Running Bal
+  function parseBofA() {
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      if (f.length < 3) continue;
+      var amt = parseAmt(f[2]);
+      if (isNaN(amt) || amt >= 0) continue;
+      out.push({ date: btImportNormalizeDate(f[0]), desc: f[1], amount: Math.abs(amt), source: 'BofA ' + filename });
+    }
+    return out;
+  }
+
+  // Wells Fargo: Date, Amount (negative=spend), *, *, Description
+  function parseWells() {
+    var out = [];
+    for (var i=0;i<lines.length;i++) {  // Wells often has no header
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      if (f.length < 5) continue;
+      var amt = parseAmt(f[1]);
+      if (isNaN(amt) || amt >= 0) continue;
+      out.push({ date: btImportNormalizeDate(f[0]), desc: f[4], amount: Math.abs(amt), source: 'Wells ' + filename });
+    }
+    return out;
+  }
+
+  // Capital One: "Transaction Date","Posted Date","Card No.","Description","Category","Debit","Credit"
+  function parseCapOne() {
+    var hdr = splitCSVLine(firstLine).map(function(h){return h.toLowerCase();});
+    var iDate = hdr.indexOf('transaction date'); if (iDate<0) iDate = hdr.indexOf('date');
+    var iDesc = hdr.indexOf('description');
+    var iDebit = hdr.indexOf('debit');
+    var iCredit = hdr.indexOf('credit');
+    var iAmt = hdr.indexOf('amount');
+    if (iDate<0||iDesc<0) return [];
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      var amt;
+      if (iDebit>=0 && f[iDebit]) amt = parseAmt(f[iDebit]);
+      else if (iAmt>=0) { amt = parseAmt(f[iAmt]); if (amt < 0) continue; }
+      else continue;
+      if (isNaN(amt) || amt <= 0) continue;
+      out.push({ date: btImportNormalizeDate(f[iDate]), desc: f[iDesc], amount: amt, source: 'Cap One ' + filename });
+    }
+    return out;
+  }
+
+  // American Express: Date, Description, Amount (positive=charge)
+  function parseAmex() {
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      if (f.length < 3) continue;
+      var amt = parseAmt(f[2]);
+      if (isNaN(amt) || amt <= 0) continue;
+      out.push({ date: btImportNormalizeDate(f[0]), desc: f[1], amount: amt, source: 'Amex ' + filename });
+    }
+    return out;
+  }
+
+  // Citi: Status, Date, Description, Debit, Credit, Member Name
+  function parseCiti() {
+    var hdr = splitCSVLine(firstLine).map(function(h){return h.toLowerCase();});
+    var iDate = hdr.indexOf('date');
+    var iDesc = hdr.indexOf('description');
+    var iDebit = hdr.indexOf('debit');
+    if (iDate<0||iDesc<0||iDebit<0) return [];
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      var amt = parseAmt(f[iDebit]);
+      if (isNaN(amt) || amt <= 0) continue;
+      out.push({ date: btImportNormalizeDate(f[iDate]), desc: f[iDesc], amount: amt, source: 'Citi ' + filename });
+    }
+    return out;
+  }
+
+  // Discover: Trans. Date, Post Date, Description, Amount, Category
+  function parseDiscover() {
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      if (f.length < 4) continue;
+      var amt = parseAmt(f[3]);
+      if (isNaN(amt) || amt <= 0) continue;
+      out.push({ date: btImportNormalizeDate(f[0]), desc: f[2], amount: amt, source: 'Discover ' + filename });
+    }
+    return out;
+  }
+
+  // Apple Card: Transaction Date, Clearing Date, Description, Merchant, Category, Type, Amount (USD), Purchased By
+  function parseApple() {
+    var hdr = splitCSVLine(firstLine).map(function(h){return h.toLowerCase();});
+    var iDate = -1, iDesc = -1, iMerch = -1, iAmt = -1, iType = -1;
+    for (var h=0; h<hdr.length; h++) {
+      if (hdr[h].indexOf('transaction date') >= 0 || (iDate<0 && hdr[h].indexOf('date') >= 0)) iDate = h;
+      if (hdr[h].indexOf('description') >= 0) iDesc = h;
+      if (hdr[h].indexOf('merchant') >= 0) iMerch = h;
+      if (hdr[h].indexOf('amount') >= 0) iAmt = h;
+      if (hdr[h] === 'type') iType = h;
+    }
+    if (iDate<0||iAmt<0) return [];
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      if (iType>=0 && /payment/i.test(f[iType] || '')) continue;
+      var amt = parseAmt(f[iAmt]);
+      if (isNaN(amt) || amt <= 0) continue;
+      var d = (iMerch>=0 && f[iMerch]) ? f[iMerch] : (iDesc>=0 ? f[iDesc] : '');
+      out.push({ date: btImportNormalizeDate(f[iDate]), desc: d, amount: amt, source: 'Apple Card ' + filename });
+    }
+    return out;
+  }
+
+  // USAA: Date, Description, Original Description, Category, Amount, Status
+  function parseUSAA() {
+    var hdr = splitCSVLine(firstLine).map(function(h){return h.toLowerCase();});
+    var iDate = hdr.indexOf('date');
+    var iDesc = hdr.indexOf('description');
+    var iAmt = hdr.indexOf('amount');
+    if (iDate<0||iDesc<0||iAmt<0) return [];
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      var amt = parseAmt(f[iAmt]);
+      if (isNaN(amt) || amt >= 0) continue;
+      out.push({ date: btImportNormalizeDate(f[iDate]), desc: f[iDesc], amount: Math.abs(amt), source: 'USAA ' + filename });
+    }
+    return out;
+  }
+
+  // PNC CC: "Date","Description","Amount" — positive = charge
+  function parsePNCCC() {
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      var line = lines[i].trim();
+      if (!line) continue;
+      var m = line.match(/^"?([\d\/\-]+)"?,"(.+?)","?\$?(-?[\d,\.]+)"?$/);
+      if (!m) continue;
+      var amt = parseAmt(m[3]);
+      if (isNaN(amt) || amt <= 0) continue;
+      out.push({ date: btImportNormalizeDate(m[1]), desc: m[2].trim(), amount: amt, source: 'PNC CC ' + filename });
+    }
+    return out;
+  }
+
+  // PNC Checking: "Date","Description","- $X.XX" or "+ $X.XX"
+  function parsePNCChk() {
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      var line = lines[i].trim();
+      if (!line) continue;
+      var isOutflow = /^"?[\d\/\-]+"?,".+?",\s*"?\s*-/.test(line);
+      if (!isOutflow) continue;
+      var m = line.match(/^"?([\d\/\-]+)"?,"(.+?)","?[+\-]?\s*\$?(-?[\d,\.]+)"?$/);
+      if (!m) continue;
+      var amt = parseAmt(m[3]);
+      if (isNaN(amt)) continue;
+      out.push({ date: btImportNormalizeDate(m[1]), desc: m[2].trim(), amount: Math.abs(amt), source: 'PNC Chk ' + filename });
+    }
+    return out;
+  }
+
+  // Home Depot / Lowes — usually similar format to PNC CC
+  function parseHDLowes(brand) {
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      var line = lines[i].trim();
+      if (!line) continue;
+      var f = splitCSVLine(line);
+      if (f.length < 3) continue;
+      // Find amount column (usually last numeric)
+      for (var j=f.length-1; j>=2; j--) {
+        var amt = parseAmt(f[j]);
+        if (!isNaN(amt) && amt > 0) {
+          out.push({ date: btImportNormalizeDate(f[0]), desc: f[1] || f[2], amount: amt, source: brand + ' ' + filename });
+          break;
+        }
+      }
+    }
+    return out;
+  }
+
+  // Generic fallback — try to detect date, description, amount columns
+  function parseGeneric() {
+    var hdr = splitCSVLine(firstLine).map(function(h){return h.toLowerCase();});
+    var iDate = -1, iDesc = -1, iAmt = -1, iDebit = -1;
+    for (var h=0; h<hdr.length; h++) {
+      if (iDate<0 && /date/.test(hdr[h])) iDate = h;
+      if (iDesc<0 && /description|merchant|payee/.test(hdr[h])) iDesc = h;
+      if (iAmt<0 && hdr[h] === 'amount') iAmt = h;
+      if (iDebit<0 && /debit|withdrawal/.test(hdr[h])) iDebit = h;
+    }
+    if (iDate<0 || iDesc<0 || (iAmt<0 && iDebit<0)) return [];
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      var amt;
+      if (iDebit>=0 && f[iDebit]) amt = parseAmt(f[iDebit]);
+      else amt = parseAmt(f[iAmt]);
+      if (isNaN(amt) || amt === 0) continue;
+      // Try both positive and negative conventions
+      amt = Math.abs(amt);
+      out.push({ date: btImportNormalizeDate(f[iDate]), desc: f[iDesc], amount: amt, source: 'Generic ' + filename });
+    }
+    return out;
+  }
+
+  // ───────── DISPATCH ─────────
+  var parsers = {
+    'chase': parseChase, 'bofa': parseBofA, 'wells': parseWells,
+    'capone': parseCapOne, 'amex': parseAmex, 'citi': parseCiti,
+    'discover': parseDiscover, 'apple': parseApple, 'usaa': parseUSAA,
+    'pnc-cc': parsePNCCC, 'pnc-chk': parsePNCChk,
+    'hd': function(){return parseHDLowes('Home Depot');},
+    'lowes': function(){return parseHDLowes("Lowe's");},
+    'other': parseGeneric
+  };
+
+  if (bankHint && bankHint !== 'auto' && parsers[bankHint]) {
+    return parsers[bankHint]();
+  }
+
+  // Auto-detect: try by header signature
+  var fl = firstLine.toLowerCase();
+  if (/transaction date.*post date.*description.*category.*type.*amount/.test(fl)) return parseChase();
+  if (/^"?date"?,"?description"?,"?amount"?$/i.test(firstLine.replace(/"/g,'"'))) {
+    // Could be PNC CC or Amex — disambiguate by date format
+    // PNC uses MM/DD/YYYY, Amex same. Try PNC first since negatives ≥0 would skip.
+    var r = parsePNCCC();
+    if (r.length) return r;
+    return parseAmex();
+  }
+  if (/transaction date.*posted date.*card no.*description.*category.*debit.*credit/.test(fl)) return parseCapOne();
+  if (/transaction date.*clearing date/.test(fl)) return parseApple();
+  if (/^"?\d{4}-\d{2}-\d{2}"?,/.test(lines[1] || '')) {
+    // Looks like ISO date — likely PNC Checking
+    return parsePNCChk();
+  }
+  if (/account activity|checking/i.test(fl)) return parsePNCChk();
+  if (/status.*date.*description.*debit.*credit/.test(fl)) return parseCiti();
+  if (/trans.* date.*post date.*description.*amount.*category/.test(fl)) return parseDiscover();
+
+  // Last resort
+  return parseGeneric();
+}
+
+function btImportNormalizeDate(s) {
+  s = (s||'').trim();
+  // MM/DD/YYYY → YYYY-MM-DD
+  var m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return m[3] + '-' + m[1].padStart(2,'0') + '-' + m[2].padStart(2,'0');
+  // YYYY-MM-DD already
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  return s;
+}
+
+function btImportClassify(desc) {
+  for (var i = 0; i < BT_IMPORT_RULES.length; i++) {
+    if (BT_IMPORT_RULES[i][1].test(desc)) return BT_IMPORT_RULES[i][0];
+  }
+  return 'other';
+}
+
+function btImportFinishParse(rows) {
+  var status = document.getElementById('btImportStatus');
+
+  if (!rows.length) {
+    status.style.background = '#fde8e8'; status.style.borderColor = '#f5b3b3'; status.style.color = '#a02020';
+    status.textContent = '⚠️ Could not parse any transactions. Make sure the CSV is from one of the supported banks.';
+    return;
+  }
+
+  // Group by month and category. Track unmatched separately.
+  var byMonth = {};
+  var flaggedChecks = [];
+  var unmatched = [];
+  var skipped = 0;
+
+  // Apply user's saved personal rules first (if any)
+  var personalRules = btImportLoadPersonalRules();
+
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    var month = (r.date || '').substring(0, 7);
+    if (!month) continue;
+
+    // Check personal rules first (exact-or-prefix match on description)
+    var cat = null;
+    var descLower = r.desc.toLowerCase();
+    for (var pr in personalRules) {
+      if (descLower.indexOf(pr.toLowerCase()) >= 0) { cat = personalRules[pr]; break; }
+    }
+    // Then standard rules
+    if (!cat) cat = btImportClassify(r.desc);
+
+    if (cat === '_skip') { skipped++; continue; }
+    if (cat === '_flag') { flaggedChecks.push(r); continue; }
+    // 'other' = unmatched, route to user-review queue
+    if (cat === 'other') {
+      unmatched.push({ row: r, month: month, suggestedCat: 'other', userCat: null });
+      continue;
+    }
+
+    if (!byMonth[month]) byMonth[month] = {};
+    byMonth[month][cat] = Math.round(((byMonth[month][cat] || 0) + r.amount) * 100) / 100;
+  }
+
+  _btImportPending = {
+    byMonth: byMonth,
+    flaggedChecks: flaggedChecks,
+    unmatched: unmatched,
+    totalRows: rows.length,
+    skipped: skipped
+  };
+
+  status.style.background = '#f0f7f3'; status.style.borderColor = '#c8e0d3'; status.style.color = '#2D4A35';
+  var monthCount = Object.keys(byMonth).length;
+  var matched = rows.length - skipped - flaggedChecks.length - unmatched.length;
+  status.innerHTML = '✅ Parsed <strong>' + rows.length + '</strong> transactions across <strong>' + monthCount + '</strong> month(s). ' +
+    '<strong>' + matched + '</strong> auto-categorized · ' +
+    '<strong>' + unmatched.length + '</strong> need your category · ' +
+    '<strong>' + flaggedChecks.length + '</strong> paper checks flagged · ' +
+    skipped + ' skipped (transfers/payments).';
+
+  btImportRenderReview();
+}
+
+// ── Personal rules (saved per user) ──
+function btImportLoadPersonalRules() {
+  try {
+    if (typeof window.__myyolkImportRules === 'string') {
+      return JSON.parse(window.__myyolkImportRules);
+    }
+  } catch(e) {}
+  return {};
+}
+
+// Categories for the unmatched-item dropdown
+var BT_CATEGORY_OPTIONS = [
+  ['Skip this transaction','_skip'],
+  ['─── Housing ───','_separator'],
+  ['Mortgage','mortgage'],
+  ['Rent','rent'],
+  ['Property Tax','propTax'],
+  ['Home Insurance','homeIns'],
+  ['Electric','electric'],
+  ['Gas / Heat','gasHeat'],
+  ['Internet','internet'],
+  ['Cell Phone','cellPhone'],
+  ['Home Maintenance','homeMaint'],
+  ['─── Transportation ───','_separator'],
+  ['Vehicle Payment','vehiclePayment'],
+  ['Car Insurance','carIns'],
+  ['Car Maintenance','carMaint'],
+  ['Gas (vehicle)','gas'],
+  ['Car Wash','carWash'],
+  ['Rideshare/Transit','rideshare'],
+  ['Parking','parking'],
+  ['─── Food ───','_separator'],
+  ['Groceries','groceries'],
+  ['Dining Out','dining'],
+  ['─── Health ───','_separator'],
+  ['Medical Premium','medicalPremium'],
+  ['Prescriptions','rx'],
+  ['Out-of-Pocket Medical','oop'],
+  ['Personal Care','personalCare'],
+  ['Massage / Wellness','massage'],
+  ['Gym / Fitness','gym'],
+  ['Therapy','therapy'],
+  ['─── Family ───','_separator'],
+  ['K-12 / School','k12'],
+  ['Tuition','tuition'],
+  ['529 Savings','college529'],
+  ['Childcare','childcare'],
+  ['Elder Care','elderCare'],
+  ['─── Lifestyle ───','_separator'],
+  ['Entertainment','entertain'],
+  ['Subscriptions','subs'],
+  ['Shopping','shopping'],
+  ['Hobbies','hobbies'],
+  ['Vacation','vacation'],
+  ['Gifts','gifts'],
+  ['Pets','pets'],
+  ['Charity','charity'],
+  ['─── Services ───','_separator'],
+  ['Lawn','lawn'],
+  ['Cleaning','cleaning'],
+  ['Security','security'],
+  ['Legal','legal'],
+  ['Accounting','accounting'],
+  ['─── Other ───','_separator'],
+  ['Other','other']
+];
+
+function btImportRenderReview() {
+  if (!_btImportPending) return;
+  var review = document.getElementById('btImportReview');
+  review.style.display = 'block';
+
+  var byMonth = _btImportPending.byMonth;
+  var months = Object.keys(byMonth).sort();
+  var body = document.getElementById('btImportTableBody');
+  body.innerHTML = '';
+
+  var grandParsed = 0;
+  for (var i = 0; i < months.length; i++) {
+    var m = months[i];
+    var newTotal = 0;
+    for (var k in byMonth[m]) newTotal += byMonth[m][k];
+    grandParsed += newTotal;
+
+    var existingTotal = 0;
+    if (typeof btData !== 'undefined' && btData[m] && btData[m].actuals) {
+      for (var k2 in btData[m].actuals) existingTotal += btData[m].actuals[k2];
+    }
+
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + m + '</td>' +
+      '<td style="text-align:right;font-weight:600;color:#2D4A35">$' + newTotal.toFixed(2) + '</td>' +
+      '<td style="text-align:right;color:var(--mid)">$' + existingTotal.toFixed(2) + '</td>' +
+      '<td><label style="font-size:0.82rem;cursor:pointer"><input type="radio" name="btImpAction-' + m + '" value="merge" checked> Add to existing</label> &nbsp; <label style="font-size:0.82rem;cursor:pointer"><input type="radio" name="btImpAction-' + m + '" value="replace"> Replace</label> &nbsp; <label style="font-size:0.82rem;cursor:pointer"><input type="radio" name="btImpAction-' + m + '" value="skip"> Skip</label></td>';
+    body.appendChild(tr);
+  }
+
+  document.getElementById('btImportReviewSummary').textContent =
+    '$' + grandParsed.toFixed(2) + ' across ' + months.length + ' month(s) auto-categorized. Choose how to apply each month — merge adds to existing categories; replace overwrites the month entirely.';
+
+  // Render unmatched items with category dropdowns
+  var unmatchedWrap = document.getElementById('btImportUnmatched');
+  var unmatchedBody = document.getElementById('btImportUnmatchedBody');
+  if (_btImportPending.unmatched && _btImportPending.unmatched.length > 0) {
+    unmatchedWrap.style.display = 'block';
+    document.getElementById('btImportUnmatchedCount').textContent = _btImportPending.unmatched.length;
+
+    // Build a single dropdown HTML once, reuse via cloning
+    var dropdownHTML = '<select class="bt-unmatched-cat" data-um-idx="__IDX__" style="padding:0.35rem 0.5rem;font-size:0.82rem;border:1px solid var(--border);border-radius:4px;background:#fff;font-family:DM Sans,sans-serif">';
+    for (var co = 0; co < BT_CATEGORY_OPTIONS.length; co++) {
+      var opt = BT_CATEGORY_OPTIONS[co];
+      if (opt[1] === '_separator') {
+        dropdownHTML += '<option disabled>' + opt[0] + '</option>';
+      } else {
+        dropdownHTML += '<option value="' + opt[1] + '">' + opt[0] + '</option>';
+      }
+    }
+    dropdownHTML += '</select>';
+
+    unmatchedBody.innerHTML = '';
+
+    // Group by description so user can fix once for repeated merchants
+    var byDesc = {};
+    for (var u = 0; u < _btImportPending.unmatched.length; u++) {
+      var item = _btImportPending.unmatched[u];
+      var key = item.row.desc;
+      if (!byDesc[key]) byDesc[key] = { items: [], total: 0 };
+      byDesc[key].items.push({ item: item, idx: u });
+      byDesc[key].total += item.row.amount;
+    }
+
+    var sortedDescs = Object.keys(byDesc).sort(function(a,b){ return byDesc[b].total - byDesc[a].total; });
+
+    for (var d = 0; d < sortedDescs.length; d++) {
+      var desc = sortedDescs[d];
+      var group = byDesc[desc];
+      var idxList = group.items.map(function(g){return g.idx;}).join(',');
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0.75rem;border-bottom:1px solid var(--border);font-size:0.85rem';
+      row.innerHTML =
+        '<div style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><strong>' + desc + '</strong>' +
+          (group.items.length > 1 ? '<span style="color:var(--mid);font-size:0.78rem">  (' + group.items.length + ' charges)</span>' : '') + '</div>' +
+        '<div style="font-weight:600;color:#2D4A35;min-width:80px;text-align:right">$' + group.total.toFixed(2) + '</div>' +
+        '<div style="min-width:160px"><select class="bt-unmatched-cat" data-um-idxlist="' + idxList + '" style="width:100%;padding:0.35rem 0.5rem;font-size:0.82rem;border:1px solid var(--border);border-radius:4px;background:#fff;font-family:DM Sans,sans-serif"></select></div>' +
+        '<label style="font-size:0.78rem;color:var(--mid);cursor:pointer;white-space:nowrap"><input type="checkbox" class="bt-unmatched-remember" data-um-idxlist="' + idxList + '" data-um-desc="' + desc.replace(/"/g, '&quot;') + '"> Remember</label>';
+      unmatchedBody.appendChild(row);
+      // Populate dropdown
+      var sel = row.querySelector('select');
+      for (var co2 = 0; co2 < BT_CATEGORY_OPTIONS.length; co2++) {
+        var opt2 = BT_CATEGORY_OPTIONS[co2];
+        var optEl = document.createElement('option');
+        optEl.value = opt2[1];
+        optEl.textContent = opt2[0];
+        if (opt2[1] === '_separator') optEl.disabled = true;
+        if (opt2[1] === 'other') optEl.selected = true;
+        sel.appendChild(optEl);
+      }
+    }
+  } else {
+    unmatchedWrap.style.display = 'none';
+  }
+
+  // Render flagged paper checks (separate from unmatched)
+  var flagWrap = document.getElementById('btImportFlagged');
+  var flagBody = document.getElementById('btImportFlaggedBody');
+  if (_btImportPending.flaggedChecks && _btImportPending.flaggedChecks.length > 0) {
+    flagWrap.style.display = 'block';
+    flagBody.innerHTML = '';
+    for (var f = 0; f < _btImportPending.flaggedChecks.length; f++) {
+      var flg = _btImportPending.flaggedChecks[f];
+      var div = document.createElement('div');
+      div.style.padding = '0.5rem 0.75rem';
+      div.style.borderBottom = '1px solid var(--border)';
+      div.innerHTML = '<span style="color:var(--mid)">' + flg.date + '</span> &nbsp; ' +
+        '<strong>$' + flg.amount.toFixed(2) + '</strong> &nbsp; ' +
+        '<span>' + flg.desc + '</span> &nbsp; ' +
+        '<span style="font-size:0.78rem;color:#a85b00;background:#fff3e0;padding:1px 6px;border-radius:8px">paper check — log manually</span>';
+      flagBody.appendChild(div);
+    }
+  } else {
+    flagWrap.style.display = 'none';
+  }
+}
+
+async function btImportApply() {
+  if (!_btImportPending) return;
+  var byMonth = JSON.parse(JSON.stringify(_btImportPending.byMonth)); // clone so we can mutate
+  var months = Object.keys(byMonth);
+
+  // Apply user's category picks for unmatched items
+  var rememberedRules = {};
+  if (_btImportPending.unmatched && _btImportPending.unmatched.length > 0) {
+    var selects = document.querySelectorAll('.bt-unmatched-cat[data-um-idxlist]');
+    for (var s = 0; s < selects.length; s++) {
+      var sel = selects[s];
+      var idxList = (sel.dataset.umIdxlist || '').split(',').filter(Boolean).map(Number);
+      var cat = sel.value;
+      if (cat === '_skip') continue;
+
+      // Apply each unmatched index in this group
+      for (var i = 0; i < idxList.length; i++) {
+        var um = _btImportPending.unmatched[idxList[i]];
+        if (!um) continue;
+        var m = um.month;
+        if (!byMonth[m]) byMonth[m] = {};
+        byMonth[m][cat] = Math.round(((byMonth[m][cat] || 0) + um.row.amount) * 100) / 100;
+        if (months.indexOf(m) < 0) months.push(m);
+      }
+
+      // If the user checked "Remember", save a personal rule
+      var remember = document.querySelector('input.bt-unmatched-remember[data-um-idxlist="' + sel.dataset.umIdxlist + '"]');
+      if (remember && remember.checked && remember.dataset.umDesc) {
+        rememberedRules[remember.dataset.umDesc.toLowerCase()] = cat;
+      }
+    }
+  }
+
+  var applied = 0;
+  var skipped = 0;
+
+  for (var i = 0; i < months.length; i++) {
+    var m = months[i];
+    var radios = document.getElementsByName('btImpAction-' + m);
+    var action = 'merge';
+    for (var r = 0; r < radios.length; r++) if (radios[r].checked) action = radios[r].value;
+
+    if (action === 'skip') { skipped++; continue; }
+
+    if (typeof btData === 'undefined') window.btData = {};
+    if (!btData[m]) btData[m] = { actuals: {}, planned: {} };
+    if (!btData[m].actuals) btData[m].actuals = {};
+
+    if (action === 'replace') btData[m].actuals = {};
+
+    for (var key in byMonth[m]) {
+      btData[m].actuals[key] = Math.round(((btData[m].actuals[key] || 0) + byMonth[m][key]) * 100) / 100;
+    }
+    btData[m].savedAt = new Date().toISOString();
+    if (!btData[m].notes) btData[m].notes = 'Imported from ' + _btImportPending.totalRows + ' statement transactions';
+    applied++;
+  }
+
+  // Save personal rules if any were remembered
+  if (Object.keys(rememberedRules).length > 0) {
+    try {
+      var existingRules = btImportLoadPersonalRules();
+      Object.assign(existingRules, rememberedRules);
+      window.__myyolkImportRules = JSON.stringify(existingRules);
+    } catch(e){}
+  }
+
+  // Save
+  if (typeof cloudSave === 'function') { try { await cloudSave(); } catch(e){} }
+  if (typeof saveToLocal === 'function') { try { saveToLocal(); } catch(e){} }
+
+  var status = document.getElementById('btImportStatus');
+  status.style.background = '#f0f7f3'; status.style.borderColor = '#c8e0d3'; status.style.color = '#2D4A35';
+  var ruleCount = Object.keys(rememberedRules).length;
+  status.textContent = '✅ Applied to ' + applied + ' month(s). ' + (skipped > 0 ? skipped + ' skipped. ' : '') + (ruleCount > 0 ? 'Saved ' + ruleCount + ' personal rule(s) for next time. ' : '') + 'Switch to Spending History to review.';
+
+  btImportReset(true);
+}
+
+function btImportReset(keepStatus) {
+  _btImportPending = null;
+  document.getElementById('btImportReview').style.display = 'none';
+  document.getElementById('btImportFile').value = '';
+  if (!keepStatus) {
+    document.getElementById('btImportStatus').style.display = 'none';
+  }
 }
 
 // ── Init ──
@@ -8494,12 +9445,51 @@ function btSaveCheckin() {
 }
 
 function btClearCheckin() {
-  document.querySelectorAll('.bt-actual-input').forEach(function(inp) {
-    inp.value = '';
-  });
-  btUpdateVariances();
+  var monthEl = document.getElementById('btCheckinMonth');
+  var month = monthEl ? monthEl.value : '';
+  if (!month) {
+    // No month selected — just clear visible inputs
+    document.querySelectorAll('.bt-actual-input').forEach(function(inp) { inp.value = ''; });
+    btUpdateVariances();
+    var notesEl0 = document.getElementById('btCheckinNotes');
+    if (notesEl0) notesEl0.value = '';
+    return;
+  }
+
+  // Confirm before destructive action
+  var monthLabel = month;
+  try {
+    var d = new Date(month + '-01T12:00:00');
+    monthLabel = d.toLocaleDateString('en-US', {month: 'long', year: 'numeric'});
+  } catch(e) {}
+
+  var hasData = (typeof btData !== 'undefined' && btData[month] && btData[month].actuals && Object.keys(btData[month].actuals).length > 0);
+  var msg = hasData
+    ? 'Clear all logged actuals for ' + monthLabel + '?\n\nThis removes every amount and any notes for this month from the tracker. The category headings stay (those come from your Budget Planner).\n\nThis cannot be undone.'
+    : 'Clear all input fields for ' + monthLabel + '?';
+
+  if (!confirm(msg)) return;
+
+  // Clear visible inputs
+  document.querySelectorAll('.bt-actual-input').forEach(function(inp) { inp.value = ''; });
+  // Clear notes field
   var notesEl = document.getElementById('btCheckinNotes');
   if (notesEl) notesEl.value = '';
+  // Clear the month from btData entirely
+  if (typeof btData !== 'undefined' && btData[month]) {
+    delete btData[month];
+  }
+  // Recompute variances + persist
+  btUpdateVariances();
+  if (typeof cloudSave === 'function') { try { cloudSave(); } catch(e){} }
+  if (typeof saveToLocal === 'function') { try { saveToLocal(); } catch(e){} }
+  // Visual confirmation
+  var badge = document.getElementById('btSavedBadge');
+  if (badge) {
+    badge.textContent = '🗑️ Cleared';
+    badge.style.opacity = '1';
+    setTimeout(function(){ badge.style.opacity = '0'; badge.textContent = '✓ Saved'; }, 2500);
+  }
 }
 
 // ── History ──
@@ -9385,45 +10375,71 @@ function removePropertyRow(btn) {
 }
 
 function syncBudgetMortgages() {
-  var container = document.getElementById('budgetMortgageRows');
-  if(!container) return;
+  // ─── 1. Sum all active mortgage payments from Accounts & Savings property rows ───
   var rows = document.querySelectorAll('.property-row');
   var currentYear = new Date().getFullYear();
-  
-  if(rows.length === 0) {
-    container.innerHTML = '<div style="font-size:0.8rem;color:var(--mid);font-style:italic;padding:4px 0 8px">Add properties in Accounts & Savings to populate mortgage payments here.</div>';
-    return;
-  }
-  
-  var html = '';
-  rows.forEach(function(row, i) {
-    var type = row.querySelector('.prop-type')?.value || 'primary';
-    var mortgage = parseFloat(row.querySelector('.prop-mortgage')?.value) || 0;
+  var totalMonthly = 0;
+  var activeCount = 0;
+  var paidOffCount = 0;
+  rows.forEach(function(row) {
     var payment = parseFloat(row.querySelector('.prop-payment')?.value) || 0;
     var payoff = parseInt(row.querySelector('.prop-payoff')?.value) || 0;
-    var typeLabels = {primary:'Primary Home', rental:'Rental Property', vacation:'Vacation Home', investment:'Investment Property'};
-    var label = typeLabels[type] || 'Property';
-    
-    if(mortgage <= 0 && payment <= 0) return; // skip if no mortgage
-    
     var isPaidOff = payoff > 0 && payoff <= currentYear;
-    var payoffNote = payoff > 0 ? ' · Payoff: ' + payoff : '';
-    
-    html += '<div class="budget-row" style="' + (isPaidOff ? 'opacity:0.5' : '') + '">' +
-      '<label>' + label + ' Mortgage' + payoffNote + (isPaidOff ? ' ✓ Paid Off' : '') + '</label>' +
-      '<input type="number" class="bud-m prop-budget-payment-' + i + '" data-key="propMortgage' + i + '" ' +
-        'placeholder="0" value="' + (isPaidOff ? '0' : payment) + '" ' +
-        'oninput="calcBudget(this)" ' + (isPaidOff ? 'disabled' : '') + '>' +
-      '<input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)">' +
-      '</div>';
+    if (isPaidOff) { paidOffCount++; return; }
+    if (payment > 0) { totalMonthly += payment; activeCount++; }
   });
-  
-  if(!html) html = '<div style="font-size:0.8rem;color:var(--mid);font-style:italic;padding:4px 0 8px">No mortgages entered.</div>';
-  container.innerHTML = html;
-  
-  // Trigger budget recalc
-  if(typeof calcBudget === 'function') {
-    document.querySelectorAll('.bud-m').forEach(function(el){ calcBudget(el); });
+
+  // ─── 2. Write into the new Housing → Mortgage field ───
+  var mEl = document.getElementById('bud_mortgage');
+  var aEl = document.getElementById('bud_mortgage_annual');
+  var noteEl = document.getElementById('mortgageAutoNote');
+  if (mEl) {
+    mEl.value = totalMonthly > 0 ? totalMonthly.toFixed(2) : '';
+    if (aEl) aEl.value = totalMonthly > 0 ? (totalMonthly * 12).toFixed(2) : '';
+    if (noteEl) {
+      if (rows.length === 0) {
+        noteEl.textContent = '(add a property in Accounts & Savings to auto-fill)';
+      } else if (activeCount === 0 && paidOffCount > 0) {
+        noteEl.textContent = '(all properties paid off — no mortgage)';
+      } else {
+        noteEl.textContent = '(auto-filled from ' + activeCount + ' propert' + (activeCount === 1 ? 'y' : 'ies') + ' in Accounts & Savings)';
+      }
+    }
+    if (typeof calcBudget === 'function') calcBudget(mEl);
+  }
+
+  // ─── 3. Legacy: also keep the hidden budgetMortgageRows in sync (in case anything reads it) ───
+  var container = document.getElementById('budgetMortgageRows');
+  if (container) container.innerHTML = '';
+}
+
+function syncBudgetVehiclePayments() {
+  // Sum all vehicle payments from Accounts & Savings vehicle rows
+  var els = document.querySelectorAll('[id^="vehiclePayment_"]');
+  var totalMonthly = 0;
+  var activeCount = 0;
+  els.forEach(function(el) {
+    var pmt = parseFloat(el.value) || 0;
+    if (pmt > 0) { totalMonthly += pmt; activeCount++; }
+  });
+
+  var mEl = document.getElementById('bud_vehiclePayment');
+  var aEl = document.getElementById('bud_vehiclePayment_annual');
+  var noteEl = document.getElementById('vehiclePaymentAutoNote');
+  if (mEl) {
+    mEl.value = totalMonthly > 0 ? totalMonthly.toFixed(2) : '';
+    if (aEl) aEl.value = totalMonthly > 0 ? (totalMonthly * 12).toFixed(2) : '';
+    if (noteEl) {
+      var totalVehicleCount = document.querySelectorAll('[id^="vehiclePayment_"]').length;
+      if (totalVehicleCount === 0) {
+        noteEl.textContent = '(add a vehicle in Accounts & Savings to auto-fill)';
+      } else if (activeCount === 0) {
+        noteEl.textContent = '(all vehicles paid off — no payment)';
+      } else {
+        noteEl.textContent = '(auto-filled from ' + activeCount + ' vehicle' + (activeCount === 1 ? '' : 's') + ' in Accounts & Savings)';
+      }
+    }
+    if (typeof calcBudget === 'function') calcBudget(mEl);
   }
 }
 
@@ -9903,27 +10919,14 @@ async function cloudSave() {
   }
   if(!_sb || !_sbUser) { saveToLocal(); return; }
 
-  // Integrity check — never save if custom rows drop significantly from known maximum
-  var nowSubs = document.querySelectorAll('[id^="budSub_"]').length;
-  var nowIns = document.querySelectorAll('.ins-policy-row').length;
-  if(typeof window._maxKnownSubCount === 'undefined') window._maxKnownSubCount = 0;
-  if(typeof window._maxKnownInsCount === 'undefined') window._maxKnownInsCount = 0;
-  if(nowSubs > window._maxKnownSubCount) window._maxKnownSubCount = nowSubs;
-  if(nowIns > window._maxKnownInsCount) window._maxKnownInsCount = nowIns;
-  if((window._maxKnownSubCount >= 3 && nowSubs < window._maxKnownSubCount) || (window._maxKnownInsCount >= 1 && nowIns < window._maxKnownInsCount)) {
-    console.warn('MyYolk: aborting cloud save — row count dropped from known maximum (data integrity protection)');
-    return;
-  }
   try {
     var data = collectAllData();
-    // Check if row exists first
-    var existing = await _sb.from('user_data').select('id').eq('user_id', _sbUser.id);
-    var result;
-    if(existing.data && existing.data.length > 0) {
-      result = await _sb.from('user_data').update({ data: data, updated_at: new Date().toISOString() }).eq('user_id', _sbUser.id);
-    } else {
-      result = await _sb.from('user_data').insert({ user_id: _sbUser.id, data: data });
-    }
+    // Single atomic upsert keyed on user_id — prevents duplicate rows and avoids race conditions.
+    // Requires a UNIQUE constraint on user_data.user_id in Supabase.
+    var result = await _sb.from('user_data').upsert(
+      { user_id: _sbUser.id, data: data, updated_at: new Date().toISOString() },
+      { onConflict: 'user_id' }
+    );
     if(result.error) { console.warn('Cloud save error:', result.error); return; }
     var ind = document.getElementById('saveIndicator');
     if(ind) { ind.textContent = '☁️ Saved'; ind.style.opacity = '1'; setTimeout(function(){ ind.style.opacity='0'; }, 2000); }
@@ -9968,12 +10971,69 @@ async function cloudLoad() {
     if(veh>0) window._maxKnownVehCount=Math.max(window._maxKnownVehCount||0,veh);
   }, 1000);
   if(typeof calcBudgetHealthCheck === "function") calcBudgetHealthCheck();
+  // Sync auto-filled Budget Planner fields from Accounts data
+  setTimeout(function() {
+    if (typeof syncBudgetMortgages === 'function') syncBudgetMortgages();
+    if (typeof syncBudgetVehiclePayments === 'function') syncBudgetVehiclePayments();
+    // Re-check the unlogged-month reminder once btData has actually loaded from Supabase
+    if (typeof btCheckUnlogged === 'function') btCheckUnlogged();
+  }, 1100);
   var _fn = document.getElementById('firstName')?.value||'';
   var _sn = document.getElementById('spouseFirstName')?.value||'';
   var _cap = function(s){ return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase(); };
   var _yl = document.getElementById('yourIncomeLabel'); if(_yl) _yl.textContent = _fn ? _cap(_fn)+"'s Income" : "Your Income";
   var _sl = document.getElementById('spouseIncomeTitle'); if(_sl) _sl.textContent = _sn ? _cap(_sn)+"'s Income" : "Spouse / Partner Income";
   var _tl = document.getElementById('spouseTotalLabel'); if(_tl) _tl.textContent = _sn ? _cap(_sn)+"'s Annual Income" : "Spouse Total Income";
+  // Check for orphaned debt fields from old "Debt & Liabilities" card (deprecated May 2026)
+  setTimeout(checkDeprecatedDebtFields, 1500);
+}
+
+// One-time migration check: detect old debt fields & show banner
+function checkDeprecatedDebtFields() {
+  // Skip if already dismissed in this browser
+  try { if (localStorage.getItem('myyolk_debt_migration_dismissed_v1')) return; } catch(e){}
+
+  // Pull saved data and look for orphan keys
+  var orphanKeys = ['carLoan1Payment','carLoan1PayoffYear','carLoan2Payment','carLoan2PayoffYear',
+                    'studentLoanPayment','studentLoanPayoffYear','mortgage2Balance',
+                    'creditCardPayment','otherDebtPayment','otherDebtPayoffYear'];
+  var found = [];
+  try {
+    var saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
+    for (var i = 0; i < orphanKeys.length; i++) {
+      var v = saved[orphanKeys[i]];
+      if (v && parseFloat(v) > 0) {
+        found.push({key: orphanKeys[i], value: v});
+      }
+    }
+  } catch(e) {}
+
+  if (found.length === 0) return;
+
+  // Show one-time migration banner
+  var banner = document.createElement('div');
+  banner.id = 'debtMigrationBanner';
+  banner.style.cssText = 'position:fixed;bottom:20px;right:20px;max-width:420px;background:#fff;border:2px solid #C8860A;border-radius:12px;padding:1.2rem;box-shadow:0 8px 24px rgba(0,0,0,0.15);z-index:9999;font-family:DM Sans,sans-serif;font-size:0.88rem;line-height:1.5';
+  var labels = {
+    'carLoan1Payment':'Car Loan 1 payment','carLoan1PayoffYear':'Car Loan 1 payoff year',
+    'carLoan2Payment':'Car Loan 2 payment','carLoan2PayoffYear':'Car Loan 2 payoff year',
+    'studentLoanPayment':'Student loan payment','studentLoanPayoffYear':'Student loan payoff year',
+    'mortgage2Balance':'2nd mortgage / HELOC balance','creditCardPayment':'Credit card payment',
+    'otherDebtPayment':'Other debt payment','otherDebtPayoffYear':'Other debt payoff year'
+  };
+  var listHTML = found.map(function(f) {
+    return '<li style="margin-bottom:2px"><strong>' + (labels[f.key] || f.key) + ':</strong> ' + f.value + '</li>';
+  }).join('');
+
+  banner.innerHTML =
+    '<div style="font-weight:700;color:#2D4A35;margin-bottom:0.5rem;font-size:0.95rem">📋 We\'ve simplified debt entry</div>' +
+    '<div style="color:#444;margin-bottom:0.6rem">The old "Debt & Liabilities" section was redundant. We consolidated everything into one place. We found data you had previously entered there:</div>' +
+    '<ul style="margin:0 0 0.8rem 1.2rem;color:#666;font-size:0.85rem">' + listHTML + '</ul>' +
+    '<div style="color:#444;margin-bottom:0.8rem">Please re-enter these in the new <strong>"💳 Debt Payments"</strong> section in Budget Planner (use the <strong>+ Add</strong> buttons). Vehicle and mortgage payments now auto-fill from <strong>Accounts & Savings</strong>.</div>' +
+    '<div style="display:flex;gap:0.5rem;justify-content:flex-end">' +
+      '<button onclick="document.getElementById(\'debtMigrationBanner\').remove();try{localStorage.setItem(\'myyolk_debt_migration_dismissed_v1\',\'1\')}catch(e){}" style="background:#2D4A35;color:#fff;border:none;border-radius:6px;padding:0.5rem 1rem;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">Got it</button>' +
+    '</div>';
+  document.body.appendChild(banner);
 }
 
 function collectAllData() {
@@ -10063,6 +11123,7 @@ function collectAllData() {
       wash:    document.getElementById('vehicleWash_'+id)?.value||'',
       loan:    document.getElementById('vehicleLoan_'+id)?.value||'',
       payoff:  document.getElementById('vehiclePayoff_'+id)?.value||'',
+      payment: document.getElementById('vehiclePayment_'+id)?.value||'',
       replace: document.getElementById('vehicleReplace_'+id)?.value||''
     });
   });
@@ -10122,6 +11183,10 @@ function collectAllData() {
     }
     data['__custom_'+catId] = JSON.stringify(rows);
   });
+  // Personal import rules (from Statement Import feature)
+  if (typeof window.__myyolkImportRules === 'string') {
+    data['__importRules'] = window.__myyolkImportRules;
+  }
   return data;
 }
 
@@ -10397,9 +11462,12 @@ function loadFromLocal() {
             if(document.getElementById('vehicleWash_'+id)) document.getElementById('vehicleWash_'+id).value = rd.wash;
             if(document.getElementById('vehicleLoan_'+id)) document.getElementById('vehicleLoan_'+id).value = rd.loan;
             if(document.getElementById('vehiclePayoff_'+id)) document.getElementById('vehiclePayoff_'+id).value = rd.payoff;
+            if(document.getElementById('vehiclePayment_'+id)) document.getElementById('vehiclePayment_'+id).value = rd.payment||'';
             if(document.getElementById('vehicleReplace_'+id)) document.getElementById('vehicleReplace_'+id).value = rd.replace;
           });
         }
+        // Sync vehicle payments to Budget Planner
+        if (typeof syncBudgetVehiclePayments === 'function') syncBudgetVehiclePayments();
       } catch(e) {}
     }
     // Restore other assets
@@ -10563,6 +11631,10 @@ function loadFromLocal() {
     if(data['__budgetTracking']) {
       try { btData = JSON.parse(data['__budgetTracking']); } catch(e) { btData = {}; }
     }
+    // Restore personal import rules
+    if(data['__importRules']) {
+      try { window.__myyolkImportRules = data['__importRules']; } catch(e) {}
+    }
     // Strip old inline styles from income rows so CSS class takes over
     document.querySelectorAll('.additional-income-row').forEach(function(row) {
       row.style.cssText = '';
@@ -10662,6 +11734,146 @@ setTimeout(function() {
   } catch(e) { /* fail silent */ }
 })();
 </script>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- WHAT'S NEW MODAL                            -->
+<!-- ══════════════════════════════════════════ -->
+<div id="whatsNewOverlay" onclick="if(event.target===this)closeWhatsNew()" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.45);z-index:9998;align-items:flex-start;justify-content:center;overflow-y:auto;padding:60px 20px">
+  <div style="background:#fff;border-radius:14px;max-width:640px;width:100%;box-shadow:0 12px 40px rgba(0,0,0,0.25);font-family:DM Sans,sans-serif">
+    <div style="background:linear-gradient(135deg,#C8860A 0%,#a06f00 100%);color:#fff;padding:1.25rem 1.5rem;border-radius:14px 14px 0 0;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem">
+      <div>
+        <div style="font-size:1.3rem;font-weight:700;font-family:DM Serif Display,serif">📣 What's New</div>
+        <div style="font-size:0.85rem;opacity:0.95;margin-top:2px">You asked. We listened. Here's what we've shipped recently.</div>
+      </div>
+      <button onclick="closeWhatsNew()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:1.1rem;cursor:pointer;flex-shrink:0">×</button>
+    </div>
+    <div style="padding:1.25rem 1.5rem;max-height:65vh;overflow-y:auto" id="whatsNewBody"></div>
+    <div style="padding:0.85rem 1.5rem;background:#fafafa;border-top:1px solid #eee;border-radius:0 0 14px 14px;font-size:0.78rem;color:#888;text-align:center">
+      Have a request? Use the <strong>Feedback</strong> button — we read every one. 💚
+    </div>
+  </div>
+</div>
+
+<script>
+// ── What's New release notes (newest first) ──
+// Add new releases at the TOP. Date format: 'YYYY-MM-DD'.
+// Items can have optional `thanks` field for contributor recognition.
+window.WHATS_NEW = [
+  {
+    date: '2026-05-01',
+    label: 'May 1, 2026',
+    items: [
+      { text: 'Statement Import — drop in CSVs from 14 banks (Chase, BofA, Wells, Cap One, Amex, Citi, Discover, Apple Card, USAA, PNC, Home Depot, Lowe\'s) and we auto-categorize transactions across all your months.', thanks: null },
+      { text: 'Mortgage and vehicle payments now auto-fill in Budget Planner from Accounts & Savings — no more double entry.', thanks: null },
+      { text: 'Removed the redundant "Debt & Liabilities" card. All debt now lives in one place.', thanks: null },
+      { text: 'Renamed "College / Tuition" → "Current Tuition" with cross-references to Student Loans (less confusion between paying tuition now vs paying back loans).', thanks: null },
+      { text: 'Added "Personal Care," "Rideshare/Transit," and "Parking" line items in the Planner defaults.', thanks: null },
+      { text: 'Fixed: Budget Tracker red dot showing even when the month was logged.', thanks: null },
+      { text: 'Fixed: "Clear actuals" now properly wipes the month with a confirmation dialog.', thanks: null },
+    ]
+  },
+  {
+    date: '2026-04-30',
+    label: 'April 30, 2026',
+    items: [
+      { text: 'Privacy & Trust section added to landing page — explains how we keep your data isolated and secure.', thanks: 'Catherine P. & Densie S.' },
+      { text: 'Database cleanup — fixed an issue causing duplicate row saves. Added a unique constraint so it can never happen again.', thanks: null },
+      { text: 'Beta tester onboarding launched — Tester Mode banner unlocks all Pro features for free during testing.', thanks: null },
+    ]
+  },
+  {
+    date: '2026-04-25',
+    label: 'April 25, 2026',
+    items: [
+      { text: 'Your Progress section added to the Summary tab — see how your retirement readiness has trended over time as you log months and update your plan.', thanks: 'Jamie S.' },
+      { text: 'Spending History view in Budget Tracker — see month-by-month totals, drill into categories, and spot trends with bar charts.', thanks: null },
+      { text: 'Readiness tab rebuilt — clearer explanations of how we calculate your retirement readiness score, plus a plain-English breakdown of the Monte Carlo simulation.', thanks: 'Shaun L.' },
+      { text: '403(b) account support added to retirement accounts — for teachers, nonprofit, and healthcare workers. Tracked alongside 401(k) with the same employer match logic.', thanks: 'Bill E.' },
+      { text: 'Child benefits added to the Social Security tab — auto-calculates dependent benefits when claiming SS with minor children at home.', thanks: 'Bill E.' },
+      { text: 'Veterans benefits added as income types in the Income & Pay dropdowns — VA disability, military pension, GI Bill, and other service-related income. 🇺🇸 Thank you both for your service.', thanks: 'Craig F. & Ryan F.' },
+      { text: 'Monthly email reminders via Resend — automatic check-in nudge on the 3rd of each month.', thanks: null },
+      { text: 'Two-page PDF report with MyYolk branding (amber color scheme).', thanks: null },
+    ]
+  },
+  {
+    date: '2026-04-15',
+    label: 'April 15, 2026',
+    items: [
+      { text: 'Trademark application filed — MYYOLK is officially live with the USPTO (Serial #99740600).', thanks: null },
+      { text: 'Life Events section in What-If — model 15 different scenarios (kid in college, downsize home, layoff, etc.) and see the projection impact.', thanks: null },
+      { text: 'Per-property appreciation rates — set different growth assumptions for primary home vs rentals.', thanks: null },
+      { text: 'Social Security spousal and child benefit calculations.', thanks: null },
+      { text: 'Early Retirement tab — model retiring before 62 with bridge-funding logic.', thanks: null },
+    ]
+  }
+];
+
+function renderWhatsNew() {
+  var body = document.getElementById('whatsNewBody');
+  if (!body) return;
+  var html = '';
+  for (var r = 0; r < window.WHATS_NEW.length; r++) {
+    var release = window.WHATS_NEW[r];
+    html += '<div style="' + (r > 0 ? 'margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid #eee;' : '') + '">';
+    html += '<div style="font-size:0.95rem;font-weight:700;color:#2D4A35;margin-bottom:0.6rem">' + release.label + '</div>';
+    html += '<ul style="margin:0;padding-left:1.2rem;color:#3a3a3a;font-size:0.9rem;line-height:1.55">';
+    for (var i = 0; i < release.items.length; i++) {
+      var item = release.items[i];
+      html += '<li style="margin-bottom:0.5rem">' + item.text;
+      if (item.thanks) {
+        html += ' <span style="display:inline-block;background:#fff8e1;color:#7a5400;font-size:0.72rem;font-weight:600;padding:1px 7px;border-radius:8px;margin-left:4px">💚 thanks ' + item.thanks + '</span>';
+      }
+      html += '</li>';
+    }
+    html += '</ul></div>';
+  }
+  body.innerHTML = html;
+}
+
+function openWhatsNew() {
+  renderWhatsNew();
+  var overlay = document.getElementById('whatsNewOverlay');
+  if (overlay) {
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+  // Mark all as seen — store the latest release date
+  try {
+    if (window.WHATS_NEW && window.WHATS_NEW.length > 0) {
+      localStorage.setItem('myyolk_whatsnew_seen', window.WHATS_NEW[0].date);
+    }
+  } catch(e) {}
+  updateWhatsNewBadge();
+}
+
+function closeWhatsNew() {
+  var overlay = document.getElementById('whatsNewOverlay');
+  if (overlay) {
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+}
+
+function updateWhatsNewBadge() {
+  var badge = document.getElementById('whatsNewBadge');
+  var subtitle = document.getElementById('whatsNewSubtitle');
+  if (!badge || !window.WHATS_NEW || window.WHATS_NEW.length === 0) return;
+  var latestDate = window.WHATS_NEW[0].date;
+  var lastSeen = '';
+  try { lastSeen = localStorage.getItem('myyolk_whatsnew_seen') || ''; } catch(e) {}
+  if (latestDate > lastSeen) {
+    badge.style.display = 'inline-block';
+    if (subtitle) subtitle.textContent = window.WHATS_NEW[0].items.length + ' new updates · tap to view';
+  } else {
+    badge.style.display = 'none';
+    if (subtitle) subtitle.textContent = 'Tap to see recent updates';
+  }
+}
+
+// Init badge on load
+setTimeout(updateWhatsNewBadge, 200);
+</script>
+
 </body>
 </html> 
  
