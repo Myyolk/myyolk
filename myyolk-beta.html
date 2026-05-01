@@ -3321,6 +3321,7 @@
       <div class="bt-pills">
         <button class="bt-pill active" onclick="btShowPanel('checkin')" id="btPill-checkin">✏️ Monthly Check-In</button>
         <button class="bt-pill" onclick="btShowPanel('history')" id="btPill-history">📈 Spending History</button>
+        <button class="bt-pill" onclick="btShowPanel('import')" id="btPill-import">📥 Import Statements <span style="display:inline-block;margin-left:4px;padding:1px 6px;font-size:0.65rem;background:#2D4A35;color:#fff;border-radius:8px;letter-spacing:0.5px">PRO</span></button>
       </div>
 
       <!-- ── CHECK-IN PANEL ── -->
@@ -3428,6 +3429,70 @@
           </div>
         </div>
       </div>
+
+      <!-- ── IMPORT STATEMENTS PANEL ── -->
+      <div id="btPanel-import" style="display:none">
+        <div class="card">
+          <div style="background:#fff9e6;border:1px solid #f5c14a;border-radius:8px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.88rem;color:#6b5510">
+            <strong>📥 Bulk import from your bank or credit card.</strong> Drop in a CSV and we'll auto-categorize transactions and merge them into your monthly tracker. Files are processed in your browser — nothing is uploaded.
+          </div>
+
+          <!-- Drop zone -->
+          <div id="btImportDrop" style="border:2px dashed var(--border);border-radius:10px;padding:2.5rem 1rem;text-align:center;cursor:pointer;background:#fafafa;transition:all 0.15s">
+            <div style="font-size:2.5rem;margin-bottom:0.5rem">📂</div>
+            <div style="font-weight:600;color:var(--charcoal);margin-bottom:0.25rem">Drop your CSV here, or click to browse</div>
+            <div style="font-size:0.82rem;color:var(--mid);margin-bottom:0.75rem">Supports PNC Checking and PNC Credit Card exports</div>
+            <input type="file" id="btImportFile" accept=".csv" style="display:none" multiple>
+            <button class="btn btn-secondary" onclick="document.getElementById('btImportFile').click()" style="padding:0.5rem 1.25rem">Choose file(s)</button>
+          </div>
+
+          <!-- Help link -->
+          <details style="margin-top:0.75rem;font-size:0.85rem;color:var(--mid)">
+            <summary style="cursor:pointer;font-weight:600">📋 How to download your CSV</summary>
+            <div style="padding:0.75rem 0 0 1rem;line-height:1.6">
+              <div><strong>PNC Checking:</strong> Online Banking → Account Activity → Export → CSV</div>
+              <div><strong>PNC Credit Card:</strong> Transactions tab → Export → CSV</div>
+              <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--mid)">More banks coming soon. Need a different format? Let us know in feedback.</div>
+            </div>
+          </details>
+
+          <!-- Parse status -->
+          <div id="btImportStatus" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:#f0f7f3;border:1px solid #c8e0d3;border-radius:8px;font-size:0.88rem;color:#2D4A35"></div>
+
+          <!-- Review section -->
+          <div id="btImportReview" style="display:none;margin-top:1.25rem">
+            <div style="font-weight:700;font-size:1rem;color:var(--charcoal);margin-bottom:0.5rem">Review &amp; Apply</div>
+            <div style="font-size:0.85rem;color:var(--mid);margin-bottom:0.75rem" id="btImportReviewSummary"></div>
+
+            <div class="table-wrap" style="max-height:400px;overflow-y:auto">
+              <table class="bt-checkin-grid" id="btImportTable">
+                <thead>
+                  <tr>
+                    <th>Month</th>
+                    <th style="text-align:right">Total parsed</th>
+                    <th style="text-align:right">Currently in tracker</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="btImportTableBody"></tbody>
+              </table>
+            </div>
+
+            <!-- Flagged items -->
+            <div id="btImportFlagged" style="margin-top:1rem;display:none">
+              <div style="font-weight:700;font-size:0.95rem;color:#a85b00;margin-bottom:0.5rem">⚠️ Items flagged for your review</div>
+              <div style="font-size:0.82rem;color:var(--mid);margin-bottom:0.5rem">Paper checks, Zelles to people, and other items that need a human eye. Skipping them is fine — you can re-classify later.</div>
+              <div id="btImportFlaggedBody" style="font-size:0.85rem;border:1px solid var(--border);border-radius:8px;max-height:200px;overflow-y:auto"></div>
+            </div>
+
+            <div style="margin-top:1.25rem;display:flex;gap:0.75rem;align-items:center">
+              <button class="btn btn-primary" onclick="btImportApply()" style="padding:0.65rem 1.5rem">✅ Apply to Tracker</button>
+              <button onclick="btImportReset()" style="background:none;border:none;font-size:0.85rem;color:var(--mid);cursor:pointer;font-family:DM Sans,sans-serif;text-decoration:underline">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ── END IMPORT PANEL ── -->
     </div>
     <!-- ══ END TRACKING TAB ══ -->
 
@@ -8300,7 +8365,7 @@ collectAllData = function() {
 // ── Panel toggle ──
 
 function btShowPanel(name) {
-  ['checkin','history'].forEach(function(p) {
+  ['checkin','history','import'].forEach(function(p) {
     var panel = document.getElementById('btPanel-' + p);
     var pill = document.getElementById('btPill-' + p);
     if (panel) panel.style.display = p === name ? 'block' : 'none';
@@ -8309,6 +8374,328 @@ function btShowPanel(name) {
     }
   });
   if (name === 'history') btRenderHistory();
+  if (name === 'import') btImportInit();
+}
+
+// ══════════════════════════════════════════════════════════════
+// STATEMENT IMPORT (Pro feature)
+// ══════════════════════════════════════════════════════════════
+
+// Pending review state — populated after parse, applied on confirm
+var _btImportPending = null;
+
+// Categorization rules. Order matters — first match wins.
+var BT_IMPORT_RULES = [
+  // Skip rules (transfers, CC payments, brokerage moves)
+  ['_skip', /capital one mobile|chase credit crd (autopay|epay)|applecard gsbank|home depot (auto|online) p|lowes syf paymnt|online credit card pmt|mobile payment to|online payment|online transfer|schwab brokerage|schwab moneylink|best buy auto pymt|capital one crcard|returned mobile ach|domestic self serve wire pnc|^withdrawal|cash app\*dean sheppard/i],
+  // Mortgage
+  ['mortgage', /pnc mortgage|mortgage|wells fargo home/i],
+  // Insurance — recognized policies route to specific keys, others to subs bucket
+  ['__ins__Dean___Ameritas_Term__T00081989A_', /ameritas.*38\.67|ameritas.*8234|ameritas.*6570|ameritas.*2259|ameritas.*7749/i],
+  ['__ins__Ameritas_Permanent__Dean__175___Densie__200_', /ameritas.*375|ameritas.*5423|ameritas.*5897|ameritas.*9139|ameritas.*3409/i],
+  ['__ins__Dean___Northwestern_Mutual_Term', /northwestern mu/i],
+  ['__ins__UnitedHealth___Medical__UHCONE_', /uhcone|unitedhealth.*medical|unitedhealth ins prem.*646/i],
+  ['__ins__UnitedHealth___Dental__DentalWise_Max_2000_', /dentalwise|unitedhealth.*dental|unitedhealth ins prem.*164\.65/i],
+  ['carIns', /erie ins|geico|progressive|state farm|allstate|usaa.*ins|farmers.*ins|liberty mutual/i],
+  // Utilities
+  ['electric', /duquesne light|peoples gas|first energy|elec(tric)?(\s|co)|pa power/i],
+  ['gasHeat', /peoples natural|columbia gas|nat gas|natural gas/i],
+  ['internet', /comcast|xfinity|verizon fios|spectrum|at&t internet/i],
+  ['cellPhone', /verizon wireless|t-mobile|at&t.*mobil|sprint|cricket|cellphone|cell phone/i],
+  // Subscriptions — named line items
+  ['__subs__Claude_Max', /anthropic|claude\.ai/i],
+  ['__subs__Cinemark', /cinemark/i],
+  ['__subs__XM_Radio', /sxm\*siriusxm|sirius xm|siriusxm/i],
+  ['__subs__HP_Ink', /hp \*?instant|hpinst/i],
+  ['__subs__Apple', /apple\.com\/?bill|apple services|apple\.com/i],
+  ['__subs__Webroot', /webroot/i],
+  ['__subs__Simply_Guitar', /google \*?simply|simply guitar/i],
+  ['__subs__MagicJack___Mom_and_Dad', /magicjack|magic jack/i],
+  ['__subs__Microsoft_365_Premium_w__CoPilot', /microsoft\*microsoft|microsoft 36|microsoft store/i],
+  ['__subs__Infinity_TV', /cash app\*christine/i],
+  ['__subs__Amazon_Prime', /amazon prime|prime video/i],
+  ['subs', /netflix|hulu|disney plus|spotify|paramount|peacock/i],
+  // Fuel
+  ['gas', /\b(shell|exxon|mobil|bp|sunoco|gulf|chevron|speedway|sheetz|wawa|gettygo|costco gas|sam's gas)\b/i],
+  // Groceries
+  ['groceries', /giant eagle|aldi|trader joe|whole foods|wegmans|kroger|walmart.*neighborhood|safeway|publix|costco whse|sam's club|target.*grocer/i],
+  // Dining
+  ['dining', /starbucks|dunkin|chipotle|panera|subway|mcdonald|burger king|wendy|chick-fil|taco bell|olive garden|red lobster|texas roadhouse|outback|cheesecake|ihop|denny|applebee|dq\*|tst\*|sq \*|toast tab|gianni|pizza|restaurant|cafe|grill|kitchen|tavern|bistro|chipotle/i],
+  // Auto / vehicle
+  ['carMaint', /pep boys|pepboys|monro|jiffy lube|valvoline|vioc|auto\s?zone|advance auto|napa|firestone|midas|toyota|ford service|chevy service|brewer airport|judy dewey|notary|pa driver|window tint|mint window|tire/i],
+  ['carWash', /car wash|carwash|magic wand|mr clean.*car/i],
+  // Home
+  ['homeMaint', /home depot|lowe's|lowes|menards|ace hardware|true value|harbor freight|tru foam|vip heating|plumber|hvac|electrician/i],
+  // Pharmacy
+  ['rx', /cvs.*pharm|walgreens.*pharm|rite aid.*pharm|pharmacy/i],
+  // Personal care
+  ['personalCare', /great clips|supercuts|sport clips|hair|salon|spa|barber|gloss|jayme/i],
+  // Entertainment
+  ['entertain', /amc theatre|regal cinema|movie tavern|fandango/i],
+  // Shopping
+  ['shopping', /amzn mktp|amazon\.com|target\.com|tj maxx|marshalls|ross|kohl's|macy|nordstrom|best buy|bed bath/i],
+  // Pets
+  ['pets', /chewy|petsmart|petco|vet|veterinar/i],
+  // ATM cash
+  ['other', /atm withdraw|atm cash/i],
+  // Zelle/Venmo/PayPal — to "other" bucket (user must reclassify)
+  ['other', /zel(le)? to|venmo payment|paypal inst xfer|paypal_credit/i],
+  // Checks — flag for manual review
+  ['_flag', /^check \d/i],
+];
+
+function btImportInit() {
+  var drop = document.getElementById('btImportDrop');
+  var input = document.getElementById('btImportFile');
+  if (!drop || !input || drop.dataset.bound) return;
+  drop.dataset.bound = '1';
+
+  // File chooser
+  input.addEventListener('change', function(e) { btImportHandleFiles(e.target.files); });
+
+  // Drag & drop
+  drop.addEventListener('dragover', function(e) { e.preventDefault(); drop.style.borderColor = '#C8860A'; drop.style.background = '#fff8e6'; });
+  drop.addEventListener('dragleave', function(e) { drop.style.borderColor = ''; drop.style.background = '#fafafa'; });
+  drop.addEventListener('drop', function(e) {
+    e.preventDefault();
+    drop.style.borderColor = ''; drop.style.background = '#fafafa';
+    btImportHandleFiles(e.dataTransfer.files);
+  });
+  drop.addEventListener('click', function(e) {
+    if (e.target.tagName !== 'BUTTON') input.click();
+  });
+}
+
+function btImportHandleFiles(files) {
+  if (!files || !files.length) return;
+  var status = document.getElementById('btImportStatus');
+  status.style.display = 'block';
+  status.textContent = '⏳ Reading ' + files.length + ' file(s)...';
+
+  var allRows = [];
+  var pending = files.length;
+
+  for (var i = 0; i < files.length; i++) {
+    (function(f) {
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        try {
+          var rows = btImportParseCSV(f.name, ev.target.result);
+          allRows = allRows.concat(rows);
+        } catch (err) {
+          console.warn('Parse error in ' + f.name + ':', err);
+        }
+        pending--;
+        if (pending === 0) btImportFinishParse(allRows);
+      };
+      reader.onerror = function() {
+        pending--;
+        if (pending === 0) btImportFinishParse(allRows);
+      };
+      reader.readAsText(f);
+    })(files[i]);
+  }
+}
+
+function btImportParseCSV(filename, text) {
+  // Detect format by header signature
+  var firstLine = text.split(/\r?\n/)[0] || '';
+  var rows = [];
+
+  // PNC Credit Card: "Date","Description","Amount" (positive = charge)
+  if (/^"?date"?,"?description"?,"?amount"?/i.test(firstLine)) {
+    var lines = text.split(/\r?\n/).slice(1);
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].trim();
+      if (!line) continue;
+      var m = line.match(/^"?([\d\/\-]+)"?,"(.+?)","?\$?(-?[\d,\.]+)"?$/);
+      if (!m) continue;
+      var amt = parseFloat(m[3].replace(/,/g,''));
+      if (isNaN(amt) || amt <= 0) continue;  // skip credits/payments on CC
+      rows.push({ date: btImportNormalizeDate(m[1]), desc: m[2].trim(), amount: amt, source: 'PNC CC ' + filename });
+    }
+    return rows;
+  }
+
+  // PNC Checking: "Date","Description","Amount" with sign — detect by leading "- $" or "+ $"
+  if (/account activity|checking|date.*description.*amount/i.test(firstLine) || /^"?\d{4}-\d{2}-\d{2}"?,/.test(text.split(/\r?\n/)[1] || '')) {
+    var lines2 = text.split(/\r?\n/).slice(1);
+    for (var j = 0; j < lines2.length; j++) {
+      var line2 = lines2[j].trim();
+      if (!line2) continue;
+      var m2 = line2.match(/^"?([\d\/\-]+)"?,"(.+?)","?[+\-]?\s*\$?(-?[\d,\.]+)"?$/);
+      if (!m2) continue;
+      var amt2 = parseFloat(m2[3].replace(/,/g,''));
+      if (isNaN(amt2)) continue;
+      // Negative sign means money out; PNC formats as "- $X"
+      var isOutflow = /^"?[\d\/\-]+"?,".+?",\s*"?\s*-/.test(line2) || /^"?[\d\/\-]+"?,".+?","-/.test(line2);
+      if (!isOutflow) continue;  // skip incoming
+      rows.push({ date: btImportNormalizeDate(m2[1]), desc: m2[2].trim(), amount: Math.abs(amt2), source: 'PNC Checking ' + filename });
+    }
+    return rows;
+  }
+
+  return rows;
+}
+
+function btImportNormalizeDate(s) {
+  s = (s||'').trim();
+  // MM/DD/YYYY → YYYY-MM-DD
+  var m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return m[3] + '-' + m[1].padStart(2,'0') + '-' + m[2].padStart(2,'0');
+  // YYYY-MM-DD already
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  return s;
+}
+
+function btImportClassify(desc) {
+  for (var i = 0; i < BT_IMPORT_RULES.length; i++) {
+    if (BT_IMPORT_RULES[i][1].test(desc)) return BT_IMPORT_RULES[i][0];
+  }
+  return 'other';
+}
+
+function btImportFinishParse(rows) {
+  var status = document.getElementById('btImportStatus');
+
+  if (!rows.length) {
+    status.style.background = '#fde8e8'; status.style.borderColor = '#f5b3b3'; status.style.color = '#a02020';
+    status.textContent = '⚠️ Could not parse any transactions. Make sure the CSV is from PNC Checking or PNC Credit Card.';
+    return;
+  }
+
+  // Group by month and category
+  var byMonth = {};
+  var flagged = [];
+  var skipped = 0;
+
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    var month = (r.date || '').substring(0, 7);
+    if (!month) continue;
+
+    var cat = btImportClassify(r.desc);
+    if (cat === '_skip') { skipped++; continue; }
+    if (cat === '_flag') {
+      flagged.push(r);
+      continue;
+    }
+
+    if (!byMonth[month]) byMonth[month] = {};
+    byMonth[month][cat] = Math.round(((byMonth[month][cat] || 0) + r.amount) * 100) / 100;
+  }
+
+  _btImportPending = { byMonth: byMonth, flagged: flagged, totalRows: rows.length, skipped: skipped };
+
+  status.style.background = '#f0f7f3'; status.style.borderColor = '#c8e0d3'; status.style.color = '#2D4A35';
+  var monthCount = Object.keys(byMonth).length;
+  status.textContent = '✅ Parsed ' + rows.length + ' transactions across ' + monthCount + ' month(s). ' + skipped + ' skipped (transfers/CC payments). ' + flagged.length + ' flagged for review.';
+
+  btImportRenderReview();
+}
+
+function btImportRenderReview() {
+  if (!_btImportPending) return;
+  var review = document.getElementById('btImportReview');
+  review.style.display = 'block';
+
+  var byMonth = _btImportPending.byMonth;
+  var months = Object.keys(byMonth).sort();
+  var body = document.getElementById('btImportTableBody');
+  body.innerHTML = '';
+
+  var grandParsed = 0;
+  for (var i = 0; i < months.length; i++) {
+    var m = months[i];
+    var newTotal = 0;
+    for (var k in byMonth[m]) newTotal += byMonth[m][k];
+    grandParsed += newTotal;
+
+    var existingTotal = 0;
+    if (typeof btData !== 'undefined' && btData[m] && btData[m].actuals) {
+      for (var k2 in btData[m].actuals) existingTotal += btData[m].actuals[k2];
+    }
+
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + m + '</td>' +
+      '<td style="text-align:right;font-weight:600;color:#2D4A35">$' + newTotal.toFixed(2) + '</td>' +
+      '<td style="text-align:right;color:var(--mid)">$' + existingTotal.toFixed(2) + '</td>' +
+      '<td><label style="font-size:0.82rem;cursor:pointer"><input type="radio" name="btImpAction-' + m + '" value="merge" checked> Add to existing</label> &nbsp; <label style="font-size:0.82rem;cursor:pointer"><input type="radio" name="btImpAction-' + m + '" value="replace"> Replace</label> &nbsp; <label style="font-size:0.82rem;cursor:pointer"><input type="radio" name="btImpAction-' + m + '" value="skip"> Skip</label></td>';
+    body.appendChild(tr);
+  }
+
+  document.getElementById('btImportReviewSummary').textContent =
+    '$' + grandParsed.toFixed(2) + ' across ' + months.length + ' month(s). Choose how to apply each month — merge adds new amounts to existing categories; replace overwrites the month entirely.';
+
+  // Render flagged items (paper checks etc.)
+  var flagWrap = document.getElementById('btImportFlagged');
+  var flagBody = document.getElementById('btImportFlaggedBody');
+  if (_btImportPending.flagged.length > 0) {
+    flagWrap.style.display = 'block';
+    flagBody.innerHTML = '';
+    for (var f = 0; f < _btImportPending.flagged.length; f++) {
+      var flg = _btImportPending.flagged[f];
+      var div = document.createElement('div');
+      div.style.padding = '0.5rem 0.75rem';
+      div.style.borderBottom = '1px solid var(--border)';
+      div.innerHTML = '<span style="color:var(--mid)">' + flg.date + '</span> &nbsp; ' +
+        '<strong>$' + flg.amount.toFixed(2) + '</strong> &nbsp; ' +
+        '<span>' + flg.desc + '</span> &nbsp; ' +
+        '<span style="font-size:0.78rem;color:#a85b00;background:#fff3e0;padding:1px 6px;border-radius:8px">flagged</span>';
+      flagBody.appendChild(div);
+    }
+  } else {
+    flagWrap.style.display = 'none';
+  }
+}
+
+async function btImportApply() {
+  if (!_btImportPending) return;
+  var byMonth = _btImportPending.byMonth;
+  var months = Object.keys(byMonth);
+  var applied = 0;
+  var skipped = 0;
+
+  for (var i = 0; i < months.length; i++) {
+    var m = months[i];
+    var radios = document.getElementsByName('btImpAction-' + m);
+    var action = 'merge';
+    for (var r = 0; r < radios.length; r++) if (radios[r].checked) action = radios[r].value;
+
+    if (action === 'skip') { skipped++; continue; }
+
+    if (typeof btData === 'undefined') window.btData = {};
+    if (!btData[m]) btData[m] = { actuals: {}, planned: {} };
+    if (!btData[m].actuals) btData[m].actuals = {};
+
+    if (action === 'replace') btData[m].actuals = {};
+
+    for (var key in byMonth[m]) {
+      btData[m].actuals[key] = Math.round(((btData[m].actuals[key] || 0) + byMonth[m][key]) * 100) / 100;
+    }
+    btData[m].savedAt = new Date().toISOString();
+    if (!btData[m].notes) btData[m].notes = 'Imported from ' + _btImportPending.totalRows + ' statement transactions';
+    applied++;
+  }
+
+  // Save
+  if (typeof cloudSave === 'function') { try { await cloudSave(); } catch(e){} }
+  if (typeof saveToLocal === 'function') { try { saveToLocal(); } catch(e){} }
+
+  var status = document.getElementById('btImportStatus');
+  status.style.background = '#f0f7f3'; status.style.borderColor = '#c8e0d3'; status.style.color = '#2D4A35';
+  status.textContent = '✅ Applied to ' + applied + ' month(s). ' + (skipped > 0 ? skipped + ' skipped.' : '') + ' Switch to Spending History to review.';
+
+  btImportReset(true);
+}
+
+function btImportReset(keepStatus) {
+  _btImportPending = null;
+  document.getElementById('btImportReview').style.display = 'none';
+  document.getElementById('btImportFile').value = '';
+  if (!keepStatus) {
+    document.getElementById('btImportStatus').style.display = 'none';
+  }
 }
 
 // ── Init ──
