@@ -9473,12 +9473,51 @@ function btSaveCheckin() {
 }
 
 function btClearCheckin() {
-  document.querySelectorAll('.bt-actual-input').forEach(function(inp) {
-    inp.value = '';
-  });
-  btUpdateVariances();
+  var monthEl = document.getElementById('btCheckinMonth');
+  var month = monthEl ? monthEl.value : '';
+  if (!month) {
+    // No month selected — just clear visible inputs
+    document.querySelectorAll('.bt-actual-input').forEach(function(inp) { inp.value = ''; });
+    btUpdateVariances();
+    var notesEl0 = document.getElementById('btCheckinNotes');
+    if (notesEl0) notesEl0.value = '';
+    return;
+  }
+
+  // Confirm before destructive action
+  var monthLabel = month;
+  try {
+    var d = new Date(month + '-01T12:00:00');
+    monthLabel = d.toLocaleDateString('en-US', {month: 'long', year: 'numeric'});
+  } catch(e) {}
+
+  var hasData = (typeof btData !== 'undefined' && btData[month] && btData[month].actuals && Object.keys(btData[month].actuals).length > 0);
+  var msg = hasData
+    ? 'Clear all logged actuals for ' + monthLabel + '?\n\nThis removes every amount and any notes for this month from the tracker. The category headings stay (those come from your Budget Planner).\n\nThis cannot be undone.'
+    : 'Clear all input fields for ' + monthLabel + '?';
+
+  if (!confirm(msg)) return;
+
+  // Clear visible inputs
+  document.querySelectorAll('.bt-actual-input').forEach(function(inp) { inp.value = ''; });
+  // Clear notes field
   var notesEl = document.getElementById('btCheckinNotes');
   if (notesEl) notesEl.value = '';
+  // Clear the month from btData entirely
+  if (typeof btData !== 'undefined' && btData[month]) {
+    delete btData[month];
+  }
+  // Recompute variances + persist
+  btUpdateVariances();
+  if (typeof cloudSave === 'function') { try { cloudSave(); } catch(e){} }
+  if (typeof saveToLocal === 'function') { try { saveToLocal(); } catch(e){} }
+  // Visual confirmation
+  var badge = document.getElementById('btSavedBadge');
+  if (badge) {
+    badge.textContent = '🗑️ Cleared';
+    badge.style.opacity = '1';
+    setTimeout(function(){ badge.style.opacity = '0'; badge.textContent = '✓ Saved'; }, 2500);
+  }
 }
 
 // ── History ──
