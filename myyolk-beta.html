@@ -1790,6 +1790,15 @@
       <div style="font-size:0.75rem;color:#6b6b6b;line-height:1.4" id="btReminderText">Log last month's spending</div>
     </div>
 
+    <!-- What's New (beta release notes) -->
+    <div id="whatsNewPill" onclick="openWhatsNew()" style="background:linear-gradient(135deg,#fff8e1 0%,#ffe9b8 100%);border:1.5px solid #C8860A;border-radius:10px;padding:0.7rem 0.85rem;margin-bottom:0.85rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:transform 0.1s">
+      <div>
+        <div style="font-size:0.78rem;font-weight:700;color:#7a5400">📣 What's New</div>
+        <div style="font-size:0.7rem;color:#8a6a2a;margin-top:1px" id="whatsNewSubtitle">Tap to see recent updates</div>
+      </div>
+      <div id="whatsNewBadge" style="display:none;background:#c0392b;color:#fff;font-size:0.65rem;font-weight:700;padding:2px 7px;border-radius:10px;letter-spacing:0.3px">NEW</div>
+    </div>
+
     <div class="sidebar-label">Live Snapshot</div>
     <div class="quick-stat" style="background:#C8860A;border-color:#C8860A">
       <div class="quick-stat-label" style="color:#fff;font-weight:500">Planning for</div>
@@ -11727,6 +11736,146 @@ setTimeout(function() {
   } catch(e) { /* fail silent */ }
 })();
 </script>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- WHAT'S NEW MODAL                            -->
+<!-- ══════════════════════════════════════════ -->
+<div id="whatsNewOverlay" onclick="if(event.target===this)closeWhatsNew()" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.45);z-index:9998;align-items:flex-start;justify-content:center;overflow-y:auto;padding:60px 20px">
+  <div style="background:#fff;border-radius:14px;max-width:640px;width:100%;box-shadow:0 12px 40px rgba(0,0,0,0.25);font-family:DM Sans,sans-serif">
+    <div style="background:linear-gradient(135deg,#C8860A 0%,#a06f00 100%);color:#fff;padding:1.25rem 1.5rem;border-radius:14px 14px 0 0;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem">
+      <div>
+        <div style="font-size:1.3rem;font-weight:700;font-family:DM Serif Display,serif">📣 What's New</div>
+        <div style="font-size:0.85rem;opacity:0.95;margin-top:2px">You asked. We listened. Here's what we've shipped recently.</div>
+      </div>
+      <button onclick="closeWhatsNew()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:1.1rem;cursor:pointer;flex-shrink:0">×</button>
+    </div>
+    <div style="padding:1.25rem 1.5rem;max-height:65vh;overflow-y:auto" id="whatsNewBody"></div>
+    <div style="padding:0.85rem 1.5rem;background:#fafafa;border-top:1px solid #eee;border-radius:0 0 14px 14px;font-size:0.78rem;color:#888;text-align:center">
+      Have a request? Use the <strong>Feedback</strong> button — we read every one. 💚
+    </div>
+  </div>
+</div>
+
+<script>
+// ── What's New release notes (newest first) ──
+// Add new releases at the TOP. Date format: 'YYYY-MM-DD'.
+// Items can have optional `thanks` field for contributor recognition.
+window.WHATS_NEW = [
+  {
+    date: '2026-05-01',
+    label: 'May 1, 2026',
+    items: [
+      { text: 'Statement Import — drop in CSVs from 14 banks (Chase, BofA, Wells, Cap One, Amex, Citi, Discover, Apple Card, USAA, PNC, Home Depot, Lowe\'s) and we auto-categorize transactions across all your months.', thanks: null },
+      { text: 'Mortgage and vehicle payments now auto-fill in Budget Planner from Accounts & Savings — no more double entry.', thanks: 'Dean S.' },
+      { text: 'Removed the redundant "Debt & Liabilities" card. All debt now lives in one place.', thanks: 'Dean S.' },
+      { text: 'Renamed "College / Tuition" → "Current Tuition" with cross-references to Student Loans (less confusion between paying tuition now vs paying back loans).', thanks: 'Dean S.' },
+      { text: 'Added "Personal Care," "Rideshare/Transit," and "Parking" line items in the Planner defaults.', thanks: null },
+      { text: 'Fixed: Budget Tracker red dot showing even when the month was logged.', thanks: 'Dean S.' },
+      { text: 'Fixed: "Clear actuals" now properly wipes the month with a confirmation dialog.', thanks: null },
+    ]
+  },
+  {
+    date: '2026-04-30',
+    label: 'April 30, 2026',
+    items: [
+      { text: 'Privacy & Trust section added to landing page — explains how we keep your data isolated and secure.', thanks: 'Catherine P.' },
+      { text: 'Database cleanup — fixed an issue causing duplicate row saves. Added a unique constraint so it can never happen again.', thanks: null },
+      { text: 'Beta tester onboarding launched — Tester Mode banner unlocks all Pro features for free during testing.', thanks: null },
+    ]
+  },
+  {
+    date: '2026-04-25',
+    label: 'April 25, 2026',
+    items: [
+      { text: 'Your Progress section added to the Summary tab — see how your retirement readiness has trended over time as you log months and update your plan.', thanks: 'Jamie S.' },
+      { text: 'Spending History view in Budget Tracker — see month-by-month totals, drill into categories, and spot trends with bar charts.', thanks: null },
+      { text: 'Readiness tab rebuilt — clearer explanations of how we calculate your retirement readiness score, plus a plain-English breakdown of the Monte Carlo simulation.', thanks: 'Shaun L.' },
+      { text: '403(b) account support added to retirement accounts — for teachers, nonprofit, and healthcare workers. Tracked alongside 401(k) with the same employer match logic.', thanks: 'Bill E.' },
+      { text: 'Child benefits added to the Social Security tab — auto-calculates dependent benefits when claiming SS with minor children at home.', thanks: 'Bill E.' },
+      { text: 'Veterans benefits added as income types in the Income & Pay dropdowns — VA disability, military pension, GI Bill, and other service-related income. 🇺🇸 Thank you for your service.', thanks: 'Craig F. & Ryan F.' },
+      { text: 'Monthly email reminders via Resend — automatic check-in nudge on the 3rd of each month.', thanks: null },
+      { text: 'Two-page PDF report with MyYolk branding (amber color scheme).', thanks: null },
+    ]
+  },
+  {
+    date: '2026-04-15',
+    label: 'April 15, 2026',
+    items: [
+      { text: 'Trademark application filed — MYYOLK is officially live with the USPTO (Serial #99740600).', thanks: null },
+      { text: 'Life Events section in What-If — model 15 different scenarios (kid in college, downsize home, layoff, etc.) and see the projection impact.', thanks: null },
+      { text: 'Per-property appreciation rates — set different growth assumptions for primary home vs rentals.', thanks: null },
+      { text: 'Social Security spousal and child benefit calculations.', thanks: null },
+      { text: 'Early Retirement tab — model retiring before 62 with bridge-funding logic.', thanks: null },
+    ]
+  }
+];
+
+function renderWhatsNew() {
+  var body = document.getElementById('whatsNewBody');
+  if (!body) return;
+  var html = '';
+  for (var r = 0; r < window.WHATS_NEW.length; r++) {
+    var release = window.WHATS_NEW[r];
+    html += '<div style="' + (r > 0 ? 'margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid #eee;' : '') + '">';
+    html += '<div style="font-size:0.95rem;font-weight:700;color:#2D4A35;margin-bottom:0.6rem">' + release.label + '</div>';
+    html += '<ul style="margin:0;padding-left:1.2rem;color:#3a3a3a;font-size:0.9rem;line-height:1.55">';
+    for (var i = 0; i < release.items.length; i++) {
+      var item = release.items[i];
+      html += '<li style="margin-bottom:0.5rem">' + item.text;
+      if (item.thanks) {
+        html += ' <span style="display:inline-block;background:#fff8e1;color:#7a5400;font-size:0.72rem;font-weight:600;padding:1px 7px;border-radius:8px;margin-left:4px">💚 thanks ' + item.thanks + '</span>';
+      }
+      html += '</li>';
+    }
+    html += '</ul></div>';
+  }
+  body.innerHTML = html;
+}
+
+function openWhatsNew() {
+  renderWhatsNew();
+  var overlay = document.getElementById('whatsNewOverlay');
+  if (overlay) {
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+  // Mark all as seen — store the latest release date
+  try {
+    if (window.WHATS_NEW && window.WHATS_NEW.length > 0) {
+      localStorage.setItem('myyolk_whatsnew_seen', window.WHATS_NEW[0].date);
+    }
+  } catch(e) {}
+  updateWhatsNewBadge();
+}
+
+function closeWhatsNew() {
+  var overlay = document.getElementById('whatsNewOverlay');
+  if (overlay) {
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+}
+
+function updateWhatsNewBadge() {
+  var badge = document.getElementById('whatsNewBadge');
+  var subtitle = document.getElementById('whatsNewSubtitle');
+  if (!badge || !window.WHATS_NEW || window.WHATS_NEW.length === 0) return;
+  var latestDate = window.WHATS_NEW[0].date;
+  var lastSeen = '';
+  try { lastSeen = localStorage.getItem('myyolk_whatsnew_seen') || ''; } catch(e) {}
+  if (latestDate > lastSeen) {
+    badge.style.display = 'inline-block';
+    if (subtitle) subtitle.textContent = window.WHATS_NEW[0].items.length + ' new updates · tap to view';
+  } else {
+    badge.style.display = 'none';
+    if (subtitle) subtitle.textContent = 'Tap to see recent updates';
+  }
+}
+
+// Init badge on load
+setTimeout(updateWhatsNewBadge, 200);
+</script>
+
 </body>
 </html> 
  
