@@ -3050,7 +3050,8 @@
 
         <div class="budget-category">
           <div class="budget-cat-header">🎓 Education & Family</div>
-          <div class="budget-row"><label>College / Tuition</label><input type="number" class="bud-m" data-key="tuition" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div class="budget-row"><label>Current Tuition <span style="font-size:0.7rem;color:#888;font-weight:400">(currently paying)</span></label><input type="number" class="bud-m" data-key="tuition" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
+          <div style="font-size:0.72rem;color:#888;font-style:italic;padding:0 0 6px">💡 Paying down past student loans? Use <strong>Student Loans</strong> in 💳 Debt Payments below.</div>
           <div class="budget-row"><label>529 / Education Savings</label><input type="number" class="bud-m" data-key="edu529" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>K-12 / Private School</label><input type="number" class="bud-m" data-key="k12" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
           <div class="budget-row"><label>Tutoring / Activities</label><input type="number" class="bud-m" data-key="tutoring" placeholder="0" oninput="calcBudget(this)"><input type="number" class="bud-a" placeholder="0" oninput="calcBudget(this)"></div>
@@ -3117,9 +3118,10 @@
           </div>
 
           <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0 0.25rem">
-            <span style="font-size:0.82rem;color:var(--mid)">Student Loans</span>
+            <span style="font-size:0.82rem;color:var(--mid)">Student Loans <span style="font-size:0.7rem;color:#888;font-weight:400">(paying down past education debt)</span></span>
             <button onclick="addDebtRow('student')" style="background:#2D4A35;color:#fff;border:none;border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">+ Add</button>
           </div>
+          <div style="font-size:0.72rem;color:#888;font-style:italic;padding:0 0 6px">💡 For tuition you're <em>currently</em> paying, use <strong>Current Tuition</strong> in 🎓 Education & Family above.</div>
           <div id="studentLoanRows"></div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0">
             <span style="font-size:0.82rem;color:var(--mid)">Credit Cards</span>
@@ -8240,7 +8242,7 @@ var BT_KEY_LABELS = {
   groceries:'Groceries', dining:'Dining Out',
   medPrem:'Medical Premiums', rx:'Prescriptions', oop:'Out-of-Pocket',
   legal:'Legal / Attorney', accounting:'Accounting / Tax Prep', finAdvisor:'Financial Advisor',
-  tuition:'College / Tuition', edu529:'529 Savings', k12:'K-12 / Private School',
+  tuition:'Current Tuition', edu529:'529 Savings', k12:'K-12 / Private School',
   tutoring:'Tutoring / Activities', childSupport:'Child Support', childcare:'Childcare',
   elderCare:'Elder Care',
   subs:'Subscriptions', entertain:'Entertainment', shopping:'Shopping / Clothing',
