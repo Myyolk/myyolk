@@ -3437,22 +3437,60 @@
             <strong>📥 Bulk import from your bank or credit card.</strong> Drop in a CSV and we'll auto-categorize transactions and merge them into your monthly tracker. Files are processed in your browser — nothing is uploaded.
           </div>
 
+          <!-- Bank selector -->
+          <div style="margin-bottom:1rem">
+            <label style="display:block;font-size:0.82rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px">Which bank or card?</label>
+            <select id="btImportBank" onchange="btImportOnBankChange()" style="width:100%;padding:0.6rem 0.85rem;font-size:0.95rem;border:1px solid var(--border);border-radius:8px;background:#fff;font-family:DM Sans,sans-serif">
+              <option value="auto">Auto-detect (try this first)</option>
+              <option value="chase">Chase (checking, credit card)</option>
+              <option value="bofa">Bank of America</option>
+              <option value="wells">Wells Fargo</option>
+              <option value="capone">Capital One (credit card or 360)</option>
+              <option value="amex">American Express</option>
+              <option value="citi">Citi</option>
+              <option value="discover">Discover</option>
+              <option value="apple">Apple Card</option>
+              <option value="usaa">USAA</option>
+              <option value="pnc-cc">PNC Credit Card</option>
+              <option value="pnc-chk">PNC Checking</option>
+              <option value="hd">Home Depot Card</option>
+              <option value="lowes">Lowe's Card</option>
+              <option value="other">Don't see my bank — let us know</option>
+            </select>
+          </div>
+
           <!-- Drop zone -->
           <div id="btImportDrop" style="border:2px dashed var(--border);border-radius:10px;padding:2.5rem 1rem;text-align:center;cursor:pointer;background:#fafafa;transition:all 0.15s">
             <div style="font-size:2.5rem;margin-bottom:0.5rem">📂</div>
             <div style="font-weight:600;color:var(--charcoal);margin-bottom:0.25rem">Drop your CSV here, or click to browse</div>
-            <div style="font-size:0.82rem;color:var(--mid);margin-bottom:0.75rem">Supports PNC Checking and PNC Credit Card exports</div>
+            <div style="font-size:0.82rem;color:var(--mid);margin-bottom:0.75rem" id="btImportDropHint">Auto-detection will try common formats</div>
             <input type="file" id="btImportFile" accept=".csv" style="display:none" multiple>
             <button class="btn btn-secondary" onclick="document.getElementById('btImportFile').click()" style="padding:0.5rem 1.25rem">Choose file(s)</button>
+          </div>
+
+          <!-- "Other bank" feedback prompt -->
+          <div id="btImportOtherPrompt" style="display:none;margin-top:1rem;padding:1rem;background:#fff9e6;border:1px solid #f5c14a;border-radius:8px;font-size:0.9rem">
+            <strong>We don't support that bank yet — but we'd like to.</strong>
+            <div style="margin-top:0.5rem;color:var(--charcoal)">Tell us which bank, and we'll add it. Or upload your CSV anyway and we'll do our best to auto-detect.</div>
+            <input type="text" id="btImportOtherBank" placeholder="e.g. Navy Federal, Fidelity, Schwab, Truist..." style="width:100%;margin-top:0.6rem;padding:0.5rem 0.75rem;font-size:0.9rem;border:1px solid var(--border);border-radius:6px;font-family:DM Sans,sans-serif">
+            <button onclick="btImportSubmitOtherBank()" style="margin-top:0.6rem;padding:0.4rem 1rem;font-size:0.82rem;background:#2D4A35;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:DM Sans,sans-serif">Send to MyYolk team</button>
+            <span id="btImportOtherSent" style="display:none;margin-left:0.5rem;color:#2D4A35;font-size:0.85rem">✓ Thanks! We'll add it.</span>
           </div>
 
           <!-- Help link -->
           <details style="margin-top:0.75rem;font-size:0.85rem;color:var(--mid)">
             <summary style="cursor:pointer;font-weight:600">📋 How to download your CSV</summary>
-            <div style="padding:0.75rem 0 0 1rem;line-height:1.6">
-              <div><strong>PNC Checking:</strong> Online Banking → Account Activity → Export → CSV</div>
-              <div><strong>PNC Credit Card:</strong> Transactions tab → Export → CSV</div>
-              <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--mid)">More banks coming soon. Need a different format? Let us know in feedback.</div>
+            <div style="padding:0.75rem 0 0 1rem;line-height:1.7">
+              <div><strong>Chase:</strong> Account → Statements & Activity → Download → CSV</div>
+              <div><strong>Bank of America:</strong> Activity → Download → Comma-Separated Values</div>
+              <div><strong>Wells Fargo:</strong> Account Activity → Download → CSV</div>
+              <div><strong>Capital One:</strong> Transactions → Download → CSV</div>
+              <div><strong>American Express:</strong> Activity → Download → CSV</div>
+              <div><strong>Citi:</strong> Account → Download Activity → CSV</div>
+              <div><strong>Discover:</strong> Account Activity → Download → CSV</div>
+              <div><strong>Apple Card:</strong> Wallet App → Card Balance → Statements → Export Transactions</div>
+              <div><strong>PNC:</strong> Online Banking → Account Activity → Export → CSV</div>
+              <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--mid)">Need a different format? Pick "Don't see my bank" above.</div>
             </div>
           </details>
 
@@ -8472,6 +8510,9 @@ function btImportHandleFiles(files) {
   status.style.display = 'block';
   status.textContent = '⏳ Reading ' + files.length + ' file(s)...';
 
+  var bankSel = document.getElementById('btImportBank');
+  var bankHint = bankSel ? bankSel.value : 'auto';
+
   var allRows = [];
   var pending = files.length;
 
@@ -8480,7 +8521,7 @@ function btImportHandleFiles(files) {
       var reader = new FileReader();
       reader.onload = function(ev) {
         try {
-          var rows = btImportParseCSV(f.name, ev.target.result);
+          var rows = btImportParseCSV(f.name, ev.target.result, bankHint);
           allRows = allRows.concat(rows);
         } catch (err) {
           console.warn('Parse error in ' + f.name + ':', err);
@@ -8497,45 +8538,353 @@ function btImportHandleFiles(files) {
   }
 }
 
-function btImportParseCSV(filename, text) {
-  // Detect format by header signature
-  var firstLine = text.split(/\r?\n/)[0] || '';
+function btImportOnBankChange() {
+  var sel = document.getElementById('btImportBank');
+  var hint = document.getElementById('btImportDropHint');
+  var otherPrompt = document.getElementById('btImportOtherPrompt');
+  if (!sel) return;
+  var v = sel.value;
+  var hints = {
+    'auto':     'Auto-detection will try common formats',
+    'chase':    'Chase CSV — date, description, amount columns',
+    'bofa':     'Bank of America CSV — date, description, amount columns',
+    'wells':    'Wells Fargo CSV',
+    'capone':   'Capital One CSV — works for credit card and 360 checking',
+    'amex':     'American Express activity CSV',
+    'citi':     'Citi credit card CSV',
+    'discover': 'Discover credit card CSV',
+    'apple':    'Apple Card transactions CSV from Wallet app',
+    'usaa':     'USAA CSV',
+    'pnc-cc':   'PNC Credit Card export',
+    'pnc-chk':  'PNC Checking export',
+    'hd':       'Home Depot card CSV',
+    'lowes':    "Lowe's card CSV",
+    'other':    "We'll try our best — see message below"
+  };
+  if (hint) hint.textContent = hints[v] || hints['auto'];
+  if (otherPrompt) otherPrompt.style.display = v === 'other' ? 'block' : 'none';
+}
+
+async function btImportSubmitOtherBank() {
+  var input = document.getElementById('btImportOtherBank');
+  var sent = document.getElementById('btImportOtherSent');
+  if (!input || !input.value.trim()) return;
+  var bankName = input.value.trim();
+  // Save to Supabase as feedback (we'll harvest this for prioritization)
+  try {
+    if (typeof _sb !== 'undefined' && _sbUser) {
+      await _sb.from('user_data').upsert({
+        user_id: _sbUser.id,
+        data: Object.assign({}, collectAllData(), { __bankRequest: bankName + ' (' + new Date().toISOString() + ')' }),
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'user_id' });
+    }
+  } catch(e) { console.warn('feedback save failed', e); }
+  if (sent) { sent.style.display = 'inline'; setTimeout(function(){ sent.style.display='none'; input.value=''; }, 3000); }
+}
+
+function btImportParseCSV(filename, text, bankHint) {
+  // bankHint can be: auto, chase, bofa, wells, capone, amex, citi, discover, apple, usaa, pnc-cc, pnc-chk, hd, lowes, other
+  bankHint = bankHint || 'auto';
+  var lines = text.split(/\r?\n/);
+  var firstLine = lines[0] || '';
   var rows = [];
 
-  // PNC Credit Card: "Date","Description","Amount" (positive = charge)
-  if (/^"?date"?,"?description"?,"?amount"?/i.test(firstLine)) {
-    var lines = text.split(/\r?\n/).slice(1);
-    for (var i = 0; i < lines.length; i++) {
+  // ───────── HELPERS ─────────
+  function parseAmt(s) {
+    if (!s) return NaN;
+    s = String(s).replace(/[\$,\s"]/g,'').replace(/[()]/g,'-');  // (123.45) → -123.45
+    return parseFloat(s);
+  }
+  function splitCSVLine(line) {
+    // Simple CSV splitter that handles quoted fields with commas
+    var result = []; var cur = ''; var inQ = false;
+    for (var i = 0; i < line.length; i++) {
+      var c = line[i];
+      if (c === '"') { inQ = !inQ; continue; }
+      if (c === ',' && !inQ) { result.push(cur); cur = ''; continue; }
+      cur += c;
+    }
+    result.push(cur);
+    return result.map(function(s) { return s.trim(); });
+  }
+
+  // ───────── FORMAT-SPECIFIC PARSERS ─────────
+
+  // Chase: "Transaction Date","Post Date","Description","Category","Type","Amount","Memo"
+  // Negative = charge
+  function parseChase() {
+    var hdr = splitCSVLine(firstLine).map(function(h){return h.toLowerCase();});
+    var iDate = hdr.indexOf('transaction date'); if (iDate<0) iDate = hdr.indexOf('date');
+    var iDesc = hdr.indexOf('description');
+    var iAmt = hdr.indexOf('amount');
+    if (iDate<0||iDesc<0||iAmt<0) return [];
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      var amt = parseAmt(f[iAmt]);
+      if (isNaN(amt) || amt >= 0) continue;  // skip credits
+      out.push({ date: btImportNormalizeDate(f[iDate]), desc: f[iDesc], amount: Math.abs(amt), source: 'Chase ' + filename });
+    }
+    return out;
+  }
+
+  // Bank of America: Date, Description, Amount, Running Bal
+  function parseBofA() {
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      if (f.length < 3) continue;
+      var amt = parseAmt(f[2]);
+      if (isNaN(amt) || amt >= 0) continue;
+      out.push({ date: btImportNormalizeDate(f[0]), desc: f[1], amount: Math.abs(amt), source: 'BofA ' + filename });
+    }
+    return out;
+  }
+
+  // Wells Fargo: Date, Amount (negative=spend), *, *, Description
+  function parseWells() {
+    var out = [];
+    for (var i=0;i<lines.length;i++) {  // Wells often has no header
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      if (f.length < 5) continue;
+      var amt = parseAmt(f[1]);
+      if (isNaN(amt) || amt >= 0) continue;
+      out.push({ date: btImportNormalizeDate(f[0]), desc: f[4], amount: Math.abs(amt), source: 'Wells ' + filename });
+    }
+    return out;
+  }
+
+  // Capital One: "Transaction Date","Posted Date","Card No.","Description","Category","Debit","Credit"
+  function parseCapOne() {
+    var hdr = splitCSVLine(firstLine).map(function(h){return h.toLowerCase();});
+    var iDate = hdr.indexOf('transaction date'); if (iDate<0) iDate = hdr.indexOf('date');
+    var iDesc = hdr.indexOf('description');
+    var iDebit = hdr.indexOf('debit');
+    var iCredit = hdr.indexOf('credit');
+    var iAmt = hdr.indexOf('amount');
+    if (iDate<0||iDesc<0) return [];
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      var amt;
+      if (iDebit>=0 && f[iDebit]) amt = parseAmt(f[iDebit]);
+      else if (iAmt>=0) { amt = parseAmt(f[iAmt]); if (amt < 0) continue; }
+      else continue;
+      if (isNaN(amt) || amt <= 0) continue;
+      out.push({ date: btImportNormalizeDate(f[iDate]), desc: f[iDesc], amount: amt, source: 'Cap One ' + filename });
+    }
+    return out;
+  }
+
+  // American Express: Date, Description, Amount (positive=charge)
+  function parseAmex() {
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      if (f.length < 3) continue;
+      var amt = parseAmt(f[2]);
+      if (isNaN(amt) || amt <= 0) continue;
+      out.push({ date: btImportNormalizeDate(f[0]), desc: f[1], amount: amt, source: 'Amex ' + filename });
+    }
+    return out;
+  }
+
+  // Citi: Status, Date, Description, Debit, Credit, Member Name
+  function parseCiti() {
+    var hdr = splitCSVLine(firstLine).map(function(h){return h.toLowerCase();});
+    var iDate = hdr.indexOf('date');
+    var iDesc = hdr.indexOf('description');
+    var iDebit = hdr.indexOf('debit');
+    if (iDate<0||iDesc<0||iDebit<0) return [];
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      var amt = parseAmt(f[iDebit]);
+      if (isNaN(amt) || amt <= 0) continue;
+      out.push({ date: btImportNormalizeDate(f[iDate]), desc: f[iDesc], amount: amt, source: 'Citi ' + filename });
+    }
+    return out;
+  }
+
+  // Discover: Trans. Date, Post Date, Description, Amount, Category
+  function parseDiscover() {
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      if (f.length < 4) continue;
+      var amt = parseAmt(f[3]);
+      if (isNaN(amt) || amt <= 0) continue;
+      out.push({ date: btImportNormalizeDate(f[0]), desc: f[2], amount: amt, source: 'Discover ' + filename });
+    }
+    return out;
+  }
+
+  // Apple Card: Transaction Date, Clearing Date, Description, Merchant, Category, Type, Amount (USD), Purchased By
+  function parseApple() {
+    var hdr = splitCSVLine(firstLine).map(function(h){return h.toLowerCase();});
+    var iDate = -1, iDesc = -1, iMerch = -1, iAmt = -1, iType = -1;
+    for (var h=0; h<hdr.length; h++) {
+      if (hdr[h].indexOf('transaction date') >= 0 || (iDate<0 && hdr[h].indexOf('date') >= 0)) iDate = h;
+      if (hdr[h].indexOf('description') >= 0) iDesc = h;
+      if (hdr[h].indexOf('merchant') >= 0) iMerch = h;
+      if (hdr[h].indexOf('amount') >= 0) iAmt = h;
+      if (hdr[h] === 'type') iType = h;
+    }
+    if (iDate<0||iAmt<0) return [];
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      if (iType>=0 && /payment/i.test(f[iType] || '')) continue;
+      var amt = parseAmt(f[iAmt]);
+      if (isNaN(amt) || amt <= 0) continue;
+      var d = (iMerch>=0 && f[iMerch]) ? f[iMerch] : (iDesc>=0 ? f[iDesc] : '');
+      out.push({ date: btImportNormalizeDate(f[iDate]), desc: d, amount: amt, source: 'Apple Card ' + filename });
+    }
+    return out;
+  }
+
+  // USAA: Date, Description, Original Description, Category, Amount, Status
+  function parseUSAA() {
+    var hdr = splitCSVLine(firstLine).map(function(h){return h.toLowerCase();});
+    var iDate = hdr.indexOf('date');
+    var iDesc = hdr.indexOf('description');
+    var iAmt = hdr.indexOf('amount');
+    if (iDate<0||iDesc<0||iAmt<0) return [];
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      var amt = parseAmt(f[iAmt]);
+      if (isNaN(amt) || amt >= 0) continue;
+      out.push({ date: btImportNormalizeDate(f[iDate]), desc: f[iDesc], amount: Math.abs(amt), source: 'USAA ' + filename });
+    }
+    return out;
+  }
+
+  // PNC CC: "Date","Description","Amount" — positive = charge
+  function parsePNCCC() {
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
       var line = lines[i].trim();
       if (!line) continue;
       var m = line.match(/^"?([\d\/\-]+)"?,"(.+?)","?\$?(-?[\d,\.]+)"?$/);
       if (!m) continue;
-      var amt = parseFloat(m[3].replace(/,/g,''));
-      if (isNaN(amt) || amt <= 0) continue;  // skip credits/payments on CC
-      rows.push({ date: btImportNormalizeDate(m[1]), desc: m[2].trim(), amount: amt, source: 'PNC CC ' + filename });
+      var amt = parseAmt(m[3]);
+      if (isNaN(amt) || amt <= 0) continue;
+      out.push({ date: btImportNormalizeDate(m[1]), desc: m[2].trim(), amount: amt, source: 'PNC CC ' + filename });
     }
-    return rows;
+    return out;
   }
 
-  // PNC Checking: "Date","Description","Amount" with sign — detect by leading "- $" or "+ $"
-  if (/account activity|checking|date.*description.*amount/i.test(firstLine) || /^"?\d{4}-\d{2}-\d{2}"?,/.test(text.split(/\r?\n/)[1] || '')) {
-    var lines2 = text.split(/\r?\n/).slice(1);
-    for (var j = 0; j < lines2.length; j++) {
-      var line2 = lines2[j].trim();
-      if (!line2) continue;
-      var m2 = line2.match(/^"?([\d\/\-]+)"?,"(.+?)","?[+\-]?\s*\$?(-?[\d,\.]+)"?$/);
-      if (!m2) continue;
-      var amt2 = parseFloat(m2[3].replace(/,/g,''));
-      if (isNaN(amt2)) continue;
-      // Negative sign means money out; PNC formats as "- $X"
-      var isOutflow = /^"?[\d\/\-]+"?,".+?",\s*"?\s*-/.test(line2) || /^"?[\d\/\-]+"?,".+?","-/.test(line2);
-      if (!isOutflow) continue;  // skip incoming
-      rows.push({ date: btImportNormalizeDate(m2[1]), desc: m2[2].trim(), amount: Math.abs(amt2), source: 'PNC Checking ' + filename });
+  // PNC Checking: "Date","Description","- $X.XX" or "+ $X.XX"
+  function parsePNCChk() {
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      var line = lines[i].trim();
+      if (!line) continue;
+      var isOutflow = /^"?[\d\/\-]+"?,".+?",\s*"?\s*-/.test(line);
+      if (!isOutflow) continue;
+      var m = line.match(/^"?([\d\/\-]+)"?,"(.+?)","?[+\-]?\s*\$?(-?[\d,\.]+)"?$/);
+      if (!m) continue;
+      var amt = parseAmt(m[3]);
+      if (isNaN(amt)) continue;
+      out.push({ date: btImportNormalizeDate(m[1]), desc: m[2].trim(), amount: Math.abs(amt), source: 'PNC Chk ' + filename });
     }
-    return rows;
+    return out;
   }
 
-  return rows;
+  // Home Depot / Lowes — usually similar format to PNC CC
+  function parseHDLowes(brand) {
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      var line = lines[i].trim();
+      if (!line) continue;
+      var f = splitCSVLine(line);
+      if (f.length < 3) continue;
+      // Find amount column (usually last numeric)
+      for (var j=f.length-1; j>=2; j--) {
+        var amt = parseAmt(f[j]);
+        if (!isNaN(amt) && amt > 0) {
+          out.push({ date: btImportNormalizeDate(f[0]), desc: f[1] || f[2], amount: amt, source: brand + ' ' + filename });
+          break;
+        }
+      }
+    }
+    return out;
+  }
+
+  // Generic fallback — try to detect date, description, amount columns
+  function parseGeneric() {
+    var hdr = splitCSVLine(firstLine).map(function(h){return h.toLowerCase();});
+    var iDate = -1, iDesc = -1, iAmt = -1, iDebit = -1;
+    for (var h=0; h<hdr.length; h++) {
+      if (iDate<0 && /date/.test(hdr[h])) iDate = h;
+      if (iDesc<0 && /description|merchant|payee/.test(hdr[h])) iDesc = h;
+      if (iAmt<0 && hdr[h] === 'amount') iAmt = h;
+      if (iDebit<0 && /debit|withdrawal/.test(hdr[h])) iDebit = h;
+    }
+    if (iDate<0 || iDesc<0 || (iAmt<0 && iDebit<0)) return [];
+    var out = [];
+    for (var i=1;i<lines.length;i++) {
+      if (!lines[i]) continue;
+      var f = splitCSVLine(lines[i]);
+      var amt;
+      if (iDebit>=0 && f[iDebit]) amt = parseAmt(f[iDebit]);
+      else amt = parseAmt(f[iAmt]);
+      if (isNaN(amt) || amt === 0) continue;
+      // Try both positive and negative conventions
+      amt = Math.abs(amt);
+      out.push({ date: btImportNormalizeDate(f[iDate]), desc: f[iDesc], amount: amt, source: 'Generic ' + filename });
+    }
+    return out;
+  }
+
+  // ───────── DISPATCH ─────────
+  var parsers = {
+    'chase': parseChase, 'bofa': parseBofA, 'wells': parseWells,
+    'capone': parseCapOne, 'amex': parseAmex, 'citi': parseCiti,
+    'discover': parseDiscover, 'apple': parseApple, 'usaa': parseUSAA,
+    'pnc-cc': parsePNCCC, 'pnc-chk': parsePNCChk,
+    'hd': function(){return parseHDLowes('Home Depot');},
+    'lowes': function(){return parseHDLowes("Lowe's");},
+    'other': parseGeneric
+  };
+
+  if (bankHint && bankHint !== 'auto' && parsers[bankHint]) {
+    return parsers[bankHint]();
+  }
+
+  // Auto-detect: try by header signature
+  var fl = firstLine.toLowerCase();
+  if (/transaction date.*post date.*description.*category.*type.*amount/.test(fl)) return parseChase();
+  if (/^"?date"?,"?description"?,"?amount"?$/i.test(firstLine.replace(/"/g,'"'))) {
+    // Could be PNC CC or Amex — disambiguate by date format
+    // PNC uses MM/DD/YYYY, Amex same. Try PNC first since negatives ≥0 would skip.
+    var r = parsePNCCC();
+    if (r.length) return r;
+    return parseAmex();
+  }
+  if (/transaction date.*posted date.*card no.*description.*category.*debit.*credit/.test(fl)) return parseCapOne();
+  if (/transaction date.*clearing date/.test(fl)) return parseApple();
+  if (/^"?\d{4}-\d{2}-\d{2}"?,/.test(lines[1] || '')) {
+    // Looks like ISO date — likely PNC Checking
+    return parsePNCChk();
+  }
+  if (/account activity|checking/i.test(fl)) return parsePNCChk();
+  if (/status.*date.*description.*debit.*credit/.test(fl)) return parseCiti();
+  if (/trans.* date.*post date.*description.*amount.*category/.test(fl)) return parseDiscover();
+
+  // Last resort
+  return parseGeneric();
 }
 
 function btImportNormalizeDate(s) {
