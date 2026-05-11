@@ -2213,12 +2213,11 @@
 
       <div class="card" id="salaryCard">
         <div class="card-title"><span class="dot"></span> 💼 <span id="yourIncomeLabel">Your Income</span></div>
-        <div class="upload-zone" id="uploadZone" style="opacity:0.6;cursor:default;pointer-events:none;margin-bottom:1.25rem">
-          <input type="file" accept=".pdf,image/*" disabled>
-          <div class="upload-icon">🔧</div>
-          <div class="upload-title">Pay Stub Upload</div>
-          <div class="upload-sub" style="color:#C8860A;font-weight:600">Coming Soon</div>
-          <div style="font-size:0.78rem;color:var(--mid);margin-top:0.4rem">Upload a recent pay stub and we'll auto-fill the fields below</div>
+        <div class="upload-zone" id="uploadZone" style="margin-bottom:1.25rem">
+          <input type="file" id="payStubFile" accept=".pdf,image/*" onchange="handlePayStubUpload(event, false)">
+          <div class="upload-icon">📄</div>
+          <div class="upload-title">Upload Pay Stub</div>
+          <div class="upload-sub">Click or drop a PDF or image — we'll auto-fill the fields below</div>
         </div>
         <div class="upload-result" id="uploadResult">
           <div style="font-size:1.5rem">✅</div>
@@ -2379,12 +2378,11 @@
       <div id="spouseIncomeCard" style="display:none">
         <div class="card">
           <div class="card-title"><span class="dot"></span> 👫 <span id="spouseIncomeTitle">Spouse / Partner Income</span></div>
-          <div class="upload-zone" id="spouseUploadZone" style="opacity:0.6;cursor:default;pointer-events:none;margin-bottom:1.25rem">
-            <input type="file" id="spousePayStubFile" accept=".pdf,image/*" style="display:none" disabled>
-            <div class="upload-icon">🔧</div>
-            <div class="upload-title">Spouse Pay Stub Upload</div>
-            <div class="upload-sub" style="color:#C8860A;font-weight:600">Coming Soon</div>
-            <div style="font-size:0.78rem;color:var(--mid);margin-top:0.4rem">Upload spouse's pay stub and we'll auto-fill the fields below</div>
+          <div class="upload-zone" id="spouseUploadZone" style="margin-bottom:1.25rem">
+            <input type="file" id="spousePayStubFile" accept=".pdf,image/*" onchange="handlePayStubUpload(event, true)">
+            <div class="upload-icon">📄</div>
+            <div class="upload-title">Upload Spouse Pay Stub</div>
+            <div class="upload-sub">Click or drop a PDF or image — we'll auto-fill the fields below</div>
           </div>
           <div id="spouseUploadStatus" style="margin-bottom:0.75rem;font-size:0.82rem;color:var(--sage)"></div>
           <div class="form-grid">
@@ -10692,6 +10690,158 @@ var _sbUser = null;
 var _pageLoadedClean = false; // only true if no JS errors on load
 var _cloudLoaded = false;    // only true after cloudLoad completes
 var _authMode = 'signin';
+
+// ── PAY STUB UPLOAD (Anthropic-powered OCR) ──
+async function handlePayStubUpload(event, isSpouse) {
+  var file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  var zoneId = isSpouse ? 'spouseUploadZone' : 'uploadZone';
+  var resultId = isSpouse ? 'spouseUploadStatus' : 'uploadResult';
+  var loadingId = isSpouse ? 'spouseUploadLoading' : 'uploadLoading';
+
+  var zone = document.getElementById(zoneId);
+  var resultEl = document.getElementById(resultId);
+  var loadingEl = document.getElementById(loadingId);
+
+  // Reset prior state
+  if (resultEl) { resultEl.classList.remove('show'); resultEl.style.display='none'; resultEl.textContent=''; }
+  if (loadingEl) loadingEl.style.display = 'block';
+  if (zone) zone.style.opacity = '0.6';
+
+  // Size guard - 10 MB max
+  if (file.size > 10 * 1024 * 1024) {
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (zone) zone.style.opacity = '1';
+    alert('File is too large. Please upload a pay stub under 10 MB.');
+    event.target.value = '';
+    return;
+  }
+
+  try {
+    // Read file as base64
+    var base64 = await new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function() {
+        var dataUrl = reader.result;
+        var commaIdx = dataUrl.indexOf(',');
+        resolve(dataUrl.substring(commaIdx + 1));
+      };
+      reader.onerror = function() { reject(new Error('Could not read file')); };
+      reader.readAsDataURL(file);
+    });
+
+    var mediaType = file.type || (file.name.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'image/jpeg');
+
+    var res = await fetch(SUPABASE_URL + '/functions/v1/parse-paystub', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'apikey': SUPABASE_KEY
+      },
+      body: JSON.stringify({ fileData: base64, mediaType: mediaType })
+    });
+
+    var json = await res.json();
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (zone) zone.style.opacity = '1';
+
+    if (!res.ok || !json.success) {
+      var msg = (json && (json.error || json.message)) || 'Could not read pay stub';
+      if (resultEl) {
+        resultEl.style.display = 'block';
+        resultEl.style.background = '#fce8e8';
+        resultEl.style.border = '1.5px solid #c44';
+        resultEl.style.color = '#722';
+        resultEl.style.padding = '0.75rem 1rem';
+        resultEl.style.borderRadius = '8px';
+        resultEl.style.marginTop = '0.5rem';
+        resultEl.style.fontSize = '0.88rem';
+        resultEl.innerHTML = '⚠️ ' + msg + '. Please fill the fields manually below.';
+      }
+      event.target.value = '';
+      return;
+    }
+
+    var data = json.data || {};
+    var filled = [];
+
+    var salaryFieldId = isSpouse ? 'spouseSalary' : 'salary';
+    var freqFieldId = isSpouse ? 'spousePayFreq' : 'payFreq';
+    var typeFieldId = isSpouse ? 'spouseIncomeType' : 'incomeType';
+
+    function setField(id, value) {
+      var el = document.getElementById(id);
+      if (!el) return false;
+      el.value = value;
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+      return true;
+    }
+
+    if (data.annualBaseSalary && data.annualBaseSalary > 0) {
+      if (setField(salaryFieldId, Math.round(data.annualBaseSalary))) {
+        filled.push('Annual salary: $' + Math.round(data.annualBaseSalary).toLocaleString());
+      }
+    }
+    if (data.payFrequency) {
+      if (setField(freqFieldId, data.payFrequency)) {
+        var freqLabel = { weekly:'Weekly', biweekly:'Biweekly', semimonthly:'Semi-monthly', monthly:'Monthly' }[data.payFrequency] || data.payFrequency;
+        filled.push('Pay frequency: ' + freqLabel);
+      }
+    }
+    if (data.employmentType) {
+      setField(typeFieldId, data.employmentType);
+    }
+
+    if (resultEl) {
+      resultEl.style.display = 'block';
+      resultEl.style.background = 'var(--sage-pale, #E8F0E5)';
+      resultEl.style.border = '1.5px solid var(--sage, #4A7C59)';
+      resultEl.style.color = 'var(--forest, #2D4A35)';
+      resultEl.style.padding = '0.75rem 1rem';
+      resultEl.style.borderRadius = '8px';
+      resultEl.style.marginTop = '0.5rem';
+      resultEl.style.fontSize = '0.88rem';
+      resultEl.style.lineHeight = '1.5';
+
+      var employerLine = data.employerName ? 'Read pay stub from <strong>' + data.employerName + '</strong>. ' : 'Read your pay stub. ';
+      var fillLine = filled.length
+        ? 'Filled in: ' + filled.join(', ') + '.'
+        : 'No fields could be confidently extracted — please review and fill below.';
+      var confidenceLine = data.confidence === 'low'
+        ? '<div style="margin-top:0.4rem;color:#A04000;font-size:0.82rem">⚠️ Low confidence — please double-check.</div>'
+        : '';
+      var noteLine = data.notes
+        ? '<div style="margin-top:0.4rem;color:var(--mid,#666);font-size:0.8rem;font-style:italic">' + data.notes + '</div>'
+        : '';
+
+      resultEl.innerHTML = '✅ ' + employerLine + fillLine + confidenceLine + noteLine;
+    }
+
+    if (typeof recalc === 'function') recalc();
+    if (typeof saveToLocal === 'function') saveToLocal();
+    event.target.value = '';
+
+  } catch (err) {
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (zone) zone.style.opacity = '1';
+    if (resultEl) {
+      resultEl.style.display = 'block';
+      resultEl.style.background = '#fce8e8';
+      resultEl.style.border = '1.5px solid #c44';
+      resultEl.style.color = '#722';
+      resultEl.style.padding = '0.75rem 1rem';
+      resultEl.style.borderRadius = '8px';
+      resultEl.style.marginTop = '0.5rem';
+      resultEl.style.fontSize = '0.88rem';
+      resultEl.innerHTML = '⚠️ Something went wrong reading the pay stub. Please fill the fields manually below.';
+    }
+    console.error('Pay stub upload error:', err);
+    event.target.value = '';
+  }
+}
 
 async function submitNewPassword() {
   var pw = document.getElementById('newPassword')?.value;
