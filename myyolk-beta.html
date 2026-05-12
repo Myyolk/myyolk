@@ -10795,6 +10795,39 @@ async function handlePayStubUpload(event, isSpouse) {
       setField(typeFieldId, data.employmentType);
     }
 
+    // Retirement contribution % — route by account type detected on the pay stub.
+    if (data.retirementPercent != null && data.retirementPercent > 0 && data.retirementAccountType) {
+      var pct = Math.round(data.retirementPercent);
+      var rType = data.retirementAccountType;
+      var retirementFieldId = null;
+      var retirementLabel = '';
+
+      if (rType === '401k') {
+        retirementFieldId = isSpouse ? 'spouseContrib401k' : 'contrib401k';
+        retirementLabel = '401(k)';
+      } else if (rType === 'roth401k') {
+        retirementFieldId = isSpouse ? 'spouseContribRoth401' : 'contribRoth401';
+        retirementLabel = 'Roth 401(k)';
+      } else if (rType === '403b') {
+        retirementFieldId = isSpouse ? 'spouseContrib403b' : 'contrib403b';
+        retirementLabel = '403(b)';
+      } else if (rType === 'roth403b') {
+        // No dedicated Roth 403(b) field — route to 403(b) percent and note it.
+        retirementFieldId = isSpouse ? 'spouseContrib403b' : 'contrib403b';
+        retirementLabel = 'Roth 403(b)';
+      } else if (rType === '457b') {
+        // No 457(b) field exists — note only, don't fill.
+        retirementFieldId = null;
+        retirementLabel = '457(b)';
+      }
+
+      if (retirementFieldId && setField(retirementFieldId, pct)) {
+        filled.push(retirementLabel + ' contribution: ' + pct + '%');
+      } else if (retirementLabel === '457(b)') {
+        filled.push('Detected 457(b) at ' + pct + '% (no field to fill — note only)');
+      }
+    }
+
     if (resultEl) {
       resultEl.style.display = 'block';
       resultEl.style.background = 'var(--sage-pale, #E8F0E5)';
