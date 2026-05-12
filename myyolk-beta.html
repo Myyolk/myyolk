@@ -10858,7 +10858,18 @@ async function handlePayStubUpload(event, isSpouse) {
         ? '<div style="margin-top:0.4rem;color:var(--mid,#666);font-size:0.8rem;font-style:italic">' + data.notes + '</div>'
         : '';
 
-      resultEl.innerHTML = '✅ ' + employerLine + fillLine + accountsLinkLine + confidenceLine + noteLine;
+      // Wrap message content with a relative-positioned container and a × close button.
+      var closeBtnHtml = '<button type="button" aria-label="Dismiss" onclick="(function(el){var box=el.closest(\'.upload-result, [data-paystub-result]\')||el.parentElement;if(box){box.style.display=\'none\';box.classList.remove(\'show\');}})(this)" style="position:absolute;top:0.4rem;right:0.5rem;background:transparent;border:none;font-size:1.2rem;line-height:1;cursor:pointer;color:inherit;opacity:0.6;padding:0 0.25rem;font-family:inherit">×</button>';
+      resultEl.setAttribute('data-paystub-result', '1');
+      resultEl.style.position = 'relative';
+      resultEl.style.paddingRight = '2rem';
+      resultEl.innerHTML = closeBtnHtml + '✅ ' + employerLine + fillLine + accountsLinkLine + confidenceLine + noteLine;
+
+      // Auto-dismiss after 2 minutes.
+      if (window.__paystubDismissTimer) clearTimeout(window.__paystubDismissTimer);
+      window.__paystubDismissTimer = setTimeout(function() {
+        if (resultEl) { resultEl.style.display = 'none'; resultEl.classList.remove('show'); }
+      }, 120000);
     }
 
     if (typeof recalc === 'function') recalc();
