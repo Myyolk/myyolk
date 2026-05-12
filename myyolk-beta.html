@@ -4966,11 +4966,6 @@ async function handleSSUpload(event) {
       }
     }
 
-    // Switch the SS card into manual-entry view so the user can see the filled values
-    if (typeof switchSSMethod === 'function') {
-      try { switchSSMethod('manual'); } catch (e) {}
-    }
-
     var ownerLine = data.ownerName ? 'Read SSA statement for <strong>' + data.ownerName + '</strong>. ' : 'Read your SSA statement. ';
     var fillLine = filled.length
       ? 'Filled in: ' + filled.join(', ') + '.'
