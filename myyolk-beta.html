@@ -2782,11 +2782,18 @@
           <button id="ssBtn-estimate" onclick="switchSSMethod('estimate')" class="ss-tab-btn">Estimate for Me</button>
         </div>
         <div id="ss-method-upload" style="display:none">
-          <div class="upload-zone" id="ssUploadZone" style="padding:1.5rem;opacity:0.6;cursor:default;pointer-events:none">
-            <input type="file" accept=".pdf,image/*" onchange="handleSSUpload(event)">
+          <div class="upload-zone" id="ssUploadZone" style="padding:1.5rem">
+            <input type="file" id="ssStatementFile" accept=".pdf,image/*" onchange="handleSSUpload(event)">
             <div style="font-size:2rem;margin-bottom:0.5rem">🏛️</div>
             <div style="font-size:0.95rem;font-weight:600">Drop your SSA Statement PDF here</div>
-            <div style="font-size:0.82rem;color:var(--mid)">We will read your benefit amounts automatically</div>
+            <div style="font-size:0.82rem;color:var(--mid)">We'll read your benefit amounts at 62, FRA, and 70 automatically</div>
+            <div id="ssUploadStatus" style="margin-top:0.6rem;font-size:0.85rem"></div>
+            <div id="ssUploadLoading" style="display:none;margin-top:0.6rem">
+              <div style="display:inline-flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--sage,#4A7C59)">
+                <div class="spinner" style="width:16px;height:16px;border:2px solid rgba(74,124,89,0.3);border-top-color:var(--sage,#4A7C59);border-radius:50%;animation:spin 0.8s linear infinite"></div>
+                <span>Reading your SSA statement…</span>
+              </div>
+            </div>
           </div>
         </div>
         <div id="ss-method-manual" style="display:none">
@@ -4853,53 +4860,142 @@ function clearSS() {
   recalc();
 }
 
-function handleSSUpload(event) {
-  var file = event.target.files[0];
+async function handleSSUpload(event) {
+  var file = event.target.files && event.target.files[0];
   if (!file) return;
+
   var statusEl = document.getElementById('ssUploadStatus');
   var loadingEl = document.getElementById('ssUploadLoading');
+  var zone = document.getElementById('ssUploadZone');
+
+  if (statusEl) { statusEl.innerHTML = ''; statusEl.style.display = 'none'; }
   if (loadingEl) loadingEl.style.display = 'block';
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var base64 = e.target.result.split(',')[1];
-    var mediaType = file.type || 'application/pdf';
-    fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{
-          role: 'user',
-          content: [{
-            type: 'document',
-            source: { type: 'base64', media_type: mediaType, data: base64 }
-          }, {
-            type: 'text',
-            text: 'Extract SS benefit estimates from this Social Security statement. Return ONLY valid JSON: {"at62": number, "at67": number, "at70": number}'
-          }]
-        }]
-      })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      var text = (data.content||[]).map(function(c){return c.text||'';}).join('');
-      var clean = text.replace(/```json|```/g,'').trim();
-      var parsed = JSON.parse(clean);
-      if (parsed.at62) { var el = document.getElementById('ss62'); if(el) el.value = parsed.at62; }
-      if (parsed.at67) { var el = document.getElementById('ss67'); if(el) el.value = parsed.at67; }
-      if (parsed.at70) { var el = document.getElementById('ss70'); if(el) el.value = parsed.at70; }
-      if (loadingEl) loadingEl.style.display = 'none';
-      if (statusEl) statusEl.textContent = '✅ SS statement read successfully!';
-      updateSummaryRow();
-      ssManualUpdate();
-    })
-    .catch(function() {
-      if (loadingEl) loadingEl.style.display = 'none';
-      if (statusEl) statusEl.textContent = '⚠️ Could not read statement — please enter manually';
+  if (zone) zone.style.opacity = '0.7';
+
+  // 10 MB size guard
+  if (file.size > 10 * 1024 * 1024) {
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (zone) zone.style.opacity = '1';
+    alert('File is too large. Please upload an SSA statement under 10 MB.');
+    event.target.value = '';
+    return;
+  }
+
+  function showStatus(html, isError) {
+    if (!statusEl) return;
+    statusEl.style.display = 'block';
+    statusEl.style.position = 'relative';
+    statusEl.style.background = isError ? '#fce8e8' : 'var(--sage-pale, #E8F0E5)';
+    statusEl.style.border = isError ? '1.5px solid #c44' : '1.5px solid var(--sage, #4A7C59)';
+    statusEl.style.color = isError ? '#722' : 'var(--forest, #2D4A35)';
+    statusEl.style.padding = '0.75rem 2rem 0.75rem 1rem';
+    statusEl.style.borderRadius = '8px';
+    statusEl.style.marginTop = '0.5rem';
+    statusEl.style.fontSize = '0.88rem';
+    statusEl.style.lineHeight = '1.5';
+    statusEl.style.textAlign = 'left';
+    var closeBtnHtml = '<button type="button" aria-label="Dismiss" onclick="(function(el){var box=el.closest(\'#ssUploadStatus\')||el.parentElement;if(box){box.style.display=\'none\';}})(this)" style="position:absolute;top:0.4rem;right:0.5rem;background:transparent;border:none;font-size:1.2rem;line-height:1;cursor:pointer;color:inherit;opacity:0.6;padding:0 0.25rem;font-family:inherit">×</button>';
+    statusEl.innerHTML = closeBtnHtml + html;
+    if (window.__ssDismissTimer) clearTimeout(window.__ssDismissTimer);
+    window.__ssDismissTimer = setTimeout(function() {
+      if (statusEl) statusEl.style.display = 'none';
+    }, 120000);
+  }
+
+  try {
+    var base64 = await new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function() {
+        var dataUrl = reader.result;
+        var commaIdx = dataUrl.indexOf(',');
+        resolve(dataUrl.substring(commaIdx + 1));
+      };
+      reader.onerror = function() { reject(new Error('Could not read file')); };
+      reader.readAsDataURL(file);
     });
-  };
-  reader.readAsDataURL(file);
+
+    var mediaType = file.type || (file.name.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'image/jpeg');
+
+    var res = await fetch(SUPABASE_URL + '/functions/v1/parse-ssa', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'apikey': SUPABASE_KEY
+      },
+      body: JSON.stringify({ fileData: base64, mediaType: mediaType })
+    });
+
+    var json = await res.json();
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (zone) zone.style.opacity = '1';
+
+    if (!res.ok || !json.success) {
+      var msg = (json && (json.error || json.message)) || 'Could not read SSA statement';
+      showStatus('⚠️ ' + msg + '. Please enter your benefits manually.', true);
+      event.target.value = '';
+      return;
+    }
+
+    var data = json.data || {};
+    var filled = [];
+
+    function setField(id, value) {
+      var el = document.getElementById(id);
+      if (!el) return false;
+      el.value = value;
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+      return true;
+    }
+
+    if (data.at62 && data.at62 > 0) {
+      if (setField('ss62', Math.round(data.at62))) {
+        filled.push('Age 62: $' + Math.round(data.at62).toLocaleString() + '/mo');
+      }
+    }
+    if (data.atFRA && data.atFRA > 0) {
+      if (setField('ss67', Math.round(data.atFRA))) {
+        var fraLabel = data.fraAge ? ('FRA (' + data.fraAge + ')') : 'FRA';
+        filled.push(fraLabel + ': $' + Math.round(data.atFRA).toLocaleString() + '/mo');
+      }
+    }
+    if (data.at70 && data.at70 > 0) {
+      if (setField('ss70', Math.round(data.at70))) {
+        filled.push('Age 70: $' + Math.round(data.at70).toLocaleString() + '/mo');
+      }
+    }
+
+    // Switch the SS card into manual-entry view so the user can see the filled values
+    if (typeof switchSSMethod === 'function') {
+      try { switchSSMethod('manual'); } catch (e) {}
+    }
+
+    var ownerLine = data.ownerName ? 'Read SSA statement for <strong>' + data.ownerName + '</strong>. ' : 'Read your SSA statement. ';
+    var fillLine = filled.length
+      ? 'Filled in: ' + filled.join(', ') + '.'
+      : 'No benefit estimates could be confidently extracted — please enter manually.';
+    var confidenceLine = data.confidence === 'low'
+      ? '<div style="margin-top:0.4rem;color:#A04000;font-size:0.82rem">⚠️ Low confidence — please double-check the values.</div>'
+      : '';
+    var noteLine = data.notes
+      ? '<div style="margin-top:0.4rem;color:var(--mid,#666);font-size:0.8rem;font-style:italic">' + data.notes + '</div>'
+      : '';
+
+    showStatus('✅ ' + ownerLine + fillLine + confidenceLine + noteLine, false);
+
+    if (typeof updateSummaryRow === 'function') updateSummaryRow();
+    if (typeof ssManualUpdate === 'function') ssManualUpdate();
+    if (typeof saveToLocal === 'function') saveToLocal();
+    event.target.value = '';
+
+  } catch (err) {
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (zone) zone.style.opacity = '1';
+    showStatus('⚠️ Something went wrong reading your SSA statement. Please enter manually.', true);
+    console.error('SSA upload error:', err);
+    event.target.value = '';
+  }
 }
 
 
