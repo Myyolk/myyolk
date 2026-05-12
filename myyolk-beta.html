@@ -4951,6 +4951,16 @@ async function handleSSUpload(event) {
     }
 
     var data = json.data || {};
+
+    // Name-match check before filling any fields
+    var expectedFirst = document.getElementById('firstName')?.value;
+    var expectedLast = document.getElementById('lastName')?.value;
+    if (!paystubNameCheck(data.ownerName, expectedFirst, expectedLast, 'SSA statement')) {
+      showStatus('⚠️ Upload cancelled — SSA statement name didn\'t match. Try a different file.', true);
+      event.target.value = '';
+      return;
+    }
+
     var filled = [];
 
     function setField(id, value) {
@@ -5311,6 +5321,16 @@ async function handleDSSUpload(event) {
     }
 
     var data = json.data || {};
+
+    // Name-match check before filling any fields
+    var expectedFirst = document.getElementById('spouseFirstName')?.value;
+    var expectedLast = document.getElementById('spouseLastName')?.value;
+    if (!paystubNameCheck(data.ownerName, expectedFirst, expectedLast, 'SSA statement')) {
+      showStatus('⚠️ Upload cancelled — SSA statement name didn\'t match. Try a different file.', true);
+      event.target.value = '';
+      return;
+    }
+
     var filled = [];
 
     function setField(id, value) {
@@ -10914,6 +10934,39 @@ var _pageLoadedClean = false; // only true if no JS errors on load
 var _cloudLoaded = false;    // only true after cloudLoad completes
 var _authMode = 'signin';
 
+// ── NAME-MATCH HELPER for pay stub / SSA uploads ──
+// Returns true if user confirms, false if cancelled. Skips check if names missing.
+function paystubNameCheck(detectedName, expectedFirstName, expectedLastName, docType) {
+  if (!detectedName) return true; // No name on document — skip check
+  var expectedFirst = (expectedFirstName || '').trim();
+  var expectedLast = (expectedLastName || '').trim();
+  if (!expectedFirst && !expectedLast) return true; // No name in profile — skip check
+
+  // Normalize: uppercase, strip punctuation, split on whitespace
+  function normalize(s) {
+    return (s || '').toUpperCase().replace(/[.,]/g, '').split(/\s+/).filter(Boolean);
+  }
+  var detTokens = normalize(detectedName);
+  var expTokens = normalize(expectedFirst + ' ' + expectedLast);
+
+  // Match if detected name contains ALL expected tokens (allows for middle names, initials, etc.)
+  // OR if expected name contains all detected tokens.
+  function allTokensFound(needle, haystack) {
+    for (var i = 0; i < needle.length; i++) {
+      if (needle[i].length < 2) continue; // skip initials
+      if (haystack.indexOf(needle[i]) === -1) return false;
+    }
+    return true;
+  }
+  var match = allTokensFound(expTokens, detTokens) || allTokensFound(detTokens, expTokens);
+  if (match) return true;
+
+  // Names don't match — ask user
+  var expectedDisplay = (expectedFirst + ' ' + expectedLast).trim();
+  var msg = 'This ' + docType + ' appears to be for ' + detectedName + ', but you\'re uploading to ' + expectedDisplay + '\'s section.\n\nContinue anyway?';
+  return window.confirm(msg);
+}
+
 // ── PAY STUB UPLOAD (Anthropic-powered OCR) ──
 async function handlePayStubUpload(event, isSpouse) {
   var file = event.target.files && event.target.files[0];
@@ -10988,6 +11041,31 @@ async function handlePayStubUpload(event, isSpouse) {
     }
 
     var data = json.data || {};
+
+    // Name-match check before filling any fields
+    var expectedFirst = isSpouse
+      ? document.getElementById('spouseFirstName')?.value
+      : document.getElementById('firstName')?.value;
+    var expectedLast = isSpouse
+      ? document.getElementById('spouseLastName')?.value
+      : document.getElementById('lastName')?.value;
+    if (!paystubNameCheck(data.employeeName, expectedFirst, expectedLast, 'pay stub')) {
+      // User cancelled — abort fill
+      if (resultEl) {
+        resultEl.style.display = 'block';
+        resultEl.style.background = '#fff4e0';
+        resultEl.style.border = '1.5px solid #C8860A';
+        resultEl.style.color = '#7A4F00';
+        resultEl.style.padding = '0.75rem 1rem';
+        resultEl.style.borderRadius = '8px';
+        resultEl.style.marginTop = '0.5rem';
+        resultEl.style.fontSize = '0.88rem';
+        resultEl.innerHTML = '⚠️ Upload cancelled — pay stub name didn\'t match. Try a different file.';
+      }
+      event.target.value = '';
+      return;
+    }
+
     var filled = [];
 
     var salaryFieldId = isSpouse ? 'spouseSalary' : 'salary';
