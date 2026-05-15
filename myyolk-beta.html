@@ -10530,7 +10530,54 @@ function btCloseDrill() {
 // ── PRO / PAYWALL SYSTEM ──
 // ══════════════════════════════════════════
 
-var IS_PRO = false; // Default: unpaid. Set true once Stripe webhook flips it.
+var IS_PRO = false; // Default: unpaid. Flipped true by checkProAccess() if user is admin or has valid pro_until.
+
+// ── ADMIN ALLOWLIST ──
+// These email addresses are always Pro. Used for founder, family, beta testers.
+// To add someone: edit this array, push to GitHub. No backend change needed.
+var ADMIN_EMAILS = [
+  'dean.p.sheppard@gmail.com',
+  'myyolkapp@gmail.com',
+  'qatest@myyolk.com',
+  'densies@gmail.com',
+  'brookeabby@icloud.com',
+  'jamiefaithsheppard@gmail.com',
+  // 'bill@example.com',  // Add Bill's email when you have it
+];
+
+// Re-check whether the current user should have Pro access.
+// Called after sign-in and after cloudLoad. Sets IS_PRO and re-locks tabs.
+function checkProAccess() {
+  var wasPro = IS_PRO;
+  var nowPro = false;
+
+  // Layer 1: Admin allowlist
+  if (_sbUser && _sbUser.email) {
+    var emailLc = String(_sbUser.email).trim().toLowerCase();
+    var adminLc = ADMIN_EMAILS.map(function(e) { return String(e).trim().toLowerCase(); });
+    if (adminLc.indexOf(emailLc) !== -1) {
+      nowPro = true;
+    }
+  }
+
+  // Layer 2: pro_until date (set by Stripe webhook in future, or manually for rewards)
+  // Read it from window.__proUntil which is populated by cloudLoad.
+  if (!nowPro && window.__proUntil) {
+    try {
+      var until = new Date(window.__proUntil);
+      if (until.getTime() > Date.now()) nowPro = true;
+    } catch(e) {}
+  }
+
+  IS_PRO = nowPro;
+
+  // If state changed, re-run gating logic
+  if (wasPro !== nowPro) {
+    if (typeof setProMode === 'function') setProMode(nowPro);
+    if (typeof lockProTabInputs === 'function') lockProTabInputs();
+  }
+  return nowPro;
+}
 // Sync toggle on load
 document.addEventListener('DOMContentLoaded', function() {
   var chk = document.querySelector('input[type=checkbox][id*=pro], input[type=checkbox][id*=Pro]');
@@ -11750,6 +11797,7 @@ function initSupabase() {
       return;
     }
     _sbUser = session ? session.user : null;
+    if (typeof checkProAccess === 'function') checkProAccess();
     updateAuthUI();
     if(_sbUser) {
       cloudLoad();
@@ -11768,6 +11816,7 @@ function initSupabase() {
   _sb.auth.getSession().then(function(r) {
     if(r.data && r.data.session) {
       _sbUser = r.data.session.user;
+      if (typeof checkProAccess === 'function') checkProAccess();
       updateAuthUI();
     } else {
       // No active session — clear any stale local data so app shows blank
@@ -11911,6 +11960,8 @@ async function signOut() {
   if(!_sb) return;
   await _sb.auth.signOut();
   _sbUser = null;
+  window.__proUntil = null;
+  if (typeof checkProAccess === 'function') checkProAccess();
   // Clear local data on sign out — data is safe in Supabase cloud
   localStorage.removeItem(SAVE_KEY);
   localStorage.removeItem('myyolk_device');
@@ -11955,11 +12006,16 @@ async function cloudSave() {
 async function cloudLoad() {
   if(!_sb || !_sbUser) return;
   try {
-    var result = await _sb.from('user_data').select('data').eq('user_id', _sbUser.id).limit(1).maybeSingle();
-    if(result.data && result.data.data) {
-      var stored = JSON.stringify(result.data.data);
-      localStorage.setItem(SAVE_KEY, stored);
-      loadFromLocal();
+    var result = await _sb.from('user_data').select('data, pro_until').eq('user_id', _sbUser.id).limit(1).maybeSingle();
+    if(result.data) {
+      if (result.data.data) {
+        var stored = JSON.stringify(result.data.data);
+        localStorage.setItem(SAVE_KEY, stored);
+        loadFromLocal();
+      }
+      // Surface pro_until to the access checker
+      window.__proUntil = result.data.pro_until || null;
+      if (typeof checkProAccess === 'function') checkProAccess();
     }
   } catch(e) {}
   // Mark cloud load as complete — safe to auto-save now
