@@ -10707,13 +10707,108 @@ function lockProTabInputs() {
   });
 }
 
-// Open the upgrade modal — placeholder until Stripe is wired
-function openUpgradeFlow(plan) {
-  // For now just show the paywall modal; later this will call Stripe Checkout.
-  var modal = document.getElementById('paywallModal');
-  var nameEl = document.getElementById('paywallFeatureName');
-  if (nameEl) nameEl.textContent = (plan === 'monthly') ? 'Monthly Pro ($12.99/mo)' : 'Annual Pro ($99/yr)';
-  if (modal) modal.classList.add('show');
+// Real Stripe Checkout flow.
+// plan: 'annual' (=$99/yr) or 'monthly' (=$12.99/mo)
+async function openUpgradeFlow(plan) {
+  if (!plan) plan = 'annual';
+
+  // Require sign-in. If not signed in, prompt to sign up first.
+  if (typeof _sbUser === 'undefined' || !_sbUser) {
+    alert('Please sign up or sign in first — then you can upgrade to Pro.');
+    if (typeof toggleAuthModalToSignup === 'function') {
+      toggleAuthModalToSignup();
+    } else if (typeof toggleAuthModal === 'function') {
+      toggleAuthModal();
+    }
+    return;
+  }
+
+  // Optimistic UI: temporarily disable any Upgrade buttons to prevent double-clicks
+  var allUpgradeButtons = document.querySelectorAll('.pro-upgrade-btn-primary, .pro-upgrade-btn-secondary');
+  allUpgradeButtons.forEach(function(b) { b.disabled = true; b.style.opacity = '0.6'; });
+
+  try {
+    var resp = await fetch(SUPABASE_URL + '/functions/v1/stripe-checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'apikey': SUPABASE_KEY
+      },
+      body: JSON.stringify({
+        plan: plan,
+        userId: _sbUser.id,
+        email: _sbUser.email
+      })
+    });
+
+    var json = await resp.json();
+    if (!resp.ok || !json.url) {
+      console.error('Stripe checkout error:', json);
+      alert('Sorry, we could not start checkout. Please try again in a moment.');
+      allUpgradeButtons.forEach(function(b) { b.disabled = false; b.style.opacity = ''; });
+      return;
+    }
+
+    // Redirect the browser to Stripe Checkout
+    window.location.href = json.url;
+  } catch (err) {
+    console.error('openUpgradeFlow error:', err);
+    alert('Sorry, we could not connect to checkout. Please try again.');
+    allUpgradeButtons.forEach(function(b) { b.disabled = false; b.style.opacity = ''; });
+  }
+}
+
+// Handle the post-checkout return URL (?upgrade=success or ?upgrade=cancelled).
+// Stripe's success URL points back to MyYolk with these query params.
+function handleStripeReturn() {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var upgrade = params.get('upgrade');
+    if (!upgrade) return;
+
+    // Strip the query params from the URL bar (cleaner UX, also prevents repeat on refresh)
+    var cleanUrl = window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
+
+    if (upgrade === 'success') {
+      // Show a friendly success toast / banner
+      var bar = document.createElement('div');
+      bar.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#2D4A35;color:#fff;text-align:center;padding:14px 1rem;font-family:DM Sans,sans-serif;font-size:0.95rem;z-index:99999;box-shadow:0 2px 8px rgba(0,0,0,0.2)';
+      bar.innerHTML = '🎉 <strong>Welcome to MyYolk Pro!</strong> Your subscription is active. Pro features are unlocking now… <a href="#" onclick="this.parentElement.remove();return false;" style="color:#F5A623;margin-left:1rem;text-decoration:underline">Dismiss</a>';
+      document.body.appendChild(bar);
+      // Poll cloudLoad so pro_until lands and we can flip IS_PRO
+      var attempts = 0;
+      var poll = setInterval(function() {
+        attempts++;
+        if (typeof cloudLoad === 'function') cloudLoad();
+        if (typeof checkProAccess === 'function') checkProAccess();
+        if (typeof IS_PRO !== 'undefined' && IS_PRO) {
+          clearInterval(poll);
+          if (typeof lockProTabInputs === 'function') lockProTabInputs();
+        } else if (attempts > 10) {
+          clearInterval(poll);
+        }
+      }, 1500);
+      // Auto-dismiss after 30 seconds
+      setTimeout(function() { if (bar && bar.parentElement) bar.remove(); }, 30000);
+    } else if (upgrade === 'cancelled') {
+      var bar = document.createElement('div');
+      bar.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#7a5400;color:#fff;text-align:center;padding:14px 1rem;font-family:DM Sans,sans-serif;font-size:0.9rem;z-index:99999';
+      bar.innerHTML = 'No worries — upgrade was cancelled. You can try again anytime. <a href="#" onclick="this.parentElement.remove();return false;" style="color:#F5A623;margin-left:1rem;text-decoration:underline">Dismiss</a>';
+      document.body.appendChild(bar);
+      setTimeout(function() { if (bar && bar.parentElement) bar.remove(); }, 10000);
+    }
+  } catch (err) {
+    console.error('handleStripeReturn error:', err);
+  }
+}
+
+// Run on page load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', handleStripeReturn);
+} else {
+  setTimeout(handleStripeReturn, 100);
 }
 
 function closePaywall() {
