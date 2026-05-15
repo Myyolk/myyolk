@@ -1074,6 +1074,119 @@
     .mobile-pdf-btn { display: block !important; width: 100%; margin: 1rem 0 2rem 0; padding: 0.9rem; background: var(--forest); color: #fff; border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 600; font-family: DM Sans,sans-serif; cursor: pointer; text-align: center; }
   }
 
+  /* ── PRO PREVIEW CARDS (only shown to non-Pro users) ── */
+  .pro-preview-card {
+    display: none;
+    background: linear-gradient(180deg, #fefcf6 0%, #fff8e8 100%);
+    border: 1.5px solid #e0c279;
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    margin: 0 0 1.5rem 0;
+    position: relative;
+  }
+  .pro-preview-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    border-radius: 14px;
+  }
+  .pro-preview-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #7a5400;
+    letter-spacing: 0.3px;
+    margin-bottom: 0.85rem;
+    text-transform: uppercase;
+  }
+  .pro-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.85rem;
+    margin-bottom: 1rem;
+  }
+  .pro-preview-stat {
+    background: #fff;
+    border: 1px solid #efe2c0;
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem;
+  }
+  .pro-preview-stat-label {
+    font-size: 0.72rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 0.25rem;
+  }
+  .pro-preview-stat-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.45rem;
+    color: #2D4A35;
+    line-height: 1.1;
+  }
+  .pro-preview-stat-sub {
+    font-size: 0.74rem;
+    color: #888;
+    margin-top: 0.2rem;
+  }
+  .pro-preview-scenario {
+    background: #fff;
+    border: 1px solid #efe2c0;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  .pro-preview-scenario-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #2D4A35;
+    margin-bottom: 0.75rem;
+  }
+  .pro-preview-bar-track {
+    display: flex;
+    height: 28px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 0.75rem;
+  }
+  .pro-preview-bar {
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0 0.75rem;
+    display: flex;
+    align-items: center;
+  }
+  .pro-bar-base { background: #4A7C59; }
+  .pro-bar-add  { background: #C8860A; }
+  .pro-preview-row-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+    margin-bottom: 0.85rem;
+  }
+  .pro-preview-row {
+    display: grid;
+    grid-template-columns: 1.5fr 0.8fr 1fr;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    background: #fff;
+    border: 1px solid #efe2c0;
+    border-radius: 8px;
+    padding: 0.45rem 0.75rem;
+    align-items: center;
+  }
+  .pro-preview-mid { color: #555; font-weight: 600; }
+  .pro-preview-footnote {
+    font-size: 0.78rem;
+    color: #7a5400;
+    font-style: italic;
+    margin-top: 0.5rem;
+  }
+  .pro-good { color: #2D4A35; font-weight: 600; }
+  .pro-warn { color: #A04000; font-weight: 600; }
+  .pro-neutral { color: #4a4a4a; }
+
   .pro-upgrade-banner {
     display: none;
     background: linear-gradient(135deg, #fff8e8 0%, #faedd1 100%);
@@ -3372,6 +3485,60 @@
           <div class="pro-upgrade-banner-title">🔒 This is a Pro feature</div>
           <div class="pro-upgrade-banner-sub">Have a look around — but to actually use Budget Tracker you'll need Pro. Cancel anytime, 30-day money-back.</div>
         </div>
+      <div class="pro-preview-card">
+        <div class="pro-preview-label">✨ Pro Preview — Budget Tracker shows you:</div>
+        <div class="pro-preview-grid">
+          <div class="pro-preview-stat">
+            <div class="pro-preview-stat-label">April 2026 spending</div>
+            <div class="pro-preview-stat-value">$5,847</div>
+            <div class="pro-preview-stat-sub pro-good">$113 under budget</div>
+          </div>
+          <div class="pro-preview-stat">
+            <div class="pro-preview-stat-label">3-month average</div>
+            <div class="pro-preview-stat-value">$5,912</div>
+            <div class="pro-preview-stat-sub">vs $5,960 target</div>
+          </div>
+          <div class="pro-preview-stat">
+            <div class="pro-preview-stat-label">Top category drift</div>
+            <div class="pro-preview-stat-value">Dining</div>
+            <div class="pro-preview-stat-sub pro-warn">+$87 vs avg</div>
+          </div>
+        </div>
+        <div class="pro-preview-row-grid">
+          <div class="pro-preview-row">
+            <span>🛒 Groceries</span>
+            <span class="pro-preview-mid">$1,212</span>
+            <span class="pro-good">on track</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>⛽ Gas</span>
+            <span class="pro-preview-mid">$487</span>
+            <span class="pro-good">-$13</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>🍴 Dining</span>
+            <span class="pro-preview-mid">$287</span>
+            <span class="pro-warn">+$87 over</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>🏠 Utilities</span>
+            <span class="pro-preview-mid">$352</span>
+            <span class="pro-good">on track</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>🚗 Auto Insurance</span>
+            <span class="pro-preview-mid">$478</span>
+            <span class="pro-good">on track</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>📱 Subscriptions</span>
+            <span class="pro-preview-mid">$237</span>
+            <span class="pro-warn">+$23 over</span>
+          </div>
+        </div>
+        <div class="pro-preview-footnote">+ CSV import from 14 banks. Auto-categorization. Trend tracking month over month.</div>
+      </div>
+
         <div class="pro-upgrade-banner-actions">
           <button class="pro-upgrade-btn-primary" onclick="openUpgradeFlow('annual')">Upgrade — $99/yr</button>
           <button class="pro-upgrade-btn-secondary" onclick="openUpgradeFlow('monthly')">or $12.99/mo</button>
@@ -3385,7 +3552,7 @@
       <div class="bt-pills">
         <button class="bt-pill active" onclick="btShowPanel('checkin')" id="btPill-checkin">✏️ Monthly Check-In</button>
         <button class="bt-pill" onclick="btShowPanel('history')" id="btPill-history">📈 Spending History</button>
-        <button class="bt-pill" onclick="btShowPanel('import')" id="btPill-import">📥 Import Statements <span style="display:inline-block;margin-left:4px;padding:1px 6px;font-size:0.65rem;background:#2D4A35;color:#fff;border-radius:8px;letter-spacing:0.5px">PRO</span></button>
+        <button class="bt-pill" onclick="btShowPanel('import')" id="btPill-import">📥 Import Statements</button>
       </div>
 
       <!-- ── CHECK-IN PANEL ── -->
@@ -3857,6 +4024,35 @@
           <div class="pro-upgrade-banner-title">🔒 This is a Pro feature</div>
           <div class="pro-upgrade-banner-sub">Have a look around — but to actually use What-If Scenarios you'll need Pro. Cancel anytime, 30-day money-back.</div>
         </div>
+      <div class="pro-preview-card">
+        <div class="pro-preview-label">✨ Pro Preview — What-If Scenarios shows you:</div>
+        <div class="pro-preview-scenario">
+          <div class="pro-preview-scenario-title">Scenario: Work 2 more years (retire at 64 instead of 62)</div>
+          <div class="pro-preview-grid">
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">Current plan</div>
+              <div class="pro-preview-stat-value pro-neutral">$847K</div>
+              <div class="pro-preview-stat-sub">at age 62</div>
+            </div>
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">With scenario</div>
+              <div class="pro-preview-stat-value pro-good">$1.12M</div>
+              <div class="pro-preview-stat-sub">at age 64</div>
+            </div>
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">Net difference</div>
+              <div class="pro-preview-stat-value pro-good">+$273K</div>
+              <div class="pro-preview-stat-sub">over lifetime</div>
+            </div>
+          </div>
+          <div class="pro-preview-bar-track">
+            <div class="pro-preview-bar pro-bar-base" style="width:76%">$847K base</div>
+            <div class="pro-preview-bar pro-bar-add" style="width:24%">+$273K</div>
+          </div>
+        </div>
+        <div class="pro-preview-footnote">Plus: Life Events modeling (weddings, inheritances, medical costs), Quick Scenarios, side-by-side comparison.</div>
+      </div>
+
         <div class="pro-upgrade-banner-actions">
           <button class="pro-upgrade-btn-primary" onclick="openUpgradeFlow('annual')">Upgrade — $99/yr</button>
           <button class="pro-upgrade-btn-secondary" onclick="openUpgradeFlow('monthly')">or $12.99/mo</button>
@@ -4006,6 +4202,53 @@
           <div class="pro-upgrade-banner-title">🔒 This is a Pro feature</div>
           <div class="pro-upgrade-banner-sub">Have a look around — but to actually use Early Retirement planning you'll need Pro. Cancel anytime, 30-day money-back.</div>
         </div>
+      <div class="pro-preview-card">
+        <div class="pro-preview-label">✨ Pro Preview — Early Retirement analysis shows you:</div>
+        <div class="pro-preview-scenario">
+          <div class="pro-preview-scenario-title">Can you retire at 58 instead of 62?</div>
+          <div class="pro-preview-grid">
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">Need at age 58</div>
+              <div class="pro-preview-stat-value">$1.48M</div>
+              <div class="pro-preview-stat-sub">to bridge to SS</div>
+            </div>
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">Projected at 58</div>
+              <div class="pro-preview-stat-value pro-warn">$1.21M</div>
+              <div class="pro-preview-stat-sub">on current path</div>
+            </div>
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">Gap to close</div>
+              <div class="pro-preview-stat-value pro-warn">$270K</div>
+              <div class="pro-preview-stat-sub">need +$2,420/mo</div>
+            </div>
+          </div>
+        </div>
+        <div class="pro-preview-row-grid">
+          <div class="pro-preview-row">
+            <span>🏥 Health insurance (pre-65)</span>
+            <span class="pro-preview-mid">$1,840/mo</span>
+            <span class="pro-warn">ACA marketplace</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>💰 Safe withdrawal rate</span>
+            <span class="pro-preview-mid">3.5%</span>
+            <span class="pro-good">for 30+ years</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>📊 Bridge years (58–62)</span>
+            <span class="pro-preview-mid">$148K total</span>
+            <span class="pro-good">from taxable acct</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>🎯 Recommended action</span>
+            <span class="pro-preview-mid">Max 401(k)</span>
+            <span class="pro-good">+$1,920/mo</span>
+          </div>
+        </div>
+        <div class="pro-preview-footnote">Plus: FIRE number calc, sequence-of-returns analysis, pre-65 healthcare cost modeling.</div>
+      </div>
+
         <div class="pro-upgrade-banner-actions">
           <button class="pro-upgrade-btn-primary" onclick="openUpgradeFlow('annual')">Upgrade — $99/yr</button>
           <button class="pro-upgrade-btn-secondary" onclick="openUpgradeFlow('monthly')">or $12.99/mo</button>
@@ -4214,6 +4457,58 @@
           <div class="pro-upgrade-banner-title">🔒 This is a Pro feature</div>
           <div class="pro-upgrade-banner-sub">Have a look around — but to actually use Summary & PDF Export you'll need Pro. Cancel anytime, 30-day money-back.</div>
         </div>
+      <div class="pro-preview-card">
+        <div class="pro-preview-label">✨ Pro Preview — Summary shows you the full picture:</div>
+        <div class="pro-preview-scenario">
+          <div class="pro-preview-scenario-title">Your retirement plan at a glance</div>
+          <div class="pro-preview-grid">
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">Retirement age</div>
+              <div class="pro-preview-stat-value pro-neutral">62</div>
+              <div class="pro-preview-stat-sub">In 6 years</div>
+            </div>
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">Projected nest egg</div>
+              <div class="pro-preview-stat-value pro-good">$1.34M</div>
+              <div class="pro-preview-stat-sub">investments at 62</div>
+            </div>
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">Monthly retirement income</div>
+              <div class="pro-preview-stat-value pro-good">$8,420</div>
+              <div class="pro-preview-stat-sub">covers your $6,400 budget</div>
+            </div>
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">Readiness score</div>
+              <div class="pro-preview-stat-value pro-good">88%</div>
+              <div class="pro-preview-stat-sub">On track</div>
+            </div>
+          </div>
+        </div>
+        <div class="pro-preview-row-grid">
+          <div class="pro-preview-row">
+            <span>📈 Investment growth (next 6 yr)</span>
+            <span class="pro-preview-mid">+$487K</span>
+            <span class="pro-good">7% avg return</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>🏛️ Social Security claiming</span>
+            <span class="pro-preview-mid">Age 67</span>
+            <span class="pro-good">$3,715/mo</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>🎲 Monte Carlo confidence</span>
+            <span class="pro-preview-mid">94%</span>
+            <span class="pro-good">money lasts</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>💡 Top action item</span>
+            <span class="pro-preview-mid">Roth conversion</span>
+            <span class="pro-good">save $42K tax</span>
+          </div>
+        </div>
+        <div class="pro-preview-footnote">Plus: Full PDF export, action items, year-by-year projections, downloadable plan.</div>
+      </div>
+
         <div class="pro-upgrade-banner-actions">
           <button class="pro-upgrade-btn-primary" onclick="openUpgradeFlow('annual')">Upgrade — $99/yr</button>
           <button class="pro-upgrade-btn-secondary" onclick="openUpgradeFlow('monthly')">or $12.99/mo</button>
@@ -10336,10 +10631,14 @@ function lockProTabInputs() {
     // Show / hide the upgrade banner inside the tab
     var banner = panel.querySelector('.pro-upgrade-banner');
     if (banner) banner.style.display = IS_PRO ? 'none' : 'flex';
+    // Show / hide the Pro preview demo card
+    var preview = panel.querySelector('.pro-preview-card');
+    if (preview) preview.style.display = IS_PRO ? 'none' : 'block';
     // Disable all inputs (but keep the banner button + close X usable)
     var inputs = panel.querySelectorAll('input, select, textarea, button');
     inputs.forEach(function(el) {
       if (el.closest && el.closest('.pro-upgrade-banner')) return;  // skip banner buttons
+      if (el.closest && el.closest('.pro-preview-card')) return;     // skip preview content
       if (IS_PRO) {
         el.disabled = false;
         el.style.pointerEvents = '';
