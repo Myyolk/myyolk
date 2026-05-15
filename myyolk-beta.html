@@ -1594,10 +1594,6 @@
     <span id="authUserDisplay" style="font-size:0.75rem;color:#fff;opacity:0.85;display:none"></span>
     <div id="signInBubble" style="position:relative;display:inline-block">
       <button id="authBtn" onclick="toggleAuthModal()" style="font-size:0.8rem;font-weight:600;background:none;border:1.5px solid rgba(255,255,255,0.6);border-radius:8px;padding:5px 14px;cursor:pointer;color:#fff;font-family:DM Sans,sans-serif">Sign In</button>
-      <div id="signInTooltip" style="display:none;position:absolute;top:calc(100% + 8px);right:0;background:#C8860A;color:#fff;font-family:DM Sans,sans-serif;font-size:0.72rem;white-space:nowrap;padding:7px 12px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.3);z-index:999;line-height:1.4;cursor:pointer;border:2px solid rgba(255,255,255,0.25)" onclick="toggleAuthModal()">
-        💾 Want your data on all your devices?<br><span style="color:#F5A623;font-weight:600">Create a free account →</span>
-        <div style="position:absolute;top:-5px;right:14px;width:10px;height:10px;background:#2D4A35;transform:rotate(45deg)"></div>
-      </div>
     </div>
   </div>
 </header>
@@ -1619,7 +1615,6 @@
   setTimeout(setHdr, 600);
 })();
 </script>
-<div id="testerBanner" style="background:#2D4A35;color:#fff;text-align:center;padding:8px 1rem;font-family:sans-serif;font-size:0.78rem;width:100%;box-sizing:border-box;position:fixed;top:var(--header-h,80px);z-index:98;left:0;right:0">&#x1F9EA; <strong>Tester Mode</strong> - All Pro features unlocked. After launch some features require Pro subscription. <a href="#" onclick="document.getElementById('testerBanner').style.display='none';return false;" style="color:#F0A500;margin-left:1rem">Dismiss x</a></div>
 
 
 <!-- WELCOME MODAL -->
@@ -1661,7 +1656,7 @@
     <button class="paywall-close" onclick="closePaywall()">×</button>
     <div class="paywall-egg">🔒</div>
     <div class="paywall-title">MyYolk Pro</div>
-    <div class="paywall-subtitle">This is a Pro feature — free during the testing period. After launch, Pro is $14.99/month or $99/year.</div>
+    <div class="paywall-subtitle">This is a Pro feature. Upgrade to Pro for $12.99/month or $99/year.</div>
     <div class="paywall-feature-name" id="paywallFeatureName">Pro Feature</div>
     <div class="paywall-perks">
       <div class="paywall-perk">Budget Tracker — monthly check-in &amp; history</div>
@@ -1842,6 +1837,26 @@
   <main>
 
     <!-- ══ PROFILE TAB ══ -->
+    <!-- Soft signup gate banner (signed-out users with starter data) -->
+    <div id="signupGateBanner" style="display:none;background:linear-gradient(135deg,#fff8e8 0%,#faedd1 100%);border:2px solid #C8860A;border-radius:14px;padding:1rem 1.25rem;margin:0 0 1.25rem 0;position:relative">
+      <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+        <div style="flex:1;min-width:220px">
+          <div style="font-size:1rem;font-weight:700;color:#2D4A35;margin-bottom:0.35rem">✨ Nice start, <span id="sgb-firstname">there</span>!</div>
+          <div style="font-size:0.88rem;color:#3a3a36;line-height:1.45">
+            At age <strong><span id="sgb-retage">65</span></strong>, you're on track for about
+            <strong style="color:#2D4A35;font-size:1.05rem"><span id="sgb-projection">$—</span></strong> in investments.
+            <div style="margin-top:0.35rem;color:#5a5a52;font-size:0.85rem">
+              That's just the starting estimate. Add your 401(k), Social Security, and what-if scenarios to see your full plan — and we'll save it so you can come back anytime.
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;min-width:160px">
+          <button onclick="toggleAuthModalToSignup()" style="background:#2D4A35;color:#fff;border:none;border-radius:10px;padding:0.7rem 1.1rem;font-family:DM Sans,sans-serif;font-size:0.92rem;font-weight:700;cursor:pointer">Sign up free — 30 sec</button>
+          <button onclick="dismissSignupGate()" style="background:transparent;color:#7a5400;border:none;font-family:DM Sans,sans-serif;font-size:0.78rem;cursor:pointer;text-decoration:underline">Keep exploring without saving</button>
+        </div>
+      </div>
+    </div>
+
     <div class="tab-panel active" id="tab-profile">
       <h1 class="page-title" id="profileGreeting">Let's get to know you</h1>
       <p class="page-subtitle" id="profileSub">A few basics to build your MyYolk retirement plan.</p>
@@ -3293,7 +3308,6 @@
 
     <!-- ══ TRACKING TAB ══ -->
     <div class="tab-panel" id="tab-tracking">
-      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($14.99/mo or $99/yr).</div>
       
       <h1 class="page-title">Budget Tracker</h1>
       <p class="page-subtitle">Log what you actually spent each month and watch your patterns over time.</p>
@@ -3768,7 +3782,6 @@
     </div>
 
     <div class="tab-panel" id="tab-whatif">
-      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($14.99/mo or $99/yr).</div>
       
       <h1 class="page-title">What-If Scenarios</h1>
       <p class="page-subtitle">See how small changes today create big differences at retirement.</p>
@@ -3907,7 +3920,6 @@
     </div>
 
     <div class="tab-panel" id="tab-early">
-      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($14.99/mo or $99/yr).</div>
       
       <h1 class="page-title">Early Retirement & Layoff</h1>
       <p class="page-subtitle">What if income stopped earlier than planned? Model the impact.</p>
@@ -4105,7 +4117,6 @@
     <!-- ===== END EMPLOYER DEMO TAB ===== -->
 
     <div class="tab-panel" id="tab-summary">
-      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($14.99/mo or $99/yr).</div>
       
       <h1 class="page-title">Your MyYolk Summary</h1>
       <p class="page-subtitle">Your complete financial snapshot - net worth, retirement readiness, and key milestones.</p>
@@ -6988,10 +6999,10 @@ function calcReadiness() {
 
 // ── PDF EXPORT ──
 function generatePDF() {
-  // Show free during testing toast
+  // Show Pro feature pricing toast
   var toast = document.createElement('div');
   toast.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#2D4A35;color:#fff;padding:1.25rem 2rem;border-radius:12px;font-size:0.95rem;z-index:99999;font-family:DM Sans,sans-serif;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.3);max-width:400px;line-height:1.5';
-  toast.innerHTML = '🧪 Pro feature — free during testing. After launch $14.99/mo or $99/yr.';
+  toast.innerHTML = '✨ Pro feature — $12.99/mo or $99/yr.';
   document.body.appendChild(toast);
   setTimeout(function(){ toast.remove(); }, 4000);
   if(typeof window.jspdf === 'undefined' && typeof jsPDF === 'undefined') {
@@ -7514,6 +7525,63 @@ function captureSnapshotIfDue() {
     console.warn('[snapshot] unexpected error', e);
   }
 }
+
+// ── SOFT SIGNUP GATE ──
+// Appears once user fills firstName + dob + retAge + salary, AND is signed out.
+// User can dismiss it; choice remembered in localStorage for the session.
+
+function _sgGateDismissed() {
+  try { return sessionStorage.getItem('myyolk_signup_gate_dismissed') === '1'; } catch(e) { return false; }
+}
+function dismissSignupGate() {
+  try { sessionStorage.setItem('myyolk_signup_gate_dismissed', '1'); } catch(e) {}
+  var el = document.getElementById('signupGateBanner');
+  if (el) el.style.display = 'none';
+}
+function toggleAuthModalToSignup() {
+  // Switch the auth modal into signup mode and open it.
+  if (typeof switchAuthTab === 'function') {
+    try { switchAuthTab('signup'); } catch(e) {}
+  }
+  if (typeof toggleAuthModal === 'function') {
+    toggleAuthModal();
+  }
+}
+
+function maybeShowSignupGate() {
+  var el = document.getElementById('signupGateBanner');
+  if (!el) return;
+  // Hide if signed in
+  if (typeof _sbUser !== 'undefined' && _sbUser) { el.style.display = 'none'; return; }
+  // Hide if dismissed
+  if (_sgGateDismissed()) { el.style.display = 'none'; return; }
+  // Show only when the 4 key fields are filled
+  var firstName = (document.getElementById('firstName')?.value || '').trim();
+  var dob = (document.getElementById('dob')?.value || '').trim();
+  var retAge = parseInt(document.getElementById('retAge')?.value || '', 10);
+  var salary = parseFloat((document.getElementById('salary')?.value || '').replace(/[$,]/g,''));
+  var ready = firstName.length >= 1 && dob.length > 0 && retAge >= 40 && retAge <= 99 && salary > 0;
+  if (!ready) { el.style.display = 'none'; return; }
+  // Populate banner data
+  var fnEl = document.getElementById('sgb-firstname');
+  if (fnEl) fnEl.textContent = firstName;
+  var raEl = document.getElementById('sgb-retage');
+  if (raEl) raEl.textContent = String(retAge);
+  // Pull projection from the sidebar Live Snapshot if available
+  var projText = document.getElementById('sb-at-ret')?.textContent || '$—';
+  var projEl = document.getElementById('sgb-projection');
+  if (projEl) projEl.textContent = projText;
+  el.style.display = 'block';
+}
+
+// Trigger checks whenever inputs change or recalc fires.
+document.addEventListener('input', function(e) {
+  if (!e.target) return;
+  var id = e.target.id;
+  if (id === 'firstName' || id === 'dob' || id === 'retAge' || id === 'salary') {
+    maybeShowSignupGate();
+  }
+}, true);
 
 function showTab(name) {
   if (name === "summary" && typeof captureSnapshotIfDue === "function") {
@@ -10130,6 +10198,12 @@ function setProMode(isPro) {
   }
   // Update reminder badge/banner
   if (typeof btCheckUnlogged === 'function') btCheckUnlogged();
+  if (typeof maybeShowSignupGate === 'function') {
+    setTimeout(maybeShowSignupGate, 800);
+    if (!window.__sgGateInterval) {
+      window.__sgGateInterval = setInterval(maybeShowSignupGate, 4000);
+    }
+  }
 }
 
 function proGate(feature, label) {
@@ -11264,11 +11338,8 @@ function updateAuthUI() {
     var name = email.split('@')[0];
     if(btn) { btn.textContent = 'Sign Out'; btn.onclick = signOut; }
     if(display) { display.textContent = '👤 ' + name; display.style.display = 'inline'; }
-    var tb = document.getElementById('signInTooltip'); if(tb) tb.style.display = 'none';
-    var tb = document.getElementById('signInTooltip'); if(tb) tb.style.display = 'none';
   } else {
     if(btn) { btn.textContent = 'Sign In'; btn.onclick = toggleAuthModal; }
-    var tb2 = document.getElementById('signInTooltip'); if(tb2) tb2.style.display = 'block';
     if(display) { display.style.display = 'none'; }
   }
 }
