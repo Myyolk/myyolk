@@ -1074,6 +1074,65 @@
     .mobile-pdf-btn { display: block !important; width: 100%; margin: 1rem 0 2rem 0; padding: 0.9rem; background: var(--forest); color: #fff; border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 600; font-family: DM Sans,sans-serif; cursor: pointer; text-align: center; }
   }
 
+  .pro-upgrade-banner {
+    display: none;
+    background: linear-gradient(135deg, #fff8e8 0%, #faedd1 100%);
+    border: 2px solid #C8860A;
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    margin: 0 0 1.25rem 0;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .pro-upgrade-banner-text {
+    flex: 1;
+    min-width: 220px;
+  }
+  .pro-upgrade-banner-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #2D4A35;
+    margin-bottom: 0.3rem;
+  }
+  .pro-upgrade-banner-sub {
+    font-size: 0.86rem;
+    color: #5a5a52;
+    line-height: 1.45;
+  }
+  .pro-upgrade-banner-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: stretch;
+    min-width: 180px;
+  }
+  .pro-upgrade-btn-primary {
+    background: #2D4A35;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 0.7rem 1.1rem;
+    font-family: DM Sans, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .pro-upgrade-btn-primary:hover { background: #1f3528; }
+  .pro-upgrade-btn-secondary {
+    background: transparent;
+    color: #7a5400;
+    border: none;
+    font-family: DM Sans, sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-decoration: underline;
+    text-align: center;
+    padding: 0;
+  }
+  .pro-upgrade-btn-secondary:hover { color: #5a3e00; }
+
   /* ── PRO TOGGLE ── */
   .pro-toggle-wrap {
     display: flex;
@@ -2229,7 +2288,7 @@
       <div class="card" id="salaryCard">
         <div class="card-title"><span class="dot"></span> 💼 <span id="yourIncomeLabel">Your Income</span></div>
         <div class="upload-zone" id="uploadZone" style="margin-bottom:1.25rem">
-          <input type="file" id="payStubFile" accept=".pdf,image/*" onchange="handlePayStubUpload(event, false)">
+          <input type="file" id="payStubFile" accept=".pdf,image/*" onchange="if(!IS_PRO){event.target.value='';openUpgradeFlow('annual');return;}handlePayStubUpload(event, false)">
           <div class="upload-icon">📄</div>
           <div class="upload-title">Upload Pay Stub</div>
           <div class="upload-sub">Click or drop a PDF or image — we'll auto-fill the fields below</div>
@@ -2394,7 +2453,7 @@
         <div class="card">
           <div class="card-title"><span class="dot"></span> 👫 <span id="spouseIncomeTitle">Spouse / Partner Income</span></div>
           <div class="upload-zone" id="spouseUploadZone" style="margin-bottom:1.25rem">
-            <input type="file" id="spousePayStubFile" accept=".pdf,image/*" onchange="handlePayStubUpload(event, true)">
+            <input type="file" id="spousePayStubFile" accept=".pdf,image/*" onchange="if(!IS_PRO){event.target.value='';openUpgradeFlow('annual');return;}handlePayStubUpload(event, true)">
             <div class="upload-icon">📄</div>
             <div class="upload-title">Upload Spouse Pay Stub</div>
             <div class="upload-sub">Click or drop a PDF or image — we'll auto-fill the fields below</div>
@@ -2804,7 +2863,7 @@
         </div>
         <div id="ss-method-upload" style="display:none">
           <div class="upload-zone" id="ssUploadZone" style="padding:1.5rem">
-            <input type="file" id="ssStatementFile" accept=".pdf,image/*" onchange="handleSSUpload(event)">
+            <input type="file" id="ssStatementFile" accept=".pdf,image/*" onchange="if(!IS_PRO){event.target.value='';openUpgradeFlow('annual');return;}handleSSUpload(event)">
             <div style="font-size:2rem;margin-bottom:0.5rem">🏛️</div>
             <div style="font-size:0.95rem;font-weight:600">Drop your SSA Statement PDF here</div>
             <div style="font-size:0.82rem;color:var(--mid)">We'll read your benefit amounts at 62, FRA, and 70 automatically</div>
@@ -2865,7 +2924,7 @@
         </div>
         <div id="dss-method-upload" style="display:none">
           <div class="upload-zone" id="dssUploadZone" style="padding:1.5rem">
-            <input type="file" id="dssStatementFile" accept=".pdf,image/*" onchange="handleDSSUpload(event)">
+            <input type="file" id="dssStatementFile" accept=".pdf,image/*" onchange="if(!IS_PRO){event.target.value='';openUpgradeFlow('annual');return;}handleDSSUpload(event)">
             <div style="font-size:2rem;margin-bottom:0.5rem">🏛️</div>
             <div style="font-size:0.95rem;font-weight:600">Drop their SSA Statement PDF here</div>
             <div style="font-size:0.82rem;color:var(--mid)">We'll read their benefit amounts at 62, FRA, and 70 automatically</div>
@@ -3308,6 +3367,17 @@
 
     <!-- ══ TRACKING TAB ══ -->
     <div class="tab-panel" id="tab-tracking">
+      <div class="pro-upgrade-banner">
+        <div class="pro-upgrade-banner-text">
+          <div class="pro-upgrade-banner-title">🔒 This is a Pro feature</div>
+          <div class="pro-upgrade-banner-sub">Have a look around — but to actually use Budget Tracker you'll need Pro. Cancel anytime, 30-day money-back.</div>
+        </div>
+        <div class="pro-upgrade-banner-actions">
+          <button class="pro-upgrade-btn-primary" onclick="openUpgradeFlow('annual')">Upgrade — $99/yr</button>
+          <button class="pro-upgrade-btn-secondary" onclick="openUpgradeFlow('monthly')">or $12.99/mo</button>
+        </div>
+      </div>
+
       
       <h1 class="page-title">Budget Tracker</h1>
       <p class="page-subtitle">Log what you actually spent each month and watch your patterns over time.</p>
@@ -3782,6 +3852,17 @@
     </div>
 
     <div class="tab-panel" id="tab-whatif">
+      <div class="pro-upgrade-banner">
+        <div class="pro-upgrade-banner-text">
+          <div class="pro-upgrade-banner-title">🔒 This is a Pro feature</div>
+          <div class="pro-upgrade-banner-sub">Have a look around — but to actually use What-If Scenarios you'll need Pro. Cancel anytime, 30-day money-back.</div>
+        </div>
+        <div class="pro-upgrade-banner-actions">
+          <button class="pro-upgrade-btn-primary" onclick="openUpgradeFlow('annual')">Upgrade — $99/yr</button>
+          <button class="pro-upgrade-btn-secondary" onclick="openUpgradeFlow('monthly')">or $12.99/mo</button>
+        </div>
+      </div>
+
       
       <h1 class="page-title">What-If Scenarios</h1>
       <p class="page-subtitle">See how small changes today create big differences at retirement.</p>
@@ -3920,6 +4001,17 @@
     </div>
 
     <div class="tab-panel" id="tab-early">
+      <div class="pro-upgrade-banner">
+        <div class="pro-upgrade-banner-text">
+          <div class="pro-upgrade-banner-title">🔒 This is a Pro feature</div>
+          <div class="pro-upgrade-banner-sub">Have a look around — but to actually use Early Retirement planning you'll need Pro. Cancel anytime, 30-day money-back.</div>
+        </div>
+        <div class="pro-upgrade-banner-actions">
+          <button class="pro-upgrade-btn-primary" onclick="openUpgradeFlow('annual')">Upgrade — $99/yr</button>
+          <button class="pro-upgrade-btn-secondary" onclick="openUpgradeFlow('monthly')">or $12.99/mo</button>
+        </div>
+      </div>
+
       
       <h1 class="page-title">Early Retirement & Layoff</h1>
       <p class="page-subtitle">What if income stopped earlier than planned? Model the impact.</p>
@@ -4117,6 +4209,17 @@
     <!-- ===== END EMPLOYER DEMO TAB ===== -->
 
     <div class="tab-panel" id="tab-summary">
+      <div class="pro-upgrade-banner">
+        <div class="pro-upgrade-banner-text">
+          <div class="pro-upgrade-banner-title">🔒 This is a Pro feature</div>
+          <div class="pro-upgrade-banner-sub">Have a look around — but to actually use Summary & PDF Export you'll need Pro. Cancel anytime, 30-day money-back.</div>
+        </div>
+        <div class="pro-upgrade-banner-actions">
+          <button class="pro-upgrade-btn-primary" onclick="openUpgradeFlow('annual')">Upgrade — $99/yr</button>
+          <button class="pro-upgrade-btn-secondary" onclick="openUpgradeFlow('monthly')">or $12.99/mo</button>
+        </div>
+      </div>
+
       
       <h1 class="page-title">Your MyYolk Summary</h1>
       <p class="page-subtitle">Your complete financial snapshot - net worth, retirement readiness, and key milestones.</p>
@@ -10124,9 +10227,15 @@ function btCloseDrill() {
 // ── PRO / PAYWALL SYSTEM ──
 // ══════════════════════════════════════════
 
-var IS_PRO = true; // TESTER MODE — all Pro features unlocked
+var IS_PRO = false; // Default: unpaid. Set true once Stripe webhook flips it.
 // Sync toggle on load
-document.addEventListener('DOMContentLoaded', function() { var chk = document.querySelector('input[type=checkbox][id*=pro], input[type=checkbox][id*=Pro]'); if(chk) chk.checked = IS_PRO; setProMode(IS_PRO); });
+document.addEventListener('DOMContentLoaded', function() {
+  var chk = document.querySelector('input[type=checkbox][id*=pro], input[type=checkbox][id*=Pro]');
+  if(chk) chk.checked = IS_PRO;
+  setProMode(IS_PRO);
+  // Lock Pro tab inputs initially
+  setTimeout(function() { if (typeof lockProTabInputs === 'function') lockProTabInputs(); }, 200);
+});
 
 var PRO_TABS = ['tracking', 'whatif', 'early', 'summary'];
 var PRO_FEATURES = { insights: '💡 Spending Insights & Analysis' };
@@ -10207,17 +10316,49 @@ function setProMode(isPro) {
 }
 
 function proGate(feature, label) {
-  if (IS_PRO) {
-    // Unlocked — navigate normally
-    if (PRO_TABS.includes(feature)) {
+  // New model: always navigate to the tab so the user sees what they'd get.
+  // The tab itself shows a sticky upgrade banner + disables inputs.
+  if (PRO_TABS.includes(feature)) {
+    if (typeof _origShowTabPro === 'function') {
+      _origShowTabPro(feature);
+    } else {
       showTab(feature);
     }
-    return;
+    setTimeout(lockProTabInputs, 80);
   }
-  // Show paywall modal
-  var nameEl = document.getElementById('paywallFeatureName');
-  if (nameEl) nameEl.textContent = label || 'Pro Feature';
+}
+
+// Lock or unlock inputs on Pro tabs depending on IS_PRO.
+function lockProTabInputs() {
+  PRO_TABS.forEach(function(tab) {
+    var panel = document.getElementById('tab-' + tab);
+    if (!panel) return;
+    // Show / hide the upgrade banner inside the tab
+    var banner = panel.querySelector('.pro-upgrade-banner');
+    if (banner) banner.style.display = IS_PRO ? 'none' : 'flex';
+    // Disable all inputs (but keep the banner button + close X usable)
+    var inputs = panel.querySelectorAll('input, select, textarea, button');
+    inputs.forEach(function(el) {
+      if (el.closest && el.closest('.pro-upgrade-banner')) return;  // skip banner buttons
+      if (IS_PRO) {
+        el.disabled = false;
+        el.style.pointerEvents = '';
+        el.style.opacity = '';
+      } else {
+        el.disabled = true;
+        el.style.pointerEvents = 'none';
+        el.style.opacity = '0.55';
+      }
+    });
+  });
+}
+
+// Open the upgrade modal — placeholder until Stripe is wired
+function openUpgradeFlow(plan) {
+  // For now just show the paywall modal; later this will call Stripe Checkout.
   var modal = document.getElementById('paywallModal');
+  var nameEl = document.getElementById('paywallFeatureName');
+  if (nameEl) nameEl.textContent = (plan === 'monthly') ? 'Monthly Pro ($12.99/mo)' : 'Annual Pro ($99/yr)';
   if (modal) modal.classList.add('show');
 }
 
