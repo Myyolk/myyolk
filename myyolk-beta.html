@@ -1728,7 +1728,48 @@
     .bt-history-table td:nth-child(6) { display: none; }
     .bt-chart-wrap { height: 160px; }
   }
-  </style>
+  
+/* ── Pro-locked upload zones (free-user state) ── */
+.upload-zone.pro-locked,
+.upload-zone.pro-locked * { cursor: pointer; }
+.upload-zone.pro-locked {
+  position: relative;
+  opacity: 0.78;
+  background: linear-gradient(180deg, rgba(200,134,10,0.04) 0%, rgba(200,134,10,0.02) 100%);
+  border: 2px dashed rgba(200,134,10,0.45) !important;
+  transition: opacity 0.15s, border-color 0.15s, background 0.15s;
+}
+.upload-zone.pro-locked:hover {
+  opacity: 1;
+  border-color: rgba(200,134,10,0.85) !important;
+  background: linear-gradient(180deg, rgba(200,134,10,0.08) 0%, rgba(200,134,10,0.04) 100%);
+}
+.upload-zone.pro-locked input[type="file"] { pointer-events: none !important; }
+.pro-badge {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: #C8860A;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  pointer-events: none;
+  box-shadow: 0 1px 4px rgba(200,134,10,0.35);
+}
+.pro-teaser {
+  display: none;
+  margin-top: 0.65rem;
+  font-size: 0.82rem;
+  color: #C8860A;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.upload-zone.pro-locked .pro-teaser { display: block; }
+</style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2400,11 +2441,13 @@
 
       <div class="card" id="salaryCard">
         <div class="card-title"><span class="dot"></span> 💼 <span id="yourIncomeLabel">Your Income</span></div>
-        <div class="upload-zone" id="uploadZone" style="margin-bottom:1.25rem">
+        <div class="upload-zone" id="uploadZone" data-pro-gated="paystub" style="margin-bottom:1.25rem">
           <input type="file" id="payStubFile" accept=".pdf,image/*" onchange="if(!IS_PRO){event.target.value='';openUpgradeFlow('annual');return;}handlePayStubUpload(event, false)">
+          <div class="pro-badge">Pro</div>
           <div class="upload-icon">📄</div>
           <div class="upload-title">Upload Pay Stub</div>
           <div class="upload-sub">Click or drop a PDF or image — we'll auto-fill the fields below</div>
+          <div class="pro-teaser">🔒 Pro feature — auto-fill your salary, bonuses, and 401(k) details from a pay stub PDF or photo</div>
         </div>
         <div class="upload-result" id="uploadResult">
           <div style="font-size:1.5rem">✅</div>
@@ -2565,11 +2608,13 @@
       <div id="spouseIncomeCard" style="display:none">
         <div class="card">
           <div class="card-title"><span class="dot"></span> 👫 <span id="spouseIncomeTitle">Spouse / Partner Income</span></div>
-          <div class="upload-zone" id="spouseUploadZone" style="margin-bottom:1.25rem">
+          <div class="upload-zone" id="spouseUploadZone" data-pro-gated="paystub" style="margin-bottom:1.25rem">
             <input type="file" id="spousePayStubFile" accept=".pdf,image/*" onchange="if(!IS_PRO){event.target.value='';openUpgradeFlow('annual');return;}handlePayStubUpload(event, true)">
+            <div class="pro-badge">Pro</div>
             <div class="upload-icon">📄</div>
             <div class="upload-title">Upload Spouse Pay Stub</div>
             <div class="upload-sub">Click or drop a PDF or image — we'll auto-fill the fields below</div>
+            <div class="pro-teaser">🔒 Pro feature — auto-fill spouse's salary, bonuses, and 401(k) from a pay stub PDF or photo</div>
           </div>
           <div class="upload-result" id="spouseUploadStatus"></div>
           <div id="spouseUploadLoading" style="display:none;margin-bottom:1rem;">
@@ -2975,11 +3020,13 @@
           <button id="ssBtn-estimate" onclick="switchSSMethod('estimate')" class="ss-tab-btn">Estimate for Me</button>
         </div>
         <div id="ss-method-upload" style="display:none">
-          <div class="upload-zone" id="ssUploadZone" style="padding:1.5rem">
+          <div class="upload-zone" id="ssUploadZone" data-pro-gated="ssa" style="padding:1.5rem">
             <input type="file" id="ssStatementFile" accept=".pdf,image/*" onchange="if(!IS_PRO){event.target.value='';openUpgradeFlow('annual');return;}handleSSUpload(event)">
+            <div class="pro-badge">Pro</div>
             <div style="font-size:2rem;margin-bottom:0.5rem">🏛️</div>
             <div style="font-size:0.95rem;font-weight:600">Drop your SSA Statement PDF here</div>
             <div style="font-size:0.82rem;color:var(--mid)">We'll read your benefit amounts at 62, FRA, and 70 automatically</div>
+            <div class="pro-teaser">🔒 Pro feature — auto-fill Social Security benefits from your SSA statement PDF or photo</div>
             <div id="ssUploadStatus" style="margin-top:0.6rem;font-size:0.85rem"></div>
             <div id="ssUploadLoading" style="display:none;margin-top:0.6rem">
               <div style="display:inline-flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--sage,#4A7C59)">
@@ -3036,11 +3083,13 @@
           <button id="dssBtn-estimate" onclick="switchDSSMethod('estimate')" class="ss-tab-btn">Estimate for Me</button>
         </div>
         <div id="dss-method-upload" style="display:none">
-          <div class="upload-zone" id="dssUploadZone" style="padding:1.5rem">
+          <div class="upload-zone" id="dssUploadZone" data-pro-gated="ssa" style="padding:1.5rem">
             <input type="file" id="dssStatementFile" accept=".pdf,image/*" onchange="if(!IS_PRO){event.target.value='';openUpgradeFlow('annual');return;}handleDSSUpload(event)">
+            <div class="pro-badge">Pro</div>
             <div style="font-size:2rem;margin-bottom:0.5rem">🏛️</div>
             <div style="font-size:0.95rem;font-weight:600">Drop their SSA Statement PDF here</div>
             <div style="font-size:0.82rem;color:var(--mid)">We'll read their benefit amounts at 62, FRA, and 70 automatically</div>
+            <div class="pro-teaser">🔒 Pro feature — auto-fill spouse's Social Security benefits from their SSA statement PDF or photo</div>
             <div id="dssUploadStatus" style="margin-top:0.6rem;font-size:0.85rem"></div>
             <div id="dssUploadLoading" style="display:none;margin-top:0.6rem">
               <div style="display:inline-flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--sage,#4A7C59)">
@@ -10590,8 +10639,39 @@ document.addEventListener('DOMContentLoaded', function() {
 var PRO_TABS = ['tracking', 'whatif', 'early', 'summary'];
 var PRO_FEATURES = { insights: '💡 Spending Insights & Analysis' };
 
+
+// ── Pro-gate visual + click intercept for upload zones ──
+// Adds .pro-locked class on data-pro-gated zones when IS_PRO is false.
+// Click on a locked zone opens upgrade modal instead of file picker.
+function applyProGateToUploads() {
+  var zones = document.querySelectorAll('[data-pro-gated]');
+  zones.forEach(function(z) {
+    if (IS_PRO) {
+      z.classList.remove('pro-locked');
+    } else {
+      z.classList.add('pro-locked');
+    }
+  });
+}
+// Capture-phase click interceptor so we run BEFORE the file picker opens.
+document.addEventListener('click', function(e) {
+  var zone = e.target.closest && e.target.closest('[data-pro-gated]');
+  if (zone && zone.classList.contains('pro-locked')) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (typeof openUpgradeFlow === 'function') {
+      openUpgradeFlow('annual');
+    }
+    return false;
+  }
+}, true);
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(applyProGateToUploads, 250);
+});
+
 function setProMode(isPro) {
   IS_PRO = !!isPro;
+  if (typeof applyProGateToUploads === 'function') applyProGateToUploads();
   setTimeout(function() {
     var pdfBtn = document.getElementById('pdfBtn');
     if(pdfBtn) {
