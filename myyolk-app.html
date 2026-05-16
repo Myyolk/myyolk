@@ -1074,6 +1074,178 @@
     .mobile-pdf-btn { display: block !important; width: 100%; margin: 1rem 0 2rem 0; padding: 0.9rem; background: var(--forest); color: #fff; border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 600; font-family: DM Sans,sans-serif; cursor: pointer; text-align: center; }
   }
 
+  /* ── PRO PREVIEW CARDS (only shown to non-Pro users) ── */
+  .pro-preview-card {
+    display: none;
+    background: linear-gradient(180deg, #fefcf6 0%, #fff8e8 100%);
+    border: 1.5px solid #e0c279;
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    margin: 0 0 1.5rem 0;
+    position: relative;
+  }
+  .pro-preview-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    border-radius: 14px;
+  }
+  .pro-preview-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #7a5400;
+    letter-spacing: 0.3px;
+    margin-bottom: 0.85rem;
+    text-transform: uppercase;
+  }
+  .pro-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.85rem;
+    margin-bottom: 1rem;
+  }
+  .pro-preview-stat {
+    background: #fff;
+    border: 1px solid #efe2c0;
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem;
+  }
+  .pro-preview-stat-label {
+    font-size: 0.72rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 0.25rem;
+  }
+  .pro-preview-stat-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.45rem;
+    color: #2D4A35;
+    line-height: 1.1;
+  }
+  .pro-preview-stat-sub {
+    font-size: 0.74rem;
+    color: #888;
+    margin-top: 0.2rem;
+  }
+  .pro-preview-scenario {
+    background: #fff;
+    border: 1px solid #efe2c0;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  .pro-preview-scenario-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #2D4A35;
+    margin-bottom: 0.75rem;
+  }
+  .pro-preview-bar-track {
+    display: flex;
+    height: 28px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 0.75rem;
+  }
+  .pro-preview-bar {
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0 0.75rem;
+    display: flex;
+    align-items: center;
+  }
+  .pro-bar-base { background: #4A7C59; }
+  .pro-bar-add  { background: #C8860A; }
+  .pro-preview-row-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+    margin-bottom: 0.85rem;
+  }
+  .pro-preview-row {
+    display: grid;
+    grid-template-columns: 1.5fr 0.8fr 1fr;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    background: #fff;
+    border: 1px solid #efe2c0;
+    border-radius: 8px;
+    padding: 0.45rem 0.75rem;
+    align-items: center;
+  }
+  .pro-preview-mid { color: #555; font-weight: 600; }
+  .pro-preview-footnote {
+    font-size: 0.78rem;
+    color: #7a5400;
+    font-style: italic;
+    margin-top: 0.5rem;
+  }
+  .pro-good { color: #2D4A35; font-weight: 600; }
+  .pro-warn { color: #A04000; font-weight: 600; }
+  .pro-neutral { color: #4a4a4a; }
+
+  .pro-upgrade-banner {
+    display: none;
+    background: linear-gradient(135deg, #fff8e8 0%, #faedd1 100%);
+    border: 2px solid #C8860A;
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    margin: 0 0 1.25rem 0;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .pro-upgrade-banner-text {
+    flex: 1;
+    min-width: 220px;
+  }
+  .pro-upgrade-banner-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #2D4A35;
+    margin-bottom: 0.3rem;
+  }
+  .pro-upgrade-banner-sub {
+    font-size: 0.86rem;
+    color: #5a5a52;
+    line-height: 1.45;
+  }
+  .pro-upgrade-banner-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: stretch;
+    min-width: 180px;
+  }
+  .pro-upgrade-btn-primary {
+    background: #2D4A35;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 0.7rem 1.1rem;
+    font-family: DM Sans, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .pro-upgrade-btn-primary:hover { background: #1f3528; }
+  .pro-upgrade-btn-secondary {
+    background: transparent;
+    color: #7a5400;
+    border: none;
+    font-family: DM Sans, sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-decoration: underline;
+    text-align: center;
+    padding: 0;
+  }
+  .pro-upgrade-btn-secondary:hover { color: #5a3e00; }
+
   /* ── PRO TOGGLE ── */
   .pro-toggle-wrap {
     display: flex;
@@ -1556,7 +1728,48 @@
     .bt-history-table td:nth-child(6) { display: none; }
     .bt-chart-wrap { height: 160px; }
   }
-  </style>
+  
+/* ── Pro-locked upload zones (free-user state) ── */
+.upload-zone.pro-locked,
+.upload-zone.pro-locked * { cursor: pointer; }
+.upload-zone.pro-locked {
+  position: relative;
+  opacity: 0.78;
+  background: linear-gradient(180deg, rgba(200,134,10,0.04) 0%, rgba(200,134,10,0.02) 100%);
+  border: 2px dashed rgba(200,134,10,0.45) !important;
+  transition: opacity 0.15s, border-color 0.15s, background 0.15s;
+}
+.upload-zone.pro-locked:hover {
+  opacity: 1;
+  border-color: rgba(200,134,10,0.85) !important;
+  background: linear-gradient(180deg, rgba(200,134,10,0.08) 0%, rgba(200,134,10,0.04) 100%);
+}
+.upload-zone.pro-locked input[type="file"] { pointer-events: none !important; }
+.pro-badge {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: #C8860A;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  pointer-events: none;
+  box-shadow: 0 1px 4px rgba(200,134,10,0.35);
+}
+.pro-teaser {
+  display: none;
+  margin-top: 0.65rem;
+  font-size: 0.82rem;
+  color: #C8860A;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.upload-zone.pro-locked .pro-teaser { display: block; }
+</style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1594,10 +1807,6 @@
     <span id="authUserDisplay" style="font-size:0.75rem;color:#fff;opacity:0.85;display:none"></span>
     <div id="signInBubble" style="position:relative;display:inline-block">
       <button id="authBtn" onclick="toggleAuthModal()" style="font-size:0.8rem;font-weight:600;background:none;border:1.5px solid rgba(255,255,255,0.6);border-radius:8px;padding:5px 14px;cursor:pointer;color:#fff;font-family:DM Sans,sans-serif">Sign In</button>
-      <div id="signInTooltip" style="display:none;position:absolute;top:calc(100% + 8px);right:0;background:#C8860A;color:#fff;font-family:DM Sans,sans-serif;font-size:0.72rem;white-space:nowrap;padding:7px 12px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.3);z-index:999;line-height:1.4;cursor:pointer;border:2px solid rgba(255,255,255,0.25)" onclick="toggleAuthModal()">
-        💾 Want your data on all your devices?<br><span style="color:#F5A623;font-weight:600">Create a free account →</span>
-        <div style="position:absolute;top:-5px;right:14px;width:10px;height:10px;background:#2D4A35;transform:rotate(45deg)"></div>
-      </div>
     </div>
   </div>
 </header>
@@ -1619,7 +1828,6 @@
   setTimeout(setHdr, 600);
 })();
 </script>
-<div id="testerBanner" style="background:#2D4A35;color:#fff;text-align:center;padding:8px 1rem;font-family:sans-serif;font-size:0.78rem;width:100%;box-sizing:border-box;position:fixed;top:var(--header-h,80px);z-index:98;left:0;right:0">&#x1F9EA; <strong>Tester Mode</strong> - All Pro features unlocked. After launch some features require Pro subscription. <a href="#" onclick="document.getElementById('testerBanner').style.display='none';return false;" style="color:#F0A500;margin-left:1rem">Dismiss x</a></div>
 
 
 <!-- WELCOME MODAL -->
@@ -1661,7 +1869,7 @@
     <button class="paywall-close" onclick="closePaywall()">×</button>
     <div class="paywall-egg">🔒</div>
     <div class="paywall-title">MyYolk Pro</div>
-    <div class="paywall-subtitle">This is a Pro feature — free during the testing period. After launch, Pro is $14.99/month or $99/year.</div>
+    <div class="paywall-subtitle">This is a Pro feature. Upgrade to Pro for $12.99/month or $99/year.</div>
     <div class="paywall-feature-name" id="paywallFeatureName">Pro Feature</div>
     <div class="paywall-perks">
       <div class="paywall-perk">Budget Tracker — monthly check-in &amp; history</div>
@@ -1739,7 +1947,7 @@
   </div>
 </div>
 
-<div class="app" style="padding-top:36px">
+<div class="app">
 
   <!-- SIDEBAR -->
   <nav class="sidebar">
@@ -1842,6 +2050,26 @@
   <main>
 
     <!-- ══ PROFILE TAB ══ -->
+    <!-- Soft signup gate banner (signed-out users with starter data) -->
+    <div id="signupGateBanner" style="display:none;background:linear-gradient(135deg,#fff8e8 0%,#faedd1 100%);border:2px solid #C8860A;border-radius:14px;padding:1rem 1.25rem;margin:0 0 1.25rem 0;position:relative">
+      <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+        <div style="flex:1;min-width:220px">
+          <div style="font-size:1rem;font-weight:700;color:#2D4A35;margin-bottom:0.35rem">✨ Nice start, <span id="sgb-firstname">there</span>!</div>
+          <div style="font-size:0.88rem;color:#3a3a36;line-height:1.45">
+            At age <strong><span id="sgb-retage">65</span></strong>, you're on track for about
+            <strong style="color:#2D4A35;font-size:1.05rem"><span id="sgb-projection">$—</span></strong> in investments.
+            <div style="margin-top:0.35rem;color:#5a5a52;font-size:0.85rem">
+              That's just the starting estimate. Add your 401(k), Social Security, and what-if scenarios to see your full plan — and we'll save it so you can come back anytime.
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;min-width:160px">
+          <button onclick="toggleAuthModalToSignup()" style="background:#2D4A35;color:#fff;border:none;border-radius:10px;padding:0.7rem 1.1rem;font-family:DM Sans,sans-serif;font-size:0.92rem;font-weight:700;cursor:pointer">Sign up free — 30 sec</button>
+          <button onclick="dismissSignupGate()" style="background:transparent;color:#7a5400;border:none;font-family:DM Sans,sans-serif;font-size:0.78rem;cursor:pointer;text-decoration:underline">Keep exploring without saving</button>
+        </div>
+      </div>
+    </div>
+
     <div class="tab-panel active" id="tab-profile">
       <h1 class="page-title" id="profileGreeting">Let's get to know you</h1>
       <p class="page-subtitle" id="profileSub">A few basics to build your MyYolk retirement plan.</p>
@@ -2028,30 +2256,6 @@
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-title"><span class="dot"></span> Upload a Pay Stub <span class="tag tag-gray" style="margin-left:auto;font-family:DM Sans">Optional</span></div>
-        <p style="font-size:0.88rem;color:var(--mid);margin-bottom:1rem;">Upload a recent pay stub and we'll read your income and contribution details automatically.</p>
-        <div class="upload-zone" id="uploadZone" style="opacity:0.6;cursor:default;pointer-events:none">
-          <input type="file" accept=".pdf,image/*" disabled>
-          <div class="upload-icon">🔧</div>
-          <div class="upload-title">Pay Stub Upload</div>
-          <div class="upload-sub" style="color:#C8860A;font-weight:600">Coming Soon</div>
-        </div>
-        <div class="upload-result" id="uploadResult">
-          <div style="font-size:1.5rem">✅</div>
-          <div class="upload-result-text">
-            <strong id="uploadStatus">Reading your pay stub…</strong>
-            <span id="uploadDetails"></span>
-          </div>
-        </div>
-        <div id="uploadLoading" style="display:none;margin-top:1rem;">
-          <div class="callout info">
-            <div class="spinner" style="border-color:rgba(74,124,89,0.3);border-top-color:var(--sage)"></div>
-            <span>Reading your pay stub with AI - this takes a few seconds…</span>
-          </div>
-        </div>
-      </div>
-
       <!-- SPOUSE PROFILE - hidden by default -->
       <div id="spouseProfileCard" class="card" style="display:none">
         <div class="card-title"><span class="dot"></span> Spouse / Partner Profile</div>
@@ -2222,16 +2426,6 @@
           </div>
         </div>
 
-        <div style="margin-top:1.5rem">
-          <div style="font-weight:600;font-size:0.85rem;color:var(--forest);margin-bottom:0.75rem">📄 Upload Spouse Pay Stub <span style="font-size:0.75rem;font-weight:400;color:#888">Optional</span></div>
-          <div class="upload-zone" id="spouseUploadZone" style="opacity:0.6;cursor:default;pointer-events:none">
-            <input type="file" id="spousePayStubFile" accept=".pdf,image/*" style="display:none" disabled>
-            <div class="upload-icon">🔧</div>
-            <div class="upload-title">Spouse Pay Stub Upload</div>
-            <div class="upload-sub" style="color:#C8860A;font-weight:600">Coming Soon</div>
-          </div>
-          <div id="spouseUploadStatus" style="margin-top:0.5rem;font-size:0.82rem;color:var(--sage)"></div>
-        </div>
       </div>
 
       
@@ -2243,10 +2437,31 @@
     <!-- ══ INCOME TAB ══ -->
     <div class="tab-panel" id="tab-income">
       <h1 class="page-title" id="incomePageTitle">Income & Pay</h1>
-      <p class="page-subtitle">Tell us about your earnings. You can also upload a pay stub on the Profile page to fill this in automatically.</p>
+      <p class="page-subtitle">Tell us about your earnings. Upload a recent pay stub to fill this in automatically.</p>
 
       <div class="card" id="salaryCard">
         <div class="card-title"><span class="dot"></span> 💼 <span id="yourIncomeLabel">Your Income</span></div>
+        <div class="upload-zone" id="uploadZone" data-pro-gated="paystub" style="margin-bottom:1.25rem">
+          <input type="file" id="payStubFile" accept=".pdf,image/*" onchange="if(!IS_PRO){event.target.value='';openUpgradeFlow('annual');return;}handlePayStubUpload(event, false)">
+          <div class="pro-badge">Pro</div>
+          <div class="upload-icon">📄</div>
+          <div class="upload-title">Upload Pay Stub</div>
+          <div class="upload-sub">Click or drop a PDF or image — we'll auto-fill the fields below</div>
+          <div class="pro-teaser">🔒 Pro feature — auto-fill your salary, bonuses, and 401(k) details from a pay stub PDF or photo</div>
+        </div>
+        <div class="upload-result" id="uploadResult">
+          <div style="font-size:1.5rem">✅</div>
+          <div class="upload-result-text">
+            <strong id="uploadStatus">Reading your pay stub…</strong>
+            <span id="uploadDetails"></span>
+          </div>
+        </div>
+        <div id="uploadLoading" style="display:none;margin-bottom:1rem;">
+          <div class="callout info">
+            <div class="spinner" style="border-color:rgba(74,124,89,0.3);border-top-color:var(--sage)"></div>
+            <span>Reading your pay stub with AI - this takes a few seconds…</span>
+          </div>
+        </div>
         <div class="form-grid">
           <div class="field">
             <label>Employment Type</label>
@@ -2393,6 +2608,21 @@
       <div id="spouseIncomeCard" style="display:none">
         <div class="card">
           <div class="card-title"><span class="dot"></span> 👫 <span id="spouseIncomeTitle">Spouse / Partner Income</span></div>
+          <div class="upload-zone" id="spouseUploadZone" data-pro-gated="paystub" style="margin-bottom:1.25rem">
+            <input type="file" id="spousePayStubFile" accept=".pdf,image/*" onchange="if(!IS_PRO){event.target.value='';openUpgradeFlow('annual');return;}handlePayStubUpload(event, true)">
+            <div class="pro-badge">Pro</div>
+            <div class="upload-icon">📄</div>
+            <div class="upload-title">Upload Spouse Pay Stub</div>
+            <div class="upload-sub">Click or drop a PDF or image — we'll auto-fill the fields below</div>
+            <div class="pro-teaser">🔒 Pro feature — auto-fill spouse's salary, bonuses, and 401(k) from a pay stub PDF or photo</div>
+          </div>
+          <div class="upload-result" id="spouseUploadStatus"></div>
+          <div id="spouseUploadLoading" style="display:none;margin-bottom:1rem;">
+            <div class="callout info">
+              <div class="spinner" style="border-color:rgba(74,124,89,0.3);border-top-color:var(--sage)"></div>
+              <span>Reading spouse pay stub with AI - this takes a few seconds…</span>
+            </div>
+          </div>
           <div class="form-grid">
             <div class="field">
               <label>Employment Type</label>
@@ -2790,11 +3020,20 @@
           <button id="ssBtn-estimate" onclick="switchSSMethod('estimate')" class="ss-tab-btn">Estimate for Me</button>
         </div>
         <div id="ss-method-upload" style="display:none">
-          <div class="upload-zone" id="ssUploadZone" style="padding:1.5rem;opacity:0.6;cursor:default;pointer-events:none">
-            <input type="file" accept=".pdf,image/*" onchange="handleSSUpload(event)">
+          <div class="upload-zone" id="ssUploadZone" data-pro-gated="ssa" style="padding:1.5rem">
+            <input type="file" id="ssStatementFile" accept=".pdf,image/*" onchange="if(!IS_PRO){event.target.value='';openUpgradeFlow('annual');return;}handleSSUpload(event)">
+            <div class="pro-badge">Pro</div>
             <div style="font-size:2rem;margin-bottom:0.5rem">🏛️</div>
             <div style="font-size:0.95rem;font-weight:600">Drop your SSA Statement PDF here</div>
-            <div style="font-size:0.82rem;color:var(--mid)">We will read your benefit amounts automatically</div>
+            <div style="font-size:0.82rem;color:var(--mid)">We'll read your benefit amounts at 62, FRA, and 70 automatically</div>
+            <div class="pro-teaser">🔒 Pro feature — auto-fill Social Security benefits from your SSA statement PDF or photo</div>
+            <div id="ssUploadStatus" style="margin-top:0.6rem;font-size:0.85rem"></div>
+            <div id="ssUploadLoading" style="display:none;margin-top:0.6rem">
+              <div style="display:inline-flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--sage,#4A7C59)">
+                <div class="spinner" style="width:16px;height:16px;border:2px solid rgba(74,124,89,0.3);border-top-color:var(--sage,#4A7C59);border-radius:50%;animation:spin 0.8s linear infinite"></div>
+                <span>Reading your SSA statement…</span>
+              </div>
+            </div>
           </div>
         </div>
         <div id="ss-method-manual" style="display:none">
@@ -2844,11 +3083,20 @@
           <button id="dssBtn-estimate" onclick="switchDSSMethod('estimate')" class="ss-tab-btn">Estimate for Me</button>
         </div>
         <div id="dss-method-upload" style="display:none">
-          <div class="upload-zone" style="padding:1.5rem">
-            <input type="file" accept=".pdf,image/*" onchange="handleDSSUpload(event)">
+          <div class="upload-zone" id="dssUploadZone" data-pro-gated="ssa" style="padding:1.5rem">
+            <input type="file" id="dssStatementFile" accept=".pdf,image/*" onchange="if(!IS_PRO){event.target.value='';openUpgradeFlow('annual');return;}handleDSSUpload(event)">
+            <div class="pro-badge">Pro</div>
             <div style="font-size:2rem;margin-bottom:0.5rem">🏛️</div>
             <div style="font-size:0.95rem;font-weight:600">Drop their SSA Statement PDF here</div>
-            <div style="font-size:0.82rem;color:var(--mid)">We will read their benefit amounts automatically</div>
+            <div style="font-size:0.82rem;color:var(--mid)">We'll read their benefit amounts at 62, FRA, and 70 automatically</div>
+            <div class="pro-teaser">🔒 Pro feature — auto-fill spouse's Social Security benefits from their SSA statement PDF or photo</div>
+            <div id="dssUploadStatus" style="margin-top:0.6rem;font-size:0.85rem"></div>
+            <div id="dssUploadLoading" style="display:none;margin-top:0.6rem">
+              <div style="display:inline-flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--sage,#4A7C59)">
+                <div class="spinner" style="width:16px;height:16px;border:2px solid rgba(74,124,89,0.3);border-top-color:var(--sage,#4A7C59);border-radius:50%;animation:spin 0.8s linear infinite"></div>
+                <span>Reading their SSA statement…</span>
+              </div>
+            </div>
           </div>
         </div>
         <div id="dss-method-manual" style="display:none">
@@ -3281,7 +3529,73 @@
 
     <!-- ══ TRACKING TAB ══ -->
     <div class="tab-panel" id="tab-tracking">
-      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($14.99/mo or $99/yr).</div>
+      <div class="pro-upgrade-banner">
+        <div class="pro-upgrade-banner-text">
+          <div class="pro-upgrade-banner-title">🔒 This is a Pro feature</div>
+          <div class="pro-upgrade-banner-sub">Have a look around — but to actually use Budget Tracker you'll need Pro. Cancel anytime, 30-day money-back.</div>
+        </div>
+      
+
+        <div class="pro-upgrade-banner-actions">
+          <button class="pro-upgrade-btn-primary" onclick="openUpgradeFlow('annual')">Upgrade — $99/yr</button>
+          <button class="pro-upgrade-btn-secondary" onclick="openUpgradeFlow('monthly')">or $12.99/mo</button>
+        </div>
+      </div>
+
+      <div class="pro-preview-card">
+        <div class="pro-preview-label">✨ Pro Preview — Budget Tracker shows you:</div>
+        <div class="pro-preview-grid">
+          <div class="pro-preview-stat">
+            <div class="pro-preview-stat-label">April 2026 spending</div>
+            <div class="pro-preview-stat-value">$5,847</div>
+            <div class="pro-preview-stat-sub pro-good">$113 under budget</div>
+          </div>
+          <div class="pro-preview-stat">
+            <div class="pro-preview-stat-label">3-month average</div>
+            <div class="pro-preview-stat-value">$5,912</div>
+            <div class="pro-preview-stat-sub">vs $5,960 target</div>
+          </div>
+          <div class="pro-preview-stat">
+            <div class="pro-preview-stat-label">Top category drift</div>
+            <div class="pro-preview-stat-value">Dining</div>
+            <div class="pro-preview-stat-sub pro-warn">+$87 vs avg</div>
+          </div>
+        </div>
+        <div class="pro-preview-row-grid">
+          <div class="pro-preview-row">
+            <span>🛒 Groceries</span>
+            <span class="pro-preview-mid">$1,212</span>
+            <span class="pro-good">on track</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>⛽ Gas</span>
+            <span class="pro-preview-mid">$487</span>
+            <span class="pro-good">-$13</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>🍴 Dining</span>
+            <span class="pro-preview-mid">$287</span>
+            <span class="pro-warn">+$87 over</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>🏠 Utilities</span>
+            <span class="pro-preview-mid">$352</span>
+            <span class="pro-good">on track</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>🚗 Auto Insurance</span>
+            <span class="pro-preview-mid">$478</span>
+            <span class="pro-good">on track</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>📱 Subscriptions</span>
+            <span class="pro-preview-mid">$237</span>
+            <span class="pro-warn">+$23 over</span>
+          </div>
+        </div>
+        <div class="pro-preview-footnote">+ CSV import from 14 banks. Auto-categorization. Trend tracking month over month.</div>
+      </div>
+
       
       <h1 class="page-title">Budget Tracker</h1>
       <p class="page-subtitle">Log what you actually spent each month and watch your patterns over time.</p>
@@ -3289,7 +3603,7 @@
       <div class="bt-pills">
         <button class="bt-pill active" onclick="btShowPanel('checkin')" id="btPill-checkin">✏️ Monthly Check-In</button>
         <button class="bt-pill" onclick="btShowPanel('history')" id="btPill-history">📈 Spending History</button>
-        <button class="bt-pill" onclick="btShowPanel('import')" id="btPill-import">📥 Import Statements <span style="display:inline-block;margin-left:4px;padding:1px 6px;font-size:0.65rem;background:#2D4A35;color:#fff;border-radius:8px;letter-spacing:0.5px">PRO</span></button>
+        <button class="bt-pill" onclick="btShowPanel('import')" id="btPill-import">📥 Import Statements</button>
       </div>
 
       <!-- ── CHECK-IN PANEL ── -->
@@ -3756,7 +4070,48 @@
     </div>
 
     <div class="tab-panel" id="tab-whatif">
-      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($14.99/mo or $99/yr).</div>
+      <div class="pro-upgrade-banner">
+        <div class="pro-upgrade-banner-text">
+          <div class="pro-upgrade-banner-title">🔒 This is a Pro feature</div>
+          <div class="pro-upgrade-banner-sub">Have a look around — but to actually use What-If Scenarios you'll need Pro. Cancel anytime, 30-day money-back.</div>
+        </div>
+      
+
+        <div class="pro-upgrade-banner-actions">
+          <button class="pro-upgrade-btn-primary" onclick="openUpgradeFlow('annual')">Upgrade — $99/yr</button>
+          <button class="pro-upgrade-btn-secondary" onclick="openUpgradeFlow('monthly')">or $12.99/mo</button>
+        </div>
+      </div>
+
+      <div class="pro-preview-card">
+        <div class="pro-preview-label">✨ Pro Preview — What-If Scenarios shows you:</div>
+        <div class="pro-preview-scenario">
+          <div class="pro-preview-scenario-title">Scenario: Work 2 more years (retire at 64 instead of 62)</div>
+          <div class="pro-preview-grid">
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">Current plan</div>
+              <div class="pro-preview-stat-value pro-neutral">$847K</div>
+              <div class="pro-preview-stat-sub">at age 62</div>
+            </div>
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">With scenario</div>
+              <div class="pro-preview-stat-value pro-good">$1.12M</div>
+              <div class="pro-preview-stat-sub">at age 64</div>
+            </div>
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">Net difference</div>
+              <div class="pro-preview-stat-value pro-good">+$273K</div>
+              <div class="pro-preview-stat-sub">over lifetime</div>
+            </div>
+          </div>
+          <div class="pro-preview-bar-track">
+            <div class="pro-preview-bar pro-bar-base" style="width:76%">$847K base</div>
+            <div class="pro-preview-bar pro-bar-add" style="width:24%">+$273K</div>
+          </div>
+        </div>
+        <div class="pro-preview-footnote">Plus: Life Events modeling (weddings, inheritances, medical costs), Quick Scenarios, side-by-side comparison.</div>
+      </div>
+
       
       <h1 class="page-title">What-If Scenarios</h1>
       <p class="page-subtitle">See how small changes today create big differences at retirement.</p>
@@ -3895,7 +4250,66 @@
     </div>
 
     <div class="tab-panel" id="tab-early">
-      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($14.99/mo or $99/yr).</div>
+      <div class="pro-upgrade-banner">
+        <div class="pro-upgrade-banner-text">
+          <div class="pro-upgrade-banner-title">🔒 This is a Pro feature</div>
+          <div class="pro-upgrade-banner-sub">Have a look around — but to actually use Early Retirement planning you'll need Pro. Cancel anytime, 30-day money-back.</div>
+        </div>
+      
+
+        <div class="pro-upgrade-banner-actions">
+          <button class="pro-upgrade-btn-primary" onclick="openUpgradeFlow('annual')">Upgrade — $99/yr</button>
+          <button class="pro-upgrade-btn-secondary" onclick="openUpgradeFlow('monthly')">or $12.99/mo</button>
+        </div>
+      </div>
+
+      <div class="pro-preview-card">
+        <div class="pro-preview-label">✨ Pro Preview — Early Retirement analysis shows you:</div>
+        <div class="pro-preview-scenario">
+          <div class="pro-preview-scenario-title">Can you retire at 58 instead of 62?</div>
+          <div class="pro-preview-grid">
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">Need at age 58</div>
+              <div class="pro-preview-stat-value">$1.48M</div>
+              <div class="pro-preview-stat-sub">to bridge to SS</div>
+            </div>
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">Projected at 58</div>
+              <div class="pro-preview-stat-value pro-warn">$1.21M</div>
+              <div class="pro-preview-stat-sub">on current path</div>
+            </div>
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">Gap to close</div>
+              <div class="pro-preview-stat-value pro-warn">$270K</div>
+              <div class="pro-preview-stat-sub">need +$2,420/mo</div>
+            </div>
+          </div>
+        </div>
+        <div class="pro-preview-row-grid">
+          <div class="pro-preview-row">
+            <span>🏥 Health insurance (pre-65)</span>
+            <span class="pro-preview-mid">$1,840/mo</span>
+            <span class="pro-warn">ACA marketplace</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>💰 Safe withdrawal rate</span>
+            <span class="pro-preview-mid">3.5%</span>
+            <span class="pro-good">for 30+ years</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>📊 Bridge years (58–62)</span>
+            <span class="pro-preview-mid">$148K total</span>
+            <span class="pro-good">from taxable acct</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>🎯 Recommended action</span>
+            <span class="pro-preview-mid">Max 401(k)</span>
+            <span class="pro-good">+$1,920/mo</span>
+          </div>
+        </div>
+        <div class="pro-preview-footnote">Plus: FIRE number calc, sequence-of-returns analysis, pre-65 healthcare cost modeling.</div>
+      </div>
+
       
       <h1 class="page-title">Early Retirement & Layoff</h1>
       <p class="page-subtitle">What if income stopped earlier than planned? Model the impact.</p>
@@ -4093,7 +4507,71 @@
     <!-- ===== END EMPLOYER DEMO TAB ===== -->
 
     <div class="tab-panel" id="tab-summary">
-      <div style="background:#FEF3E0;border:1.5px solid #C8860A;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#7A4F00"><strong>🧪 Free during testing</strong> — This is a Pro feature. After launch it will require a Pro subscription ($14.99/mo or $99/yr).</div>
+      <div class="pro-upgrade-banner">
+        <div class="pro-upgrade-banner-text">
+          <div class="pro-upgrade-banner-title">🔒 This is a Pro feature</div>
+          <div class="pro-upgrade-banner-sub">Have a look around — but to actually use Summary & PDF Export you'll need Pro. Cancel anytime, 30-day money-back.</div>
+        </div>
+      
+
+        <div class="pro-upgrade-banner-actions">
+          <button class="pro-upgrade-btn-primary" onclick="openUpgradeFlow('annual')">Upgrade — $99/yr</button>
+          <button class="pro-upgrade-btn-secondary" onclick="openUpgradeFlow('monthly')">or $12.99/mo</button>
+        </div>
+      </div>
+
+      <div class="pro-preview-card">
+        <div class="pro-preview-label">✨ Pro Preview — Summary shows you the full picture:</div>
+        <div class="pro-preview-scenario">
+          <div class="pro-preview-scenario-title">Your retirement plan at a glance</div>
+          <div class="pro-preview-grid">
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">Retirement age</div>
+              <div class="pro-preview-stat-value pro-neutral">62</div>
+              <div class="pro-preview-stat-sub">In 6 years</div>
+            </div>
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">Projected nest egg</div>
+              <div class="pro-preview-stat-value pro-good">$1.34M</div>
+              <div class="pro-preview-stat-sub">investments at 62</div>
+            </div>
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">Monthly retirement income</div>
+              <div class="pro-preview-stat-value pro-good">$8,420</div>
+              <div class="pro-preview-stat-sub">covers your $6,400 budget</div>
+            </div>
+            <div class="pro-preview-stat">
+              <div class="pro-preview-stat-label">Readiness score</div>
+              <div class="pro-preview-stat-value pro-good">88%</div>
+              <div class="pro-preview-stat-sub">On track</div>
+            </div>
+          </div>
+        </div>
+        <div class="pro-preview-row-grid">
+          <div class="pro-preview-row">
+            <span>📈 Investment growth (next 6 yr)</span>
+            <span class="pro-preview-mid">+$487K</span>
+            <span class="pro-good">7% avg return</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>🏛️ Social Security claiming</span>
+            <span class="pro-preview-mid">Age 67</span>
+            <span class="pro-good">$3,715/mo</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>🎲 Monte Carlo confidence</span>
+            <span class="pro-preview-mid">94%</span>
+            <span class="pro-good">money lasts</span>
+          </div>
+          <div class="pro-preview-row">
+            <span>💡 Top action item</span>
+            <span class="pro-preview-mid">Roth conversion</span>
+            <span class="pro-good">save $42K tax</span>
+          </div>
+        </div>
+        <div class="pro-preview-footnote">Plus: Full PDF export, action items, year-by-year projections, downloadable plan.</div>
+      </div>
+
       
       <h1 class="page-title">Your MyYolk Summary</h1>
       <p class="page-subtitle">Your complete financial snapshot - net worth, retirement readiness, and key milestones.</p>
@@ -4861,53 +5339,147 @@ function clearSS() {
   recalc();
 }
 
-function handleSSUpload(event) {
-  var file = event.target.files[0];
+async function handleSSUpload(event) {
+  var file = event.target.files && event.target.files[0];
   if (!file) return;
+
   var statusEl = document.getElementById('ssUploadStatus');
   var loadingEl = document.getElementById('ssUploadLoading');
+  var zone = document.getElementById('ssUploadZone');
+
+  if (statusEl) { statusEl.innerHTML = ''; statusEl.style.display = 'none'; }
   if (loadingEl) loadingEl.style.display = 'block';
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var base64 = e.target.result.split(',')[1];
-    var mediaType = file.type || 'application/pdf';
-    fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{
-          role: 'user',
-          content: [{
-            type: 'document',
-            source: { type: 'base64', media_type: mediaType, data: base64 }
-          }, {
-            type: 'text',
-            text: 'Extract SS benefit estimates from this Social Security statement. Return ONLY valid JSON: {"at62": number, "at67": number, "at70": number}'
-          }]
-        }]
-      })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      var text = (data.content||[]).map(function(c){return c.text||'';}).join('');
-      var clean = text.replace(/```json|```/g,'').trim();
-      var parsed = JSON.parse(clean);
-      if (parsed.at62) { var el = document.getElementById('ss62'); if(el) el.value = parsed.at62; }
-      if (parsed.at67) { var el = document.getElementById('ss67'); if(el) el.value = parsed.at67; }
-      if (parsed.at70) { var el = document.getElementById('ss70'); if(el) el.value = parsed.at70; }
-      if (loadingEl) loadingEl.style.display = 'none';
-      if (statusEl) statusEl.textContent = '✅ SS statement read successfully!';
-      updateSummaryRow();
-      ssManualUpdate();
-    })
-    .catch(function() {
-      if (loadingEl) loadingEl.style.display = 'none';
-      if (statusEl) statusEl.textContent = '⚠️ Could not read statement — please enter manually';
+  if (zone) zone.style.opacity = '0.7';
+
+  // 10 MB size guard
+  if (file.size > 10 * 1024 * 1024) {
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (zone) zone.style.opacity = '1';
+    alert('File is too large. Please upload an SSA statement under 10 MB.');
+    event.target.value = '';
+    return;
+  }
+
+  function showStatus(html, isError) {
+    if (!statusEl) return;
+    statusEl.style.display = 'block';
+    statusEl.style.position = 'relative';
+    statusEl.style.background = isError ? '#fce8e8' : 'var(--sage-pale, #E8F0E5)';
+    statusEl.style.border = isError ? '1.5px solid #c44' : '1.5px solid var(--sage, #4A7C59)';
+    statusEl.style.color = isError ? '#722' : 'var(--forest, #2D4A35)';
+    statusEl.style.padding = '0.75rem 2rem 0.75rem 1rem';
+    statusEl.style.borderRadius = '8px';
+    statusEl.style.marginTop = '0.5rem';
+    statusEl.style.fontSize = '0.88rem';
+    statusEl.style.lineHeight = '1.5';
+    statusEl.style.textAlign = 'left';
+    var closeBtnHtml = '<button type="button" aria-label="Dismiss" onclick="(function(el){var box=el.closest(\'#ssUploadStatus\')||el.parentElement;if(box){box.style.display=\'none\';}})(this)" style="position:absolute;top:0.4rem;right:0.5rem;background:transparent;border:none;font-size:1.2rem;line-height:1;cursor:pointer;color:inherit;opacity:0.6;padding:0 0.25rem;font-family:inherit">×</button>';
+    statusEl.innerHTML = closeBtnHtml + html;
+    if (window.__ssDismissTimer) clearTimeout(window.__ssDismissTimer);
+    window.__ssDismissTimer = setTimeout(function() {
+      if (statusEl) statusEl.style.display = 'none';
+    }, 120000);
+  }
+
+  try {
+    var base64 = await new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function() {
+        var dataUrl = reader.result;
+        var commaIdx = dataUrl.indexOf(',');
+        resolve(dataUrl.substring(commaIdx + 1));
+      };
+      reader.onerror = function() { reject(new Error('Could not read file')); };
+      reader.readAsDataURL(file);
     });
-  };
-  reader.readAsDataURL(file);
+
+    var mediaType = file.type || (file.name.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'image/jpeg');
+
+    var res = await fetch(SUPABASE_URL + '/functions/v1/parse-ssa', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'apikey': SUPABASE_KEY
+      },
+      body: JSON.stringify({ fileData: base64, mediaType: mediaType })
+    });
+
+    var json = await res.json();
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (zone) zone.style.opacity = '1';
+
+    if (!res.ok || !json.success) {
+      var msg = (json && (json.error || json.message)) || 'Could not read SSA statement';
+      showStatus('⚠️ ' + msg + '. Please enter your benefits manually.', true);
+      event.target.value = '';
+      return;
+    }
+
+    var data = json.data || {};
+
+    // Name-match check before filling any fields
+    var expectedFirst = document.getElementById('firstName')?.value;
+    var expectedLast = document.getElementById('lastName')?.value;
+    if (!paystubNameCheck(data.ownerName, expectedFirst, expectedLast, 'SSA statement')) {
+      showStatus('⚠️ Upload cancelled — SSA statement name didn\'t match. Try a different file.', true);
+      event.target.value = '';
+      return;
+    }
+
+    var filled = [];
+
+    function setField(id, value) {
+      var el = document.getElementById(id);
+      if (!el) return false;
+      el.value = value;
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+      return true;
+    }
+
+    if (data.at62 && data.at62 > 0) {
+      if (setField('ss62', Math.round(data.at62))) {
+        filled.push('Age 62: $' + Math.round(data.at62).toLocaleString() + '/mo');
+      }
+    }
+    if (data.atFRA && data.atFRA > 0) {
+      if (setField('ss67', Math.round(data.atFRA))) {
+        var fraLabel = data.fraAge ? ('FRA (' + data.fraAge + ')') : 'FRA';
+        filled.push(fraLabel + ': $' + Math.round(data.atFRA).toLocaleString() + '/mo');
+      }
+    }
+    if (data.at70 && data.at70 > 0) {
+      if (setField('ss70', Math.round(data.at70))) {
+        filled.push('Age 70: $' + Math.round(data.at70).toLocaleString() + '/mo');
+      }
+    }
+
+    var ownerLine = data.ownerName ? 'Read SSA statement for <strong>' + data.ownerName + '</strong>. ' : 'Read your SSA statement. ';
+    var fillLine = filled.length
+      ? 'Filled in: ' + filled.join(', ') + '.'
+      : 'No benefit estimates could be confidently extracted — please enter manually.';
+    var confidenceLine = data.confidence === 'low'
+      ? '<div style="margin-top:0.4rem;color:#A04000;font-size:0.82rem">⚠️ Low confidence — please double-check the values.</div>'
+      : '';
+    var noteLine = data.notes
+      ? '<div style="margin-top:0.4rem;color:var(--mid,#666);font-size:0.8rem;font-style:italic">' + data.notes + '</div>'
+      : '';
+
+    showStatus('✅ ' + ownerLine + fillLine + confidenceLine + noteLine, false);
+
+    if (typeof updateSummaryRow === 'function') updateSummaryRow();
+    if (typeof ssManualUpdate === 'function') ssManualUpdate();
+    if (typeof saveToLocal === 'function') saveToLocal();
+    event.target.value = '';
+
+  } catch (err) {
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (zone) zone.style.opacity = '1';
+    showStatus('⚠️ Something went wrong reading your SSA statement. Please enter manually.', true);
+    console.error('SSA upload error:', err);
+    event.target.value = '';
+  }
 }
 
 
@@ -5138,17 +5710,146 @@ function removeIncomeRow(btn) {
 
 
 // ── DENSIE SS UPLOAD ──
-function handleDSSUpload(event) {
-  var file = event.target.files[0];
-  if(!file) return;
-  // Reuse the SS upload logic but populate DSS fields
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    // For now show a loading message - full PDF parse coming
-    var result = document.getElementById('dssEstResult');
-    if(result) result.textContent = 'Statement uploaded — enter benefits manually from the PDF for now.';
-  };
-  reader.readAsDataURL(file);
+async function handleDSSUpload(event) {
+  var file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  var statusEl = document.getElementById('dssUploadStatus');
+  var loadingEl = document.getElementById('dssUploadLoading');
+  var zone = document.getElementById('dssUploadZone');
+
+  if (statusEl) { statusEl.innerHTML = ''; statusEl.style.display = 'none'; }
+  if (loadingEl) loadingEl.style.display = 'block';
+  if (zone) zone.style.opacity = '0.7';
+
+  if (file.size > 10 * 1024 * 1024) {
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (zone) zone.style.opacity = '1';
+    alert('File is too large. Please upload an SSA statement under 10 MB.');
+    event.target.value = '';
+    return;
+  }
+
+  function showStatus(html, isError) {
+    if (!statusEl) return;
+    statusEl.style.display = 'block';
+    statusEl.style.position = 'relative';
+    statusEl.style.background = isError ? '#fce8e8' : 'var(--sage-pale, #E8F0E5)';
+    statusEl.style.border = isError ? '1.5px solid #c44' : '1.5px solid var(--sage, #4A7C59)';
+    statusEl.style.color = isError ? '#722' : 'var(--forest, #2D4A35)';
+    statusEl.style.padding = '0.75rem 2rem 0.75rem 1rem';
+    statusEl.style.borderRadius = '8px';
+    statusEl.style.marginTop = '0.5rem';
+    statusEl.style.fontSize = '0.88rem';
+    statusEl.style.lineHeight = '1.5';
+    statusEl.style.textAlign = 'left';
+    var closeBtnHtml = '<button type="button" aria-label="Dismiss" onclick="(function(el){var box=el.closest(\'#dssUploadStatus\')||el.parentElement;if(box){box.style.display=\'none\';}})(this)" style="position:absolute;top:0.4rem;right:0.5rem;background:transparent;border:none;font-size:1.2rem;line-height:1;cursor:pointer;color:inherit;opacity:0.6;padding:0 0.25rem;font-family:inherit">×</button>';
+    statusEl.innerHTML = closeBtnHtml + html;
+    if (window.__dssDismissTimer) clearTimeout(window.__dssDismissTimer);
+    window.__dssDismissTimer = setTimeout(function() {
+      if (statusEl) statusEl.style.display = 'none';
+    }, 120000);
+  }
+
+  try {
+    var base64 = await new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function() {
+        var dataUrl = reader.result;
+        var commaIdx = dataUrl.indexOf(',');
+        resolve(dataUrl.substring(commaIdx + 1));
+      };
+      reader.onerror = function() { reject(new Error('Could not read file')); };
+      reader.readAsDataURL(file);
+    });
+
+    var mediaType = file.type || (file.name.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'image/jpeg');
+
+    var res = await fetch(SUPABASE_URL + '/functions/v1/parse-ssa', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'apikey': SUPABASE_KEY
+      },
+      body: JSON.stringify({ fileData: base64, mediaType: mediaType })
+    });
+
+    var json = await res.json();
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (zone) zone.style.opacity = '1';
+
+    if (!res.ok || !json.success) {
+      var msg = (json && (json.error || json.message)) || 'Could not read SSA statement';
+      showStatus('⚠️ ' + msg + '. Please enter benefits manually.', true);
+      event.target.value = '';
+      return;
+    }
+
+    var data = json.data || {};
+
+    // Name-match check before filling any fields
+    var expectedFirst = document.getElementById('spouseFirstName')?.value;
+    var expectedLast = document.getElementById('spouseLastName')?.value;
+    if (!paystubNameCheck(data.ownerName, expectedFirst, expectedLast, 'SSA statement')) {
+      showStatus('⚠️ Upload cancelled — SSA statement name didn\'t match. Try a different file.', true);
+      event.target.value = '';
+      return;
+    }
+
+    var filled = [];
+
+    function setField(id, value) {
+      var el = document.getElementById(id);
+      if (!el) return false;
+      el.value = value;
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+      return true;
+    }
+
+    if (data.at62 && data.at62 > 0) {
+      if (setField('dss62', Math.round(data.at62))) {
+        filled.push('Age 62: $' + Math.round(data.at62).toLocaleString() + '/mo');
+      }
+    }
+    if (data.atFRA && data.atFRA > 0) {
+      if (setField('dss67', Math.round(data.atFRA))) {
+        var fraLabel = data.fraAge ? ('FRA (' + data.fraAge + ')') : 'FRA';
+        filled.push(fraLabel + ': $' + Math.round(data.atFRA).toLocaleString() + '/mo');
+      }
+    }
+    if (data.at70 && data.at70 > 0) {
+      if (setField('dss70', Math.round(data.at70))) {
+        filled.push('Age 70: $' + Math.round(data.at70).toLocaleString() + '/mo');
+      }
+    }
+
+    var ownerLine = data.ownerName ? 'Read SSA statement for <strong>' + data.ownerName + '</strong>. ' : 'Read spouse SSA statement. ';
+    var fillLine = filled.length
+      ? 'Filled in: ' + filled.join(', ') + '.'
+      : 'No benefit estimates could be confidently extracted — please enter manually.';
+    var confidenceLine = data.confidence === 'low'
+      ? '<div style="margin-top:0.4rem;color:#A04000;font-size:0.82rem">⚠️ Low confidence — please double-check the values.</div>'
+      : '';
+    var noteLine = data.notes
+      ? '<div style="margin-top:0.4rem;color:var(--mid,#666);font-size:0.8rem;font-style:italic">' + data.notes + '</div>'
+      : '';
+
+    showStatus('✅ ' + ownerLine + fillLine + confidenceLine + noteLine, false);
+
+    if (typeof updateSummaryRow === 'function') updateSummaryRow();
+    if (typeof dssManualUpdate === 'function') dssManualUpdate();
+    if (typeof saveToLocal === 'function') saveToLocal();
+    event.target.value = '';
+
+  } catch (err) {
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (zone) zone.style.opacity = '1';
+    showStatus('⚠️ Something went wrong reading the SSA statement. Please enter manually.', true);
+    console.error('Spouse SSA upload error:', err);
+    event.target.value = '';
+  }
 }
 
 // ── SPOUSE SS BENEFIT - Bidirectional ──
@@ -6753,10 +7454,10 @@ function calcReadiness() {
 
 // ── PDF EXPORT ──
 function generatePDF() {
-  // Show free during testing toast
+  // Show Pro feature pricing toast
   var toast = document.createElement('div');
   toast.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#2D4A35;color:#fff;padding:1.25rem 2rem;border-radius:12px;font-size:0.95rem;z-index:99999;font-family:DM Sans,sans-serif;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.3);max-width:400px;line-height:1.5';
-  toast.innerHTML = '🧪 Pro feature — free during testing. After launch $14.99/mo or $99/yr.';
+  toast.innerHTML = '✨ Pro feature — $12.99/mo or $99/yr.';
   document.body.appendChild(toast);
   setTimeout(function(){ toast.remove(); }, 4000);
   if(typeof window.jspdf === 'undefined' && typeof jsPDF === 'undefined') {
@@ -7279,6 +7980,63 @@ function captureSnapshotIfDue() {
     console.warn('[snapshot] unexpected error', e);
   }
 }
+
+// ── SOFT SIGNUP GATE ──
+// Appears once user fills firstName + dob + retAge + salary, AND is signed out.
+// User can dismiss it; choice remembered in localStorage for the session.
+
+function _sgGateDismissed() {
+  try { return sessionStorage.getItem('myyolk_signup_gate_dismissed') === '1'; } catch(e) { return false; }
+}
+function dismissSignupGate() {
+  try { sessionStorage.setItem('myyolk_signup_gate_dismissed', '1'); } catch(e) {}
+  var el = document.getElementById('signupGateBanner');
+  if (el) el.style.display = 'none';
+}
+function toggleAuthModalToSignup() {
+  // Switch the auth modal into signup mode and open it.
+  if (typeof switchAuthTab === 'function') {
+    try { switchAuthTab('signup'); } catch(e) {}
+  }
+  if (typeof toggleAuthModal === 'function') {
+    toggleAuthModal();
+  }
+}
+
+function maybeShowSignupGate() {
+  var el = document.getElementById('signupGateBanner');
+  if (!el) return;
+  // Hide if signed in
+  if (typeof _sbUser !== 'undefined' && _sbUser) { el.style.display = 'none'; return; }
+  // Hide if dismissed
+  if (_sgGateDismissed()) { el.style.display = 'none'; return; }
+  // Show only when the 4 key fields are filled
+  var firstName = (document.getElementById('firstName')?.value || '').trim();
+  var dob = (document.getElementById('dob')?.value || '').trim();
+  var retAge = parseInt(document.getElementById('retAge')?.value || '', 10);
+  var salary = parseFloat((document.getElementById('salary')?.value || '').replace(/[$,]/g,''));
+  var ready = firstName.length >= 1 && dob.length > 0 && retAge >= 40 && retAge <= 99 && salary > 0;
+  if (!ready) { el.style.display = 'none'; return; }
+  // Populate banner data
+  var fnEl = document.getElementById('sgb-firstname');
+  if (fnEl) fnEl.textContent = firstName;
+  var raEl = document.getElementById('sgb-retage');
+  if (raEl) raEl.textContent = String(retAge);
+  // Pull projection from the sidebar Live Snapshot if available
+  var projText = document.getElementById('sb-at-ret')?.textContent || '$—';
+  var projEl = document.getElementById('sgb-projection');
+  if (projEl) projEl.textContent = projText;
+  el.style.display = 'block';
+}
+
+// Trigger checks whenever inputs change or recalc fires.
+document.addEventListener('input', function(e) {
+  if (!e.target) return;
+  var id = e.target.id;
+  if (id === 'firstName' || id === 'dob' || id === 'retAge' || id === 'salary') {
+    maybeShowSignupGate();
+  }
+}, true);
 
 function showTab(name) {
   if (name === "summary" && typeof captureSnapshotIfDue === "function") {
@@ -9821,15 +10579,99 @@ function btCloseDrill() {
 // ── PRO / PAYWALL SYSTEM ──
 // ══════════════════════════════════════════
 
-var IS_PRO = true; // TESTER MODE — all Pro features unlocked
+var IS_PRO = false; // Default: unpaid. Flipped true by checkProAccess() if user is admin or has valid pro_until.
+
+// ── ADMIN ALLOWLIST ──
+// These email addresses are always Pro. Used for founder, family, beta testers.
+// To add someone: edit this array, push to GitHub. No backend change needed.
+var ADMIN_EMAILS = [
+  'dean.p.sheppard@gmail.com',
+  'myyolkapp@gmail.com',
+  'qatest@myyolk.com',
+  'densies@gmail.com',
+  'brookeabby@icloud.com',
+  'jamiefaithsheppard@gmail.com',
+  'billetzle@aol.com',
+];
+
+// Re-check whether the current user should have Pro access.
+// Called after sign-in and after cloudLoad. Sets IS_PRO and re-locks tabs.
+function checkProAccess() {
+  var wasPro = IS_PRO;
+  var nowPro = false;
+
+  // Layer 1: Admin allowlist
+  if (_sbUser && _sbUser.email) {
+    var emailLc = String(_sbUser.email).trim().toLowerCase();
+    var adminLc = ADMIN_EMAILS.map(function(e) { return String(e).trim().toLowerCase(); });
+    if (adminLc.indexOf(emailLc) !== -1) {
+      nowPro = true;
+    }
+  }
+
+  // Layer 2: pro_until date (set by Stripe webhook in future, or manually for rewards)
+  // Read it from window.__proUntil which is populated by cloudLoad.
+  if (!nowPro && window.__proUntil) {
+    try {
+      var until = new Date(window.__proUntil);
+      if (until.getTime() > Date.now()) nowPro = true;
+    } catch(e) {}
+  }
+
+  IS_PRO = nowPro;
+
+  // If state changed, re-run gating logic
+  if (wasPro !== nowPro) {
+    if (typeof setProMode === 'function') setProMode(nowPro);
+    if (typeof lockProTabInputs === 'function') lockProTabInputs();
+  }
+  return nowPro;
+}
 // Sync toggle on load
-document.addEventListener('DOMContentLoaded', function() { var chk = document.querySelector('input[type=checkbox][id*=pro], input[type=checkbox][id*=Pro]'); if(chk) chk.checked = IS_PRO; setProMode(IS_PRO); });
+document.addEventListener('DOMContentLoaded', function() {
+  var chk = document.querySelector('input[type=checkbox][id*=pro], input[type=checkbox][id*=Pro]');
+  if(chk) chk.checked = IS_PRO;
+  setProMode(IS_PRO);
+  // Lock Pro tab inputs initially
+  setTimeout(function() { if (typeof lockProTabInputs === 'function') lockProTabInputs(); }, 200);
+});
 
 var PRO_TABS = ['tracking', 'whatif', 'early', 'summary'];
 var PRO_FEATURES = { insights: '💡 Spending Insights & Analysis' };
 
+
+// ── Pro-gate visual + click intercept for upload zones ──
+// Adds .pro-locked class on data-pro-gated zones when IS_PRO is false.
+// Click on a locked zone opens upgrade modal instead of file picker.
+function applyProGateToUploads() {
+  var zones = document.querySelectorAll('[data-pro-gated]');
+  zones.forEach(function(z) {
+    if (IS_PRO) {
+      z.classList.remove('pro-locked');
+    } else {
+      z.classList.add('pro-locked');
+    }
+  });
+}
+// Capture-phase click interceptor so we run BEFORE the file picker opens.
+document.addEventListener('click', function(e) {
+  var zone = e.target.closest && e.target.closest('[data-pro-gated]');
+  if (zone && zone.classList.contains('pro-locked')) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (typeof openUpgradeFlow === 'function') {
+      openUpgradeFlow('annual');
+    }
+    return false;
+  }
+}, true);
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(applyProGateToUploads, 250);
+});
+
 function setProMode(isPro) {
   IS_PRO = !!isPro;
+  if (typeof applyProGateToUploads === 'function') applyProGateToUploads();
   setTimeout(function() {
     var pdfBtn = document.getElementById('pdfBtn');
     if(pdfBtn) {
@@ -9895,21 +10737,158 @@ function setProMode(isPro) {
   }
   // Update reminder badge/banner
   if (typeof btCheckUnlogged === 'function') btCheckUnlogged();
+  if (typeof maybeShowSignupGate === 'function') {
+    setTimeout(maybeShowSignupGate, 800);
+    if (!window.__sgGateInterval) {
+      window.__sgGateInterval = setInterval(maybeShowSignupGate, 4000);
+    }
+  }
 }
 
 function proGate(feature, label) {
-  if (IS_PRO) {
-    // Unlocked — navigate normally
-    if (PRO_TABS.includes(feature)) {
+  // New model: always navigate to the tab so the user sees what they'd get.
+  // The tab itself shows a sticky upgrade banner + disables inputs.
+  if (PRO_TABS.includes(feature)) {
+    if (typeof _origShowTabPro === 'function') {
+      _origShowTabPro(feature);
+    } else {
       showTab(feature);
+    }
+    setTimeout(lockProTabInputs, 80);
+  }
+}
+
+// Lock or unlock inputs on Pro tabs depending on IS_PRO.
+function lockProTabInputs() {
+  PRO_TABS.forEach(function(tab) {
+    var panel = document.getElementById('tab-' + tab);
+    if (!panel) return;
+    // Show / hide the upgrade banner inside the tab
+    var banner = panel.querySelector('.pro-upgrade-banner');
+    if (banner) banner.style.display = IS_PRO ? 'none' : 'flex';
+    // Show / hide the Pro preview demo card
+    var preview = panel.querySelector('.pro-preview-card');
+    if (preview) preview.style.display = IS_PRO ? 'none' : 'block';
+    // Disable all inputs (but keep the banner button + close X usable)
+    var inputs = panel.querySelectorAll('input, select, textarea, button');
+    inputs.forEach(function(el) {
+      if (el.closest && el.closest('.pro-upgrade-banner')) return;  // skip banner buttons
+      if (el.closest && el.closest('.pro-preview-card')) return;     // skip preview content
+      if (IS_PRO) {
+        el.disabled = false;
+        el.style.pointerEvents = '';
+        el.style.opacity = '';
+      } else {
+        el.disabled = true;
+        el.style.pointerEvents = 'none';
+        el.style.opacity = '0.55';
+      }
+    });
+  });
+}
+
+// Real Stripe Checkout flow.
+// plan: 'annual' (=$99/yr) or 'monthly' (=$12.99/mo)
+async function openUpgradeFlow(plan) {
+  if (!plan) plan = 'annual';
+
+  // Require sign-in. If not signed in, prompt to sign up first.
+  if (typeof _sbUser === 'undefined' || !_sbUser) {
+    alert('Please sign up or sign in first — then you can upgrade to Pro.');
+    if (typeof toggleAuthModalToSignup === 'function') {
+      toggleAuthModalToSignup();
+    } else if (typeof toggleAuthModal === 'function') {
+      toggleAuthModal();
     }
     return;
   }
-  // Show paywall modal
-  var nameEl = document.getElementById('paywallFeatureName');
-  if (nameEl) nameEl.textContent = label || 'Pro Feature';
-  var modal = document.getElementById('paywallModal');
-  if (modal) modal.classList.add('show');
+
+  // Optimistic UI: temporarily disable any Upgrade buttons to prevent double-clicks
+  var allUpgradeButtons = document.querySelectorAll('.pro-upgrade-btn-primary, .pro-upgrade-btn-secondary');
+  allUpgradeButtons.forEach(function(b) { b.disabled = true; b.style.opacity = '0.6'; });
+
+  try {
+    var resp = await fetch(SUPABASE_URL + '/functions/v1/stripe-checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'apikey': SUPABASE_KEY
+      },
+      body: JSON.stringify({
+        plan: plan,
+        userId: _sbUser.id,
+        email: _sbUser.email
+      })
+    });
+
+    var json = await resp.json();
+    if (!resp.ok || !json.url) {
+      console.error('Stripe checkout error:', json);
+      alert('Sorry, we could not start checkout. Please try again in a moment.');
+      allUpgradeButtons.forEach(function(b) { b.disabled = false; b.style.opacity = ''; });
+      return;
+    }
+
+    // Redirect the browser to Stripe Checkout
+    window.location.href = json.url;
+  } catch (err) {
+    console.error('openUpgradeFlow error:', err);
+    alert('Sorry, we could not connect to checkout. Please try again.');
+    allUpgradeButtons.forEach(function(b) { b.disabled = false; b.style.opacity = ''; });
+  }
+}
+
+// Handle the post-checkout return URL (?upgrade=success or ?upgrade=cancelled).
+// Stripe's success URL points back to MyYolk with these query params.
+function handleStripeReturn() {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var upgrade = params.get('upgrade');
+    if (!upgrade) return;
+
+    // Strip the query params from the URL bar (cleaner UX, also prevents repeat on refresh)
+    var cleanUrl = window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
+
+    if (upgrade === 'success') {
+      // Show a friendly success toast / banner
+      var bar = document.createElement('div');
+      bar.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#2D4A35;color:#fff;text-align:center;padding:14px 1rem;font-family:DM Sans,sans-serif;font-size:0.95rem;z-index:99999;box-shadow:0 2px 8px rgba(0,0,0,0.2)';
+      bar.innerHTML = '🎉 <strong>Welcome to MyYolk Pro!</strong> Your subscription is active. Pro features are unlocking now… <a href="#" onclick="this.parentElement.remove();return false;" style="color:#F5A623;margin-left:1rem;text-decoration:underline">Dismiss</a>';
+      document.body.appendChild(bar);
+      // Poll cloudLoad so pro_until lands and we can flip IS_PRO
+      var attempts = 0;
+      var poll = setInterval(function() {
+        attempts++;
+        if (typeof cloudLoad === 'function') cloudLoad();
+        if (typeof checkProAccess === 'function') checkProAccess();
+        if (typeof IS_PRO !== 'undefined' && IS_PRO) {
+          clearInterval(poll);
+          if (typeof lockProTabInputs === 'function') lockProTabInputs();
+        } else if (attempts > 10) {
+          clearInterval(poll);
+        }
+      }, 1500);
+      // Auto-dismiss after 30 seconds
+      setTimeout(function() { if (bar && bar.parentElement) bar.remove(); }, 30000);
+    } else if (upgrade === 'cancelled') {
+      var bar = document.createElement('div');
+      bar.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#7a5400;color:#fff;text-align:center;padding:14px 1rem;font-family:DM Sans,sans-serif;font-size:0.9rem;z-index:99999';
+      bar.innerHTML = 'No worries — upgrade was cancelled. You can try again anytime. <a href="#" onclick="this.parentElement.remove();return false;" style="color:#F5A623;margin-left:1rem;text-decoration:underline">Dismiss</a>';
+      document.body.appendChild(bar);
+      setTimeout(function() { if (bar && bar.parentElement) bar.remove(); }, 10000);
+    }
+  } catch (err) {
+    console.error('handleStripeReturn error:', err);
+  }
+}
+
+// Run on page load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', handleStripeReturn);
+} else {
+  setTimeout(handleStripeReturn, 100);
 }
 
 function closePaywall() {
@@ -10699,6 +11678,268 @@ var _pageLoadedClean = false; // only true if no JS errors on load
 var _cloudLoaded = false;    // only true after cloudLoad completes
 var _authMode = 'signin';
 
+// ── NAME-MATCH HELPER for pay stub / SSA uploads ──
+// Returns true if user confirms, false if cancelled. Skips check if names missing.
+function paystubNameCheck(detectedName, expectedFirstName, expectedLastName, docType) {
+  if (!detectedName) return true; // No name on document — skip check
+  var expectedFirst = (expectedFirstName || '').trim();
+  var expectedLast = (expectedLastName || '').trim();
+  if (!expectedFirst && !expectedLast) return true; // No name in profile — skip check
+
+  // Normalize: uppercase, strip punctuation, split on whitespace
+  function normalize(s) {
+    return (s || '').toUpperCase().replace(/[.,]/g, '').split(/\s+/).filter(Boolean);
+  }
+  var detTokens = normalize(detectedName);
+  var expTokens = normalize(expectedFirst + ' ' + expectedLast);
+
+  // Match if detected name contains ALL expected tokens (allows for middle names, initials, etc.)
+  // OR if expected name contains all detected tokens.
+  function allTokensFound(needle, haystack) {
+    for (var i = 0; i < needle.length; i++) {
+      if (needle[i].length < 2) continue; // skip initials
+      if (haystack.indexOf(needle[i]) === -1) return false;
+    }
+    return true;
+  }
+  var match = allTokensFound(expTokens, detTokens) || allTokensFound(detTokens, expTokens);
+  if (match) return true;
+
+  // Names don't match — ask user
+  var expectedDisplay = (expectedFirst + ' ' + expectedLast).trim();
+  var msg = 'This ' + docType + ' appears to be for ' + detectedName + ', but you\'re uploading to ' + expectedDisplay + '\'s section.\n\nContinue anyway?';
+  return window.confirm(msg);
+}
+
+// ── PAY STUB UPLOAD (Anthropic-powered OCR) ──
+async function handlePayStubUpload(event, isSpouse) {
+  var file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  var zoneId = isSpouse ? 'spouseUploadZone' : 'uploadZone';
+  var resultId = isSpouse ? 'spouseUploadStatus' : 'uploadResult';
+  var loadingId = isSpouse ? 'spouseUploadLoading' : 'uploadLoading';
+
+  var zone = document.getElementById(zoneId);
+  var resultEl = document.getElementById(resultId);
+  var loadingEl = document.getElementById(loadingId);
+
+  // Reset prior state
+  if (resultEl) { resultEl.classList.remove('show'); resultEl.style.display='none'; resultEl.textContent=''; }
+  if (loadingEl) loadingEl.style.display = 'block';
+  if (zone) zone.style.opacity = '0.6';
+
+  // Size guard - 10 MB max
+  if (file.size > 10 * 1024 * 1024) {
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (zone) zone.style.opacity = '1';
+    alert('File is too large. Please upload a pay stub under 10 MB.');
+    event.target.value = '';
+    return;
+  }
+
+  try {
+    // Read file as base64
+    var base64 = await new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function() {
+        var dataUrl = reader.result;
+        var commaIdx = dataUrl.indexOf(',');
+        resolve(dataUrl.substring(commaIdx + 1));
+      };
+      reader.onerror = function() { reject(new Error('Could not read file')); };
+      reader.readAsDataURL(file);
+    });
+
+    var mediaType = file.type || (file.name.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'image/jpeg');
+
+    var res = await fetch(SUPABASE_URL + '/functions/v1/parse-paystub', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'apikey': SUPABASE_KEY
+      },
+      body: JSON.stringify({ fileData: base64, mediaType: mediaType })
+    });
+
+    var json = await res.json();
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (zone) zone.style.opacity = '1';
+
+    if (!res.ok || !json.success) {
+      var msg = (json && (json.error || json.message)) || 'Could not read pay stub';
+      if (resultEl) {
+        resultEl.style.display = 'block';
+        resultEl.style.background = '#fce8e8';
+        resultEl.style.border = '1.5px solid #c44';
+        resultEl.style.color = '#722';
+        resultEl.style.padding = '0.75rem 1rem';
+        resultEl.style.borderRadius = '8px';
+        resultEl.style.marginTop = '0.5rem';
+        resultEl.style.fontSize = '0.88rem';
+        resultEl.innerHTML = '⚠️ ' + msg + '. Please fill the fields manually below.';
+      }
+      event.target.value = '';
+      return;
+    }
+
+    var data = json.data || {};
+
+    // Name-match check before filling any fields
+    var expectedFirst = isSpouse
+      ? document.getElementById('spouseFirstName')?.value
+      : document.getElementById('firstName')?.value;
+    var expectedLast = isSpouse
+      ? document.getElementById('spouseLastName')?.value
+      : document.getElementById('lastName')?.value;
+    if (!paystubNameCheck(data.employeeName, expectedFirst, expectedLast, 'pay stub')) {
+      // User cancelled — abort fill
+      if (resultEl) {
+        resultEl.style.display = 'block';
+        resultEl.style.background = '#fff4e0';
+        resultEl.style.border = '1.5px solid #C8860A';
+        resultEl.style.color = '#7A4F00';
+        resultEl.style.padding = '0.75rem 1rem';
+        resultEl.style.borderRadius = '8px';
+        resultEl.style.marginTop = '0.5rem';
+        resultEl.style.fontSize = '0.88rem';
+        resultEl.innerHTML = '⚠️ Upload cancelled — pay stub name didn\'t match. Try a different file.';
+      }
+      event.target.value = '';
+      return;
+    }
+
+    var filled = [];
+
+    var salaryFieldId = isSpouse ? 'spouseSalary' : 'salary';
+    var freqFieldId = isSpouse ? 'spousePayFreq' : 'payFreq';
+    var typeFieldId = isSpouse ? 'spouseIncomeType' : 'incomeType';
+
+    function setField(id, value) {
+      var el = document.getElementById(id);
+      if (!el) return false;
+      el.value = value;
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+      return true;
+    }
+
+    if (data.annualBaseSalary && data.annualBaseSalary > 0) {
+      if (setField(salaryFieldId, Math.round(data.annualBaseSalary))) {
+        filled.push('Annual salary: $' + Math.round(data.annualBaseSalary).toLocaleString());
+      }
+    }
+    if (data.payFrequency) {
+      if (setField(freqFieldId, data.payFrequency)) {
+        var freqLabel = { weekly:'Weekly', biweekly:'Biweekly', semimonthly:'Semi-monthly', monthly:'Monthly' }[data.payFrequency] || data.payFrequency;
+        filled.push('Pay frequency: ' + freqLabel);
+      }
+    }
+    if (data.employmentType) {
+      setField(typeFieldId, data.employmentType);
+    }
+
+    // Retirement contribution % — route by account type detected on the pay stub.
+    if (data.retirementPercent != null && data.retirementPercent > 0 && data.retirementAccountType) {
+      var pct = Math.round(data.retirementPercent);
+      var rType = data.retirementAccountType;
+      var retirementFieldId = null;
+      var retirementLabel = '';
+
+      if (rType === '401k') {
+        retirementFieldId = isSpouse ? 'spouseContrib401k' : 'contrib401k';
+        retirementLabel = '401(k)';
+      } else if (rType === 'roth401k') {
+        retirementFieldId = isSpouse ? 'spouseContribRoth401' : 'contribRoth401';
+        retirementLabel = 'Roth 401(k)';
+      } else if (rType === '403b') {
+        retirementFieldId = isSpouse ? 'spouseContrib403b' : 'contrib403b';
+        retirementLabel = '403(b)';
+      } else if (rType === 'roth403b') {
+        // No dedicated Roth 403(b) field — route to 403(b) percent and note it.
+        retirementFieldId = isSpouse ? 'spouseContrib403b' : 'contrib403b';
+        retirementLabel = 'Roth 403(b)';
+      } else if (rType === '457b') {
+        // No 457(b) field exists — note only, don't fill.
+        retirementFieldId = null;
+        retirementLabel = '457(b)';
+      }
+
+      if (retirementFieldId && setField(retirementFieldId, pct)) {
+        filled.push(retirementLabel + ' contribution: ' + pct + '%');
+      } else if (retirementLabel === '457(b)') {
+        filled.push('Detected 457(b) at ' + pct + '% (no field to fill — note only)');
+      }
+    }
+
+    if (resultEl) {
+      resultEl.style.display = 'block';
+      resultEl.style.background = 'var(--sage-pale, #E8F0E5)';
+      resultEl.style.border = '1.5px solid var(--sage, #4A7C59)';
+      resultEl.style.color = 'var(--forest, #2D4A35)';
+      resultEl.style.padding = '0.75rem 1rem';
+      resultEl.style.borderRadius = '8px';
+      resultEl.style.marginTop = '0.5rem';
+      resultEl.style.fontSize = '0.88rem';
+      resultEl.style.lineHeight = '1.5';
+
+      var employerLine = data.employerName ? 'Read pay stub from <strong>' + data.employerName + '</strong>. ' : 'Read your pay stub. ';
+      var fillLine = filled.length
+        ? 'Filled in: ' + filled.join(', ') + '.'
+        : 'No fields could be confidently extracted — please review and fill below.';
+
+      // If a retirement contribution % was filled (on Accounts & Savings tab), tell the user.
+      var retirementFilledHere = data.retirementPercent != null && data.retirementPercent > 0
+        && data.retirementAccountType && data.retirementAccountType !== '457b';
+      var accountsLinkLine = retirementFilledHere
+        ? '<div style="margin-top:0.5rem;font-size:0.85rem">📍 Contribution % was added on the <a href="#" onclick="event.preventDefault();showTab(\'accounts\');" style="color:var(--sage,#4A7C59);text-decoration:underline;font-weight:600;cursor:pointer">Accounts &amp; Savings</a> tab.</div>'
+        : '';
+
+      var confidenceLine = data.confidence === 'low'
+        ? '<div style="margin-top:0.4rem;color:#A04000;font-size:0.82rem">⚠️ Low confidence — please double-check.</div>'
+        : '';
+      var noteLine = data.notes
+        ? '<div style="margin-top:0.4rem;color:var(--mid,#666);font-size:0.8rem;font-style:italic">' + data.notes + '</div>'
+        : '';
+
+      // Wrap message content with a relative-positioned container and a × close button.
+      var closeBtnHtml = '<button type="button" aria-label="Dismiss" onclick="(function(el){var box=el.closest(\'.upload-result, [data-paystub-result]\')||el.parentElement;if(box){box.style.display=\'none\';box.classList.remove(\'show\');}})(this)" style="position:absolute;top:0.4rem;right:0.5rem;background:transparent;border:none;font-size:1.2rem;line-height:1;cursor:pointer;color:inherit;opacity:0.6;padding:0 0.25rem;font-family:inherit">×</button>';
+      resultEl.setAttribute('data-paystub-result', '1');
+      resultEl.style.position = 'relative';
+      resultEl.style.paddingRight = '2rem';
+      resultEl.innerHTML = closeBtnHtml + '✅ ' + employerLine + fillLine + accountsLinkLine + confidenceLine + noteLine;
+
+      // Auto-dismiss after 2 minutes.
+      if (window.__paystubDismissTimer) clearTimeout(window.__paystubDismissTimer);
+      window.__paystubDismissTimer = setTimeout(function() {
+        if (resultEl) { resultEl.style.display = 'none'; resultEl.classList.remove('show'); }
+      }, 120000);
+    }
+
+    if (typeof recalc === 'function') recalc();
+    if (typeof saveToLocal === 'function') saveToLocal();
+    event.target.value = '';
+
+  } catch (err) {
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (zone) zone.style.opacity = '1';
+    if (resultEl) {
+      resultEl.style.display = 'block';
+      resultEl.style.background = '#fce8e8';
+      resultEl.style.border = '1.5px solid #c44';
+      resultEl.style.color = '#722';
+      resultEl.style.padding = '0.75rem 1rem';
+      resultEl.style.borderRadius = '8px';
+      resultEl.style.marginTop = '0.5rem';
+      resultEl.style.fontSize = '0.88rem';
+      resultEl.innerHTML = '⚠️ Something went wrong reading the pay stub. Please fill the fields manually below.';
+    }
+    console.error('Pay stub upload error:', err);
+    event.target.value = '';
+  }
+}
+
 async function submitNewPassword() {
   var pw = document.getElementById('newPassword')?.value;
   var pw2 = document.getElementById('newPasswordConfirm')?.value;
@@ -10731,6 +11972,7 @@ function initSupabase() {
       return;
     }
     _sbUser = session ? session.user : null;
+    if (typeof checkProAccess === 'function') checkProAccess();
     updateAuthUI();
     if(_sbUser) {
       cloudLoad();
@@ -10749,6 +11991,7 @@ function initSupabase() {
   _sb.auth.getSession().then(function(r) {
     if(r.data && r.data.session) {
       _sbUser = r.data.session.user;
+      if (typeof checkProAccess === 'function') checkProAccess();
       updateAuthUI();
     } else {
       // No active session — clear any stale local data so app shows blank
@@ -10767,11 +12010,8 @@ function updateAuthUI() {
     var name = email.split('@')[0];
     if(btn) { btn.textContent = 'Sign Out'; btn.onclick = signOut; }
     if(display) { display.textContent = '👤 ' + name; display.style.display = 'inline'; }
-    var tb = document.getElementById('signInTooltip'); if(tb) tb.style.display = 'none';
-    var tb = document.getElementById('signInTooltip'); if(tb) tb.style.display = 'none';
   } else {
     if(btn) { btn.textContent = 'Sign In'; btn.onclick = toggleAuthModal; }
-    var tb2 = document.getElementById('signInTooltip'); if(tb2) tb2.style.display = 'block';
     if(display) { display.style.display = 'none'; }
   }
 }
@@ -10895,6 +12135,8 @@ async function signOut() {
   if(!_sb) return;
   await _sb.auth.signOut();
   _sbUser = null;
+  window.__proUntil = null;
+  if (typeof checkProAccess === 'function') checkProAccess();
   // Clear local data on sign out — data is safe in Supabase cloud
   localStorage.removeItem(SAVE_KEY);
   localStorage.removeItem('myyolk_device');
@@ -10939,11 +12181,16 @@ async function cloudSave() {
 async function cloudLoad() {
   if(!_sb || !_sbUser) return;
   try {
-    var result = await _sb.from('user_data').select('data').eq('user_id', _sbUser.id).limit(1).maybeSingle();
-    if(result.data && result.data.data) {
-      var stored = JSON.stringify(result.data.data);
-      localStorage.setItem(SAVE_KEY, stored);
-      loadFromLocal();
+    var result = await _sb.from('user_data').select('data, pro_until').eq('user_id', _sbUser.id).limit(1).maybeSingle();
+    if(result.data) {
+      if (result.data.data) {
+        var stored = JSON.stringify(result.data.data);
+        localStorage.setItem(SAVE_KEY, stored);
+        loadFromLocal();
+      }
+      // Surface pro_until to the access checker
+      window.__proUntil = result.data.pro_until || null;
+      if (typeof checkProAccess === 'function') checkProAccess();
     }
   } catch(e) {}
   // Mark cloud load as complete — safe to auto-save now
@@ -11774,6 +13021,28 @@ setTimeout(function() {
 // Add new releases at the TOP. Date format: 'YYYY-MM-DD'.
 // Items can have optional `thanks` field for contributor recognition.
 window.WHATS_NEW = [
+  {
+    date: '2026-05-16',
+    label: 'May 16, 2026',
+    items: [
+      { text: 'MyYolk Pro launched — $12.99/month or $99/year for unlimited access to Budget Tracker, What-If Scenarios, Early Retirement modeling, Statement Imports, and Summary projections. Cancel anytime — keep access through the period you paid for.', thanks: null },
+      { text: 'Pay stub and SSA statement uploads are now Pro features. Free users can still enter all data manually; Pro users get the one-click PDF/photo auto-fill.', thanks: null },
+      { text: 'Bank statement CSV import (in Budget Tracker) is a Pro feature — import 12+ statements at once across 14 banks.', thanks: null },
+      { text: 'Secure checkout powered by Stripe under Shepville LLC (Pennsylvania).', thanks: null },
+    ]
+  },
+  {
+    date: '2026-05-11',
+    label: 'May 11, 2026',
+    items: [
+      { text: 'Pay stub upload — drop a PDF or image of your pay stub on the Income tab and we auto-fill your annual salary, pay frequency, and retirement contribution %. Handles 401(k), 403(b), Roth 401(k), and Roth 403(b) automatically.', thanks: null },
+      { text: 'Smart enough to handle messy oilfield comp — severance, retention bonuses, retro adjustments, and one-time payments don\'t throw off the annual salary calculation. We explain when something looks unusual.', thanks: null },
+      { text: 'SSA statement upload — drop your Social Security statement PDF on the Social Security tab and we auto-fill your benefit estimates at age 62, FRA (full retirement age), and age 70.', thanks: null },
+      { text: 'Spouse support — both pay stub and SSA upload work for spouse / partner with identical UX.', thanks: null },
+      { text: 'Name-match safety — if the document name doesn\'t match the profile name, we ask before filling. Prevents uploading the wrong person\'s stub into the wrong section.', thanks: null },
+      { text: 'Success messages auto-dismiss after 2 minutes, or close them manually with the × button.', thanks: null },
+    ]
+  },
   {
     date: '2026-05-01',
     label: 'May 1, 2026',
