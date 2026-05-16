@@ -1383,13 +1383,13 @@ function setPricing(type) {
   var mBtn = document.getElementById('lp-monthly-btn');
   var aBtn = document.getElementById('lp-annual-btn');
   if(type === 'annual') {
-    priceEl.textContent = '$8.25';
-    periodEl.innerHTML = 'per month · billed $99/yr · cancel anytime';
+    priceEl.textContent = '$99';
+    periodEl.innerHTML = 'per year · cancel anytime — keep access through your paid period';
     aBtn.style.background = '#fff'; aBtn.style.color = '#2D4A35'; aBtn.style.border = '1.5px solid #fff';
     mBtn.style.background = 'transparent'; mBtn.style.color = '#fff'; mBtn.style.border = '1.5px solid #fff';
   } else {
     priceEl.textContent = '$12.99';
-    periodEl.textContent = 'per month · cancel anytime';
+    periodEl.textContent = 'per month · cancel anytime — keep access through your paid period';
     mBtn.style.background = '#fff'; mBtn.style.color = '#2D4A35'; mBtn.style.border = '1.5px solid #fff';
     aBtn.style.background = 'transparent'; aBtn.style.color = '#fff'; aBtn.style.border = '1.5px solid #fff';
   }
